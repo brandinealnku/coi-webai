@@ -2,79 +2,1631 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>NKU COI WebAI Demo | Brandi Neal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Safari Camera Test</title>
+  <meta
+    name="description"
+    content="Mobile-friendly NKU College of Informatics AI showcase demo featuring real-time camera interaction, face tracking, overlays, and background effects. Built by Dr. Brandi Neal."
+  />
+  <meta name="theme-color" content="#111111" />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <!-- TFJS + WASM backend -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@4.22.0/dist/tf-backend-wasm.min.js"></script>
+  <script>
+    if (window.tf && tf.wasm) {
+      tf.wasm.setWasmPaths("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@4.22.0/dist/");
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
+
   <style>
-    body {
+    :root {
+      --nku-gold: #f7b718;
+      --nku-black: #111111;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --soft-bg: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --border: #e5e7eb;
+      --shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
+      --radius: 22px;
+      --success: #16a34a;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
       margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #111;
-      color: white;
-      padding: 20px;
+      min-height: 100%;
     }
-    button {
-      font-size: 18px;
-      padding: 14px 18px;
-      border-radius: 12px;
-      border: none;
-      margin-bottom: 16px;
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(247, 183, 24, 0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(17, 17, 17, 0.06), transparent 26%),
+        linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    video {
-      width: 100%;
-      max-width: 500px;
+
+    a { color: inherit; }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.92em;
+    }
+
+    .page-shell {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .main-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .content-wrap {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      padding: 22px;
+    }
+
+    .eyebrow {
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.82;
+      margin-bottom: 8px;
+    }
+
+    .lead {
+      font-size: 0.98rem;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin: 20px 0 10px;
+    }
+
+    .steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .steps li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
       border-radius: 16px;
-      background: #222;
+      color: #374151;
+      font-size: 0.95rem;
+      line-height: 1.55;
     }
-    #status {
-      margin-top: 12px;
+
+    .step-num {
+      color: var(--nku-black);
+      background: var(--nku-gold);
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      flex: 0 0 auto;
+      font-size: 0.83rem;
+    }
+
+    .info-card {
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+
+    .info-text {
+      font-size: 0.92rem;
+      color: #4b5563;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .demo-panel {
+      background: var(--soft-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    #videoContainer {
+      position: relative;
+      width: 100%;
+      height: clamp(420px, 66vh, 760px);
+      min-height: 420px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #d1d5db;
+      background: radial-gradient(circle, #f3f4f6 0%, #e5e7eb 70%);
+    }
+
+    #video {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    video,
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    canvas { pointer-events: none; }
+
+    .video-skeleton {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      z-index: 0;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -120% 0; }
+      100% { background-position: 120% 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .video-skeleton { animation: none; }
+    }
+
+    .screen-ui {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .screen-gradient-top {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 28%;
+      background: linear-gradient(180deg, rgba(17,17,17,0.48), rgba(17,17,17,0));
+    }
+
+    .screen-gradient-bottom {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 34%;
+      background: linear-gradient(0deg, rgba(17,17,17,0.64), rgba(17,17,17,0));
+    }
+
+    .screen-pill,
+    .screen-status,
+    .screen-credit {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(17,17,17,0.48);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .screen-pill {
+      top: 12px;
+      left: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .screen-status {
+      top: 12px;
+      right: 12px;
+    }
+
+    .screen-credit {
+      left: 12px;
+      bottom: 12px;
+      max-width: calc(100% - 24px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .screen-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.35);
+    }
+
+    .screen-status-dot.active {
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.14);
+    }
+
+    .screen-footer {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 46px;
+      color: #fff;
+    }
+
+    .screen-kicker {
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+
+    .screen-title {
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      line-height: 1.05;
+      font-weight: 900;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .screen-sub {
+      font-size: 0.76rem;
+      opacity: 0.92;
+      margin-top: 4px;
+    }
+
+    .status-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .status-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #d1d5db;
+      flex: 0 0 auto;
+      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(22,163,74,0.14);
+      transform: scale(1.05);
+    }
+
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(239,68,68,0.14);
+      transform: scale(1.05);
+    }
+
+    .status-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #374151;
+      line-height: 1.4;
+    }
+
+    .status-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
       line-height: 1.5;
-      white-space: pre-wrap;
+    }
+
+    .filter-group {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: #374151;
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .filter-btn:hover { transform: translateY(-1px); }
+
+    .filter-btn:focus-visible {
+      outline: 2px solid var(--nku-gold);
+      outline-offset: 2px;
+    }
+
+    .filter-btn.active {
+      border-color: var(--nku-gold);
+      box-shadow: 0 0 0 3px rgba(247, 183, 24, 0.18);
+      font-weight: 800;
+    }
+
+    .filter-thumb {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+      flex: 0 0 auto;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .app-btn {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 999px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      font-size: 0.98rem;
+    }
+
+    .btn-start {
+      background: #fff;
+      border-color: #d1d5db;
+      color: #111827;
+    }
+
+    .btn-capture {
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      border: none;
+    }
+
+    .btn-share {
+      background: #111827;
+      color: white;
+      border: none;
+    }
+
+    .btn-stop {
+      background: #fff;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .app-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .preview-section {
+      margin-top: 14px;
+      display: none;
+    }
+
+    .preview-image-wrapper {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    #snapshotPreview {
+      width: 100%;
+      display: block;
+    }
+
+    .small-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 8px 0 0;
+      line-height: 1.5;
+    }
+
+    .footer-note {
+      padding: 0 22px 22px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .footer-note strong { color: #374151; }
+
+    @media (max-width: 991.98px) {
+      .content-wrap { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 767.98px) {
+      .page-shell { padding: 12px; }
+
+      .topbar {
+        border-radius: 18px;
+        padding: 12px;
+      }
+
+      .brand-sub { font-size: 0.8rem; }
+
+      .content-wrap {
+        padding: 14px;
+        gap: 14px;
+      }
+
+      .demo-panel { padding: 10px; }
+
+      #videoContainer {
+        height: min(72svh, 620px);
+        min-height: 360px;
+      }
+
+      .screen-pill,
+      .screen-status,
+      .screen-credit {
+        font-size: 0.62rem;
+        padding: 6px 9px;
+      }
+
+      .screen-footer {
+        left: 12px;
+        right: 12px;
+        bottom: 42px;
+      }
+
+      .screen-sub { font-size: 0.7rem; }
+    }
+
+    @media (max-width: 480px) {
+      .filter-group { grid-template-columns: 1fr; }
+
+      #videoContainer {
+        height: min(74svh, 560px);
+        min-height: 340px;
+      }
+
+      .screen-pill { max-width: calc(100% - 120px); }
+      .screen-credit { max-width: calc(100% - 24px); }
     }
   </style>
 </head>
+
 <body>
-  <button id="startBtn">Start Camera</button>
-  <br />
-  <video id="video" autoplay muted playsinline></video>
-  <div id="status">Waiting to start…</div>
+  <div class="page-shell">
+    <header class="topbar" aria-label="NKU College of Informatics interactive AI demo header">
+      <div class="brand">
+        <div class="brand-pill">NKU · COI</div>
+        <span class="brand-sub">WebAI Demo</span>
+      </div>
+      <div class="brand-sub">Try it live</div>
+    </header>
+
+    <main class="main-card" aria-labelledby="page-title">
+      <div class="content-wrap">
+        <section aria-label="Demo description">
+          <p class="eyebrow" style="color:#6b7280;">College of Informatics</p>
+          <h2 id="page-title" style="font-size:clamp(1.6rem,2.8vw,2.3rem); margin:0 0 10px 0; letter-spacing:-0.02em;">
+            Interactive WebAI + AR
+          </h2>
+
+          <p class="lead">
+            This experience demonstrates how modern webpages can respond intelligently in real time using camera input, face tracking, background replacement, and visual overlays.
+            It is built to feel approachable for visitors while still showcasing meaningful AI and web technology.
+          </p>
+
+          <h3 class="section-title">How to use it</h3>
+          <ol class="steps">
+            <li>
+              <span class="step-num">1</span>
+              <span>Tap <strong>Start Camera &amp; AI</strong> and allow access to your device camera.</span>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <span>Try a mode such as <strong>Glasses</strong>, <strong>Helmet</strong>, <strong>Viking</strong>, or <strong>Griffin Hall</strong>.</span>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <span>Use <strong>Capture Snapshot</strong> to save a photo of your experience to your device.</span>
+            </li>
+          </ol>
+
+          <div class="info-card">
+            <h3 class="section-title" style="margin-top:0;">What it demonstrates</h3>
+            <p class="info-text">
+              • Camera access with <code>getUserMedia</code><br />
+              • Real-time face tracking with BlazeFace<br />
+              • Background compositing with BodyPix<br />
+              • Canvas-based overlays for interactive web experiences<br />
+              • Mobile-friendly browser AI suitable for outreach and recruitment
+            </p>
+          </div>
+        </section>
+
+        <section id="demo-area" aria-label="Live AI demo">
+          <div class="demo-panel">
+            <div id="videoContainer" aria-label="Live interactive AI mirror area">
+              <div class="video-skeleton" id="videoSkeleton" aria-hidden="true"></div>
+
+              <video
+                id="video"
+                autoplay
+                playsinline
+                muted
+                aria-hidden="true"
+              ></video>
+
+              <canvas
+                id="overlay"
+                role="img"
+                aria-label="Live AI-enhanced camera view"
+              ></canvas>
+
+              <div class="screen-ui" aria-hidden="true">
+                <div class="screen-gradient-top"></div>
+                <div class="screen-gradient-bottom"></div>
+
+                <div class="screen-pill">NKU AI Showcase</div>
+
+                <div class="screen-status">
+                  <span id="screenStatusDot" class="screen-status-dot"></span>
+                  <span id="screenStatusText">Offline</span>
+                </div>
+
+                <div class="screen-footer">
+                  <div class="screen-kicker">Live demo</div>
+                  <h2 class="screen-title">Interactive AI Mirror</h2>
+                  <div class="screen-sub">Camera · Canvas · TensorFlow.js · College Showcase Experience</div>
+                </div>
+
+                <div class="screen-credit">Created by Dr. Brandi Neal</div>
+              </div>
+            </div>
+
+            <div class="status-row" aria-live="polite">
+              <div class="status-main">
+                <span id="statusDot" class="status-dot" aria-hidden="true"></span>
+                <span id="statusText" class="status-text">Tap “Start Camera &amp; AI” to begin.</span>
+              </div>
+              <div class="status-hint">
+                Best results: use HTTPS, good lighting, and front camera. On iPhone Safari, overlay modes are optimized first.
+              </div>
+            </div>
+
+            <div class="filter-group" role="radiogroup" aria-label="Choose AI mode">
+              <button
+                class="filter-btn active"
+                data-filter="glasses"
+                type="button"
+                role="radio"
+                aria-pressed="true"
+                aria-checked="true"
+              >
+                <img src="glasses.png" alt="Preview of glasses mode" class="filter-thumb" loading="lazy" />
+                <span>Glasses</span>
+              </button>
+
+              <button
+                class="filter-btn"
+                data-filter="helmet"
+                type="button"
+                role="radio"
+                aria-pressed="false"
+                aria-checked="false"
+              >
+                <img src="helmet.png" alt="Preview of helmet mode" class="filter-thumb" loading="lazy" />
+                <span>Helmet</span>
+              </button>
+
+              <button
+                class="filter-btn"
+                data-filter="combo"
+                type="button"
+                role="radio"
+                aria-pressed="false"
+                aria-checked="false"
+              >
+                <img src="beard.png" alt="Preview of Viking mode" class="filter-thumb" loading="lazy" />
+                <span>Viking Mode</span>
+              </button>
+
+              <button
+                class="filter-btn"
+                data-filter="griffin"
+                type="button"
+                role="radio"
+                aria-pressed="false"
+                aria-checked="false"
+              >
+                <img src="griffin-hall.jpg" alt="Preview of Griffin Hall mode" class="filter-thumb" loading="lazy" />
+                <span>Griffin Hall</span>
+              </button>
+            </div>
+
+            <div class="action-row">
+              <button id="startBtn" type="button" class="app-btn btn-start">
+                🚀 Start Camera &amp; AI
+              </button>
+              <button id="captureBtn" type="button" class="app-btn btn-capture" disabled>
+                📸 Capture Snapshot
+              </button>
+              <button id="shareBtn" type="button" class="app-btn btn-share">
+                📲 Share Demo
+              </button>
+              <button id="stopBtn" type="button" class="app-btn btn-stop" disabled>
+                ⏹️ Turn Camera Off
+              </button>
+            </div>
+
+            <section id="previewSection" class="preview-section" aria-live="polite">
+              <h3 class="section-title" style="margin-top: 16px;">Saved snapshot</h3>
+              <div class="preview-image-wrapper">
+                <img id="snapshotPreview" alt="Saved AI demo snapshot preview" loading="lazy" />
+              </div>
+              <p class="small-note">Saved locally as a PNG image.</p>
+            </section>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer-note">
+        <strong>Privacy-first design:</strong> this demo is intended to process effects on the device in the browser, with no upload workflow built into this page.
+      </div>
+    </main>
+  </div>
 
   <script>
-    const startBtn = document.getElementById("startBtn");
-    const video = document.getElementById("video");
-    const status = document.getElementById("status");
+    (function () {
+      "use strict";
 
-    startBtn.addEventListener("click", async () => {
-      try {
-        status.textContent = "Requesting camera...";
+      const TARGET_FOLDER_LABEL = "NKU_COI_AI_Demo";
+      const CREATOR_CREDIT_TEXT = "Created by Dr. Brandi Neal";
 
-        const stream = await navigator.mediaDevices.getUserMedia({
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("overlay");
+      const ctx = canvas.getContext("2d", { alpha: true });
+
+      const statusText = document.getElementById("statusText");
+      const statusDot = document.getElementById("statusDot");
+      const startBtn = document.getElementById("startBtn");
+      const captureBtn = document.getElementById("captureBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const videoSkeleton = document.getElementById("videoSkeleton");
+      const filterButtons = document.querySelectorAll(".filter-btn");
+
+      const screenStatusDot = document.getElementById("screenStatusDot");
+      const screenStatusText = document.getElementById("screenStatusText");
+
+      const previewSection = document.getElementById("previewSection");
+      const snapshotPreview = document.getElementById("snapshotPreview");
+
+      let faceModel = null;
+      let bodyPixModel = null;
+      let videoReady = false;
+      let aiRunning = false;
+      let mediaStream = null;
+
+      let glassesImgReady = false;
+      let helmetImgReady = false;
+      let beardImgReady = false;
+      let bgReady = false;
+
+      let activeFilter = "glasses";
+      let lastSnapshotDataURL = null;
+      let lastSnapshotFile = null;
+
+      const tempCanvas = document.createElement("canvas");
+      const tempCtx = tempCanvas.getContext("2d", { willReadFrequently: true });
+
+      const bgCanvas = document.createElement("canvas");
+      const bgCtx = bgCanvas.getContext("2d", { willReadFrequently: true });
+
+      let latestFaceBox = null;
+      let latestLandmarks = null;
+      let smoothedFaceBox = null;
+      let smoothedLandmarks = null;
+      let lastFaceTime = 0;
+      let lastSegmentation = null;
+
+      let renderRaf = null;
+      let lastStatusMsg = "";
+      let lastStatusMode = "";
+
+      let faceBusy = false;
+      let segmentBusy = false;
+      let lastFaceDetectRun = 0;
+      let lastSegmentRun = 0;
+
+      const isSmallScreen = () => window.matchMedia("(max-width: 767.98px)").matches;
+      const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+      const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent);
+      const isIOSSafari =
+        /iP(ad|hone|od)/i.test(navigator.userAgent) &&
+        /Safari/i.test(navigator.userAgent) &&
+        !/CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+
+      const DISABLE_BODYPix_ON_IOS_SAFARI = true;
+
+      const FACE_HOLD_MS = 380;
+      const SMOOTH_ALPHA = isMobileUA ? 0.22 : 0.16;
+      const LANDMARK_SMOOTH_ALPHA = isMobileUA ? 0.28 : 0.22;
+      const FACE_DETECT_MS = isMobileUA ? 140 : 95;
+      const SEGMENT_MS = isMobileUA ? 340 : 220;
+
+      const bgImage = new Image();
+      bgImage.src = "griffin-hall.jpg";
+      bgImage.onload = () => { bgReady = true; };
+      bgImage.onerror = () => {
+        bgReady = false;
+        console.warn("⚠️ Could not load griffin-hall.jpg");
+      };
+
+      const glassesImg = new Image();
+      glassesImg.src = "glasses.png";
+      glassesImg.onload = () => { glassesImgReady = true; };
+      glassesImg.onerror = () => console.warn("⚠️ Could not load glasses.png");
+
+      const helmetImg = new Image();
+      helmetImg.src = "helmet.png";
+      helmetImg.onload = () => { helmetImgReady = true; };
+      helmetImg.onerror = () => console.warn("⚠️ Could not load helmet.png");
+
+      const beardImg = new Image();
+      beardImg.src = "beard.png";
+      beardImg.onload = () => { beardImgReady = true; };
+      beardImg.onerror = () => console.warn("⚠️ Could not load beard.png");
+
+      function setStatus(message, mode = "idle") {
+        if (message === lastStatusMsg && mode === lastStatusMode) return;
+        lastStatusMsg = message;
+        lastStatusMode = mode;
+
+        statusText.textContent = message;
+        statusDot.classList.remove("active", "error");
+
+        if (mode === "active") statusDot.classList.add("active");
+        if (mode === "error") statusDot.classList.add("error");
+      }
+
+      function setScreenStatus(text, locked) {
+        screenStatusText.textContent = text;
+        screenStatusDot.classList.toggle("active", !!locked);
+      }
+
+      function updateShareButtonLabel() {
+        if (lastSnapshotFile) {
+          shareBtn.innerHTML = "🖼️ Share Snapshot";
+          return;
+        }
+        if (navigator.share) {
+          shareBtn.innerHTML = "📲 Share Demo";
+        } else {
+          shareBtn.innerHTML = "🔗 Copy Demo URL";
+        }
+      }
+
+      async function getBestBackend() {
+        if (!window.tf) return;
+
+        const preferred = isIOSSafari ? ["wasm", "webgl", "cpu"] : ["webgl", "wasm", "cpu"];
+
+        for (const backendName of preferred) {
+          try {
+            const ok = await tf.setBackend(backendName);
+            if (ok) {
+              await tf.ready();
+              console.log("✅ Using TFJS backend:", tf.getBackend());
+              return;
+            }
+          } catch (error) {
+            console.warn("Backend not available:", backendName, error);
+          }
+        }
+      }
+
+      function updateCanvasBufferSize() {
+        if (!video.videoWidth || !video.videoHeight) return;
+
+        const renderWidth = video.videoWidth;
+        const renderHeight = video.videoHeight;
+
+        canvas.width = renderWidth;
+        canvas.height = renderHeight;
+
+        tempCanvas.width = renderWidth;
+        tempCanvas.height = renderHeight;
+
+        bgCanvas.width = renderWidth;
+        bgCanvas.height = renderHeight;
+
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+      }
+
+      async function setupCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setStatus("Camera access is not supported in this browser.", "error");
+          throw new Error("getUserMedia not supported");
+        }
+
+        const mobileLike = isSmallScreen() || isMobileUA;
+
+        const constraints = {
           audio: false,
           video: {
             facingMode: "user",
-            width: { ideal: 640 },
-            height: { ideal: 480 }
+            width: mobileLike ? { ideal: 640, max: 1280 } : { ideal: 960, max: 1280 },
+            height: mobileLike ? { ideal: 960, max: 1280 } : { ideal: 720, max: 960 }
           }
-        });
+        };
 
         video.setAttribute("playsinline", "");
         video.setAttribute("webkit-playsinline", "");
         video.muted = true;
-        video.srcObject = stream;
+        video.autoplay = true;
 
-        await video.play();
+        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = mediaStream;
 
-        status.textContent =
-          "Camera started successfully.\n" +
-          "videoWidth: " + video.videoWidth + "\n" +
-          "videoHeight: " + video.videoHeight;
-      } catch (err) {
-        status.textContent =
-          "Camera failed.\n\n" +
-          "name: " + err.name + "\n" +
-          "message: " + err.message;
-        console.error(err);
+        await new Promise((resolve, reject) => {
+          let resolved = false;
+
+          const onReady = async () => {
+            if (resolved) return;
+            try {
+              await video.play();
+              updateCanvasBufferSize();
+              videoReady = true;
+              videoSkeleton.style.display = "none";
+              resolved = true;
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          };
+
+          video.onloadedmetadata = onReady;
+          video.oncanplay = onReady;
+
+          setTimeout(() => {
+            if (!resolved && !videoReady) {
+              reject(new Error("Video failed to become ready in time."));
+            }
+          }, 5000);
+        });
+
+        window.addEventListener("resize", handleWindowResize, { passive: true });
+        window.addEventListener("orientationchange", handleWindowResize, { passive: true });
       }
-    });
+
+      function handleWindowResize() {
+        if (!videoReady) return;
+        setTimeout(updateCanvasBufferSize, 120);
+      }
+
+      function stopLoops() {
+        if (renderRaf) cancelAnimationFrame(renderRaf);
+        renderRaf = null;
+
+        faceBusy = false;
+        segmentBusy = false;
+      }
+
+      function stopCamera() {
+        stopLoops();
+
+        if (mediaStream) {
+          mediaStream.getTracks().forEach((track) => track.stop());
+          mediaStream = null;
+        }
+
+        if (video.srcObject) {
+          video.srcObject = null;
+        }
+
+        videoReady = false;
+        aiRunning = false;
+        latestFaceBox = null;
+        latestLandmarks = null;
+        smoothedFaceBox = null;
+        smoothedLandmarks = null;
+        lastFaceTime = 0;
+        lastSegmentation = null;
+        lastSnapshotDataURL = null;
+        lastSnapshotFile = null;
+        lastFaceDetectRun = 0;
+        lastSegmentRun = 0;
+
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        videoSkeleton.style.display = "block";
+        startBtn.disabled = false;
+        captureBtn.disabled = true;
+        stopBtn.disabled = true;
+
+        updateShareButtonLabel();
+        setScreenStatus("Offline", false);
+        setStatus("Camera turned off. Tap Start Camera & AI to begin again.", "idle");
+      }
+
+      function isValidPoint(pt) {
+        return (
+          Array.isArray(pt) &&
+          pt.length >= 2 &&
+          typeof pt[0] === "number" &&
+          typeof pt[1] === "number" &&
+          Number.isFinite(pt[0]) &&
+          Number.isFinite(pt[1])
+        );
+      }
+
+      function isValidBox(topLeft, bottomRight) {
+        if (!isValidPoint(topLeft) || !isValidPoint(bottomRight)) return false;
+        const [x1, y1] = topLeft;
+        const [x2, y2] = bottomRight;
+        return x2 - x1 > 0 && y2 - y1 > 0;
+      }
+
+      function smoothBox(oldBox, newBox, alpha) {
+        if (!oldBox) return newBox;
+
+        const [ox1, oy1] = oldBox.topLeft;
+        const [ox2, oy2] = oldBox.bottomRight;
+        const [nx1, ny1] = newBox.topLeft;
+        const [nx2, ny2] = newBox.bottomRight;
+
+        return {
+          topLeft: [
+            ox1 + alpha * (nx1 - ox1),
+            oy1 + alpha * (ny1 - oy1)
+          ],
+          bottomRight: [
+            ox2 + alpha * (nx2 - ox2),
+            oy2 + alpha * (ny2 - oy2)
+          ]
+        };
+      }
+
+      function smoothLandmarks(oldLandmarks, newLandmarks, alpha) {
+        if (!Array.isArray(newLandmarks) || newLandmarks.length === 0) return null;
+        if (!Array.isArray(oldLandmarks) || oldLandmarks.length !== newLandmarks.length) {
+          return newLandmarks.map((pt) => [pt[0], pt[1]]);
+        }
+
+        return newLandmarks.map((pt, index) => {
+          const oldPt = oldLandmarks[index];
+          if (!isValidPoint(oldPt) || !isValidPoint(pt)) return [pt[0], pt[1]];
+          return [
+            oldPt[0] + alpha * (pt[0] - oldPt[0]),
+            oldPt[1] + alpha * (pt[1] - oldPt[1])
+          ];
+        });
+      }
+
+      function getFaceMetrics(topLeft, bottomRight) {
+        const [x1, y1] = topLeft;
+        const [x2, y2] = bottomRight;
+        const faceWidth = x2 - x1;
+        const faceHeight = y2 - y1;
+        const centerX = x1 + faceWidth / 2;
+        const centerY = y1 + faceHeight / 2;
+        return { x1, y1, x2, y2, faceWidth, faceHeight, centerX, centerY };
+      }
+
+      function drawGlassesOnFace(topLeft, bottomRight, landmarks = null) {
+        if (!glassesImgReady || !isValidBox(topLeft, bottomRight)) return;
+
+        const { x1, y1, faceWidth, faceHeight, centerX } = getFaceMetrics(topLeft, bottomRight);
+
+        const overlayWidth = faceWidth * 1.12;
+        const aspect = glassesImg.naturalHeight / glassesImg.naturalWidth;
+        const overlayHeight = overlayWidth * aspect;
+
+        let eyeLineY = y1 + faceHeight * 0.43;
+
+        if (Array.isArray(landmarks) && landmarks.length >= 2) {
+          const leftEye = landmarks[0];
+          const rightEye = landmarks[1];
+          if (isValidPoint(leftEye) && isValidPoint(rightEye)) {
+            eyeLineY = (leftEye[1] + rightEye[1]) / 2;
+          }
+        }
+
+        ctx.drawImage(
+          glassesImg,
+          centerX - overlayWidth / 2,
+          eyeLineY - overlayHeight / 2,
+          overlayWidth,
+          overlayHeight
+        );
+      }
+
+      function drawHelmetOnFace(topLeft, bottomRight, landmarks = null) {
+        if (!helmetImgReady || !isValidBox(topLeft, bottomRight)) return;
+
+        const { y1, faceWidth, faceHeight, centerX } = getFaceMetrics(topLeft, bottomRight);
+        const overlayWidth = faceWidth * 1.55;
+        const aspect = helmetImg.naturalHeight / helmetImg.naturalWidth;
+        const overlayHeight = overlayWidth * aspect;
+
+        let eyeLineY = y1 + faceHeight * 0.38;
+
+        if (Array.isArray(landmarks) && landmarks.length >= 2) {
+          const leftEye = landmarks[0];
+          const rightEye = landmarks[1];
+          if (isValidPoint(leftEye) && isValidPoint(rightEye)) {
+            eyeLineY = (leftEye[1] + rightEye[1]) / 2;
+          }
+        }
+
+        const drawX = centerX - overlayWidth / 2;
+        const drawY = eyeLineY - overlayHeight * 0.50;
+
+        ctx.drawImage(helmetImg, drawX, drawY, overlayWidth, overlayHeight);
+      }
+
+      function drawBeardOnFace(topLeft, bottomRight) {
+        if (!beardImgReady || !isValidBox(topLeft, bottomRight)) return;
+
+        const { faceWidth, faceHeight, centerX, centerY } = getFaceMetrics(topLeft, bottomRight);
+
+        const overlayWidth = faceWidth * 1.42;
+        const aspect = beardImg.naturalHeight / beardImg.naturalWidth;
+        const overlayHeight = overlayWidth * aspect;
+        const overlayCenterY = centerY - faceHeight * 0.02;
+
+        ctx.drawImage(
+          beardImg,
+          centerX - overlayWidth / 2,
+          overlayCenterY - overlayHeight / 2,
+          overlayWidth,
+          overlayHeight
+        );
+      }
+
+      function drawVikingOnFace(topLeft, bottomRight) {
+        drawBeardOnFace(topLeft, bottomRight);
+      }
+
+      async function ensureBodyPixLoaded() {
+        if (bodyPixModel) return true;
+
+        if (isIOSSafari && DISABLE_BODYPix_ON_IOS_SAFARI) {
+          return false;
+        }
+
+        try {
+          setStatus("Loading Griffin Hall background mode…", "idle");
+
+          bodyPixModel = await bodyPix.load({
+            architecture: "MobileNetV1",
+            outputStride: 16,
+            multiplier: isMobileUA ? 0.5 : 0.5,
+            quantBytes: 2
+          });
+
+          return true;
+        } catch (error) {
+          console.warn("⚠️ Could not load BodyPix:", error);
+          bodyPixModel = null;
+          return false;
+        }
+      }
+
+      async function maybeRunFaceDetection(now) {
+        if (!aiRunning || !videoReady || !faceModel || faceBusy) return;
+        if (now - lastFaceDetectRun < FACE_DETECT_MS) return;
+
+        faceBusy = true;
+        lastFaceDetectRun = now;
+
+        try {
+          const predictions = await faceModel.estimateFaces(video, false);
+
+          if (Array.isArray(predictions) && predictions.length > 0) {
+            const face = predictions[0];
+
+            if (isValidBox(face.topLeft, face.bottomRight)) {
+              latestFaceBox = {
+                topLeft: face.topLeft,
+                bottomRight: face.bottomRight
+              };
+
+              latestLandmarks = Array.isArray(face.landmarks)
+                ? face.landmarks.map((pt) => [pt[0], pt[1]])
+                : null;
+
+              lastFaceTime = performance.now();
+            }
+          } else if (performance.now() - lastFaceTime > FACE_HOLD_MS) {
+            latestFaceBox = null;
+            latestLandmarks = null;
+          }
+        } catch (error) {
+          console.error("Error running BlazeFace:", error);
+        } finally {
+          faceBusy = false;
+        }
+      }
+
+      async function maybeRunSegmentation(now) {
+        if (!aiRunning || !videoReady || !bodyPixModel || segmentBusy) return;
+        if (activeFilter !== "griffin") return;
+        if (now - lastSegmentRun < SEGMENT_MS) return;
+
+        segmentBusy = true;
+        lastSegmentRun = now;
+
+        try {
+          lastSegmentation = await bodyPixModel.segmentPerson(video, {
+            internalResolution: "low",
+            segmentationThreshold: 0.7,
+            maxDetections: 1
+          });
+        } catch (error) {
+          console.error("BodyPix error:", error);
+          lastSegmentation = null;
+        } finally {
+          segmentBusy = false;
+        }
+      }
+
+      function drawBackgroundCover(img, targetCtx, targetW, targetH) {
+        if (!img || !img.naturalWidth || !img.naturalHeight) return;
+
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const targetRatio = targetW / targetH;
+
+        let drawW, drawH, drawX, drawY;
+
+        if (imgRatio > targetRatio) {
+          drawH = targetH;
+          drawW = drawH * imgRatio;
+          drawX = (targetW - drawW) / 2;
+          drawY = 0;
+        } else {
+          drawW = targetW;
+          drawH = drawW / imgRatio;
+          drawX = 0;
+          drawY = (targetH - drawH) / 2;
+        }
+
+        targetCtx.drawImage(img, drawX, drawY, drawW, drawH);
+      }
+
+      function drawBaseComposite() {
+        const logicalW = canvas.width;
+        const logicalH = canvas.height;
+        if (!logicalW || !logicalH) return;
+
+        ctx.clearRect(0, 0, logicalW, logicalH);
+
+        if (activeFilter === "griffin" && bgReady && bodyPixModel && lastSegmentation) {
+          tempCtx.clearRect(0, 0, logicalW, logicalH);
+          tempCtx.drawImage(video, 0, 0, logicalW, logicalH);
+
+          const mask = lastSegmentation.data;
+          const frameImageData = tempCtx.getImageData(0, 0, logicalW, logicalH);
+          const framePixels = frameImageData.data;
+
+          bgCtx.clearRect(0, 0, logicalW, logicalH);
+          drawBackgroundCover(bgImage, bgCtx, logicalW, logicalH);
+
+          const bgImageData = bgCtx.getImageData(0, 0, logicalW, logicalH);
+          const bgPixels = bgImageData.data;
+
+          const len = Math.min(mask.length, framePixels.length / 4);
+
+          for (let i = 0; i < len; i++) {
+            const offset = i * 4;
+            if (mask[i] === 0) {
+              framePixels[offset] = bgPixels[offset];
+              framePixels[offset + 1] = bgPixels[offset + 1];
+              framePixels[offset + 2] = bgPixels[offset + 2];
+              framePixels[offset + 3] = bgPixels[offset + 3];
+            }
+          }
+
+          ctx.putImageData(frameImageData, 0, 0);
+        } else if (activeFilter === "griffin" && bgReady && isIOSSafari) {
+          ctx.drawImage(video, 0, 0, logicalW, logicalH);
+        } else if (activeFilter === "griffin" && bgReady && !bodyPixModel) {
+          ctx.drawImage(video, 0, 0, logicalW, logicalH);
+        } else {
+          ctx.drawImage(video, 0, 0, logicalW, logicalH);
+        }
+      }
+
+      function addWatermarkToSnapshot(targetCtx, outputW, outputH) {
+        const pad = Math.max(16, Math.round(outputW * 0.018));
+        const boxH = Math.max(42, Math.round(outputH * 0.072));
+        const boxW = Math.min(outputW * 0.72, 420);
+
+        targetCtx.save();
+        targetCtx.fillStyle = "rgba(17,17,17,0.58)";
+
+        if (typeof targetCtx.roundRect === "function") {
+          targetCtx.beginPath();
+          targetCtx.roundRect(pad, outputH - boxH - pad, boxW, boxH, 14);
+          targetCtx.fill();
+        } else {
+          targetCtx.fillRect(pad, outputH - boxH - pad, boxW, boxH);
+        }
+
+        targetCtx.fillStyle = "#ffffff";
+        targetCtx.font = `700 ${Math.max(14, Math.round(outputW * 0.018))}px system-ui, sans-serif`;
+        targetCtx.fillText("NKU COI AI Showcase", pad + 14, outputH - pad - boxH / 2 + 2);
+
+        targetCtx.font = `500 ${Math.max(12, Math.round(outputW * 0.014))}px system-ui, sans-serif`;
+        targetCtx.fillText(CREATOR_CREDIT_TEXT, pad + 14, outputH - pad - 12);
+        targetCtx.restore();
+      }
+
+      function renderFrame(now = performance.now()) {
+        if (!aiRunning || !videoReady) return;
+
+        maybeRunFaceDetection(now);
+        maybeRunSegmentation(now);
+
+        drawBaseComposite();
+
+        let boxToUse = null;
+        let landmarksToUse = null;
+
+        if (latestFaceBox) {
+          smoothedFaceBox = smoothBox(smoothedFaceBox, latestFaceBox, SMOOTH_ALPHA);
+          smoothedLandmarks = smoothLandmarks(smoothedLandmarks, latestLandmarks, LANDMARK_SMOOTH_ALPHA);
+          boxToUse = smoothedFaceBox;
+          landmarksToUse = smoothedLandmarks;
+        } else if (smoothedFaceBox && now - lastFaceTime < FACE_HOLD_MS) {
+          boxToUse = smoothedFaceBox;
+          landmarksToUse = smoothedLandmarks;
+        } else {
+          smoothedFaceBox = null;
+          smoothedLandmarks = null;
+        }
+
+        if (boxToUse && isValidBox(boxToUse.topLeft, boxToUse.bottomRight)) {
+          const { topLeft, bottomRight } = boxToUse;
+
+          if (activeFilter === "glasses") {
+            drawGlassesOnFace(topLeft, bottomRight, landmarksToUse);
+            setStatus("Glasses mode is active.", "active");
+          } else if (activeFilter === "helmet") {
+            drawHelmetOnFace(topLeft, bottomRight, landmarksToUse);
+            setStatus("Helmet mode is active.", "active");
+          } else if (activeFilter === "combo") {
+            drawVikingOnFace(topLeft, bottomRight);
+            setStatus("Viking mode is active.", "active");
+          } else if (activeFilter === "griffin") {
+            if (isIOSSafari && DISABLE_BODYPix_ON_IOS_SAFARI) {
+              setStatus("Griffin Hall mode selected. On iPhone Safari, overlays are optimized more than live background replacement.", "active");
+            } else {
+              setStatus("Griffin Hall background mode is active.", "active");
+            }
+          }
+
+          setScreenStatus("Face Locked", true);
+        } else {
+          if (activeFilter === "griffin" && isIOSSafari && DISABLE_BODYPix_ON_IOS_SAFARI) {
+            setStatus("AI is running. Move into view for overlays. Griffin background replacement is limited on iPhone Safari.", "active");
+          } else {
+            setStatus("AI is running. Move into view to activate overlays.", "active");
+          }
+          setScreenStatus("Searching…", false);
+        }
+
+        renderRaf = requestAnimationFrame(renderFrame);
+      }
+
+      async function captureSnapshot() {
+        if (!videoReady) return;
+
+        const outputW = canvas.width;
+        const outputH = canvas.height;
+        if (!outputW || !outputH) return;
+
+        const snapCanvas = document.createElement("canvas");
+        snapCanvas.width = outputW;
+        snapCanvas.height = outputH;
+
+        const sctx = snapCanvas.getContext("2d");
+        sctx.drawImage(canvas, 0, 0, outputW, outputH);
+        addWatermarkToSnapshot(sctx, outputW, outputH);
+
+        const dataURL = snapCanvas.toDataURL("image/png");
+        snapshotPreview.src = dataURL;
+        previewSection.style.display = "block";
+
+        lastSnapshotDataURL = dataURL;
+
+        const timestampText = new Date().toISOString().replace(/[:.]/g, "-");
+        const filename = `${TARGET_FOLDER_LABEL}-snapshot-${timestampText}.png`;
+
+        try {
+          const blob = await new Promise((resolve) => snapCanvas.toBlob(resolve, "image/png"));
+          if (blob) {
+            lastSnapshotFile = new File([blob], filename, { type: "image/png" });
+          } else {
+            lastSnapshotFile = null;
+          }
+        } catch (error) {
+          console.warn("Could not prepare snapshot file for sharing:", error);
+          lastSnapshotFile = null;
+        }
+
+        const a = document.createElement("a");
+        a.href = dataURL;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        updateShareButtonLabel();
+        setStatus("Snapshot saved to your device and ready to share.", "active");
+      }
+
+      async function shareDemo() {
+        const shareURL = window.location.href;
+        const shareTitle = "NKU COI WebAI Demo | Brandi Neal";
+        const demoShareText = "Try this interactive NKU College of Informatics WebAI + AR demo created by Dr. Brandi Neal.";
+        const snapshotShareText = "Check out my snapshot from this NKU COI WebAI demo by Dr. Brandi Neal.";
+
+        try {
+          if (lastSnapshotFile && navigator.share && navigator.canShare) {
+            const imageShareData = {
+              title: shareTitle,
+              text: snapshotShareText,
+              files: [lastSnapshotFile]
+            };
+
+            if (navigator.canShare(imageShareData)) {
+              await navigator.share(imageShareData);
+              setStatus("Snapshot share sheet opened.", "active");
+              return;
+            }
+          }
+
+          if (navigator.share) {
+            await navigator.share({
+              title: shareTitle,
+              text: demoShareText,
+              url: shareURL
+            });
+            setStatus("Demo share sheet opened.", "active");
+            return;
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(shareURL);
+            setStatus("Sharing is not supported here, so the demo URL was copied to your clipboard.", "active");
+            return;
+          }
+
+          setStatus("Sharing is not supported on this device. Please copy the page URL manually.", "error");
+        } catch (error) {
+          if (error && error.name === "AbortError") {
+            setStatus("Share canceled.", "idle");
+            return;
+          }
+
+          console.warn("Share failed:", error);
+
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(shareURL);
+              setStatus("Share was unavailable, so the demo URL was copied instead.", "active");
+              return;
+            }
+          } catch (clipboardError) {
+            console.warn("Clipboard fallback failed:", clipboardError);
+          }
+
+          setStatus("Could not share this demo on this device. Please copy the URL manually.", "error");
+        }
+      }
+
+      async function startExperience() {
+        try {
+          if (aiRunning) return;
+
+          startBtn.disabled = true;
+          captureBtn.disabled = true;
+          stopBtn.disabled = true;
+
+          setStatus("Requesting camera access…", "idle");
+          setScreenStatus("Loading…", false);
+
+          await setupCamera();
+
+          setStatus("Loading AI models…", "idle");
+          await getBestBackend();
+
+          faceModel = await blazeface.load();
+
+          bodyPixModel = null;
+          if (activeFilter === "griffin" && !(isIOSSafari && DISABLE_BODYPix_ON_IOS_SAFARI)) {
+            await ensureBodyPixLoaded();
+          }
+
+          aiRunning = true;
+          captureBtn.disabled = false;
+          stopBtn.disabled = false;
+
+          setStatus("Camera and AI are ready.", "active");
+          renderRaf = requestAnimationFrame(renderFrame);
+        } catch (error) {
+          console.error("Init error:", error);
+          startBtn.disabled = false;
+          captureBtn.disabled = true;
+          stopBtn.disabled = true;
+          setScreenStatus("Offline", false);
+          setStatus(
+            "This device or browser may not fully support the demo. Use HTTPS and test Safari or Chrome directly.",
+            "error"
+          );
+        }
+      }
+
+      filterButtons.forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          activeFilter = btn.getAttribute("data-filter") || "glasses";
+
+          filterButtons.forEach((b) => {
+            b.classList.remove("active");
+            b.setAttribute("aria-pressed", "false");
+            b.setAttribute("aria-checked", "false");
+          });
+
+          btn.classList.add("active");
+          btn.setAttribute("aria-pressed", "true");
+          btn.setAttribute("aria-checked", "true");
+
+          lastSegmentation = null;
+
+          if (activeFilter === "griffin") {
+            if (aiRunning) {
+              const ok = await ensureBodyPixLoaded();
+              if (!ok && isIOSSafari) {
+                setStatus("Griffin Hall background is limited on iPhone Safari. Face overlays still work great.", "idle");
+              } else if (!ok) {
+                setStatus("Could not load Griffin Hall background replacement on this device.", "error");
+              } else {
+                setStatus("Griffin Hall mode selected.", "active");
+              }
+            } else {
+              setStatus("Griffin Hall mode selected.", "idle");
+            }
+          } else if (activeFilter === "glasses") {
+            setStatus("Glasses mode selected.", aiRunning ? "active" : "idle");
+          } else if (activeFilter === "helmet") {
+            setStatus("Helmet mode selected.", aiRunning ? "active" : "idle");
+          } else if (activeFilter === "combo") {
+            setStatus("Viking mode selected.", aiRunning ? "active" : "idle");
+          }
+        });
+      });
+
+      updateShareButtonLabel();
+
+      startBtn.addEventListener("click", startExperience);
+      captureBtn.addEventListener("click", captureSnapshot);
+      stopBtn.addEventListener("click", stopCamera);
+      shareBtn.addEventListener("click", shareDemo);
+
+      window.addEventListener("beforeunload", () => {
+        stopCamera();
+      });
+
+      if (isIOS) {
+        setStatus("For best iPhone results, start with Glasses, Helmet, or Viking mode.", "idle");
+      }
+
+      setScreenStatus("Offline", false);
+    })();
   </script>
 </body>
 </html>
