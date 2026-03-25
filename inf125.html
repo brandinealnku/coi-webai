@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Are You AI Literate? | NKU WebAI Experience</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    name="description"
+    content="Interactive AI Literacy Day WebAI experience for NKU. Test your AI literacy with live camera, challenges, and a shareable results card."
+  />
+  <meta name="theme-color" content="#111827" />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #111827;
+      --card: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.12);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --accent: #60a5fa;
+      --accent-2: #a78bfa;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #fb7185;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(167,139,250,0.18), transparent 30%),
+        linear-gradient(135deg, #020617 0%, #0f172a 45%, #111827 100%);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .app-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--muted);
+      font-size: 0.95rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 4.6rem);
+      line-height: 1.02;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #93c5fd 0%, #c4b5fd 50%, #f9a8d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 780px;
+    }
+
+    .glass-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.28);
+    }
+
+    .hero-panel {
+      padding: 28px;
+    }
+
+    .feature-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      margin: 6px 8px 0 0;
+      font-size: 0.95rem;
+    }
+
+    .btn-glow {
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 700;
+      border: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    .btn-glow:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary-custom {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 12px 30px rgba(96,165,250,0.25);
+    }
+
+    .btn-secondary-custom {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .section-card {
+      padding: 24px;
+    }
+
+    .camera-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      background: #020617;
+      min-height: 360px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    video,
+    canvas.preview-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #020617;
+    }
+
+    .camera-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px;
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hud-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(2,6,23,0.64);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: white;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .status-pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 0 rgba(52,211,153,0.7);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(52,211,153,0); }
+      100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+    }
+
+    .challenge-card {
+      border-radius: 20px;
+      padding: 22px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 16px;
+    }
+
+    .challenge-step {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #93c5fd;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .challenge-title {
+      font-size: 1.25rem;
+      font-weight: 750;
+      margin-bottom: 10px;
+    }
+
+    .challenge-text {
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      transition: 0.18s ease;
+    }
+
+    .option-btn:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-1px);
+    }
+
+    .option-btn.correct {
+      background: rgba(52,211,153,0.18);
+      border-color: rgba(52,211,153,0.5);
+    }
+
+    .option-btn.incorrect {
+      background: rgba(251,113,133,0.18);
+      border-color: rgba(251,113,133,0.45);
+    }
+
+    .mini-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+    }
+
+    .progress-wrap {
+      height: 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-custom {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa, #f9a8d4);
+      transition: width 0.35s ease;
+    }
+
+    .feedback-box {
+      margin-top: 12px;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 0.97rem;
+      display: none;
+    }
+
+    .feedback-success {
+      background: rgba(52,211,153,0.14);
+      border: 1px solid rgba(52,211,153,0.34);
+      color: #d1fae5;
+    }
+
+    .feedback-error {
+      background: rgba(251,113,133,0.14);
+      border: 1px solid rgba(251,113,133,0.34);
+      color: #ffe4e6;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .result-score {
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      line-height: 1;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .persona-badge {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .result-card-preview {
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #0b1120;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .result-actions .btn {
+      margin: 6px 8px 0 0;
+    }
+
+    textarea.share-box {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      padding: 16px;
+      outline: none;
+    }
+
+    .footer-note {
+      color: #94a3b8;
+      font-size: 0.92rem;
+      margin-top: 18px;
+    }
+
+    .small-muted {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    .countdown-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: white;
+      background: rgba(15,23,42,0.82);
+      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      z-index: 8;
+    }
+
+    @media (max-width: 992px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .camera-wrap {
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="landingView">
+      <div class="hero-panel glass-card">
+        <div class="brand-badge mb-3">⚡ AI Literacy Day x NKU WebAI Experience</div>
+
+        <h1 class="hero-title">
+          Are You <span class="gradient-text">AI Literate?</span>
+        </h1>
+
+        <p class="hero-subtitle mb-4">
+          A fast, interactive WebAI experience built to spark curiosity, start conversations,
+          and build hype for <strong>INF 125: AI Literacy</strong> at Northern Kentucky University this fall.
+        </p>
+
+        <div class="mb-4">
+          <span class="feature-chip">📸 Live camera experience</span>
+          <span class="feature-chip">🧠 3 quick AI challenges</span>
+          <span class="feature-chip">🏆 Instant AI literacy score</span>
+          <span class="feature-chip">🚀 Shareable results card</span>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3">
+          <button id="startExperienceBtn" class="btn btn-glow btn-primary-custom">
+            Start the AI Literacy Test
+          </button>
+          <button id="jumpResultsBtn" class="btn btn-glow btn-secondary-custom">
+            Preview the Experience
+          </button>
+        </div>
+
+        <div class="footer-note">
+          Best experience: allow camera access and open on a secure site (HTTPS) or localhost.
+        </div>
+      </div>
+    </div>
+
+    <div id="experienceView" class="hidden">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <div class="brand-badge">🎓 INF 125: AI Literacy | NKU | Fall Launch</div>
+          <h2 class="mt-3 mb-1" style="font-weight: 800;">AI Literacy Scan in Progress</h2>
+          <div class="small-muted">Complete all 3 challenges to unlock your shareable result.</div>
+        </div>
+        <button id="restartBtnTop" class="btn btn-secondary btn-lg rounded-pill px-4">
+          Restart
+        </button>
+      </div>
+
+      <div class="main-grid">
+        <div class="glass-card section-card">
+          <div class="camera-wrap mb-3">
+            <video id="video" playsinline autoplay muted></video>
+            <canvas id="snapshotCanvas" class="preview-canvas hidden"></canvas>
+
+            <div class="camera-overlay">
+              <div class="hud-row">
+                <div class="hud-pill">
+                  <span class="status-pulse"></span>
+                  <span id="cameraStatusText">Waiting for camera...</span>
+                </div>
+                <div class="hud-pill">
+                  <span>📊 Score</span>
+                  <strong id="liveScoreText">0%</strong>
+                </div>
+              </div>
+
+              <div class="hud-row">
+                <div class="hud-pill">🤖 AI Literacy Test</div>
+                <div class="hud-pill">🎥 Live WebAI Mode</div>
+              </div>
+            </div>
+
+            <div id="countdownCircle" class="countdown-circle">3</div>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <button id="enableCameraBtn" class="btn btn-glow btn-primary-custom">Enable Camera</button>
+            <button id="captureBtn" class="btn btn-glow btn-secondary-custom">Capture Preview</button>
+          </div>
+
+          <div id="cameraMessage" class="mt-3 small-muted">
+            Your camera helps create a personalized result card.
+          </div>
+        </div>
+
+        <div class="glass-card section-card">
+          <div class="mini-label">Progress</div>
+          <div class="progress-wrap mb-3">
+            <div id="progressBar" class="progress-bar-custom"></div>
+          </div>
+          <div id="progressText" class="small-muted mb-3">Challenge 1 of 3</div>
+
+          <div id="challengeContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultsView" class="hidden">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <div class="brand-badge">🚀 Share Your AI Literacy Result</div>
+          <h2 class="mt-3 mb-1" style="font-weight: 800;">Your Result Is Ready</h2>
+          <div class="small-muted">Use this to promote AI Literacy Day and INF 125 at NKU.</div>
+        </div>
+        <button id="restartBtnResults" class="btn btn-secondary btn-lg rounded-pill px-4">
+          Take Again
+        </button>
+      </div>
+
+      <div class="main-grid">
+        <div class="glass-card section-card">
+          <div class="result-score gradient-text" id="finalScoreText">100%</div>
+          <div class="persona-badge" id="personaText">AI Native</div>
+          <p id="personaDescription" class="hero-subtitle mb-4"></p>
+
+          <div class="result-actions">
+            <button id="downloadCardBtn" class="btn btn-glow btn-primary-custom">
+              Download Result Card
+            </button>
+            <button id="copyShareBtn" class="btn btn-glow btn-secondary-custom">
+              Copy LinkedIn Text
+            </button>
+          </div>
+
+          <div class="mt-4">
+            <div class="mini-label">LinkedIn Caption</div>
+            <textarea id="shareText" class="share-box" readonly></textarea>
+          </div>
+
+          <div class="footer-note">
+            Suggested use: pair your LinkedIn post with this image and a short 10–15 second video.
+          </div>
+        </div>
+
+        <div class="glass-card section-card">
+          <div class="mini-label">Shareable Result Card</div>
+          <div class="result-card-preview">
+            <canvas id="resultCanvas" width="1200" height="1400" style="width:100%; height:auto; display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const challenges = [
+      {
+        step: "Challenge 1",
+        title: "Human or AI?",
+        text: "Which of the following sounds more likely to be AI-generated?",
+        options: [
+          {
+            label: "A",
+            text: "Our café opens at 7 a.m. and the muffins usually sell out by 9.",
+            correct: false
+          },
+          {
+            label: "B",
+            text: "In today's ever-evolving digital landscape, leveraging synergistic innovation is paramount for organizational excellence.",
+            correct: true
+          }
+        ],
+        correctFeedback: "Nice catch. Overly polished, generic, and buzzword-heavy writing can be a clue.",
+        incorrectFeedback: "That was the trick. AI text often sounds polished but vague and overloaded with corporate phrasing."
+      },
+      {
+        step: "Challenge 2",
+        title: "Prompt Smarter",
+        text: "Which prompt would most likely produce a better result from an AI tool?",
+        options: [
+          {
+            label: "A",
+            text: "Make me a presentation.",
+            correct: false
+          },
+          {
+            label: "B",
+            text: "Create a 5-slide presentation for first-year college students explaining AI bias with one real-world example per slide and simple language.",
+            correct: true
+          }
+        ],
+        correctFeedback: "Exactly. Better prompts include audience, purpose, format, and constraints.",
+        incorrectFeedback: "A stronger prompt gives the AI more context: audience, format, topic, and expectations."
+      },
+      {
+        step: "Challenge 3",
+        title: "Trust or Verify?",
+        text: "An AI tool gives you a statistic for a class presentation, but it does not show a source. What is the best next move?",
+        options: [
+          {
+            label: "A",
+            text: "Use it if it sounds right.",
+            correct: false
+          },
+          {
+            label: "B",
+            text: "Verify the claim with a reliable source before using it.",
+            correct: true
+          }
+        ],
+        correctFeedback: "Yes. AI literacy includes verification, not blind trust.",
+        incorrectFeedback: "The best move is to verify it. A confident answer is not the same as a reliable answer."
+      }
+    ];
+
+    let currentChallengeIndex = 0;
+    let score = 0;
+    let selectedAnswers = [];
+    let stream = null;
+    let capturedImageDataUrl = null;
+
+    const landingView = document.getElementById("landingView");
+    const experienceView = document.getElementById("experienceView");
+    const resultsView = document.getElementById("resultsView");
+
+    const startExperienceBtn = document.getElementById("startExperienceBtn");
+    const jumpResultsBtn = document.getElementById("jumpResultsBtn");
+    const restartBtnTop = document.getElementById("restartBtnTop");
+    const restartBtnResults = document.getElementById("restartBtnResults");
+
+    const enableCameraBtn = document.getElementById("enableCameraBtn");
+    const captureBtn = document.getElementById("captureBtn");
+    const challengeContainer = document.getElementById("challengeContainer");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const liveScoreText = document.getElementById("liveScoreText");
+    const cameraStatusText = document.getElementById("cameraStatusText");
+    const cameraMessage = document.getElementById("cameraMessage");
+
+    const video = document.getElementById("video");
+    const snapshotCanvas = document.getElementById("snapshotCanvas");
+    const countdownCircle = document.getElementById("countdownCircle");
+
+    const finalScoreText = document.getElementById("finalScoreText");
+    const personaText = document.getElementById("personaText");
+    const personaDescription = document.getElementById("personaDescription");
+    const shareText = document.getElementById("shareText");
+    const resultCanvas = document.getElementById("resultCanvas");
+    const downloadCardBtn = document.getElementById("downloadCardBtn");
+    const copyShareBtn = document.getElementById("copyShareBtn");
+
+    function showView(viewName) {
+      landingView.classList.add("hidden");
+      experienceView.classList.add("hidden");
+      resultsView.classList.add("hidden");
+
+      if (viewName === "landing") landingView.classList.remove("hidden");
+      if (viewName === "experience") experienceView.classList.remove("hidden");
+      if (viewName === "results") resultsView.classList.remove("hidden");
+    }
+
+    function resetExperience() {
+      currentChallengeIndex = 0;
+      score = 0;
+      selectedAnswers = [];
+      liveScoreText.textContent = "0%";
+      progressBar.style.width = "0%";
+      capturedImageDataUrl = null;
+
+      snapshotCanvas.classList.add("hidden");
+      video.classList.remove("hidden");
+
+      renderChallenge();
+      showView("landing");
+    }
+
+    function updateProgress() {
+      const percent = (currentChallengeIndex / challenges.length) * 100;
+      progressBar.style.width = percent + "%";
+      progressText.textContent = currentChallengeIndex < challenges.length
+        ? `Challenge ${currentChallengeIndex + 1} of ${challenges.length}`
+        : `Complete`;
+    }
+
+    function getScorePercent() {
+      return Math.round((score / challenges.length) * 100);
+    }
+
+    function renderChallenge() {
+      updateProgress();
+
+      if (currentChallengeIndex >= challenges.length) {
+        finishExperience();
+        return;
+      }
+
+      const challenge = challenges[currentChallengeIndex];
+
+      challengeContainer.innerHTML = `
+        <div class="challenge-card">
+          <div class="challenge-step">${challenge.step}</div>
+          <div class="challenge-title">${challenge.title}</div>
+          <div class="challenge-text">${challenge.text}</div>
+
+          <div id="optionsWrap">
+            ${challenge.options.map((option, idx) => `
+              <button class="option-btn" data-index="${idx}">
+                <strong>${option.label}.</strong> ${option.text}
+              </button>
+            `).join("")}
+          </div>
+
+          <div id="feedbackBox" class="feedback-box"></div>
+        </div>
+      `;
+
+      const optionButtons = challengeContainer.querySelectorAll(".option-btn");
+      const feedbackBox = document.getElementById("feedbackBox");
+
+      optionButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const index = Number(btn.dataset.index);
+          const chosen = challenge.options[index];
+
+          optionButtons.forEach((b) => b.disabled = true);
+
+          if (chosen.correct) {
+            btn.classList.add("correct");
+            feedbackBox.className = "feedback-box feedback-success";
+            feedbackBox.textContent = challenge.correctFeedback;
+            score++;
+          } else {
+            btn.classList.add("incorrect");
+            feedbackBox.className = "feedback-box feedback-error";
+            feedbackBox.textContent = challenge.incorrectFeedback;
+
+            const correctIndex = challenge.options.findIndex(opt => opt.correct);
+            if (correctIndex !== -1) {
+              optionButtons[correctIndex].classList.add("correct");
+            }
+          }
+
+          selectedAnswers.push({
+            challenge: challenge.title,
+            selected: chosen.text,
+            correct: chosen.correct
+          });
+
+          const scorePercent = getScorePercent();
+          liveScoreText.textContent = `${scorePercent}%`;
+          feedbackBox.style.display = "block";
+
+          setTimeout(() => {
+            currentChallengeIndex++;
+            renderChallenge();
+          }, 1500);
+        });
+      });
+    }
+
+    async function enableCamera() {
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          cameraStatusText.textContent = "Camera not supported";
+          cameraMessage.textContent = "Your browser does not support webcam access.";
+          return;
+        }
+
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+        cameraStatusText.textContent = "Camera live";
+        cameraMessage.textContent = "Camera is on. You can capture a preview anytime.";
+      } catch (error) {
+        cameraStatusText.textContent = "Camera unavailable";
+        cameraMessage.innerHTML = `
+          Camera access was not available.<br>
+          Try HTTPS, localhost, or allow camera permissions in your browser settings.
+        `;
+        console.error(error);
+      }
+    }
+
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function runCountdownAndCapture() {
+      if (!video.srcObject) {
+        await enableCamera();
+      }
+
+      if (!video.videoWidth || !video.videoHeight) {
+        cameraMessage.textContent = "Waiting for camera feed. Try again in a second.";
+        return;
+      }
+
+      countdownCircle.style.display = "flex";
+      for (let i = 3; i >= 1; i--) {
+        countdownCircle.textContent = i;
+        await wait(850);
+      }
+      countdownCircle.style.display = "none";
+
+      captureCurrentFrame();
+    }
+
+    function captureCurrentFrame() {
+      if (!video.videoWidth || !video.videoHeight) {
+        cameraMessage.textContent = "No live camera frame available yet.";
+        return;
+      }
+
+      const ctx = snapshotCanvas.getContext("2d");
+      snapshotCanvas.width = video.videoWidth;
+      snapshotCanvas.height = video.videoHeight;
+
+      ctx.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
+
+      snapshotCanvas.classList.remove("hidden");
+      video.classList.add("hidden");
+
+      capturedImageDataUrl = snapshotCanvas.toDataURL("image/png");
+      cameraMessage.textContent = "Preview captured. Your result card will use this image.";
+    }
+
+    function getPersona(scorePercent) {
+      if (scorePercent === 100) {
+        return {
+          label: "AI Native",
+          description: "You’re showing strong AI literacy instincts: better prompting, stronger judgment, and a clear understanding that AI should be questioned and verified."
+        };
+      }
+      if (scorePercent >= 67) {
+        return {
+          label: "Prompt Engineer",
+          description: "You’re building a strong foundation. You understand that effective AI use is about clarity, context, and thoughtful decision-making."
+        };
+      }
+      if (scorePercent >= 34) {
+        return {
+          label: "Skeptical Thinker",
+          description: "You’re asking the right kinds of questions. AI literacy starts with curiosity, caution, and learning how to separate convenience from credibility."
+        };
+      }
+      return {
+        label: "Still Loading...",
+        description: "This is exactly why AI literacy matters. The good news: these are learnable skills, and they matter more every day."
+      };
+    }
+
+    function finishExperience() {
+      progressBar.style.width = "100%";
+      progressText.textContent = "Complete";
+
+      const scorePercent = getScorePercent();
+      const persona = getPersona(scorePercent);
+
+      finalScoreText.textContent = `${scorePercent}%`;
+      personaText.textContent = persona.label;
+      personaDescription.textContent = persona.description;
+
+      shareText.value = `I just tried NKU’s “Are You AI Literate?” WebAI experience for AI Literacy Day and scored ${scorePercent}% — ${persona.label}.
+
+AI isn’t just something students use.
+It’s something they need to understand, question, and build with.
+
+Excited to see NKU offering INF 125: AI Literacy this fall.
+
+#AILiteracyDay #AIinEducation #NKU #ArtificialIntelligence #HigherEd`;
+
+      generateResultCard(scorePercent, persona);
+      showView("results");
+    }
+
+    function generateResultCard(scorePercent, persona) {
+      const ctx = resultCanvas.getContext("2d");
+      const w = resultCanvas.width;
+      const h = resultCanvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const bg = ctx.createLinearGradient(0, 0, w, h);
+      bg.addColorStop(0, "#020617");
+      bg.addColorStop(0.5, "#0f172a");
+      bg.addColorStop(1, "#1e1b4b");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      drawGlow(ctx, 180, 180, 240, "rgba(96,165,250,0.22)");
+      drawGlow(ctx, w - 160, 190, 220, "rgba(167,139,250,0.22)");
+      drawGlow(ctx, w / 2, h - 180, 260, "rgba(244,114,182,0.18)");
+
+      roundRect(ctx, 55, 55, w - 110, h - 110, 38, "rgba(255,255,255,0.06)", "rgba(255,255,255,0.14)");
+
+      ctx.fillStyle = "rgba(255,255,255,0.8)";
+      ctx.font = "700 34px Inter, Arial, sans-serif";
+      ctx.fillText("AI Literacy Day • NKU WebAI Experience", 100, 120);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "800 74px Inter, Arial, sans-serif";
+      ctx.fillText("Are You AI Literate?", 100, 205);
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "500 30px Inter, Arial, sans-serif";
+      ctx.fillText("Interactive result card generated from NKU’s WebAI experience", 100, 252);
+
+      const photoX = 100;
+      const photoY = 310;
+      const photoW = 460;
+      const photoH = 560;
+
+      roundRect(ctx, photoX, photoY, photoW, photoH, 28, "rgba(255,255,255,0.05)", "rgba(255,255,255,0.14)");
+
+      if (capturedImageDataUrl) {
+        const img = new Image();
+        img.onload = () => {
+          drawCoverImageRounded(ctx, img, photoX, photoY, photoW, photoH, 28);
+          drawResultDetails(ctx, scorePercent, persona, photoX, photoY, photoW, photoH);
+        };
+        img.src = capturedImageDataUrl;
+      } else {
+        ctx.fillStyle = "rgba(255,255,255,0.08)";
+        roundRect(ctx, photoX + 16, photoY + 16, photoW - 32, photoH - 32, 22, "rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "700 36px Inter, Arial, sans-serif";
+        ctx.fillText("No Camera Preview", photoX + 90, photoY + 260);
+        ctx.font = "500 26px Inter, Arial, sans-serif";
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillText("Still shareable — just without the selfie.", photoX + 70, photoY + 310);
+        drawResultDetails(ctx, scorePercent, persona, photoX, photoY, photoW, photoH);
+      }
+    }
+
+    function drawResultDetails(ctx, scorePercent, persona, photoX, photoY, photoW, photoH) {
+      const rightX = 620;
+      const contentW = 470;
+
+      ctx.fillStyle = "rgba(255,255,255,0.9)";
+      ctx.font = "700 28px Inter, Arial, sans-serif";
+      ctx.fillText("Your AI Literacy Score", rightX, 360);
+
+      const scoreGradient = ctx.createLinearGradient(rightX, 0, rightX + 240, 0);
+      scoreGradient.addColorStop(0, "#93c5fd");
+      scoreGradient.addColorStop(0.5, "#c4b5fd");
+      scoreGradient.addColorStop(1, "#f9a8d4");
+
+      ctx.fillStyle = scoreGradient;
+      ctx.font = "800 108px Inter, Arial, sans-serif";
+      ctx.fillText(`${scorePercent}%`, rightX, 470);
+
+      roundRect(ctx, rightX, 505, 255, 58, 999, "rgba(255,255,255,0.08)", "rgba(255,255,255,0.16)");
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "700 28px Inter, Arial, sans-serif";
+      ctx.fillText(persona.label, rightX + 24, 543);
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "500 28px Inter, Arial, sans-serif";
+      drawWrappedText(ctx, persona.description, rightX, 620, contentW, 40);
+
+      ctx.fillStyle = "rgba(255,255,255,0.86)";
+      ctx.font = "700 30px Inter, Arial, sans-serif";
+      ctx.fillText("Coming Fall 2026", rightX, 915);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "800 48px Inter, Arial, sans-serif";
+      ctx.fillText("INF 125: AI Literacy", rightX, 980);
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "500 26px Inter, Arial, sans-serif";
+      drawWrappedText(
+        ctx,
+        "Students won’t just use AI. They’ll learn to question it, build with it, and understand its real-world impact.",
+        rightX,
+        1035,
+        contentW,
+        36
+      );
+
+      roundRect(ctx, 100, 1220, wSafe(resultCanvas.width - 200), 90, 24, "rgba(255,255,255,0.07)", "rgba(255,255,255,0.12)");
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "700 30px Inter, Arial, sans-serif";
+      ctx.fillText("NKU is building AI literacy for what’s next.", 130, 1276);
+    }
+
+    function wSafe(value) {
+      return Math.max(0, value);
+    }
+
+    function drawGlow(ctx, x, y, radius, color) {
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function roundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+
+      if (fillStyle) {
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+      }
+
+      if (strokeStyle) {
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(" ");
+      let line = "";
+      let currentY = y;
+
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + " ";
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+
+        if (testWidth > maxWidth && n > 0) {
+          ctx.fillText(line, x, currentY);
+          line = words[n] + " ";
+          currentY += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+
+      ctx.fillText(line, x, currentY);
+    }
+
+    function drawCoverImageRounded(ctx, img, x, y, width, height, radius) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.clip();
+
+      const imgRatio = img.width / img.height;
+      const boxRatio = width / height;
+      let drawWidth, drawHeight, drawX, drawY;
+
+      if (imgRatio > boxRatio) {
+        drawHeight = height;
+        drawWidth = img.width * (height / img.height);
+        drawX = x - (drawWidth - width) / 2;
+        drawY = y;
+      } else {
+        drawWidth = width;
+        drawHeight = img.height * (width / img.width);
+        drawX = x;
+        drawY = y - (drawHeight - height) / 2;
+      }
+
+      ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+      ctx.restore();
+    }
+
+    function downloadCanvasImage(canvas, filename) {
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    async function copyShareText() {
+      try {
+        await navigator.clipboard.writeText(shareText.value);
+        copyShareBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyShareBtn.textContent = "Copy LinkedIn Text";
+        }, 1400);
+      } catch (error) {
+        alert("Could not copy automatically. Please copy the text manually.");
+      }
+    }
+
+    startExperienceBtn.addEventListener("click", async () => {
+      showView("experience");
+      renderChallenge();
+      await enableCamera();
+    });
+
+    jumpResultsBtn.addEventListener("click", () => {
+      score = 2;
+      currentChallengeIndex = challenges.length;
+      finishExperience();
+    });
+
+    restartBtnTop.addEventListener("click", resetExperience);
+    restartBtnResults.addEventListener("click", resetExperience);
+
+    enableCameraBtn.addEventListener("click", enableCamera);
+    captureBtn.addEventListener("click", runCountdownAndCapture);
+    downloadCardBtn.addEventListener("click", () => downloadCanvasImage(resultCanvas, "nku-ai-literacy-result-card.png"));
+    copyShareBtn.addEventListener("click", copyShareText);
+
+    window.addEventListener("beforeunload", () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    });
+
+    resetExperience();
+  </script>
+</body>
+</html>
