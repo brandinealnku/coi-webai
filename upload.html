@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student WebAI Custom Filter Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    name="description"
+    content="Students can upload their own background images and custom transparent filters for a live WebAI camera experience."
+  />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
+
+  <style>
+    :root {
+      --brand: #f7b718;
+      --dark: #111111;
+      --soft: #f8fafc;
+      --border: #dbe3ea;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --radius: 20px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      color: var(--text);
+    }
+
+    .page-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .main-card {
+      background: rgba(255,255,255,0.95);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .content-wrap {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      line-height: 1.1;
+    }
+
+    .lead {
+      color: #4b5563;
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+
+    .section-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: var(--muted);
+      margin: 18px 0 10px;
+    }
+
+    .steps {
+      padding-left: 18px;
+      color: #374151;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .upload-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .upload-card label {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .upload-hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    .asset-preview-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .asset-preview {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .asset-preview img {
+      max-width: 100%;
+      max-height: 110px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .mode-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mode-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 62px;
+      text-align: left;
+    }
+
+    .mode-btn.active {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(247, 183, 24, 0.2);
+    }
+
+    .action-row {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .app-btn {
+      width: 100%;
+      min-height: 50px;
+      border-radius: 999px;
+      font-weight: 800;
+      border: none;
+      padding: 12px 16px;
+    }
+
+    .btn-start {
+      background: #111827;
+      color: #fff;
+    }
+
+    .btn-capture {
+      background: var(--brand);
+      color: #111827;
+    }
+
+    .btn-stop {
+      background: #fff;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .btn-share {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .app-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-row {
+      margin-top: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .status-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d1d5db;
+    }
+
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(22,163,74,0.15);
+    }
+
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(220,38,38,0.15);
+    }
+
+    .status-text {
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .status-hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .demo-panel {
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    #videoContainer {
+      position: relative;
+      width: 100%;
+      min-height: 520px;
+      height: 72vh;
+      max-height: 820px;
+      overflow: hidden;
+      border-radius: 18px;
+      background: radial-gradient(circle, #e5e7eb 0%, #cbd5e1 100%);
+      border: 1px solid var(--border);
+    }
+
+    video,
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #video {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .screen-ui {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+    }
+
+    .screen-top {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .screen-pill,
+    .screen-status {
+      background: rgba(17,17,17,0.52);
+      color: #fff;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .screen-status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #9ca3af;
+      margin-right: 6px;
+    }
+
+    .screen-status-dot.active {
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.15);
+    }
+
+    .screen-footer {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      color: #fff;
+      background: linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.45));
+      padding: 48px 0 0;
+    }
+
+    .screen-footer h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .screen-footer p {
+      margin: 4px 0 0;
+      font-size: 0.82rem;
+      opacity: 0.95;
+    }
+
+    .preview-section {
+      margin-top: 14px;
+      display: none;
+    }
+
+    .preview-image-wrapper {
+      max-width: 420px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    #snapshotPreview {
+      width: 100%;
+      display: block;
+    }
+
+    .small-note {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 991px) {
+      .content-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .mode-group,
+      .asset-preview-row {
+        grid-template-columns: 1fr;
+      }
+
+      #videoContainer {
+        min-height: 380px;
+        height: 64vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <main class="main-card">
+      <div class="content-wrap">
+
+        <section class="panel" aria-label="Student controls">
+          <p class="eyebrow">Student Custom Studio</p>
+          <h1>Build Your Own WebAI Filter Experience</h1>
+          <p class="lead">
+            Upload your own images to turn this into a personalized interactive camera demo.
+            Students can create a themed experience using their own background image and their
+            own transparent PNG filter.
+          </p>
+
+          <h3 class="section-title">How students use it</h3>
+          <ol class="steps">
+            <li>Upload a custom background image like a stadium, classroom, city, beach, or event scene.</li>
+            <li>Upload a transparent PNG filter like glasses, a hat, a crown, a frame, or a creative overlay.</li>
+            <li>Choose a mode: camera only, custom filter, custom background, or both together.</li>
+            <li>Start the camera and test how their uploaded assets appear live.</li>
+            <li>Capture a snapshot to save and share their result.</li>
+          </ol>
+
+          <div class="upload-card">
+            <label for="backgroundUpload">Upload custom background image</label>
+            <input
+              id="backgroundUpload"
+              type="file"
+              class="form-control"
+              accept="image/png,image/jpeg,image/webp"
+            />
+            <div class="upload-hint">
+              Best choice: a JPG or PNG photo. This will replace the real background behind the person.
+            </div>
+          </div>
+
+          <div class="upload-card">
+            <label for="filterUpload">Upload custom filter image</label>
+            <input
+              id="filterUpload"
+              type="file"
+              class="form-control"
+              accept="image/png,image/webp"
+            />
+            <div class="upload-hint">
+              Best choice: a transparent PNG. Examples: glasses, hat, badge, frame, superhero mask, themed sticker.
+            </div>
+          </div>
+
+          <div class="asset-preview-row">
+            <div>
+              <div class="section-title" style="margin-top:0;">Background preview</div>
+              <div class="asset-preview">
+                <img id="backgroundPreview" alt="Uploaded background preview" style="display:none;" />
+                <span id="backgroundPlaceholder" class="text-muted small">No background uploaded yet</span>
+              </div>
+            </div>
+            <div>
+              <div class="section-title" style="margin-top:0;">Filter preview</div>
+              <div class="asset-preview">
+                <img id="filterPreview" alt="Uploaded filter preview" style="display:none;" />
+                <span id="filterPlaceholder" class="text-muted small">No filter uploaded yet</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title">Choose mode</h3>
+          <div class="mode-group" role="radiogroup" aria-label="Choose display mode">
+            <button class="mode-btn active" data-mode="camera" type="button">Camera Only</button>
+            <button class="mode-btn" data-mode="filter" type="button">Custom Filter</button>
+            <button class="mode-btn" data-mode="background" type="button">Custom Background</button>
+            <button class="mode-btn" data-mode="both" type="button">Background + Filter</button>
+          </div>
+
+          <div class="action-row">
+            <button id="startBtn" type="button" class="app-btn btn-start">🚀 Start Camera & AI</button>
+            <button id="captureBtn" type="button" class="app-btn btn-capture" disabled>📸 Capture Snapshot</button>
+            <button id="shareBtn" type="button" class="app-btn btn-share">📲 Share Demo</button>
+            <button id="stopBtn" type="button" class="app-btn btn-stop" disabled>⏹️ Turn Camera Off</button>
+          </div>
+
+          <div class="status-row" aria-live="polite">
+            <div class="status-main">
+              <span id="statusDot" class="status-dot" aria-hidden="true"></span>
+              <span id="statusText" class="status-text">Upload assets and tap Start Camera & AI.</span>
+            </div>
+            <div class="status-hint">
+              Tip: use a transparent PNG for the filter image so the overlay looks clean on the face.
+            </div>
+          </div>
+
+          <section id="previewSection" class="preview-section" aria-live="polite">
+            <h3 class="section-title">Saved snapshot</h3>
+            <div class="preview-image-wrapper">
+              <img id="snapshotPreview" alt="Saved snapshot preview" />
+            </div>
+            <p class="small-note">The image is saved locally as a PNG.</p>
+          </section>
+        </section>
+
+        <section class="demo-panel" aria-label="Live demo area">
+          <div id="videoContainer">
+            <video id="video" autoplay playsinline muted aria-hidden="true"></video>
+            <canvas id="overlay" aria-label="Live AI-enhanced camera output"></canvas>
+
+            <div class="screen-ui" aria-hidden="true">
+              <div class="screen-top">
+                <div class="screen-pill">Student WebAI Studio</div>
+                <div class="screen-status">
+                  <span id="screenStatusDot" class="screen-status-dot"></span>
+                  <span id="screenStatusText">Offline</span>
+                </div>
+              </div>
+
+              <div class="screen-footer">
+                <h2>Custom Camera Experience</h2>
+                <p>Upload your own background and filter to create a personalized AR-style demo.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("overlay");
+      const ctx = canvas.getContext("2d");
+
+      const statusText = document.getElementById("statusText");
+      const statusDot = document.getElementById("statusDot");
+      const screenStatusDot = document.getElementById("screenStatusDot");
+      const screenStatusText = document.getElementById("screenStatusText");
+
+      const startBtn = document.getElementById("startBtn");
+      const captureBtn = document.getElementById("captureBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const shareBtn = document.getElementById("shareBtn");
+
+      const backgroundUpload = document.getElementById("backgroundUpload");
+      const filterUpload = document.getElementById("filterUpload");
+
+      const backgroundPreview = document.getElementById("backgroundPreview");
+      const filterPreview = document.getElementById("filterPreview");
+      const backgroundPlaceholder = document.getElementById("backgroundPlaceholder");
+      const filterPlaceholder = document.getElementById("filterPlaceholder");
+
+      const previewSection = document.getElementById("previewSection");
+      const snapshotPreview = document.getElementById("snapshotPreview");
+
+      const modeButtons = document.querySelectorAll(".mode-btn");
+
+      let faceModel = null;
+      let bodyPixModel = null;
+      let aiRunning = false;
+      let videoReady = false;
+      let mediaStream = null;
+
+      let activeMode = "camera";
+      let renderRaf = null;
+      let detectTimer = null;
+      let segmentTimer = null;
+
+      let latestFaceBox = null;
+      let latestLandmarks = null;
+      let lastFaceTime = 0;
+      let lastSegmentation = null;
+
+      let uploadedBackground = null;
+      let uploadedFilter = null;
+      let backgroundReady = false;
+      let filterReady = false;
+
+      let lastSnapshotFile = null;
+
+      const tempCanvas = document.createElement("canvas");
+      const tempCtx = tempCanvas.getContext("2d", { willReadFrequently: true });
+
+      const bgCanvas = document.createElement("canvas");
+      const bgCtx = bgCanvas.getContext("2d", { willReadFrequently: true });
+
+      const FACE_HOLD_MS = 400;
+
+      function setStatus(message, mode = "idle") {
+        statusText.textContent = message;
+        statusDot.classList.remove("active", "error");
+        if (mode === "active") statusDot.classList.add("active");
+        if (mode === "error") statusDot.classList.add("error");
+      }
+
+      function setScreenStatus(message, active = false) {
+        screenStatusText.textContent = message;
+        screenStatusDot.classList.toggle("active", !!active);
+      }
+
+      function updateCanvasSize() {
+        if (!video.videoWidth || !video.videoHeight) return;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        tempCanvas.width = video.videoWidth;
+        tempCanvas.height = video.videoHeight;
+        bgCanvas.width = video.videoWidth;
+        bgCanvas.height = video.videoHeight;
+      }
+
+      function readImageFile(file, onLoad) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => onLoad(img, e.target.result);
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      backgroundUpload.addEventListener("change", (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        readImageFile(file, (img, dataUrl) => {
+          uploadedBackground = img;
+          backgroundReady = true;
+          backgroundPreview.src = dataUrl;
+          backgroundPreview.style.display = "block";
+          backgroundPlaceholder.style.display = "none";
+          setStatus("Custom background uploaded successfully.", "active");
+        });
+      });
+
+      filterUpload.addEventListener("change", (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        readImageFile(file, (img, dataUrl) => {
+          uploadedFilter = img;
+          filterReady = true;
+          filterPreview.src = dataUrl;
+          filterPreview.style.display = "block";
+          filterPlaceholder.style.display = "none";
+          setStatus("Custom filter uploaded successfully.", "active");
+        });
+      });
+
+      modeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeMode = btn.dataset.mode || "camera";
+          modeButtons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          setStatus(`Mode selected: ${btn.textContent}.`, aiRunning ? "active" : "idle");
+        });
+      });
+
+      async function getBestBackend() {
+        const backends = ["webgl", "wasm", "cpu"];
+        for (const backend of backends) {
+          try {
+            const ok = await tf.setBackend(backend);
+            if (ok) {
+              await tf.ready();
+              return;
+            }
+          } catch (err) {
+            console.warn("Backend failed:", backend, err);
+          }
+        }
+      }
+
+      async function setupCamera() {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          throw new Error("Camera access is not supported in this browser.");
+        }
+
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            facingMode: "user",
+            width: { ideal: 960 },
+            height: { ideal: 720 }
+          }
+        });
+
+        video.srcObject = mediaStream;
+
+        await new Promise((resolve) => {
+          video.onloadedmetadata = async () => {
+            await video.play();
+            updateCanvasSize();
+            videoReady = true;
+            resolve();
+          };
+        });
+      }
+
+      function stopLoops() {
+        if (renderRaf) cancelAnimationFrame(renderRaf);
+        if (detectTimer) clearInterval(detectTimer);
+        if (segmentTimer) clearInterval(segmentTimer);
+        renderRaf = null;
+        detectTimer = null;
+        segmentTimer = null;
+      }
+
+      function stopCamera() {
+        stopLoops();
+
+        if (mediaStream) {
+          mediaStream.getTracks().forEach((track) => track.stop());
+        }
+
+        mediaStream = null;
+        video.srcObject = null;
+        videoReady = false;
+        aiRunning = false;
+        latestFaceBox = null;
+        latestLandmarks = null;
+        lastSegmentation = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        captureBtn.disabled = true;
+
+        setScreenStatus("Offline", false);
+        setStatus("Camera turned off.", "idle");
+      }
+
+      function isValidPoint(pt) {
+        return Array.isArray(pt) && pt.length >= 2 && Number.isFinite(pt[0]) && Number.isFinite(pt[1]);
+      }
+
+      function isValidBox(topLeft, bottomRight) {
+        if (!isValidPoint(topLeft) || !isValidPoint(bottomRight)) return false;
+        return bottomRight[0] > topLeft[0] && bottomRight[1] > topLeft[1];
+      }
+
+      function getFaceMetrics(topLeft, bottomRight) {
+        const x1 = topLeft[0];
+        const y1 = topLeft[1];
+        const x2 = bottomRight[0];
+        const y2 = bottomRight[1];
+        const faceWidth = x2 - x1;
+        const faceHeight = y2 - y1;
+        const centerX = x1 + faceWidth / 2;
+        const centerY = y1 + faceHeight / 2;
+        return { x1, y1, x2, y2, faceWidth, faceHeight, centerX, centerY };
+      }
+
+      function drawImageCover(img, targetCtx, targetW, targetH) {
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const targetRatio = targetW / targetH;
+
+        let drawW, drawH, drawX, drawY;
+
+        if (imgRatio > targetRatio) {
+          drawH = targetH;
+          drawW = drawH * imgRatio;
+          drawX = (targetW - drawW) / 2;
+          drawY = 0;
+        } else {
+          drawW = targetW;
+          drawH = drawW / imgRatio;
+          drawX = 0;
+          drawY = (targetH - drawH) / 2;
+        }
+
+        targetCtx.drawImage(img, drawX, drawY, drawW, drawH);
+      }
+
+      async function detectFaceStep() {
+        if (!aiRunning || !faceModel || !videoReady) return;
+
+        try {
+          const predictions = await faceModel.estimateFaces(video, false);
+          if (predictions.length > 0) {
+            const face = predictions[0];
+            if (isValidBox(face.topLeft, face.bottomRight)) {
+              latestFaceBox = {
+                topLeft: face.topLeft,
+                bottomRight: face.bottomRight
+              };
+              latestLandmarks = face.landmarks || null;
+              lastFaceTime = performance.now();
+            }
+          } else if (performance.now() - lastFaceTime > FACE_HOLD_MS) {
+            latestFaceBox = null;
+            latestLandmarks = null;
+          }
+        } catch (err) {
+          console.error("Face detection error:", err);
+        }
+      }
+
+      async function segmentStep() {
+        if (!aiRunning || !bodyPixModel || !videoReady) return;
+
+        try {
+          lastSegmentation = await bodyPixModel.segmentPerson(video, {
+            internalResolution: "medium",
+            segmentationThreshold: 0.7,
+            maxDetections: 1
+          });
+        } catch (err) {
+          console.error("Segmentation error:", err);
+          lastSegmentation = null;
+        }
+      }
+
+      function drawBackgroundMode() {
+        const w = canvas.width;
+        const h = canvas.height;
+
+        if (!backgroundReady || !uploadedBackground || !lastSegmentation) {
+          ctx.drawImage(video, 0, 0, w, h);
+          return;
+        }
+
+        tempCtx.clearRect(0, 0, w, h);
+        tempCtx.drawImage(video, 0, 0, w, h);
+
+        const frameData = tempCtx.getImageData(0, 0, w, h);
+        const framePixels = frameData.data;
+
+        bgCtx.clearRect(0, 0, w, h);
+        drawImageCover(uploadedBackground, bgCtx, w, h);
+        const bgData = bgCtx.getImageData(0, 0, w, h);
+        const bgPixels = bgData.data;
+
+        const mask = lastSegmentation.data;
+        for (let i = 0; i < mask.length; i++) {
+          if (mask[i] === 0) {
+            const p = i * 4;
+            framePixels[p] = bgPixels[p];
+            framePixels[p + 1] = bgPixels[p + 1];
+            framePixels[p + 2] = bgPixels[p + 2];
+            framePixels[p + 3] = bgPixels[p + 3];
+          }
+        }
+
+        ctx.putImageData(frameData, 0, 0);
+      }
+
+      function drawFilterOnFace(topLeft, bottomRight, landmarks) {
+        if (!filterReady || !uploadedFilter || !isValidBox(topLeft, bottomRight)) return;
+
+        const { x1, y1, faceWidth, faceHeight, centerX } = getFaceMetrics(topLeft, bottomRight);
+
+        let overlayWidth = faceWidth * 1.2;
+        let overlayHeight = overlayWidth * (uploadedFilter.naturalHeight / uploadedFilter.naturalWidth);
+
+        let anchorY = y1 + faceHeight * 0.42;
+
+        if (Array.isArray(landmarks) && landmarks.length >= 2) {
+          const leftEye = landmarks[0];
+          const rightEye = landmarks[1];
+          if (isValidPoint(leftEye) && isValidPoint(rightEye)) {
+            anchorY = (leftEye[1] + rightEye[1]) / 2;
+          }
+        }
+
+        ctx.drawImage(
+          uploadedFilter,
+          centerX - overlayWidth / 2,
+          anchorY - overlayHeight / 2,
+          overlayWidth,
+          overlayHeight
+        );
+      }
+
+      function drawBaseFrame() {
+        if (activeMode === "background" || activeMode === "both") {
+          drawBackgroundMode();
+        } else {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function renderFrame() {
+        if (!aiRunning || !videoReady) return;
+
+        drawBaseFrame();
+
+        const faceAvailable = latestFaceBox && isValidBox(latestFaceBox.topLeft, latestFaceBox.bottomRight);
+
+        if ((activeMode === "filter" || activeMode === "both") && faceAvailable) {
+          drawFilterOnFace(latestFaceBox.topLeft, latestFaceBox.bottomRight, latestLandmarks);
+          setScreenStatus("Face Locked", true);
+        } else if (activeMode === "filter" || activeMode === "both") {
+          setScreenStatus("Searching...", false);
+        } else {
+          setScreenStatus("Live", true);
+        }
+
+        renderRaf = requestAnimationFrame(renderFrame);
+      }
+
+      async function startExperience() {
+        try {
+          if (aiRunning) return;
+
+          startBtn.disabled = true;
+          setStatus("Requesting camera access...", "idle");
+          setScreenStatus("Loading...", false);
+
+          await setupCamera();
+
+          setStatus("Loading AI models...", "idle");
+          await getBestBackend();
+
+          faceModel = await blazeface.load();
+          bodyPixModel = await bodyPix.load({
+            architecture: "MobileNetV1",
+            outputStride: 16,
+            multiplier: 0.75,
+            quantBytes: 2
+          });
+
+          aiRunning = true;
+          captureBtn.disabled = false;
+          stopBtn.disabled = false;
+
+          detectTimer = setInterval(detectFaceStep, 100);
+          segmentTimer = setInterval(segmentStep, 180);
+
+          await detectFaceStep();
+          await segmentStep();
+
+          renderRaf = requestAnimationFrame(renderFrame);
+          setStatus("Camera and AI are ready.", "active");
+          setScreenStatus("Online", true);
+        } catch (err) {
+          console.error(err);
+          startBtn.disabled = false;
+          captureBtn.disabled = true;
+          stopBtn.disabled = true;
+          setStatus("Camera or AI could not start. Try Chrome or Edge over HTTPS.", "error");
+          setScreenStatus("Offline", false);
+        }
+      }
+
+      function addWatermark(sctx, w, h) {
+        const pad = 16;
+        sctx.save();
+        sctx.fillStyle = "rgba(17,17,17,0.58)";
+        sctx.fillRect(pad, h - 56, 280, 40);
+        sctx.fillStyle = "#ffffff";
+        sctx.font = "700 16px system-ui, sans-serif";
+        sctx.fillText("Student WebAI Studio", pad + 12, h - 30);
+        sctx.restore();
+      }
+
+      async function captureSnapshot() {
+        if (!videoReady || !canvas.width || !canvas.height) return;
+
+        const snapCanvas = document.createElement("canvas");
+        snapCanvas.width = canvas.width;
+        snapCanvas.height = canvas.height;
+        const sctx = snapCanvas.getContext("2d");
+
+        sctx.drawImage(canvas, 0, 0);
+        addWatermark(sctx, snapCanvas.width, snapCanvas.height);
+
+        const dataUrl = snapCanvas.toDataURL("image/png");
+        snapshotPreview.src = dataUrl;
+        previewSection.style.display = "block";
+
+        const blob = await new Promise((resolve) => snapCanvas.toBlob(resolve, "image/png"));
+        if (blob) {
+          lastSnapshotFile = new File([blob], "student-webai-snapshot.png", { type: "image/png" });
+        }
+
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = "student-webai-snapshot.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setStatus("Snapshot saved to your device.", "active");
+      }
+
+      async function shareDemo() {
+        const shareUrl = window.location.href;
+
+        try {
+          if (lastSnapshotFile && navigator.share && navigator.canShare?.({ files: [lastSnapshotFile] })) {
+            await navigator.share({
+              title: "Student WebAI Studio",
+              text: "Check out my custom WebAI image.",
+              files: [lastSnapshotFile]
+            });
+            setStatus("Snapshot share sheet opened.", "active");
+            return;
+          }
+
+          if (navigator.share) {
+            await navigator.share({
+              title: "Student WebAI Studio",
+              text: "Try this custom uploadable WebAI experience.",
+              url: shareUrl
+            });
+            setStatus("Share sheet opened.", "active");
+            return;
+          }
+
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(shareUrl);
+            setStatus("URL copied to clipboard.", "active");
+            return;
+          }
+
+          setStatus("Sharing is not supported here.", "error");
+        } catch (err) {
+          if (err.name === "AbortError") {
+            setStatus("Share canceled.", "idle");
+            return;
+          }
+          setStatus("Could not share on this device.", "error");
+        }
+      }
+
+      startBtn.addEventListener("click", startExperience);
+      captureBtn.addEventListener("click", captureSnapshot);
+      stopBtn.addEventListener("click", stopCamera);
+      shareBtn.addEventListener("click", shareDemo);
+
+      window.addEventListener("resize", updateCanvasSize);
+      window.addEventListener("beforeunload", stopCamera);
+    })();
+  </script>
+</body>
+</html>
