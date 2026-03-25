@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Is It AI? | NKU AI Literacy Challenge</title>
+  <title>Is It AI? | NKU 10-Second Challenge</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta
     name="description"
-    content="A buzz-worthy NKU WebAI challenge for AI Literacy Day and INF 125: AI Literacy."
+    content="A fast, one-screen NKU AI Literacy challenge built for LinkedIn engagement."
   />
   <meta name="theme-color" content="#201747" />
 
@@ -31,9 +31,7 @@
       --cyan: #67e8f9;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -48,13 +46,9 @@
     }
 
     .app-shell {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 22px;
-    }
-
-    .hidden {
-      display: none !important;
+      padding: 20px;
     }
 
     .glass {
@@ -65,20 +59,8 @@
       box-shadow: 0 24px 70px rgba(0,0,0,0.28);
     }
 
-    .nku-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      border-radius: 999px;
-      padding: 9px 15px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.14);
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
     .hero {
-      padding: 34px 30px;
+      padding: 30px 26px;
       position: relative;
       overflow: hidden;
     }
@@ -100,16 +82,28 @@
       position: absolute;
       left: -60px;
       bottom: -100px;
-      width: 260px;
-      height: 260px;
+      width: 240px;
+      height: 240px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(103,232,249,0.18), transparent 70%);
       pointer-events: none;
     }
 
+    .badge-nku {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 9px 15px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
     .hero-title {
-      margin: 18px 0 12px;
-      font-size: clamp(2.7rem, 6vw, 5rem);
+      margin: 18px 0 10px;
+      font-size: clamp(2.4rem, 6vw, 4.7rem);
       line-height: 0.95;
       font-weight: 950;
       letter-spacing: -0.04em;
@@ -122,27 +116,27 @@
 
     .hero-subtitle {
       max-width: 760px;
-      font-size: 1.08rem;
+      font-size: 1.04rem;
       color: var(--muted);
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
     .chip {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 14px;
+      padding: 9px 13px;
       margin: 6px 8px 0 0;
       border-radius: 999px;
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 700;
     }
 
     .btn-brand,
     .btn-soft,
-    .btn-choice {
+    .choice-btn {
       border-radius: 999px;
       font-weight: 900;
       transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
@@ -152,7 +146,7 @@
       background: linear-gradient(135deg, var(--nku-gold), var(--nku-gold-soft));
       color: #1a1435;
       border: none;
-      padding: 14px 24px;
+      padding: 14px 22px;
       box-shadow: 0 14px 30px rgba(253,185,19,0.22);
     }
 
@@ -160,88 +154,40 @@
       background: rgba(255,255,255,0.08);
       color: white;
       border: 1px solid rgba(255,255,255,0.14);
-      padding: 14px 22px;
+      padding: 14px 20px;
     }
 
     .btn-brand:hover,
     .btn-soft:hover,
-    .btn-choice:hover {
+    .choice-btn:hover {
       transform: translateY(-1px);
     }
 
-    .main-grid {
+    .layout {
       display: grid;
-      grid-template-columns: 1fr 0.95fr;
-      gap: 24px;
-      margin-top: 24px;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      margin-top: 22px;
     }
 
     .panel {
-      padding: 24px;
+      padding: 22px;
     }
 
-    .camera-box {
+    .scanner-box {
       position: relative;
-      min-height: 390px;
-      overflow: hidden;
+      min-height: 280px;
       border-radius: 24px;
-      background: #0a0713;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(253,185,19,0.12), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(103,232,249,0.12), transparent 30%),
+        linear-gradient(145deg, #0d0a18 0%, #1b1536 45%, #0a0812 100%);
       border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    video,
-    canvas.preview-canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      background: #0a0713;
-    }
-
-    .camera-overlay {
-      position: absolute;
-      inset: 0;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 16px;
-      pointer-events: none;
-    }
-
-    .hud-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .hud-pill {
-      background: rgba(10,7,19,0.58);
-      border: 1px solid rgba(255,255,255,0.14);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 800;
-      backdrop-filter: blur(8px);
-    }
-
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      display: inline-block;
-      border-radius: 50%;
-      background: var(--success);
-      margin-right: 8px;
-      box-shadow: 0 0 0 0 rgba(52,211,153,0.7);
-      animation: pulse 1.5s infinite;
-      vertical-align: middle;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(52,211,153,0); }
-      100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
     .scanner-line {
@@ -251,104 +197,62 @@
       height: 4px;
       background: linear-gradient(90deg, transparent, var(--cyan), transparent);
       box-shadow: 0 0 18px rgba(103,232,249,0.75);
-      animation: scan 2.6s linear infinite;
+      animation: scan 2s linear infinite;
       opacity: 0.9;
     }
 
     @keyframes scan {
-      0% { top: 10%; }
-      50% { top: 78%; }
-      100% { top: 10%; }
+      0% { top: 12%; }
+      50% { top: 82%; }
+      100% { top: 12%; }
     }
 
-    .countdown-circle,
-    .verdict-overlay,
-    .intro-overlay {
-      position: absolute;
-      inset: 0;
-      margin: auto;
-      z-index: 7;
-      display: none;
-      align-items: center;
-      justify-content: center;
+    .scanner-content {
+      position: relative;
+      z-index: 1;
       text-align: center;
+      max-width: 460px;
     }
 
-    .countdown-circle {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      font-size: 2.8rem;
-      font-weight: 950;
-      color: #1a1435;
-      background: linear-gradient(135deg, var(--nku-gold), var(--nku-gold-soft));
-      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-    }
-
-    .verdict-overlay,
-    .intro-overlay {
-      inset: 16px;
-      border-radius: 28px;
-      background: rgba(10,7,19,0.78);
-      border: 1px solid rgba(255,255,255,0.14);
-      backdrop-filter: blur(10px);
-      flex-direction: column;
-      padding: 20px;
-      animation: popIn 0.28s ease;
-    }
-
-    .verdict-big,
-    .intro-big {
-      font-size: clamp(2rem, 6vw, 4rem);
+    .scanner-headline {
+      font-size: clamp(1.9rem, 4vw, 3.4rem);
       font-weight: 950;
       line-height: 0.95;
       letter-spacing: -0.04em;
+      margin-bottom: 12px;
     }
 
-    .verdict-sub,
-    .intro-sub {
-      margin-top: 10px;
-      font-size: 1rem;
+    .scanner-sub {
       color: var(--muted);
-      max-width: 380px;
-    }
-
-    @keyframes popIn {
-      from {
-        opacity: 0;
-        transform: scale(0.94);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .score-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
       margin-bottom: 18px;
+      font-size: 1rem;
     }
 
-    .score-box {
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-box {
       border-radius: 18px;
-      padding: 16px;
+      padding: 14px;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1);
       text-align: center;
     }
 
-    .score-box .big {
-      font-size: 1.55rem;
+    .stat-box .big {
+      font-size: 1.5rem;
       font-weight: 950;
       color: var(--nku-gold);
       line-height: 1;
     }
 
-    .score-box .label {
+    .stat-box .label {
       margin-top: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--muted);
@@ -357,101 +261,105 @@
 
     .round-card {
       border-radius: 24px;
-      padding: 22px;
+      padding: 18px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
-      min-height: 340px;
+      margin-bottom: 14px;
+      transition: 0.2s ease;
+    }
+
+    .round-card.done {
+      opacity: 0.82;
+    }
+
+    .round-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .round-tag {
       display: inline-block;
-      margin-bottom: 10px;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--nku-gold);
       font-weight: 900;
     }
 
-    .round-title {
-      font-size: 1.45rem;
-      font-weight: 950;
-      margin-bottom: 10px;
-    }
-
-    .round-text {
+    .round-status {
+      font-size: 0.8rem;
+      font-weight: 900;
       color: var(--muted);
-      margin-bottom: 16px;
     }
 
     .sample-box {
       border-radius: 18px;
-      padding: 18px;
-      background: rgba(10,7,19,0.5);
+      padding: 16px;
+      background: rgba(10,7,19,0.48);
       border: 1px solid rgba(255,255,255,0.08);
-      font-size: 1.02rem;
-      line-height: 1.6;
-      margin-bottom: 16px;
+      font-size: 0.98rem;
+      line-height: 1.52;
+      margin-bottom: 12px;
     }
 
-    .sample-image {
-      width: 100%;
-      border-radius: 18px;
-      display: block;
-      margin-bottom: 16px;
-      border: 1px solid rgba(255,255,255,0.1);
+    .choice-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
-    .btn-choice {
+    .choice-btn {
       width: 100%;
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.08);
       color: white;
-      padding: 16px 18px;
-      font-size: 1rem;
-      margin-bottom: 12px;
+      padding: 14px 14px;
+      font-size: 0.98rem;
     }
 
-    .btn-choice.correct {
+    .choice-btn.correct {
       background: rgba(52,211,153,0.16);
       border-color: rgba(52,211,153,0.4);
     }
 
-    .btn-choice.incorrect {
+    .choice-btn.incorrect {
       background: rgba(251,113,133,0.16);
       border-color: rgba(251,113,133,0.42);
     }
 
-    .feedback-box {
-      display: none;
-      border-radius: 18px;
-      padding: 14px 16px;
-      font-weight: 700;
-      line-height: 1.5;
+    .feedback {
       margin-top: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: none;
     }
 
-    .feedback-box.good {
+    .feedback.show {
       display: block;
-      background: rgba(52,211,153,0.14);
-      border: 1px solid rgba(52,211,153,0.3);
+    }
+
+    .feedback.good {
       color: #dcfce7;
     }
 
-    .feedback-box.bad {
-      display: block;
-      background: rgba(251,113,133,0.14);
-      border: 1px solid rgba(251,113,133,0.3);
+    .feedback.bad {
       color: #ffe4e6;
     }
 
+    .results-panel {
+      padding: 22px;
+    }
+
     .result-score {
-      font-size: clamp(3rem, 8vw, 5.6rem);
+      font-size: clamp(3rem, 8vw, 5.2rem);
       line-height: 0.95;
       font-weight: 950;
       color: var(--nku-gold);
       margin-bottom: 12px;
-      text-shadow: 0 0 28px rgba(253,185,19,0.1);
     }
 
     .result-badge {
@@ -466,7 +374,7 @@
 
     .share-box {
       width: 100%;
-      min-height: 140px;
+      min-height: 130px;
       padding: 16px;
       border-radius: 18px;
       resize: vertical;
@@ -474,23 +382,6 @@
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.12);
       color: white;
-    }
-
-    .result-card-wrap {
-      border-radius: 22px;
-      overflow: hidden;
-      background: #120d25;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .footer-note {
-      margin-top: 14px;
-      font-size: 0.93rem;
-      color: rgba(255,255,255,0.66);
     }
 
     .launch-banner {
@@ -503,9 +394,13 @@
 
     .launch-banner h3 {
       margin: 0 0 8px;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 900;
     }
+
+    .muted { color: var(--muted); }
+
+    .hidden { display: none !important; }
 
     .confetti {
       position: fixed;
@@ -526,19 +421,14 @@
     }
 
     @media (max-width: 992px) {
-      .main-grid {
+      .layout {
         grid-template-columns: 1fr;
-      }
-      .camera-box {
-        min-height: 310px;
-      }
-      .score-strip {
-        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 576px) {
-      .score-strip {
+      .stats-row,
+      .choice-row {
         grid-template-columns: 1fr;
       }
     }
@@ -546,321 +436,152 @@
 </head>
 <body>
   <div class="app-shell">
-    <section id="landingView" class="glass hero">
-      <div class="nku-badge">⚡ NKU • AI Literacy Day • Fall 2026</div>
+    <section class="glass hero">
+      <div class="badge-nku">⚡ NKU • AI Literacy Day • 10-Second Challenge</div>
       <h1 class="hero-title">
         <span class="gold">IS IT AI?</span><br />
-        A fast NKU WebAI challenge
+        Comment your score
       </h1>
       <p class="hero-subtitle">
-        Five quick rounds. One shareable score. A fun way to build hype for
-        <strong>INF 125: AI Literacy</strong> at Northern Kentucky University this fall.
+        A one-screen NKU challenge built for fast completions, comments, and shares —
+        and to build hype for <strong>INF 125: AI Literacy</strong> this fall.
       </p>
 
-      <div class="mb-4">
-        <span class="chip">🤖 AI or human?</span>
-        <span class="chip">🖼️ includes an image round</span>
-        <span class="chip">📸 selfie score card</span>
-        <span class="chip">🚀 built for LinkedIn buzz</span>
-      </div>
-
-      <div class="d-flex flex-wrap gap-3">
-        <button id="startBtn" class="btn-brand">Play Now</button>
-        <button id="previewBtn" class="btn-soft">Preview Result</button>
-      </div>
-
-      <div class="footer-note">
-        Best on HTTPS or localhost if you want camera access and sound.
+      <div class="mb-3">
+        <span class="chip">⏱ about 10 seconds</span>
+        <span class="chip">📱 mobile friendly</span>
+        <span class="chip">💬 comment your score</span>
+        <span class="chip">🚀 LinkedIn ready</span>
       </div>
     </section>
 
-    <section id="gameView" class="hidden">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <div>
-          <div class="nku-badge">🎓 NKU INF 125: AI Literacy</div>
-          <h2 class="mt-3 mb-1" style="font-weight: 950;">Quick Round: AI or Human?</h2>
-          <div class="muted">Fast guesses. Big reveal. Great LinkedIn content.</div>
-        </div>
-        <button id="restartTopBtn" class="btn-soft">Restart</button>
-      </div>
-
-      <div class="main-grid">
-        <div class="glass panel">
-          <div class="camera-box mb-3">
-            <video id="video" autoplay playsinline muted></video>
-            <canvas id="snapshotCanvas" class="preview-canvas hidden"></canvas>
-
-            <div class="scanner-line"></div>
-
-            <div class="camera-overlay">
-              <div class="hud-row">
-                <div class="hud-pill"><span class="pulse-dot"></span><span id="camStatus">Camera idle</span></div>
-                <div class="hud-pill">🏁 Round <span id="roundCounter">1</span>/5</div>
-              </div>
-              <div class="hud-row">
-                <div class="hud-pill">💜 NKU WebAI</div>
-                <div class="hud-pill">✨ AI Literacy Day</div>
-              </div>
+    <div class="layout">
+      <section class="glass panel">
+        <div class="scanner-box mb-4">
+          <div class="scanner-line"></div>
+          <div class="scanner-content">
+            <div class="scanner-headline">
+              3 fast rounds.<br /><span class="gold">Trust your instinct.</span>
             </div>
-
-            <div id="countdownCircle" class="countdown-circle">3</div>
-
-            <div id="verdictOverlay" class="verdict-overlay">
-              <div id="verdictBig" class="verdict-big">CORRECT</div>
-              <div id="verdictSub" class="verdict-sub">Nice catch.</div>
+            <div class="scanner-sub">
+              Tap AI or Human for each one. Then share your score.
             </div>
-
-            <div id="introOverlay" class="intro-overlay">
-              <div class="intro-big gold">IS IT AI?</div>
-              <div class="intro-sub">Get ready. 5 quick rounds. Trust your instincts.</div>
-            </div>
-          </div>
-
-          <div class="d-flex flex-wrap gap-2">
-            <button id="cameraBtn" class="btn-brand">Enable Camera</button>
-            <button id="snapBtn" class="btn-soft">Snap Result Photo</button>
-          </div>
-
-          <div id="cameraMsg" class="footer-note">
-            Optional: use your camera for a personalized result card.
+            <button id="startBtn" class="btn-brand">Start the Challenge</button>
           </div>
         </div>
 
-        <div class="glass panel">
-          <div class="score-strip">
-            <div class="score-box">
+        <div id="gameArea" class="hidden">
+          <div class="stats-row">
+            <div class="stat-box">
               <div id="scoreCorrect" class="big">0</div>
               <div class="label">Correct</div>
             </div>
-            <div class="score-box">
+            <div class="stat-box">
               <div id="scoreWrong" class="big">0</div>
               <div class="label">Wrong</div>
             </div>
-            <div class="score-box">
+            <div class="stat-box">
               <div id="scorePercent" class="big">0%</div>
               <div class="label">Score</div>
             </div>
-            <div class="score-box">
-              <div id="scoreStreak" class="big">0</div>
-              <div class="label">Best Streak</div>
-            </div>
           </div>
 
-          <div id="roundContainer"></div>
+          <div id="roundsWrap"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="resultsView" class="hidden">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <div>
-          <div class="nku-badge">🚀 Share Your NKU Result</div>
-          <h2 class="mt-3 mb-1" style="font-weight: 950;">You finished “Is It AI?”</h2>
-          <div class="muted">Use this image + caption to hype INF 125: AI Literacy.</div>
+      <section class="glass results-panel">
+        <div id="resultEmpty">
+          <div class="result-score">?</div>
+          <div class="result-badge">Waiting for your score</div>
+          <p class="muted">
+            Finish all 3 rounds to unlock your caption and challenge text.
+          </p>
         </div>
-        <button id="restartResultsBtn" class="btn-soft">Play Again</button>
-      </div>
 
-      <div class="main-grid">
-        <div class="glass panel">
+        <div id="resultReady" class="hidden">
           <div id="finalPercent" class="result-score">100%</div>
           <div id="finalBadge" class="result-badge">AI Spotter</div>
           <p id="finalDescription" class="muted mb-4"></p>
 
           <div class="d-flex flex-wrap gap-2 mb-4">
-            <button id="downloadBtn" class="btn-brand">Download Result Card</button>
-            <button id="copyBtn" class="btn-soft">Copy Caption</button>
-            <button id="linkedinBtn" class="btn-soft">Share on LinkedIn</button>
-            <button id="challengeBtn" class="btn-soft">Challenge a Friend</button>
+            <button id="copyBtn" class="btn-brand">Copy Caption</button>
+            <button id="linkedinBtn" class="btn-soft">Open LinkedIn Share</button>
+            <button id="challengeBtn" class="btn-soft">Copy Challenge Text</button>
+            <button id="restartBtn" class="btn-soft">Play Again</button>
           </div>
 
           <textarea id="shareText" class="share-box" readonly></textarea>
 
           <div class="launch-banner">
-            <h3>INF 125: AI Literacy launches this fall at NKU</h3>
+            <h3>NKU is launching INF 125: AI Literacy this fall</h3>
             <div class="muted">
               Students won’t just use AI. They’ll learn how to question it, understand it, and build with it.
             </div>
           </div>
-
-          <div class="footer-note">
-            Strong combo: post this score card with a 10–15 second companion video.
-          </div>
         </div>
-
-        <div class="glass panel">
-          <div class="result-card-wrap">
-            <canvas id="resultCanvas" width="1200" height="1500" style="width:100%; height:auto; display:block;"></canvas>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 
   <script>
     const rounds = [
       {
-        type: "text",
         text: "In today’s rapidly evolving digital landscape, organizations must embrace intelligent synergy to unlock unprecedented value creation.",
         answer: "ai",
-        explainRight: "Yep — very AI. Polished, generic, and stuffed with buzzwords.",
-        explainWrong: "This was AI. It sounds smooth, but it says almost nothing specific."
+        explainRight: "Correct. Polished, vague, and buzzword-heavy.",
+        explainWrong: "This was AI. It sounds smooth, but says very little."
       },
       {
-        type: "text",
         text: "I missed the bus because I swore I had five more minutes, and somehow that became twenty.",
         answer: "human",
-        explainRight: "Correct — that feels human. Specific, casual, and a little messy.",
-        explainWrong: "This one was human. The personal detail makes it feel real."
+        explainRight: "Correct. Specific and naturally messy.",
+        explainWrong: "This one was human. The personal detail gives it away."
       },
       {
-        type: "image",
-        imageSrc:
-          "data:image/svg+xml;utf8," + encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
-              <defs>
-                <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#1e1b4b"/>
-                  <stop offset="100%" stop-color="#0f172a"/>
-                </linearGradient>
-              </defs>
-              <rect width="1200" height="750" fill="url(#bg)"/>
-              <circle cx="220" cy="150" r="90" fill="#fdb913" opacity="0.9"/>
-              <rect x="130" y="340" width="940" height="220" rx="28" fill="#ffffff" opacity="0.08"/>
-              <text x="110" y="650" fill="#ffffff" font-family="Arial, sans-serif" font-size="44" font-weight="700">
-                Example image round: polished “AI art” poster look
-              </text>
-              <path d="M250 510 C360 260, 530 250, 610 460 S860 650, 980 350" fill="none" stroke="#67e8f9" stroke-width="18" stroke-linecap="round"/>
-              <path d="M230 470 C330 350, 420 340, 500 430" fill="none" stroke="#ffd66d" stroke-width="14" stroke-linecap="round"/>
-              <circle cx="740" cy="250" r="72" fill="#67e8f9" opacity="0.85"/>
-              <circle cx="850" cy="210" r="36" fill="#ffffff" opacity="0.8"/>
-            </svg>
-          `),
-        prompt: "This image looks like a stylized, polished digital poster. Would you guess AI or human-made design?",
-        answer: "ai",
-        explainRight: "Nice catch. It’s meant to feel like polished AI-generated visual content.",
-        explainWrong: "This round was AI. The hyper-polished, synthetic aesthetic was the clue."
-      },
-      {
-        type: "text",
         text: "For a first-year college audience, explain AI bias using one simple example from hiring and one from social media recommendations.",
         answer: "human",
-        explainRight: "Yes — human. It’s a focused prompt someone would give to AI.",
-        explainWrong: "This was human. Good prompting is part of AI literacy too."
-      },
-      {
-        type: "text",
-        text: "The meeting starts at 3:00 p.m. Please bring your laptop, charger, and any questions about the project draft.",
-        answer: "human",
-        explainRight: "Correct — practical, direct, and grounded.",
-        explainWrong: "This one was human. Clean writing does not automatically mean AI."
+        explainRight: "Correct. That’s a focused human prompt.",
+        explainWrong: "This was human. Strong prompting is part of AI literacy."
       }
     ];
 
-    let currentRound = 0;
     let correct = 0;
     let wrong = 0;
-    let streak = 0;
-    let bestStreak = 0;
-    let stream = null;
-    let capturedImage = null;
-    let audioReady = false;
+    let started = false;
     let audioCtx = null;
 
-    const landingView = document.getElementById("landingView");
-    const gameView = document.getElementById("gameView");
-    const resultsView = document.getElementById("resultsView");
-
     const startBtn = document.getElementById("startBtn");
-    const previewBtn = document.getElementById("previewBtn");
-    const restartTopBtn = document.getElementById("restartTopBtn");
-    const restartResultsBtn = document.getElementById("restartResultsBtn");
+    const gameArea = document.getElementById("gameArea");
+    const roundsWrap = document.getElementById("roundsWrap");
 
     const scoreCorrect = document.getElementById("scoreCorrect");
     const scoreWrong = document.getElementById("scoreWrong");
     const scorePercent = document.getElementById("scorePercent");
-    const scoreStreak = document.getElementById("scoreStreak");
-    const roundCounter = document.getElementById("roundCounter");
-    const roundContainer = document.getElementById("roundContainer");
 
-    const cameraBtn = document.getElementById("cameraBtn");
-    const snapBtn = document.getElementById("snapBtn");
-    const camStatus = document.getElementById("camStatus");
-    const cameraMsg = document.getElementById("cameraMsg");
-    const video = document.getElementById("video");
-    const snapshotCanvas = document.getElementById("snapshotCanvas");
-    const countdownCircle = document.getElementById("countdownCircle");
-
-    const verdictOverlay = document.getElementById("verdictOverlay");
-    const verdictBig = document.getElementById("verdictBig");
-    const verdictSub = document.getElementById("verdictSub");
-    const introOverlay = document.getElementById("introOverlay");
-
+    const resultEmpty = document.getElementById("resultEmpty");
+    const resultReady = document.getElementById("resultReady");
     const finalPercent = document.getElementById("finalPercent");
     const finalBadge = document.getElementById("finalBadge");
     const finalDescription = document.getElementById("finalDescription");
     const shareText = document.getElementById("shareText");
-    const resultCanvas = document.getElementById("resultCanvas");
-    const downloadBtn = document.getElementById("downloadBtn");
+
     const copyBtn = document.getElementById("copyBtn");
     const linkedinBtn = document.getElementById("linkedinBtn");
     const challengeBtn = document.getElementById("challengeBtn");
-
-    function showView(view) {
-      landingView.classList.add("hidden");
-      gameView.classList.add("hidden");
-      resultsView.classList.add("hidden");
-
-      if (view === "landing") landingView.classList.remove("hidden");
-      if (view === "game") gameView.classList.remove("hidden");
-      if (view === "results") resultsView.classList.remove("hidden");
-    }
-
-    function resetGame() {
-      currentRound = 0;
-      correct = 0;
-      wrong = 0;
-      streak = 0;
-      bestStreak = 0;
-      capturedImage = null;
-
-      scoreCorrect.textContent = "0";
-      scoreWrong.textContent = "0";
-      scorePercent.textContent = "0%";
-      scoreStreak.textContent = "0";
-      roundCounter.textContent = "1";
-
-      snapshotCanvas.classList.add("hidden");
-      video.classList.remove("hidden");
-
-      renderRound();
-      showView("landing");
-    }
-
-    function getPercent() {
-      return Math.round((correct / rounds.length) * 100);
-    }
-
-    function updateScoreUI() {
-      scoreCorrect.textContent = correct;
-      scoreWrong.textContent = wrong;
-      scorePercent.textContent = `${getPercent()}%`;
-      scoreStreak.textContent = bestStreak;
-      roundCounter.textContent = Math.min(currentRound + 1, rounds.length);
-    }
+    const restartBtn = document.getElementById("restartBtn");
 
     function ensureAudio() {
-      if (!audioReady) {
+      if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        audioReady = true;
       }
-      if (audioCtx && audioCtx.state === "suspended") {
+      if (audioCtx.state === "suspended") {
         audioCtx.resume();
       }
     }
 
     function playTone(type) {
-      if (!audioReady || !audioCtx) return;
+      if (!audioCtx) return;
 
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
@@ -870,225 +591,144 @@
 
       if (type === "success") {
         oscillator.type = "sine";
-        oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(920, audioCtx.currentTime + 0.16);
+        oscillator.frequency.setValueAtTime(700, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(980, audioCtx.currentTime + 0.12);
         gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.28);
+        gainNode.gain.exponentialRampToValueAtTime(0.10, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.20);
         oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.3);
+        oscillator.stop(audioCtx.currentTime + 0.22);
       } else {
         oscillator.type = "sawtooth";
-        oscillator.frequency.setValueAtTime(280, audioCtx.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.22);
+        oscillator.frequency.setValueAtTime(260, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.16);
         gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.26);
+        gainNode.gain.exponentialRampToValueAtTime(0.07, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.18);
         oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.28);
+        oscillator.stop(audioCtx.currentTime + 0.20);
       }
     }
 
-    function renderRound() {
-      updateScoreUI();
-
-      if (currentRound >= rounds.length) {
-        finishGame();
-        return;
-      }
-
-      const round = rounds[currentRound];
-
-      let mediaHtml = "";
-      if (round.type === "image") {
-        mediaHtml = `
-          <div class="round-text">${round.prompt}</div>
-          <img class="sample-image" src="${round.imageSrc}" alt="AI or human visual round" />
-        `;
-      } else {
-        mediaHtml = `
-          <div class="round-text">Go with your first instinct.</div>
-          <div class="sample-box">“${round.text}”</div>
-        `;
-      }
-
-      roundContainer.innerHTML = `
-        <div class="round-card">
-          <div class="round-tag">Round ${currentRound + 1} of ${rounds.length}</div>
-          <div class="round-title">Is this AI or human?</div>
-
-          ${mediaHtml}
-
-          <button class="btn-choice" data-choice="ai">🤖 AI</button>
-          <button class="btn-choice" data-choice="human">👤 Human</button>
-
-          <div id="feedbackBox" class="feedback-box"></div>
-        </div>
-      `;
-
-      const buttons = roundContainer.querySelectorAll(".btn-choice");
-      const feedbackBox = document.getElementById("feedbackBox");
-
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          ensureAudio();
-
-          const choice = button.dataset.choice;
-          const isRight = choice === round.answer;
-
-          buttons.forEach(btn => btn.disabled = true);
-
-          if (isRight) {
-            correct++;
-            streak++;
-            bestStreak = Math.max(bestStreak, streak);
-            button.classList.add("correct");
-            feedbackBox.className = "feedback-box good";
-            feedbackBox.textContent = round.explainRight;
-            showVerdict("CORRECT", round.explainRight, true);
-            playTone("success");
-          } else {
-            wrong++;
-            streak = 0;
-            button.classList.add("incorrect");
-            feedbackBox.className = "feedback-box bad";
-            feedbackBox.textContent = round.explainWrong;
-
-            buttons.forEach(btn => {
-              if (btn.dataset.choice === round.answer) {
-                btn.classList.add("correct");
-              }
-            });
-
-            showVerdict("NOT QUITE", round.explainWrong, false);
-            playTone("fail");
-          }
-
-          updateScoreUI();
-
-          setTimeout(() => {
-            currentRound++;
-            renderRound();
-          }, 1550);
-        });
-      });
+    function getPercent() {
+      return Math.round((correct / rounds.length) * 100);
     }
 
-    function showVerdict(title, subtitle, success) {
-      verdictBig.textContent = title;
-      verdictSub.textContent = subtitle;
-      verdictBig.style.color = success ? "var(--success)" : "var(--danger)";
-      verdictOverlay.style.display = "flex";
-
-      setTimeout(() => {
-        verdictOverlay.style.display = "none";
-      }, 1100);
-    }
-
-    function showIntroOverlay() {
-      introOverlay.style.display = "flex";
-      setTimeout(() => {
-        introOverlay.style.display = "none";
-      }, 1400);
-    }
-
-    async function enableCamera() {
-      try {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          camStatus.textContent = "Camera unsupported";
-          cameraMsg.textContent = "This browser does not support webcam access.";
-          return;
-        }
-
-        if (stream) {
-          stream.getTracks().forEach(track => track.stop());
-        }
-
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "user",
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        });
-
-        video.srcObject = stream;
-        camStatus.textContent = "Camera live";
-        cameraMsg.textContent = "Camera ready. Snap a photo for your result card.";
-      } catch (error) {
-        camStatus.textContent = "Camera unavailable";
-        cameraMsg.textContent = "Could not access the camera. You can still play without a photo.";
-        console.error(error);
-      }
-    }
-
-    function wait(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function snapPhoto() {
-      if (!video.srcObject) {
-        await enableCamera();
-      }
-
-      if (!video.videoWidth || !video.videoHeight) {
-        cameraMsg.textContent = "Waiting for camera feed. Try again in a second.";
-        return;
-      }
-
-      countdownCircle.style.display = "flex";
-      for (let i = 3; i >= 1; i--) {
-        countdownCircle.textContent = i;
-        await wait(800);
-      }
-      countdownCircle.style.display = "none";
-
-      const ctx = snapshotCanvas.getContext("2d");
-      snapshotCanvas.width = video.videoWidth;
-      snapshotCanvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, snapshotCanvas.width, snapshotCanvas.height);
-
-      capturedImage = snapshotCanvas.toDataURL("image/png");
-      snapshotCanvas.classList.remove("hidden");
-      video.classList.add("hidden");
-      cameraMsg.textContent = "Photo captured. Your score card will use it.";
+    function updateStats() {
+      scoreCorrect.textContent = correct;
+      scoreWrong.textContent = wrong;
+      scorePercent.textContent = `${getPercent()}%`;
     }
 
     function getBadge(percent) {
       if (percent === 100) {
         return {
           title: "AI Mind Reader",
-          desc: "Perfect score. You spotted every round like a pro.",
-          hype: "I just got a perfect score on NKU’s “Is It AI?” challenge."
+          desc: "Perfect score. That’s very comment-worthy.",
+          hype: "I just got 100% on NKU’s quick “Is It AI?” challenge."
         };
       }
-      if (percent >= 80) {
+      if (percent >= 67) {
         return {
           title: "AI Spotter",
           desc: "Strong instincts. You can usually tell when something feels machine-made.",
-          hype: "I just played NKU’s “Is It AI?” challenge and did better than I expected."
+          hype: "I just played NKU’s quick “Is It AI?” challenge and scored strong."
         };
       }
-      if (percent >= 60) {
+      if (percent >= 34) {
         return {
           title: "Prompt Detective",
-          desc: "You’re getting there. AI literacy is part instinct, part practice.",
-          hype: "I just tested my instincts on NKU’s “Is It AI?” challenge."
-        };
-      }
-      if (percent >= 40) {
-        return {
-          title: "Suspicious but Curious",
-          desc: "You’re asking the right questions, and that’s where AI literacy starts.",
-          hype: "NKU’s “Is It AI?” challenge reminded me why AI literacy matters."
+          desc: "You’re getting there. That’s exactly why AI literacy matters.",
+          hype: "NKU’s quick “Is It AI?” challenge reminded me how tricky this is getting."
         };
       }
       return {
         title: "Human After All",
-        desc: "This game got you — which is exactly why AI literacy matters.",
-        hype: "NKU’s “Is It AI?” challenge humbled me a little."
+        desc: "This one got you. Which is kind of the point.",
+        hype: "NKU’s quick “Is It AI?” challenge humbled me a little."
       };
+    }
+
+    function renderRounds() {
+      roundsWrap.innerHTML = "";
+
+      rounds.forEach((round, index) => {
+        const card = document.createElement("div");
+        card.className = "round-card";
+        card.innerHTML = `
+          <div class="round-top">
+            <div class="round-tag">Round ${index + 1}</div>
+            <div class="round-status" id="status-${index}">Waiting</div>
+          </div>
+
+          <div class="sample-box">“${round.text}”</div>
+
+          <div class="choice-row">
+            <button class="choice-btn" data-round="${index}" data-choice="ai">🤖 AI</button>
+            <button class="choice-btn" data-round="${index}" data-choice="human">👤 Human</button>
+          </div>
+
+          <div class="feedback" id="feedback-${index}"></div>
+        `;
+        roundsWrap.appendChild(card);
+      });
+
+      document.querySelectorAll(".choice-btn").forEach((button) => {
+        button.addEventListener("click", handleChoice);
+      });
+    }
+
+    function handleChoice(event) {
+      ensureAudio();
+
+      const button = event.currentTarget;
+      const roundIndex = Number(button.dataset.round);
+      const choice = button.dataset.choice;
+      const round = rounds[roundIndex];
+
+      const card = button.closest(".round-card");
+      if (card.classList.contains("done")) return;
+
+      const buttons = card.querySelectorAll(".choice-btn");
+      const feedback = document.getElementById(`feedback-${roundIndex}`);
+      const status = document.getElementById(`status-${roundIndex}`);
+
+      buttons.forEach(btn => btn.disabled = true);
+      card.classList.add("done");
+
+      const isRight = choice === round.answer;
+
+      if (isRight) {
+        correct++;
+        button.classList.add("correct");
+        feedback.textContent = round.explainRight;
+        feedback.className = "feedback show good";
+        status.textContent = "Correct";
+        playTone("success");
+      } else {
+        wrong++;
+        button.classList.add("incorrect");
+        feedback.textContent = round.explainWrong;
+        feedback.className = "feedback show bad";
+        status.textContent = "Not quite";
+        playTone("fail");
+
+        buttons.forEach(btn => {
+          if (btn.dataset.choice === round.answer) {
+            btn.classList.add("correct");
+          }
+        });
+      }
+
+      updateStats();
+      checkCompletion();
+    }
+
+    function checkCompletion() {
+      const doneCount = document.querySelectorAll(".round-card.done").length;
+      if (doneCount === rounds.length) {
+        finishGame();
+      }
     }
 
     function finishGame() {
@@ -1101,228 +741,21 @@
 
       shareText.value = `${badge.hype} I scored ${percent}% — ${badge.title}.
 
-This fall, NKU is offering INF 125: AI Literacy.
+This fall, NKU is launching INF 125: AI Literacy.
 
 Students won’t just use AI.
 They’ll learn how to question it, understand it, and build with it.
 
-Think you can beat my score?
+Comment your score 👇
 
 #AILiteracyDay #NKU #AIinEducation #ArtificialIntelligence #HigherEd`;
 
-      drawResultCard(percent, badge);
+      resultEmpty.classList.add("hidden");
+      resultReady.classList.remove("hidden");
 
-      if (percent >= 80) {
+      if (percent >= 67) {
         launchConfetti();
       }
-
-      showView("results");
-    }
-
-    function drawResultCard(percent, badge) {
-      const ctx = resultCanvas.getContext("2d");
-      const w = resultCanvas.width;
-      const h = resultCanvas.height;
-
-      ctx.clearRect(0, 0, w, h);
-
-      const bg = ctx.createLinearGradient(0, 0, w, h);
-      bg.addColorStop(0, "#120d25");
-      bg.addColorStop(0.5, "#201747");
-      bg.addColorStop(1, "#09070f");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, w, h);
-
-      drawGlow(ctx, 140, 130, 240, "rgba(253,185,19,0.22)");
-      drawGlow(ctx, w - 130, 180, 220, "rgba(103,232,249,0.14)");
-
-      roundRect(ctx, 55, 55, w - 110, h - 110, 34, "rgba(255,255,255,0.06)", "rgba(255,255,255,0.14)");
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "800 38px Inter, Arial, sans-serif";
-      ctx.fillText("NKU • AI Literacy Day", 95, 120);
-
-      ctx.fillStyle = "#fdb913";
-      ctx.font = "950 88px Inter, Arial, sans-serif";
-      ctx.fillText("IS IT AI?", 95, 215);
-
-      ctx.fillStyle = "rgba(255,255,255,0.88)";
-      ctx.font = "700 32px Inter, Arial, sans-serif";
-      ctx.fillText("Quick WebAI Game Result", 95, 268);
-
-      const photoX = 95;
-      const photoY = 330;
-      const photoW = 420;
-      const photoH = 500;
-
-      roundRect(ctx, photoX, photoY, photoW, photoH, 28, "rgba(255,255,255,0.06)", "rgba(255,255,255,0.13)");
-
-      if (capturedImage) {
-        const img = new Image();
-        img.onload = () => {
-          drawCoverImageRounded(ctx, img, photoX, photoY, photoW, photoH, 28);
-          drawCardDetails(ctx, percent, badge, w, h);
-        };
-        img.src = capturedImage;
-      } else {
-        ctx.fillStyle = "rgba(255,255,255,0.08)";
-        roundRect(ctx, photoX + 16, photoY + 16, photoW - 32, photoH - 32, 22, "rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)");
-        ctx.fillStyle = "#fff";
-        ctx.font = "800 34px Inter, Arial, sans-serif";
-        ctx.fillText("No Photo Added", photoX + 95, photoY + 245);
-        ctx.fillStyle = "rgba(255,255,255,0.7)";
-        ctx.font = "500 24px Inter, Arial, sans-serif";
-        ctx.fillText("Still ready to share.", photoX + 120, photoY + 290);
-        drawCardDetails(ctx, percent, badge, w, h);
-      }
-    }
-
-    function drawCardDetails(ctx, percent, badge, w, h) {
-      const x = 570;
-
-      ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.font = "700 30px Inter, Arial, sans-serif";
-      ctx.fillText("Your Score", x, 380);
-
-      ctx.fillStyle = "#fdb913";
-      ctx.font = "950 118px Inter, Arial, sans-serif";
-      ctx.fillText(`${percent}%`, x, 500);
-
-      roundRect(ctx, x, 535, 340, 64, 999, "rgba(255,255,255,0.08)", "rgba(255,255,255,0.14)");
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "900 29px Inter, Arial, sans-serif";
-      ctx.fillText(badge.title, x + 22, 577);
-
-      ctx.fillStyle = "rgba(255,255,255,0.82)";
-      ctx.font = "500 30px Inter, Arial, sans-serif";
-      drawWrappedText(ctx, badge.desc, x, 655, 500, 40);
-
-      ctx.fillStyle = "#67e8f9";
-      ctx.font = "800 28px Inter, Arial, sans-serif";
-      ctx.fillText("Now launching at NKU", x, 905);
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "950 54px Inter, Arial, sans-serif";
-      ctx.fillText("INF 125:", x, 980);
-      ctx.fillText("AI Literacy", x, 1045);
-
-      ctx.fillStyle = "rgba(255,255,255,0.84)";
-      ctx.font = "500 28px Inter, Arial, sans-serif";
-      drawWrappedText(
-        ctx,
-        "A fall course focused on understanding, questioning, and using AI well.",
-        x,
-        1105,
-        500,
-        36
-      );
-
-      roundRect(ctx, 95, 1280, w - 190, 120, 24, "rgba(253,185,19,0.12)", "rgba(253,185,19,0.28)");
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "900 30px Inter, Arial, sans-serif";
-      ctx.fillText("Built by Dr. Brandi Neal", 130, 1332);
-      ctx.font = "700 24px Inter, Arial, sans-serif";
-      ctx.fillStyle = "rgba(255,255,255,0.82)";
-      ctx.fillText("Northern Kentucky University • College of Informatics", 130, 1372);
-    }
-
-    function drawGlow(ctx, x, y, radius, color) {
-      const g = ctx.createRadialGradient(x, y, 0, x, y, radius);
-      g.addColorStop(0, color);
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    function roundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.lineTo(x + width - radius, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-      ctx.lineTo(x + width, y + height - radius);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-      ctx.lineTo(x + radius, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-      ctx.lineTo(x, y + radius);
-      ctx.quadraticCurveTo(x, y, x + radius, y);
-      ctx.closePath();
-
-      if (fillStyle) {
-        ctx.fillStyle = fillStyle;
-        ctx.fill();
-      }
-
-      if (strokeStyle) {
-        ctx.strokeStyle = strokeStyle;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      }
-
-      ctx.restore();
-    }
-
-    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
-      const words = text.split(" ");
-      let line = "";
-      let currentY = y;
-
-      for (let i = 0; i < words.length; i++) {
-        const testLine = line + words[i] + " ";
-        const width = ctx.measureText(testLine).width;
-        if (width > maxWidth && i > 0) {
-          ctx.fillText(line, x, currentY);
-          line = words[i] + " ";
-          currentY += lineHeight;
-        } else {
-          line = testLine;
-        }
-      }
-      ctx.fillText(line, x, currentY);
-    }
-
-    function drawCoverImageRounded(ctx, img, x, y, width, height, radius) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.lineTo(x + width - radius, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-      ctx.lineTo(x + width, y + height - radius);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-      ctx.lineTo(x + radius, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-      ctx.lineTo(x, y + radius);
-      ctx.quadraticCurveTo(x, y, x + radius, y);
-      ctx.closePath();
-      ctx.clip();
-
-      const imgRatio = img.width / img.height;
-      const boxRatio = width / height;
-      let drawWidth, drawHeight, drawX, drawY;
-
-      if (imgRatio > boxRatio) {
-        drawHeight = height;
-        drawWidth = img.width * (height / img.height);
-        drawX = x - (drawWidth - width) / 2;
-        drawY = y;
-      } else {
-        drawWidth = width;
-        drawHeight = img.height * (width / img.width);
-        drawX = x;
-        drawY = y - (drawHeight - height) / 2;
-      }
-
-      ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-      ctx.restore();
-    }
-
-    function downloadCanvas(canvas, filename) {
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = filename;
-      link.click();
     }
 
     async function copyText(text) {
@@ -1337,24 +770,20 @@ Think you can beat my score?
     async function copyCaption() {
       const ok = await copyText(shareText.value);
       copyBtn.textContent = ok ? "Copied!" : "Copy Failed";
-      setTimeout(() => {
-        copyBtn.textContent = "Copy Caption";
-      }, 1400);
+      setTimeout(() => copyBtn.textContent = "Copy Caption", 1200);
     }
 
-    async function copyChallenge() {
-      const challengeText = `I just played NKU’s “Is It AI?” challenge and scored ${getPercent()}%.
+    async function copyChallengeText() {
+      const challengeText = `I just played NKU’s quick “Is It AI?” challenge and scored ${getPercent()}%.
 
-Think you can beat me?
+Can you beat me? Comment your score.
 
-This fall, NKU is launching INF 125: AI Literacy.
+NKU is launching INF 125: AI Literacy this fall.
 
 #AILiteracyDay #NKU #AIinEducation`;
       const ok = await copyText(challengeText);
-      challengeBtn.textContent = ok ? "Challenge Copied!" : "Copy Failed";
-      setTimeout(() => {
-        challengeBtn.textContent = "Challenge a Friend";
-      }, 1400);
+      challengeBtn.textContent = ok ? "Copied!" : "Copy Failed";
+      setTimeout(() => challengeBtn.textContent = "Copy Challenge Text", 1200);
     }
 
     function shareOnLinkedIn() {
@@ -1363,7 +792,7 @@ This fall, NKU is launching INF 125: AI Literacy.
     }
 
     function launchConfetti() {
-      const pieces = 80;
+      const pieces = 60;
       const colors = ["#fdb913", "#ffd66d", "#67e8f9", "#ffffff", "#a78bfa"];
 
       for (let i = 0; i < pieces; i++) {
@@ -1371,51 +800,47 @@ This fall, NKU is launching INF 125: AI Literacy.
         el.className = "confetti";
         el.style.left = Math.random() * 100 + "vw";
         el.style.background = colors[Math.floor(Math.random() * colors.length)];
-        el.style.animationDuration = (2.8 + Math.random() * 2.2) + "s";
-        el.style.animationDelay = (Math.random() * 0.35) + "s";
+        el.style.animationDuration = (2.2 + Math.random() * 1.8) + "s";
+        el.style.animationDelay = (Math.random() * 0.25) + "s";
         el.style.transform = `rotate(${Math.random() * 360}deg)`;
         el.style.width = (8 + Math.random() * 7) + "px";
         el.style.height = (12 + Math.random() * 10) + "px";
         document.body.appendChild(el);
-
-        setTimeout(() => el.remove(), 5500);
+        setTimeout(() => el.remove(), 4500);
       }
     }
 
-    startBtn.addEventListener("click", async () => {
+    function startGame() {
+      if (started) return;
+      started = true;
       ensureAudio();
-      showView("game");
-      renderRound();
-      showIntroOverlay();
-      await enableCamera();
-    });
+      gameArea.classList.remove("hidden");
+      startBtn.textContent = "Challenge Started";
+      startBtn.disabled = true;
+      renderRounds();
+      updateStats();
+    }
 
-    previewBtn.addEventListener("click", () => {
-      correct = 4;
-      wrong = 1;
-      bestStreak = 3;
-      finishGame();
-    });
+    function resetGame() {
+      correct = 0;
+      wrong = 0;
+      started = false;
+      gameArea.classList.add("hidden");
+      resultEmpty.classList.remove("hidden");
+      resultReady.classList.add("hidden");
+      startBtn.textContent = "Start the Challenge";
+      startBtn.disabled = false;
+      roundsWrap.innerHTML = "";
+      updateStats();
+    }
 
-    restartTopBtn.addEventListener("click", resetGame);
-    restartResultsBtn.addEventListener("click", resetGame);
-    cameraBtn.addEventListener("click", () => {
-      ensureAudio();
-      enableCamera();
-    });
-    snapBtn.addEventListener("click", snapPhoto);
-    downloadBtn.addEventListener("click", () => downloadCanvas(resultCanvas, "nku-is-it-ai-result.png"));
+    startBtn.addEventListener("click", startGame);
     copyBtn.addEventListener("click", copyCaption);
     linkedinBtn.addEventListener("click", shareOnLinkedIn);
-    challengeBtn.addEventListener("click", copyChallenge);
+    challengeBtn.addEventListener("click", copyChallengeText);
+    restartBtn.addEventListener("click", resetGame);
 
-    window.addEventListener("beforeunload", () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-    });
-
-    resetGame();
+    updateStats();
   </script>
 </body>
 </html>
