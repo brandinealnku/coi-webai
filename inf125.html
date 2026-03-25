@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Is It AI? | NKU Viral WebAI Game</title>
+  <title>Is It AI? | NKU AI Literacy Challenge</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="A fun, fast, NKU-branded Is It AI? WebAI game for AI Literacy Day and INF 125." />
+  <meta
+    name="description"
+    content="A buzz-worthy NKU WebAI challenge for AI Literacy Day and INF 125: AI Literacy."
+  />
   <meta name="theme-color" content="#201747" />
 
   <link
@@ -20,7 +23,7 @@
       --nku-gold: #fdb913;
       --nku-gold-soft: #ffd66d;
       --white: #ffffff;
-      --muted: rgba(255,255,255,0.75);
+      --muted: rgba(255,255,255,0.76);
       --glass: rgba(255,255,255,0.08);
       --glass-border: rgba(255,255,255,0.14);
       --success: #34d399;
@@ -39,13 +42,13 @@
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
         radial-gradient(circle at top left, rgba(253,185,19,0.18), transparent 25%),
-        radial-gradient(circle at bottom right, rgba(103,232,249,0.12), transparent 24%),
-        linear-gradient(145deg, #0c0818 0%, #201747 45%, #09070f 100%);
+        radial-gradient(circle at bottom right, rgba(103,232,249,0.13), transparent 24%),
+        linear-gradient(145deg, #0b0715 0%, #201747 45%, #09070f 100%);
       overflow-x: hidden;
     }
 
     .app-shell {
-      max-width: 1180px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 22px;
     }
@@ -179,7 +182,7 @@
 
     .camera-box {
       position: relative;
-      min-height: 380px;
+      min-height: 390px;
       overflow: hidden;
       border-radius: 24px;
       background: #0a0713;
@@ -259,16 +262,16 @@
     }
 
     .countdown-circle,
-    .verdict-overlay {
+    .verdict-overlay,
+    .intro-overlay {
       position: absolute;
       inset: 0;
       margin: auto;
-      z-index: 5;
+      z-index: 7;
       display: none;
       align-items: center;
       justify-content: center;
       text-align: center;
-      border-radius: 28px;
     }
 
     .countdown-circle {
@@ -282,9 +285,11 @@
       box-shadow: 0 18px 40px rgba(0,0,0,0.35);
     }
 
-    .verdict-overlay {
+    .verdict-overlay,
+    .intro-overlay {
       inset: 16px;
-      background: rgba(10,7,19,0.74);
+      border-radius: 28px;
+      background: rgba(10,7,19,0.78);
       border: 1px solid rgba(255,255,255,0.14);
       backdrop-filter: blur(10px);
       flex-direction: column;
@@ -292,18 +297,20 @@
       animation: popIn 0.28s ease;
     }
 
-    .verdict-big {
+    .verdict-big,
+    .intro-big {
       font-size: clamp(2rem, 6vw, 4rem);
       font-weight: 950;
       line-height: 0.95;
       letter-spacing: -0.04em;
     }
 
-    .verdict-sub {
+    .verdict-sub,
+    .intro-sub {
       margin-top: 10px;
       font-size: 1rem;
       color: var(--muted);
-      max-width: 320px;
+      max-width: 380px;
     }
 
     @keyframes popIn {
@@ -353,7 +360,7 @@
       padding: 22px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
-      min-height: 320px;
+      min-height: 340px;
     }
 
     .round-tag {
@@ -385,6 +392,14 @@
       font-size: 1.02rem;
       line-height: 1.6;
       margin-bottom: 16px;
+    }
+
+    .sample-image {
+      width: 100%;
+      border-radius: 18px;
+      display: block;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .btn-choice {
@@ -478,6 +493,20 @@
       color: rgba(255,255,255,0.66);
     }
 
+    .launch-banner {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(253,185,19,0.16), rgba(103,232,249,0.12));
+      border: 1px solid rgba(253,185,19,0.22);
+    }
+
+    .launch-banner h3 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
     .confetti {
       position: fixed;
       width: 10px;
@@ -530,8 +559,8 @@
 
       <div class="mb-4">
         <span class="chip">🤖 AI or human?</span>
+        <span class="chip">🖼️ includes an image round</span>
         <span class="chip">📸 selfie score card</span>
-        <span class="chip">🎉 confetti for high scores</span>
         <span class="chip">🚀 built for LinkedIn buzz</span>
       </div>
 
@@ -541,7 +570,7 @@
       </div>
 
       <div class="footer-note">
-        Best on HTTPS or localhost if you want camera access.
+        Best on HTTPS or localhost if you want camera access and sound.
       </div>
     </section>
 
@@ -580,6 +609,11 @@
               <div id="verdictBig" class="verdict-big">CORRECT</div>
               <div id="verdictSub" class="verdict-sub">Nice catch.</div>
             </div>
+
+            <div id="introOverlay" class="intro-overlay">
+              <div class="intro-big gold">IS IT AI?</div>
+              <div class="intro-sub">Get ready. 5 quick rounds. Trust your instincts.</div>
+            </div>
           </div>
 
           <div class="d-flex flex-wrap gap-2">
@@ -608,7 +642,7 @@
             </div>
             <div class="score-box">
               <div id="scoreStreak" class="big">0</div>
-              <div class="label">Streak</div>
+              <div class="label">Best Streak</div>
             </div>
           </div>
 
@@ -636,10 +670,18 @@
           <div class="d-flex flex-wrap gap-2 mb-4">
             <button id="downloadBtn" class="btn-brand">Download Result Card</button>
             <button id="copyBtn" class="btn-soft">Copy Caption</button>
+            <button id="linkedinBtn" class="btn-soft">Share on LinkedIn</button>
             <button id="challengeBtn" class="btn-soft">Challenge a Friend</button>
           </div>
 
           <textarea id="shareText" class="share-box" readonly></textarea>
+
+          <div class="launch-banner">
+            <h3>INF 125: AI Literacy launches this fall at NKU</h3>
+            <div class="muted">
+              Students won’t just use AI. They’ll learn how to question it, understand it, and build with it.
+            </div>
+          </div>
 
           <div class="footer-note">
             Strong combo: post this score card with a 10–15 second companion video.
@@ -648,7 +690,7 @@
 
         <div class="glass panel">
           <div class="result-card-wrap">
-            <canvas id="resultCanvas" width="1200" height="1350" style="width:100%; height:auto; display:block;"></canvas>
+            <canvas id="resultCanvas" width="1200" height="1500" style="width:100%; height:auto; display:block;"></canvas>
           </div>
         </div>
       </div>
@@ -658,30 +700,56 @@
   <script>
     const rounds = [
       {
+        type: "text",
         text: "In today’s rapidly evolving digital landscape, organizations must embrace intelligent synergy to unlock unprecedented value creation.",
         answer: "ai",
         explainRight: "Yep — very AI. Polished, generic, and stuffed with buzzwords.",
         explainWrong: "This was AI. It sounds smooth, but it says almost nothing specific."
       },
       {
+        type: "text",
         text: "I missed the bus because I swore I had five more minutes, and somehow that became twenty.",
         answer: "human",
         explainRight: "Correct — that feels human. Specific, casual, and a little messy.",
         explainWrong: "This one was human. The personal detail makes it feel real."
       },
       {
-        text: "The moonlight danced gracefully across the shimmering lake, as if nature itself had paused to admire its own reflection.",
+        type: "image",
+        imageSrc:
+          "data:image/svg+xml;utf8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
+              <defs>
+                <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#1e1b4b"/>
+                  <stop offset="100%" stop-color="#0f172a"/>
+                </linearGradient>
+              </defs>
+              <rect width="1200" height="750" fill="url(#bg)"/>
+              <circle cx="220" cy="150" r="90" fill="#fdb913" opacity="0.9"/>
+              <rect x="130" y="340" width="940" height="220" rx="28" fill="#ffffff" opacity="0.08"/>
+              <text x="110" y="650" fill="#ffffff" font-family="Arial, sans-serif" font-size="44" font-weight="700">
+                Example image round: polished “AI art” poster look
+              </text>
+              <path d="M250 510 C360 260, 530 250, 610 460 S860 650, 980 350" fill="none" stroke="#67e8f9" stroke-width="18" stroke-linecap="round"/>
+              <path d="M230 470 C330 350, 420 340, 500 430" fill="none" stroke="#ffd66d" stroke-width="14" stroke-linecap="round"/>
+              <circle cx="740" cy="250" r="72" fill="#67e8f9" opacity="0.85"/>
+              <circle cx="850" cy="210" r="36" fill="#ffffff" opacity="0.8"/>
+            </svg>
+          `),
+        prompt: "This image looks like a stylized, polished digital poster. Would you guess AI or human-made design?",
         answer: "ai",
-        explainRight: "Nice catch — likely AI. It leans a little too hard into dramatic beauty.",
-        explainWrong: "This one was AI. Generic poetic language is a common giveaway."
+        explainRight: "Nice catch. It’s meant to feel like polished AI-generated visual content.",
+        explainWrong: "This round was AI. The hyper-polished, synthetic aesthetic was the clue."
       },
       {
+        type: "text",
         text: "For a first-year college audience, explain AI bias using one simple example from hiring and one from social media recommendations.",
         answer: "human",
         explainRight: "Yes — human. It’s a focused prompt someone would give to AI.",
         explainWrong: "This was human. Good prompting is part of AI literacy too."
       },
       {
+        type: "text",
         text: "The meeting starts at 3:00 p.m. Please bring your laptop, charger, and any questions about the project draft.",
         answer: "human",
         explainRight: "Correct — practical, direct, and grounded.",
@@ -696,6 +764,8 @@
     let bestStreak = 0;
     let stream = null;
     let capturedImage = null;
+    let audioReady = false;
+    let audioCtx = null;
 
     const landingView = document.getElementById("landingView");
     const gameView = document.getElementById("gameView");
@@ -724,6 +794,7 @@
     const verdictOverlay = document.getElementById("verdictOverlay");
     const verdictBig = document.getElementById("verdictBig");
     const verdictSub = document.getElementById("verdictSub");
+    const introOverlay = document.getElementById("introOverlay");
 
     const finalPercent = document.getElementById("finalPercent");
     const finalBadge = document.getElementById("finalBadge");
@@ -732,6 +803,7 @@
     const resultCanvas = document.getElementById("resultCanvas");
     const downloadBtn = document.getElementById("downloadBtn");
     const copyBtn = document.getElementById("copyBtn");
+    const linkedinBtn = document.getElementById("linkedinBtn");
     const challengeBtn = document.getElementById("challengeBtn");
 
     function showView(view) {
@@ -777,6 +849,46 @@
       roundCounter.textContent = Math.min(currentRound + 1, rounds.length);
     }
 
+    function ensureAudio() {
+      if (!audioReady) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioReady = true;
+      }
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(type) {
+      if (!audioReady || !audioCtx) return;
+
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      if (type === "success") {
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(920, audioCtx.currentTime + 0.16);
+        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.28);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.3);
+      } else {
+        oscillator.type = "sawtooth";
+        oscillator.frequency.setValueAtTime(280, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.22);
+        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.26);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.28);
+      }
+    }
+
     function renderRound() {
       updateScoreUI();
 
@@ -787,13 +899,25 @@
 
       const round = rounds[currentRound];
 
+      let mediaHtml = "";
+      if (round.type === "image") {
+        mediaHtml = `
+          <div class="round-text">${round.prompt}</div>
+          <img class="sample-image" src="${round.imageSrc}" alt="AI or human visual round" />
+        `;
+      } else {
+        mediaHtml = `
+          <div class="round-text">Go with your first instinct.</div>
+          <div class="sample-box">“${round.text}”</div>
+        `;
+      }
+
       roundContainer.innerHTML = `
         <div class="round-card">
           <div class="round-tag">Round ${currentRound + 1} of ${rounds.length}</div>
           <div class="round-title">Is this AI or human?</div>
-          <div class="round-text">Go with your first instinct.</div>
 
-          <div class="sample-box">“${round.text}”</div>
+          ${mediaHtml}
 
           <button class="btn-choice" data-choice="ai">🤖 AI</button>
           <button class="btn-choice" data-choice="human">👤 Human</button>
@@ -806,7 +930,9 @@
       const feedbackBox = document.getElementById("feedbackBox");
 
       buttons.forEach((button) => {
-        button.addEventListener("click", async () => {
+        button.addEventListener("click", () => {
+          ensureAudio();
+
           const choice = button.dataset.choice;
           const isRight = choice === round.answer;
 
@@ -820,6 +946,7 @@
             feedbackBox.className = "feedback-box good";
             feedbackBox.textContent = round.explainRight;
             showVerdict("CORRECT", round.explainRight, true);
+            playTone("success");
           } else {
             wrong++;
             streak = 0;
@@ -834,6 +961,7 @@
             });
 
             showVerdict("NOT QUITE", round.explainWrong, false);
+            playTone("fail");
           }
 
           updateScoreUI();
@@ -855,6 +983,13 @@
       setTimeout(() => {
         verdictOverlay.style.display = "none";
       }, 1100);
+    }
+
+    function showIntroOverlay() {
+      introOverlay.style.display = "flex";
+      setTimeout(() => {
+        introOverlay.style.display = "none";
+      }, 1400);
     }
 
     async function enableCamera() {
@@ -1026,7 +1161,7 @@ Think you can beat my score?
         const img = new Image();
         img.onload = () => {
           drawCoverImageRounded(ctx, img, photoX, photoY, photoW, photoH, 28);
-          drawCardDetails(ctx, percent, badge, w);
+          drawCardDetails(ctx, percent, badge, w, h);
         };
         img.src = capturedImage;
       } else {
@@ -1038,11 +1173,11 @@ Think you can beat my score?
         ctx.fillStyle = "rgba(255,255,255,0.7)";
         ctx.font = "500 24px Inter, Arial, sans-serif";
         ctx.fillText("Still ready to share.", photoX + 120, photoY + 290);
-        drawCardDetails(ctx, percent, badge, w);
+        drawCardDetails(ctx, percent, badge, w, h);
       }
     }
 
-    function drawCardDetails(ctx, percent, badge, w) {
+    function drawCardDetails(ctx, percent, badge, w, h) {
       const x = 570;
 
       ctx.fillStyle = "rgba(255,255,255,0.92)";
@@ -1082,10 +1217,13 @@ Think you can beat my score?
         36
       );
 
-      roundRect(ctx, 95, 1190, w - 190, 86, 24, "rgba(253,185,19,0.12)", "rgba(253,185,19,0.28)");
+      roundRect(ctx, 95, 1280, w - 190, 120, 24, "rgba(253,185,19,0.12)", "rgba(253,185,19,0.28)");
       ctx.fillStyle = "#ffffff";
-      ctx.font = "900 32px Inter, Arial, sans-serif";
-      ctx.fillText("AI literacy starts now.", 130, 1244);
+      ctx.font = "900 30px Inter, Arial, sans-serif";
+      ctx.fillText("Built by Dr. Brandi Neal", 130, 1332);
+      ctx.font = "700 24px Inter, Arial, sans-serif";
+      ctx.fillStyle = "rgba(255,255,255,0.82)";
+      ctx.fillText("Northern Kentucky University • College of Informatics", 130, 1372);
     }
 
     function drawGlow(ctx, x, y, radius, color) {
@@ -1219,6 +1357,11 @@ This fall, NKU is launching INF 125: AI Literacy.
       }, 1400);
     }
 
+    function shareOnLinkedIn() {
+      const linkedInUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText.value);
+      window.open(linkedInUrl, "_blank", "noopener,noreferrer");
+    }
+
     function launchConfetti() {
       const pieces = 80;
       const colors = ["#fdb913", "#ffd66d", "#67e8f9", "#ffffff", "#a78bfa"];
@@ -1240,8 +1383,10 @@ This fall, NKU is launching INF 125: AI Literacy.
     }
 
     startBtn.addEventListener("click", async () => {
+      ensureAudio();
       showView("game");
       renderRound();
+      showIntroOverlay();
       await enableCamera();
     });
 
@@ -1254,10 +1399,14 @@ This fall, NKU is launching INF 125: AI Literacy.
 
     restartTopBtn.addEventListener("click", resetGame);
     restartResultsBtn.addEventListener("click", resetGame);
-    cameraBtn.addEventListener("click", enableCamera);
+    cameraBtn.addEventListener("click", () => {
+      ensureAudio();
+      enableCamera();
+    });
     snapBtn.addEventListener("click", snapPhoto);
     downloadBtn.addEventListener("click", () => downloadCanvas(resultCanvas, "nku-is-it-ai-result.png"));
     copyBtn.addEventListener("click", copyCaption);
+    linkedinBtn.addEventListener("click", shareOnLinkedIn);
     challengeBtn.addEventListener("click", copyChallenge);
 
     window.addEventListener("beforeunload", () => {
