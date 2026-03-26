@@ -546,33 +546,6 @@
       max-width:70ch;
     }
 
-    .features{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-      margin-top:18px;
-    }
-
-    .feature{
-      padding:16px;
-      border-radius:20px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .feature h3{
-      margin:0 0 6px;
-      font-size:1rem;
-      text-transform:uppercase;
-      letter-spacing:.02em;
-    }
-
-    .feature p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.5;
-    }
-
     .funnel-grid{
       display:grid;
       grid-template-columns:1fr;
@@ -691,26 +664,6 @@
       flex-wrap:wrap;
       gap:10px;
       margin-top:16px;
-    }
-
-    .share-box{
-      margin-top:18px;
-      padding:16px;
-      border-radius:20px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .share-box p{
-      margin:0 0 12px;
-      color:var(--muted);
-      line-height:1.5;
-    }
-
-    .share-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
     }
 
     .small-note{
@@ -880,14 +833,13 @@
 
     @media (min-width:860px){
       .hero-grid{grid-template-columns:1.06fr .94fr}
-      .features{grid-template-columns:repeat(2,1fr)}
       .funnel-grid{grid-template-columns:.95fr 1.05fr}
     }
 
     @media (max-width:719px){
       .topbar-actions .pill{display:none}
       .course-row, .date-row{grid-template-columns:1fr}
-      .path-grid, .share-grid, .quick-actions{grid-template-columns:1fr}
+      .path-grid, .quick-actions{grid-template-columns:1fr}
       .hero-stats{grid-template-columns:1fr}
     }
 
@@ -946,16 +898,8 @@
               <div class="stat-value">All majors • Beginner friendly • No advanced technical background required</div>
             </div>
             <div class="stat">
-              <div class="stat-label">What it feels like</div>
-              <div class="stat-value">Interactive, welcoming, relevant, and built for curious students</div>
-            </div>
-            <div class="stat">
               <div class="stat-label">Course details</div>
               <div class="stat-value">Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">Best next step</div>
-              <div class="stat-value">Try the experience, then go straight to NKU registration</div>
             </div>
           </div>
         </div>
@@ -1035,36 +979,6 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="shell panel section-card">
-        <div class="section-label">Why students are drawn to this course</div>
-        <h2 class="section-title">AI isn’t just for computer science majors</h2>
-        <p class="section-copy">
-          INF 125 is built to be approachable, relevant, and useful whether you study business,
-          health sciences, communication, education, arts, informatics, or something else entirely.
-        </p>
-
-        <div class="features">
-          <div class="feature">
-            <h3>Welcoming</h3>
-            <p>Designed for beginners and curious students from any major.</p>
-          </div>
-          <div class="feature">
-            <h3>Relevant</h3>
-            <p>Connect AI to careers, industries, and real decisions happening now.</p>
-          </div>
-          <div class="feature">
-            <h3>Interactive</h3>
-            <p>Explore hands-on moments, discussion, examples, and real-world applications.</p>
-          </div>
-          <div class="feature">
-            <h3>Future-focused</h3>
-            <p>Build confidence around a technology that is already reshaping every field.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="funnel">
       <div class="shell funnel-grid">
         <div class="panel section-card">
@@ -1113,14 +1027,12 @@
             </div>
           </div>
 
-          <div class="share-box">
-            <p><strong>Make it shareable:</strong> after you pick a path, use the button below to copy a caption students can paste into a text, story, or post.</p>
-            <div class="share-grid">
-              <button class="btn btn-primary" type="button" id="copyCaptionBtn">Copy share caption</button>
-              <button class="btn btn-secondary" type="button" id="triggerRevealBtn">Trigger my reveal</button>
-            </div>
-            <div class="small-note" id="shareFeedback">Suggested campus hook: “This AI page told me how my major is about to change 👀”</div>
+          <div class="cta-stack">
+            <button class="btn btn-primary" type="button" id="sharePageBtn">Share this page</button>
+            <button class="btn btn-secondary" type="button" id="triggerRevealBtn">Trigger my reveal</button>
           </div>
+
+          <div class="small-note" id="shareFeedback">Tap share to quickly send this experience to someone else.</div>
         </div>
 
         <div class="panel section-card">
@@ -1190,9 +1102,7 @@
     <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
       Register at NKU
     </a>
-    <a class="btn btn-secondary" href="https://inside.nku.edu/registrar/registration.html" target="_blank" rel="noopener noreferrer">
-      Help
-    </a>
+    <button class="btn btn-secondary" id="stickyShareBtn" type="button">Share</button>
   </div>
 
   <section class="final-screen" id="finalScreen" aria-hidden="true">
@@ -1333,9 +1243,10 @@ Griffin Hall (GH) 160
     const flipBtn = document.getElementById("flipBtn");
     const voiceBtn = document.getElementById("voiceBtn");
     const replayBtn = document.getElementById("replayBtn");
-    const copyCaptionBtn = document.getElementById("copyCaptionBtn");
     const triggerRevealBtn = document.getElementById("triggerRevealBtn");
     const skipCountdownBtn = document.getElementById("skipCountdownBtn");
+    const sharePageBtn = document.getElementById("sharePageBtn");
+    const stickyShareBtn = document.getElementById("stickyShareBtn");
 
     const pathGrid = document.getElementById("pathGrid");
     const personaPanel = document.getElementById("personaPanel");
@@ -1411,19 +1322,6 @@ Griffin Hall (GH) 160
       personaTags.innerHTML = item.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
       revealTitle.textContent = item.revealTitle;
       revealText.textContent = item.revealText;
-      shareFeedback.textContent = `Suggested hook: “This AI page told me how ${labelForPath(pathKey).toLowerCase()} is about to change 👀”`;
-    }
-
-    function labelForPath(pathKey) {
-      const labels = {
-        business: "business",
-        health: "health majors",
-        creative: "creative majors",
-        education: "education majors",
-        tech: "tech-curious students",
-        undecided: "undecided students"
-      };
-      return labels[pathKey] || "my field";
     }
 
     pathGrid.addEventListener("click", (e) => {
@@ -1648,6 +1546,28 @@ Griffin Hall (GH) 160
       hideFinalScreen();
     }
 
+    async function sharePage() {
+      const shareData = {
+        title: "NKU INF 125: AI Literacy",
+        text: "Check out this interactive NKU INF 125: AI Literacy experience.",
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+          shareFeedback.textContent = "Shared successfully.";
+        } else if (navigator.clipboard) {
+          await navigator.clipboard.writeText(window.location.href);
+          shareFeedback.textContent = "Page link copied to clipboard.";
+        } else {
+          shareFeedback.textContent = "Sharing is not supported on this device.";
+        }
+      } catch (err) {
+        shareFeedback.textContent = "Share cancelled or unavailable.";
+      }
+    }
+
     startBtn.addEventListener("click", startCamera);
 
     scanBtn.addEventListener("click", () => {
@@ -1689,19 +1609,8 @@ Griffin Hall (GH) 160
       startFallbackReveal();
     });
 
-    copyCaptionBtn.addEventListener("click", async () => {
-      const caption = `This AI page told me how ${labelForPath(selectedPath)} is about to change 👀
-
-INF 125: AI Literacy at NKU might actually be for all majors.
-
-Tues/Thurs • 10:50 AM–12:05 PM • GH 160`;
-      try {
-        await navigator.clipboard.writeText(caption);
-        shareFeedback.textContent = "Copied. Paste it into a text, story, or post.";
-      } catch (e) {
-        shareFeedback.textContent = "Copy didn’t work on this device, but the caption is ready to use manually.";
-      }
-    });
+    sharePageBtn.addEventListener("click", sharePage);
+    stickyShareBtn.addEventListener("click", sharePage);
 
     window.addEventListener("beforeunload", () => {
       stopScanning();
