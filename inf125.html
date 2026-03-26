@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
   <title>INF 125 AI Literacy | NKU</title>
   <meta name="theme-color" content="#0a0a0a" />
   <meta
@@ -129,7 +132,7 @@
     }
 
     .hero{
-      padding:22px 0 14px;
+      padding:18px 0 14px;
     }
 
     .hero-grid{
@@ -147,7 +150,7 @@
     }
 
     .hero-copy-panel{
-      padding:20px;
+      padding:18px;
     }
 
     .eyebrow{
@@ -203,12 +206,12 @@
     .mini-row strong{color:#fff}
 
     .stage-panel{
-      padding:14px;
+      padding:12px;
     }
 
     .stage{
       position:relative;
-      min-height:420px;
+      min-height:460px;
       border-radius:20px;
       overflow:hidden;
       background:
@@ -236,6 +239,7 @@
         radial-gradient(circle at 50% 20%, rgba(255,199,44,.14), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
         linear-gradient(180deg, #191919 0%, #080808 100%);
+      z-index:1;
     }
 
     .fallback-stage h2{
@@ -251,6 +255,72 @@
       color:var(--muted);
       max-width:28ch;
       line-height:1.45;
+    }
+
+    .path-overlay{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.55);
+      backdrop-filter:blur(12px);
+      z-index:6;
+      padding:16px;
+    }
+
+    .path-overlay-content{
+      width:100%;
+      max-width:440px;
+      text-align:center;
+    }
+
+    .overlay-title{
+      font-size:1.2rem;
+      font-weight:900;
+      margin-bottom:6px;
+      letter-spacing:-.02em;
+      text-transform:uppercase;
+    }
+
+    .overlay-sub{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:12px;
+    }
+
+    .path-grid-overlay{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+
+    .path-card{
+      padding:14px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:850;
+      cursor:pointer;
+      transition:.15s ease;
+      min-height:58px;
+    }
+
+    .path-card:hover{
+      background:rgba(255,199,44,.2);
+      border-color:rgba(255,199,44,.5);
+      transform:translateY(-1px);
+    }
+
+    .skip-overlay-btn{
+      margin-top:10px;
+      background:none;
+      border:none;
+      color:rgba(255,255,255,.76);
+      font-size:.88rem;
+      font-weight:700;
+      cursor:pointer;
     }
 
     .stage-top{
@@ -493,47 +563,6 @@
       gap:14px;
     }
 
-    .path-grid{
-      margin-top:12px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:8px;
-    }
-
-    .path-btn{
-      width:100%;
-      text-align:left;
-      padding:12px;
-      border-radius:16px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-      color:#fff;
-      cursor:pointer;
-      transition:.15s ease;
-      min-height:68px;
-    }
-
-    .path-btn.active,
-    .path-btn:hover{
-      background:rgba(255,199,44,.12);
-      border-color:rgba(255,199,44,.34);
-    }
-
-    .path-title{
-      display:block;
-      font-size:.9rem;
-      font-weight:850;
-      margin-bottom:3px;
-    }
-
-    .path-sub{
-      display:block;
-      color:var(--soft);
-      font-size:.76rem;
-      line-height:1.28;
-      font-weight:650;
-    }
-
     .persona-panel{
       margin-top:12px;
       padding:14px;
@@ -756,13 +785,17 @@
     }
 
     @media (max-width:640px){
-      .path-grid,
+      .path-grid-overlay,
       .action-grid{
         grid-template-columns:1fr;
       }
 
       .topbar-inner .top-action{
         display:none;
+      }
+
+      .stage{
+        min-height:500px;
       }
     }
 
@@ -788,7 +821,12 @@
           <div class="brand-title">INF 125: AI Literacy • Open to All Majors</div>
         </div>
       </div>
-      <a class="btn btn-primary top-action" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+      <a
+        class="btn btn-primary top-action"
+        href="https://one.nku.edu/task/all/registerforclass"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Register
       </a>
     </div>
@@ -802,12 +840,18 @@
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
             A welcoming AI course for students from <strong>every major</strong>.
-            Pick your path, unlock your reveal, and go straight to registration.
+            Tap your path, unlock your reveal, and go straight to registration.
           </p>
 
           <div class="hero-mini">
-            <div class="mini-row"><strong>Who it’s for:</strong> All majors • beginner friendly • no advanced technical background required</div>
-            <div class="mini-row"><strong>When + where:</strong> Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
+            <div class="mini-row">
+              <strong>Who it’s for:</strong>
+              All majors • beginner friendly • no advanced technical background required
+            </div>
+            <div class="mini-row">
+              <strong>When + where:</strong>
+              Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160
+            </div>
           </div>
         </div>
 
@@ -818,7 +862,27 @@
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>Use the experience below or skip straight to the countdown and reveal.</p>
+                <p>Tap a path to start, or skip straight to the reveal.</p>
+              </div>
+            </div>
+
+            <div class="path-overlay" id="pathOverlay">
+              <div class="path-overlay-content">
+                <div class="overlay-title">Tap your future</div>
+                <div class="overlay-sub">This takes 3 seconds</div>
+
+                <div class="path-grid-overlay">
+                  <button class="path-card" data-path="business" type="button">Business</button>
+                  <button class="path-card" data-path="health" type="button">Health</button>
+                  <button class="path-card" data-path="creative" type="button">Creative</button>
+                  <button class="path-card" data-path="education" type="button">Education</button>
+                  <button class="path-card" data-path="tech" type="button">Tech</button>
+                  <button class="path-card" data-path="undecided" type="button">Explore</button>
+                </div>
+
+                <button class="skip-overlay-btn" id="skipOverlayBtn" type="button">
+                  Skip → Just show me
+                </button>
               </div>
             </div>
 
@@ -867,14 +931,12 @@
 
               <div class="debug-card">
                 <div class="debug-label">Live preview</div>
-                <div class="debug-text" id="ocrOutput">Tap Start Experience or pick a path below.</div>
+                <div class="debug-text" id="ocrOutput">Tap a path to start the experience.</div>
               </div>
             </div>
           </div>
 
           <div class="action-grid">
-            <button class="btn btn-primary" id="startExperienceBtn" type="button">Start Experience</button>
-            <button class="btn btn-secondary" id="skipBtn" type="button">Skip to Reveal</button>
             <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
             <button class="btn btn-secondary" id="sharePageBtn" type="button">Share Page</button>
           </div>
@@ -885,38 +947,11 @@
     <section class="section" id="funnel">
       <div class="shell funnel-grid">
         <div class="panel section-card">
-          <div class="section-label">Step 1</div>
-          <h2 class="section-title">Pick your path</h2>
+          <div class="section-label">Personalized focus</div>
+          <h2 class="section-title">Why this course fits</h2>
           <p class="section-copy">
-            Choose the version of the future that feels closest to you.
+            The experience personalizes this message based on the path you choose.
           </p>
-
-          <div class="path-grid" id="pathGrid">
-            <button class="path-btn active" type="button" data-path="business">
-              <span class="path-title">Business & Leadership</span>
-              <span class="path-sub">Strategy, entrepreneurship, careers</span>
-            </button>
-            <button class="path-btn" type="button" data-path="health">
-              <span class="path-title">Health & Helping Fields</span>
-              <span class="path-sub">Care, ethics, human impact</span>
-            </button>
-            <button class="path-btn" type="button" data-path="creative">
-              <span class="path-title">Creative & Media</span>
-              <span class="path-sub">Design, storytelling, communication</span>
-            </button>
-            <button class="path-btn" type="button" data-path="education">
-              <span class="path-title">Education & Social Impact</span>
-              <span class="path-sub">Learning, access, future readiness</span>
-            </button>
-            <button class="path-btn" type="button" data-path="tech">
-              <span class="path-title">Tech & Data Curious</span>
-              <span class="path-sub">Tools, systems, responsible use</span>
-            </button>
-            <button class="path-btn" type="button" data-path="undecided">
-              <span class="path-title">Still Figuring It Out</span>
-              <span class="path-sub">Explore without needing it all mapped out</span>
-            </button>
-          </div>
 
           <div class="persona-panel" id="personaPanel">
             <h3>AI literacy for business-minded students</h3>
@@ -932,10 +967,10 @@
         </div>
 
         <div class="panel section-card">
-          <div class="section-label">Step 2</div>
-          <h2 class="section-title">Register faster</h2>
+          <div class="section-label">Register faster</div>
+          <h2 class="section-title">Go straight to NKU registration</h2>
           <p class="section-copy">
-            Go directly to NKU registration and search for <strong>INF 125: AI Literacy</strong>.
+            Search for <strong>INF 125: AI Literacy</strong> and confirm the details below.
           </p>
 
           <div class="compact-list">
@@ -948,7 +983,12 @@
           </div>
 
           <div class="cta-stack">
-            <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+            <a
+              class="btn btn-primary"
+              href="https://one.nku.edu/task/all/registerforclass"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Register at NKU
             </a>
             <button class="btn btn-secondary" id="stickyShareMirrorBtn" type="button">
@@ -973,7 +1013,12 @@
   </main>
 
   <div class="sticky-cta">
-    <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+    <a
+      class="btn btn-primary"
+      href="https://one.nku.edu/task/all/registerforclass"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       Register
     </a>
     <button class="btn btn-secondary" id="stickyShareBtn" type="button">Share</button>
@@ -981,7 +1026,7 @@
 
   <section class="final-screen" id="finalScreen" aria-hidden="true">
     <div class="final-kicker">Northern Kentucky University</div>
-    <h2 class="final-title"><span class="gold">AI Literacy</span><br>For Every Major</h2>
+    <h2 class="final-title"><span class="gold">AI Literacy</span><br />For Every Major</h2>
     <div class="final-copy">
 INF 125: AI Literacy
 
@@ -992,7 +1037,12 @@ Tuesdays & Thursdays • 10:50 AM – 12:05 PM
 Griffin Hall 160
     </div>
     <div class="final-actions">
-      <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+      <a
+        class="btn btn-primary"
+        href="https://one.nku.edu/task/all/registerforclass"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Register for INF 125
       </a>
       <button class="btn btn-secondary" id="replayBtn" type="button">Replay</button>
@@ -1113,6 +1163,9 @@ Griffin Hall 160
 
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
+    const pathOverlay = document.getElementById("pathOverlay");
+    const skipOverlayBtn = document.getElementById("skipOverlayBtn");
+    const pathCards = document.querySelectorAll(".path-card");
     const scanRing = document.getElementById("scanRing");
     const cameraStatus = document.getElementById("cameraStatus");
     const voiceStatus = document.getElementById("voiceStatus");
@@ -1131,21 +1184,17 @@ Griffin Hall 160
     const minutesEl = document.getElementById("minutes");
     const secondsEl = document.getElementById("seconds");
 
-    const startExperienceBtn = document.getElementById("startExperienceBtn");
-    const skipBtn = document.getElementById("skipBtn");
     const voiceBtn = document.getElementById("voiceBtn");
     const replayBtn = document.getElementById("replayBtn");
     const sharePageBtn = document.getElementById("sharePageBtn");
     const stickyShareBtn = document.getElementById("stickyShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
 
-    const pathGrid = document.getElementById("pathGrid");
     const personaPanel = document.getElementById("personaPanel");
     const personaCopy = document.getElementById("personaCopy");
     const personaTags = document.getElementById("personaTags");
 
     let stream = null;
-    let facingMode = "environment";
     let scanning = false;
     let found = false;
     let ocrBusy = false;
@@ -1215,14 +1264,6 @@ Griffin Hall 160
       revealText.textContent = item.revealText;
     }
 
-    pathGrid.addEventListener("click", (e) => {
-      const btn = e.target.closest(".path-btn");
-      if (!btn) return;
-      pathGrid.querySelectorAll(".path-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      updatePersona(btn.dataset.path);
-    });
-
     function startMajorRotation() {
       majorText.textContent = CONFIG.majorMessages[0];
       majorRotationTimer = setInterval(() => {
@@ -1270,11 +1311,13 @@ Griffin Hall 160
       found = false;
       revealCard.classList.remove("active");
       scanRing.classList.remove("found");
+      fallbackStage.style.display = "none";
+      pathOverlay.style.display = "none";
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: { ideal: facingMode },
+            facingMode: { ideal: "environment" },
             width: { ideal: 1280 },
             height: { ideal: 720 }
           },
@@ -1282,8 +1325,7 @@ Griffin Hall 160
         });
 
         video.srcObject = stream;
-        fallbackStage.style.display = "none";
-        cameraStatus.textContent = `Camera live (${facingMode === "environment" ? "rear" : "front"})`;
+        cameraStatus.textContent = "Camera live";
         ocrOutput.textContent = "Scanning for Griffin Hall 160...";
         startScanning();
       } catch (err) {
@@ -1302,8 +1344,12 @@ Griffin Hall 160
 
     function startFallbackReveal() {
       fallbackMode = true;
-      cameraStatus.textContent = "Camera skipped";
+      found = false;
+      stopScanning();
+      stopCamera();
+      pathOverlay.style.display = "none";
       fallbackStage.style.display = "grid";
+      cameraStatus.textContent = "Camera skipped";
       ocrOutput.textContent = "Launching reveal without camera access.";
       onTargetFound("camera skipped");
     }
@@ -1338,7 +1384,7 @@ Griffin Hall 160
         }
       } catch (err) {
         console.error(err);
-        ocrOutput.textContent = "Scan error. You can skip straight to the reveal.";
+        ocrOutput.textContent = "Scan error. You can replay and skip straight to the reveal.";
       } finally {
         ocrBusy = false;
       }
@@ -1494,8 +1540,9 @@ Griffin Hall 160
       scanRing.classList.remove("found");
       revealCard.classList.remove("active");
       cameraStatus.textContent = "Camera optional";
-      ocrOutput.textContent = "Tap Start Experience or pick a path below.";
+      ocrOutput.textContent = "Tap a path to start the experience.";
       fallbackStage.style.display = "grid";
+      pathOverlay.style.display = "flex";
       hideFinalScreen();
     }
 
@@ -1521,8 +1568,17 @@ Griffin Hall 160
       }
     }
 
-    startExperienceBtn.addEventListener("click", startExperience);
-    skipBtn.addEventListener("click", startFallbackReveal);
+    pathCards.forEach(card => {
+      card.addEventListener("click", () => {
+        const path = card.dataset.path;
+        updatePersona(path);
+        startExperience();
+      });
+    });
+
+    skipOverlayBtn.addEventListener("click", () => {
+      startFallbackReveal();
+    });
 
     voiceBtn.addEventListener("click", () => {
       voiceEnabled = !voiceEnabled;
