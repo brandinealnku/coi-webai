@@ -880,7 +880,9 @@
         <div class="panel hero-copy-panel">
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
-            Your major. Your future. <strong>INF 125: AI Literacy</strong> is your turn to understand the technology changing both.
+            This is a fast, personalized experience that shows students from
+            <strong>every major</strong> why <strong>INF 125: AI Literacy</strong> matters to their future.
+            Business, health, arts, communication, education, technology, undecided - all welcome.
           </p>
 
           <div class="hero-actions">
@@ -893,7 +895,7 @@
           <div class="hero-stats">
             <div class="stat">
               <div class="stat-label">Who it’s for</div>
-              <div class="stat-value">All majors • Beginner friendly • No technical background required</div>
+              <div class="stat-value">All majors • Beginner friendly • No advanced technical background required</div>
             </div>
             <div class="stat">
               <div class="stat-label">Course details</div>
@@ -1152,42 +1154,79 @@ Griffin Hall (GH) 160
           copy: "If you care about leadership, strategy, entrepreneurship, or decision-making, this course helps you understand how AI is changing work, value, and competitive advantage.",
           tags: ["Careers", "Decision-making", "Innovation"],
           revealTitle: "Business students: AI is changing how decisions get made",
-          revealText: "INF 125 helps you explore strategy, automation, entrepreneurship, and the role AI will play in leadership and business careers."
+          revealText: "INF 125 helps you explore strategy, automation, entrepreneurship, and the role AI will play in leadership and business careers.",
+          voiceLines: [
+            "Nice. You found INF one twenty five.",
+            "AI literacy at NKU.",
+            "For business students, this is where AI starts to connect to leadership, strategy, and real decisions.",
+            "If that sounds like your future, go register."
+          ]
         },
         health: {
           title: "AI literacy for helping professions",
           copy: "If you care about people, care, ethics, or responsible use, this course helps you think about how AI intersects with healthcare, support systems, and real human impact.",
           tags: ["Ethics", "Care", "Human-centered use"],
           revealTitle: "Health students: AI is changing care and decision-making",
-          revealText: "INF 125 helps you explore the real-world role of AI in care, support systems, ethics, and human-centered problem-solving."
+          revealText: "INF 125 helps you explore the real-world role of AI in care, support systems, ethics, and human-centered problem-solving.",
+          voiceLines: [
+            "Nice. You found INF one twenty five.",
+            "AI literacy at NKU.",
+            "For students in health and helping fields, this course connects AI to care, ethics, and real human impact.",
+            "If that feels relevant, go register."
+          ]
         },
         creative: {
           title: "AI literacy for creators and communicators",
           copy: "If you’re drawn to storytelling, design, media, or content, this course helps you explore how AI is reshaping creativity, communication, and expression.",
           tags: ["Creativity", "Media", "Storytelling"],
           revealTitle: "Creative students: AI is reshaping media and expression",
-          revealText: "INF 125 helps you explore how AI intersects with design, storytelling, content, communication, and creative work."
+          revealText: "INF 125 helps you explore how AI intersects with design, storytelling, content, communication, and creative work.",
+          voiceLines: [
+            "Nice. You found INF one twenty five.",
+            "AI literacy at NKU.",
+            "For creators and communicators, this course explores how AI is reshaping media, storytelling, and expression.",
+            "If that sounds like you, go register."
+          ]
         },
         education: {
           title: "AI literacy for educators and changemakers",
           copy: "If you care about learning, access, people, and impact, this course helps you examine how AI can support and disrupt the way people learn and work.",
           tags: ["Learning", "Access", "Impact"],
           revealTitle: "Education students: AI is reshaping how people learn",
-          revealText: "INF 125 helps you explore how AI affects learning, teaching, access, support, and human development across contexts."
+          revealText: "INF 125 helps you explore how AI affects learning, teaching, access, support, and human development across contexts.",
+          voiceLines: [
+            "Nice. You found INF one twenty five.",
+            "AI literacy at NKU.",
+            "For future educators and changemakers, this course explores how AI is reshaping learning, access, and support.",
+            "If that matters to you, go register."
+          ]
         },
         tech: {
           title: "AI literacy for tech-curious students",
           copy: "If you’re interested in tools, systems, or innovation, this course helps you build broader literacy around how AI works in real settings, beyond hype.",
           tags: ["Tools", "Systems", "Responsible innovation"],
           revealTitle: "Tech-curious students: AI literacy matters beyond the code",
-          revealText: "INF 125 helps you understand real-world AI systems, responsible use, adoption, and how AI shapes products and people."
+          revealText: "INF 125 helps you understand real-world AI systems, responsible use, adoption, and how AI shapes products and people.",
+          voiceLines: [
+            "Nice. You found INF one twenty five.",
+            "AI literacy at NKU.",
+            "For tech curious students, this course goes beyond the hype and shows how AI works in real systems and real decisions.",
+            "If you want that foundation, go register."
+          ]
         },
         undecided: {
           title: "AI literacy for students still figuring it out",
           copy: "If you’re exploring your future, this course gives you a smart, welcoming way to understand one of the biggest forces shaping work and life across every field.",
           tags: ["Exploration", "Confidence", "Future readiness"],
           revealTitle: "Undecided? That’s exactly why this course fits",
-          revealText: "INF 125 helps you explore one of the biggest forces shaping careers and everyday life — without needing to already know your path."
+          revealText: "INF 125 helps you explore one of the biggest forces shaping careers and everyday life — without needing to already know your path.",
+          voiceLines: [
+            "Nice. You found INF one twenty five.",
+            "AI literacy at NKU.",
+            "If you are still figuring things out, this course is built for that too.",
+            "It gives you a strong start in understanding how AI is shaping every field.",
+            "If that feels useful, go register."
+          ]
         }
       },
       importantDates: [
@@ -1265,12 +1304,21 @@ Griffin Hall (GH) 160
     let selectedPath = "business";
     let voiceEnabled = false;
     let voicesReady = false;
+    let activeUtterances = [];
+    let speechCancelled = false;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
     startMajorRotation();
     updatePersona("business");
     startCountdown();
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        voicesReady = true;
+      };
+    }
 
     function renderDates() {
       datesList.innerHTML = "";
@@ -1481,20 +1529,81 @@ Griffin Hall (GH) 160
       }, 1800);
     }
 
-    function speak(text) {
-      if (!voiceEnabled || !("speechSynthesis" in window)) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      const voices = window.speechSynthesis.getVoices();
-      const preferred =
-        voices.find(v => /Samantha/i.test(v.name)) ||
-        voices.find(v => /Google US English/i.test(v.name)) ||
-        voices.find(v => /English/i.test(v.lang));
-      if (preferred) utterance.voice = preferred;
-      window.speechSynthesis.speak(utterance);
+    function getBestVoice() {
+      if (!("speechSynthesis" in window)) return null;
+
+      const voices = window.speechSynthesis.getVoices() || [];
+      if (!voices.length) return null;
+
+      const preferredPatterns = [
+        /Google US English/i,
+        /Samantha/i,
+        /Eddy/i,
+        /Karen/i,
+        /Moira/i,
+        /Daniel/i,
+        /Natural/i,
+        /Enhanced/i
+      ];
+
+      for (const pattern of preferredPatterns) {
+        const match = voices.find(v => pattern.test(v.name));
+        if (match) return match;
+      }
+
+      return (
+        voices.find(v => v.lang === "en-US") ||
+        voices.find(v => /^en/i.test(v.lang)) ||
+        voices[0] ||
+        null
+      );
+    }
+
+    function stopSpeech() {
+      speechCancelled = true;
+      activeUtterances = [];
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function speakLines(lines) {
+      if (!voiceEnabled || !("speechSynthesis" in window) || !Array.isArray(lines) || !lines.length) return;
+
+      stopSpeech();
+      speechCancelled = false;
+
+      const voice = getBestVoice();
+      let index = 0;
+
+      function nextLine() {
+        if (speechCancelled || index >= lines.length) return;
+
+        const line = lines[index];
+        const utterance = new SpeechSynthesisUtterance(line);
+        utterance.lang = "en-US";
+        utterance.voice = voice;
+        utterance.rate = 1.02;
+        utterance.pitch = 1.0;
+        utterance.volume = 1;
+
+        utterance.onend = () => {
+          if (speechCancelled) return;
+          index += 1;
+          setTimeout(nextLine, 120);
+        };
+
+        utterance.onerror = () => {
+          if (speechCancelled) return;
+          index += 1;
+          setTimeout(nextLine, 120);
+        };
+
+        activeUtterances.push(utterance);
+        window.speechSynthesis.speak(utterance);
+      }
+
+      nextLine();
     }
 
     function onTargetFound(matchText) {
@@ -1510,7 +1619,9 @@ Griffin Hall (GH) 160
         : `MATCH FOUND:\n${matchText}`;
 
       triggerConfetti();
-      speak(`You found INF 125. ${CONFIG.personaContent[selectedPath].revealTitle}. Register for AI Literacy at NKU.`);
+
+      const persona = CONFIG.personaContent[selectedPath];
+      speakLines(persona.voiceLines);
 
       if (navigator.vibrate) {
         navigator.vibrate([160, 70, 180]);
@@ -1535,6 +1646,7 @@ Griffin Hall (GH) 160
       fallbackMode = true;
       stopScanning();
       stopCamera();
+      stopSpeech();
       scanRing.classList.remove("found");
       revealCard.classList.remove("active");
       cameraStatus.textContent = "Camera optional";
@@ -1542,6 +1654,7 @@ Griffin Hall (GH) 160
       ocrOutput.textContent = "Pick a path below, or start the camera for the room-finder reveal.";
       fallbackStage.style.display = "grid";
       hideFinalScreen();
+      scanBtn.textContent = "Start scan";
     }
 
     async function sharePage() {
@@ -1588,9 +1701,14 @@ Griffin Hall (GH) 160
       voiceEnabled = !voiceEnabled;
       voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
       voiceBtn.textContent = voiceEnabled ? "Disable voice" : "Enable voice";
+
       if (voiceEnabled && "speechSynthesis" in window && !voicesReady) {
         window.speechSynthesis.getVoices();
         voicesReady = true;
+      }
+
+      if (!voiceEnabled) {
+        stopSpeech();
       }
     });
 
@@ -1613,10 +1731,10 @@ Griffin Hall (GH) 160
     window.addEventListener("beforeunload", () => {
       stopScanning();
       stopCamera();
+      stopSpeech();
       if (countdownTimer) clearInterval(countdownTimer);
       if (majorRotationTimer) clearInterval(majorRotationTimer);
       if (finalTimer) clearTimeout(finalTimer);
-      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     });
   </script>
 </body>
