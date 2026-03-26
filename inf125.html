@@ -25,12 +25,12 @@
       --danger:#ff8a8a;
       --shadow:0 24px 60px rgba(0,0,0,.42);
       --radius:24px;
-      --radius-sm:18px;
       --max:1120px;
     }
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
+
     body{
       margin:0;
       font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
@@ -89,6 +89,7 @@
     }
 
     .brand-copy{min-width:0}
+
     .brand-kicker{
       color:var(--gold);
       font-size:.7rem;
@@ -99,6 +100,7 @@
       overflow:hidden;
       text-overflow:ellipsis;
     }
+
     .brand-title{
       font-size:.96rem;
       font-weight:800;
@@ -128,7 +130,9 @@
     }
 
     .dot{
-      width:8px;height:8px;border-radius:999px;
+      width:8px;
+      height:8px;
+      border-radius:999px;
       background:var(--gold);
       box-shadow:0 0 0 6px rgba(255,199,44,.12);
     }
@@ -142,6 +146,7 @@
       font-weight:850;
       transition:transform .16s ease, opacity .16s ease, background .16s ease, border-color .16s ease;
     }
+
     .btn:hover{transform:translateY(-1px)}
     .btn:active{transform:translateY(0)}
 
@@ -542,10 +547,10 @@
     }
 
     .features{
-      margin-top:18px;
       display:grid;
       grid-template-columns:1fr;
       gap:12px;
+      margin-top:18px;
     }
 
     .feature{
@@ -572,7 +577,6 @@
       display:grid;
       grid-template-columns:1fr;
       gap:16px;
-      margin-top:18px;
     }
 
     .path-grid{
@@ -922,7 +926,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div class="panel hero-copy-panel">
-          <div class="eyebrow">Viral Course Experience • All Majors Welcome</div>
+          <div class="eyebrow">College of Informatics • All Majors Welcome</div>
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
             This is not just a course page. It’s a fast, personalized experience that shows students from
@@ -1026,6 +1030,37 @@
             <button class="btn btn-secondary" id="scanBtn" type="button">Start scan</button>
             <button class="btn btn-secondary" id="flipBtn" type="button">Flip camera</button>
             <button class="btn btn-secondary" id="voiceBtn" type="button">Enable voice</button>
+            <button class="btn btn-primary" id="skipCountdownBtn" type="button">Skip camera & start countdown</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell panel section-card">
+        <div class="section-label">Why students are drawn to this course</div>
+        <h2 class="section-title">AI isn’t just for computer science majors</h2>
+        <p class="section-copy">
+          INF 125 is built to be approachable, relevant, and useful whether you study business,
+          health sciences, communication, education, arts, informatics, or something else entirely.
+        </p>
+
+        <div class="features">
+          <div class="feature">
+            <h3>Welcoming</h3>
+            <p>Designed for beginners and curious students from any major.</p>
+          </div>
+          <div class="feature">
+            <h3>Relevant</h3>
+            <p>Connect AI to careers, industries, and real decisions happening now.</p>
+          </div>
+          <div class="feature">
+            <h3>Interactive</h3>
+            <p>Explore hands-on moments, discussion, examples, and real-world applications.</p>
+          </div>
+          <div class="feature">
+            <h3>Future-focused</h3>
+            <p>Build confidence around a technology that is already reshaping every field.</p>
           </div>
         </div>
       </div>
@@ -1078,6 +1113,16 @@
               <span class="tag">Innovation</span>
             </div>
           </div>
+
+          <div class="share-box">
+            <p><strong>Make it shareable:</strong> after you pick a path, use the button below to copy a caption students can paste into a text, story, or post.</p>
+            <div class="share-grid">
+              <button class="btn btn-primary" type="button" id="copyCaptionBtn">Copy share caption</button>
+              <button class="btn btn-secondary" type="button" id="triggerRevealBtn">Trigger my reveal</button>
+            </div>
+            <div class="small-note" id="shareFeedback">Suggested campus hook: “This AI page told me how my major is about to change 👀”</div>
+          </div>
+        </div>
 
         <div class="panel section-card">
           <div class="section-label">Step 2 • Go straight to NKU registration</div>
@@ -1154,7 +1199,7 @@
   <section class="final-screen" id="finalScreen" aria-hidden="true">
     <div class="final-kicker">Northern Kentucky University</div>
     <h2 class="final-title"><span class="gold">AI Literacy</span><br>For Every Major</h2>
-    <div class="final-copy" id="finalCopy">
+    <div class="final-copy">
 A welcoming course for students from all majors.
 
 Explore how AI connects to careers, creativity, communication, ethics, and everyday life.
@@ -1291,6 +1336,7 @@ Griffin Hall (GH) 160
     const replayBtn = document.getElementById("replayBtn");
     const copyCaptionBtn = document.getElementById("copyCaptionBtn");
     const triggerRevealBtn = document.getElementById("triggerRevealBtn");
+    const skipCountdownBtn = document.getElementById("skipCountdownBtn");
 
     const pathGrid = document.getElementById("pathGrid");
     const personaPanel = document.getElementById("personaPanel");
@@ -1371,12 +1417,12 @@ Griffin Hall (GH) 160
 
     function labelForPath(pathKey) {
       const labels = {
-        business: "Business",
-        health: "Health",
-        creative: "Creative majors",
-        education: "Education",
-        tech: "Tech-curious students",
-        undecided: "Undecided students"
+        business: "business",
+        health: "health majors",
+        creative: "creative majors",
+        education: "education majors",
+        tech: "tech-curious students",
+        undecided: "undecided students"
       };
       return labels[pathKey] || "my field";
     }
@@ -1438,7 +1484,7 @@ Griffin Hall (GH) 160
         fallbackStage.style.display = "none";
         cameraStatus.textContent = `Camera live (${facingMode === "environment" ? "rear" : "front"})`;
         scanStatus.textContent = "Ready to scan";
-        ocrOutput.textContent = "Camera live. Point at Griffin Hall 160 or trigger the reveal below.";
+        ocrOutput.textContent = "Camera live. Point at Griffin Hall 160 or use the skip button.";
       } catch (err) {
         console.error(err);
         startFallbackReveal();
@@ -1456,9 +1502,9 @@ Griffin Hall (GH) 160
     function startFallbackReveal() {
       fallbackMode = true;
       cameraStatus.textContent = "Camera skipped";
-      scanStatus.textContent = "Personalized reveal active";
+      scanStatus.textContent = "Countdown started";
       fallbackStage.style.display = "grid";
-      ocrOutput.textContent = "No camera? No problem — launching the personalized reveal now.";
+      ocrOutput.textContent = "No camera? No problem — launching the personalized reveal and countdown now.";
       onTargetFound("camera skipped");
     }
 
@@ -1563,7 +1609,7 @@ Griffin Hall (GH) 160
       stopScanning();
       revealCard.classList.add("active");
       scanRing.classList.add("found");
-      scanStatus.textContent = fallbackMode ? "Personalized reveal active" : "Room found";
+      scanStatus.textContent = fallbackMode ? "Countdown active" : "Room found";
       ocrOutput.textContent = fallbackMode
         ? "DIRECT LAUNCH MODE:\nShowing the personalized course reveal without camera access."
         : `MATCH FOUND:\n${matchText}`;
@@ -1631,6 +1677,10 @@ Griffin Hall (GH) 160
       }
     });
 
+    skipCountdownBtn.addEventListener("click", () => {
+      startFallbackReveal();
+    });
+
     replayBtn.addEventListener("click", () => {
       hideFinalScreen();
       resetExperience();
@@ -1641,7 +1691,11 @@ Griffin Hall (GH) 160
     });
 
     copyCaptionBtn.addEventListener("click", async () => {
-      const caption = `This AI page told me how ${labelForPath(selectedPath).toLowerCase()} is about to change 👀\n\nINF 125: AI Literacy at NKU might actually be for all majors.\n\nTues/Thurs • 10:50 AM–12:05 PM • GH 160`;
+      const caption = `This AI page told me how ${labelForPath(selectedPath)} is about to change 👀
+
+INF 125: AI Literacy at NKU might actually be for all majors.
+
+Tues/Thurs • 10:50 AM–12:05 PM • GH 160`;
       try {
         await navigator.clipboard.writeText(caption);
         shareFeedback.textContent = "Copied. Paste it into a text, story, or post.";
