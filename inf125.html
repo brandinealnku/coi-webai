@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>INF 125: AI Literacy | NKU</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Sees Your Future | NKU</title>
 
 <style>
 body{
   margin:0;
   font-family:system-ui;
-  background:#0b0b0b;
+  background:#000;
   color:#fff;
+  text-align:center;
 }
 
 .container{
-  max-width:900px;
-  margin:auto;
   padding:24px;
+  max-width:700px;
+  margin:auto;
 }
 
 h1{
@@ -28,44 +29,33 @@ h1{
 
 .btn{
   display:block;
+  margin-top:14px;
   padding:16px;
-  margin-top:12px;
   border-radius:12px;
-  text-align:center;
   font-weight:bold;
   text-decoration:none;
 }
 
-.btn-primary{
-  background:#FFC72C;
-  color:#000;
-}
+.primary{background:#FFC72C;color:#000;}
+.secondary{background:#222;color:#fff;}
 
-.btn-secondary{
-  background:#222;
-  color:#fff;
-}
-
-.card{
-  background:#151515;
-  padding:16px;
-  border-radius:14px;
+select{
+  width:100%;
+  padding:14px;
   margin-top:16px;
+  border-radius:10px;
+  font-size:1rem;
 }
 
-.grid{
-  display:grid;
-  gap:10px;
+#reveal{
+  display:none;
+  margin-top:30px;
+  font-size:1.3rem;
 }
 
-.row{
-  display:flex;
-  justify-content:space-between;
-}
-
-.label{
-  color:#FFC72C;
-  font-size:.8rem;
+#countdown{
+  margin-top:20px;
+  font-size:1.5rem;
 }
 
 .sticky{
@@ -73,13 +63,8 @@ h1{
   bottom:0;
   left:0;
   right:0;
-  padding:12px;
   background:#000;
-  border-top:1px solid #333;
-}
-
-.center{
-  text-align:center;
+  padding:12px;
 }
 </style>
 </head>
@@ -88,128 +73,89 @@ h1{
 
 <div class="container">
 
-  <!-- HERO -->
-  <h1>
-    AI is changing every major.<br>
-    <span class="gold">Come explore where you fit.</span>
-  </h1>
+<h1>
+AI is coming for your future.<br>
+<span class="gold">Let’s see how.</span>
+</h1>
 
-  <p>
-    INF 125: AI Literacy is designed for students from <strong>all majors</strong>.
-    No technical background needed—just curiosity.
-  </p>
+<p>Select your major 👇</p>
 
-  <!-- PRIMARY CTA -->
-  <a class="btn btn-primary"
-     href="https://one.nku.edu/task/all/registerforclass"
-     target="_blank">
-     Register for Classes at NKU
-  </a>
+<select id="major">
+  <option value="">Choose your major</option>
+  <option>Business</option>
+  <option>Health</option>
+  <option>Education</option>
+  <option>Communication</option>
+  <option>Arts</option>
+  <option>Technology</option>
+  <option>Undecided</option>
+</select>
 
-  <a class="btn btn-secondary" href="#details">
-     See course details
-  </a>
+<button class="btn primary" onclick="revealFuture()">
+See My AI Future
+</button>
 
-  <!-- VALUE SECTION -->
-  <div class="card">
-    <div class="label">Why students take this course</div>
-    <ul>
-      <li>Understand AI without needing coding experience</li>
-      <li>See how AI impacts YOUR major</li>
-      <li>Explore real-world applications</li>
-      <li>Be prepared for the future workforce</li>
-    </ul>
-  </div>
+<div id="reveal"></div>
+<div id="countdown"></div>
 
-  <!-- COURSE DETAILS -->
-  <div id="details" class="card">
-    <div class="label">Course Info</div>
-
-    <div class="grid">
-      <div class="row"><span>Course</span><span>INF 125</span></div>
-      <div class="row"><span>Title</span><span>AI Literacy</span></div>
-      <div class="row"><span>Days</span><span>T / Th</span></div>
-      <div class="row"><span>Time</span><span>10:50 – 12:05</span></div>
-      <div class="row"><span>Location</span><span>GH 160</span></div>
-      <div class="row"><span>Start</span><span>Aug 24, 2026</span></div>
-    </div>
-  </div>
-
-  <!-- REGISTRATION STEP -->
-  <div class="card">
-    <div class="label">How to register</div>
-    <p>
-      Go to NKU registration and search:
-      <strong>INF 125: AI Literacy</strong>
-    </p>
-
-    <a class="btn btn-primary"
-       href="https://one.nku.edu/task/all/registerforclass"
-       target="_blank">
-       Go to NKU Registration
-    </a>
-
-    <a class="btn btn-secondary"
-       href="https://inside.nku.edu/registrar/registration.html"
-       target="_blank">
-       Need help registering?
-    </a>
-  </div>
-
-  <!-- EXPERIENCE (SIMPLIFIED) -->
-  <div class="card center">
-    <div class="label">Interactive Experience</div>
-    <p>
-      Walk to Griffin Hall 160 to unlock the live countdown experience.
-    </p>
-
-    <button class="btn btn-secondary" onclick="startExperience()">
-      Start Experience
-    </button>
-  </div>
-
-  <!-- COUNTDOWN -->
-  <div class="card center" id="countdownCard" style="display:none;">
-    <h2 class="gold">Course Starts In</h2>
-    <div id="countdown"></div>
-  </div>
+<a class="btn primary"
+href="https://one.nku.edu/task/all/registerforclass"
+target="_blank">
+Register for INF 125
+</a>
 
 </div>
 
-<!-- STICKY CTA -->
 <div class="sticky">
-  <a class="btn btn-primary"
-     href="https://one.nku.edu/task/all/registerforclass"
-     target="_blank">
-     Register for INF 125
-  </a>
+<a class="btn primary"
+href="https://one.nku.edu/task/all/registerforclass"
+target="_blank">
+Register Now
+</a>
 </div>
 
 <script>
-// COUNTDOWN
-const startDate = new Date("2026-08-24T10:50:00");
+const messages = {
+  "Business": "AI will automate decisions, marketing, and strategy.",
+  "Health": "AI will assist diagnosis, treatment, and patient care.",
+  "Education": "AI will reshape how students learn and teachers teach.",
+  "Communication": "AI will generate content, media, and messaging.",
+  "Arts": "AI is already creating music, visuals, and design.",
+  "Technology": "AI will redefine software, systems, and innovation.",
+  "Undecided": "AI will shape EVERY career path."
+};
 
-function startExperience(){
-  document.getElementById("countdownCard").style.display = "block";
-  updateCountdown();
-  setInterval(updateCountdown,1000);
-}
+function revealFuture(){
+  const major = document.getElementById("major").value;
 
-function updateCountdown(){
-  const now = new Date();
-  const diff = startDate - now;
-
-  if(diff <= 0){
-    document.getElementById("countdown").innerHTML = "Class has started!";
+  if(!major){
+    alert("Pick a major first 👀");
     return;
   }
 
-  const days = Math.floor(diff / (1000*60*60*24));
-  const hours = Math.floor((diff/(1000*60*60)) % 24);
-  const minutes = Math.floor((diff/(1000*60)) % 60);
+  const text = messages[major];
 
-  document.getElementById("countdown").innerHTML =
-    `${days} days ${hours} hrs ${minutes} min`;
+  document.getElementById("reveal").style.display="block";
+  document.getElementById("reveal").innerHTML =
+    `<span class="gold">For ${major} majors:</span><br>${text}<br><br>
+     This is exactly why INF 125 exists.`;
+
+  startCountdown();
+}
+
+function startCountdown(){
+  const target = new Date("2026-08-24T10:50:00");
+
+  setInterval(()=>{
+    const now = new Date();
+    const diff = target - now;
+
+    const days = Math.floor(diff/(1000*60*60*24));
+    const hrs = Math.floor((diff/(1000*60*60))%24);
+
+    document.getElementById("countdown").innerHTML =
+      `Course starts in ${days} days ${hrs} hrs`;
+  },1000);
 }
 </script>
 
