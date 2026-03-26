@@ -1,1884 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>NKU COI | INF 125: AI Literacy for Every Major</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
-  <meta
-    name="description"
-    content="Interactive course experience for INF 125: AI Literacy at NKU. Designed for students from every major."
-  />
-  <style>
-    :root{
-      --bg:#070707;
-      --bg-soft:#111214;
-      --card:rgba(255,255,255,.06);
-      --card-strong:rgba(255,255,255,.09);
-      --border:rgba(255,255,255,.12);
-      --text:#ffffff;
-      --muted:rgba(255,255,255,.78);
-      --soft:rgba(255,255,255,.58);
-      --gold:#FFC72C;
-      --gold-2:#ffe08e;
-      --success:#5df2a5;
-      --danger:#ff7b7b;
-      --shadow:0 20px 60px rgba(0,0,0,.42);
-      --radius:24px;
-      --radius-sm:18px;
-      --max:1200px;
-    }
-
-    *{ box-sizing:border-box; }
-
-    html{
-      scroll-behavior:smooth;
-    }
-
-    body{
-      margin:0;
-      font-family:Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top, rgba(255,199,44,.14), transparent 22%),
-        radial-gradient(circle at 85% 20%, rgba(255,255,255,.06), transparent 20%),
-        linear-gradient(180deg, #111 0%, #080808 35%, #050505 100%);
-      overflow-x:hidden;
-    }
-
-    a{
-      color:inherit;
-      text-decoration:none;
-    }
-
-    img{
-      max-width:100%;
-      display:block;
-    }
-
-    button,
-    input,
-    select{
-      font:inherit;
-    }
-
-    .shell{
-      width:min(100%, var(--max));
-      margin:0 auto;
-      padding:0 16px;
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      backdrop-filter:blur(16px);
-      background:rgba(7,7,7,.72);
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-
-    .topbar-inner{
-      min-height:72px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
-
-    .brand-mark{
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      background:linear-gradient(135deg, var(--gold), #f3b300);
-      color:#111;
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      box-shadow:var(--shadow);
-      flex-shrink:0;
-    }
-
-    .brand-copy{
-      min-width:0;
-    }
-
-    .brand-kicker{
-      color:var(--gold);
-      font-size:.7rem;
-      text-transform:uppercase;
-      letter-spacing:.16em;
-      font-weight:900;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .brand-title{
-      font-size:.95rem;
-      font-weight:800;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .topbar-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-shrink:0;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      font-size:.8rem;
-      font-weight:700;
-    }
-
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:var(--gold);
-      box-shadow:0 0 0 6px rgba(255,199,44,.12);
-    }
-
-    .btn{
-      appearance:none;
-      border:none;
-      cursor:pointer;
-      border-radius:999px;
-      padding:14px 18px;
-      font-weight:850;
-      transition:transform .16s ease, opacity .16s ease, background .16s ease, border-color .16s ease;
-    }
-
-    .btn:hover{
-      transform:translateY(-1px);
-    }
-
-    .btn:active{
-      transform:translateY(0);
-    }
-
-    .btn-primary{
-      color:#111;
-      background:linear-gradient(135deg, var(--gold-2), var(--gold));
-      box-shadow:0 10px 28px rgba(255,199,44,.2);
-    }
-
-    .btn-secondary{
-      color:#fff;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--border);
-    }
-
-    .hero{
-      position:relative;
-      padding:56px 0 28px;
-      overflow:hidden;
-    }
-
-    .hero-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:18px;
-      align-items:stretch;
-    }
-
-    .hero-panel,
-    .visual-panel,
-    .section-card,
-    .funnel-card,
-    .course-card,
-    .dates-card,
-    .camera-card,
-    .social-card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(14px);
-    }
-
-    .hero-panel{
-      padding:26px;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:var(--gold);
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-size:.72rem;
-      font-weight:900;
-      margin-bottom:14px;
-    }
-
-    h1{
-      margin:0;
-      font-size:clamp(2.4rem, 7vw, 5rem);
-      line-height:.92;
-      letter-spacing:-.05em;
-      text-transform:uppercase;
-      max-width:10ch;
-    }
-
-    .gradient-text{
-      background:linear-gradient(135deg, #fff 0%, var(--gold-2) 45%, var(--gold) 100%);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-    }
-
-    .hero-copy{
-      margin:18px 0 0;
-      max-width:58ch;
-      color:var(--muted);
-      font-size:1.05rem;
-      line-height:1.58;
-    }
-
-    .hero-copy strong{
-      color:#fff;
-    }
-
-    .hero-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .hero-meta{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .stat{
-      padding:14px 16px;
-      border-radius:18px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .stat-label{
-      color:var(--gold);
-      font-size:.7rem;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .stat-value{
-      font-size:1rem;
-      font-weight:800;
-      line-height:1.35;
-    }
-
-    .visual-panel{
-      padding:18px;
-      display:grid;
-      gap:14px;
-      align-content:start;
-    }
-
-    .live-stage{
-      position:relative;
-      min-height:480px;
-      border-radius:22px;
-      overflow:hidden;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255,199,44,.18), transparent 28%),
-        linear-gradient(180deg, #1a1a1a 0%, #090909 100%);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .live-stage video{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-      background:#000;
-    }
-
-    .live-stage .fallback-bg{
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(255,199,44,.16), transparent 24%),
-        linear-gradient(180deg, rgba(255,255,255,.05), transparent 30%),
-        linear-gradient(180deg, #181818 0%, #070707 100%);
-      display:grid;
-      place-items:center;
-      text-align:center;
-      padding:24px;
-    }
-
-    .fallback-bg h2{
-      margin:0 0 10px;
-      font-size:clamp(1.8rem, 5vw, 2.8rem);
-      line-height:.95;
-      letter-spacing:-.04em;
-      text-transform:uppercase;
-    }
-
-    .fallback-bg p{
-      margin:0;
-      color:var(--muted);
-      max-width:28ch;
-      line-height:1.5;
-      font-size:1rem;
-    }
-
-    .scan-ring{
-      position:absolute;
-      inset:50% auto auto 50%;
-      width:78%;
-      height:26%;
-      transform:translate(-50%,-50%);
-      border:2px solid rgba(255,255,255,.85);
-      border-radius:24px;
-      box-shadow:inset 0 0 0 9999px rgba(0,0,0,.16);
-      overflow:hidden;
-      transition:.25s ease;
-      z-index:2;
-    }
-
-    .scan-ring::before{
-      content:"";
-      position:absolute;
-      left:10px;
-      right:10px;
-      top:14px;
-      height:2px;
-      background:linear-gradient(90deg, transparent, var(--gold), transparent);
-      filter:drop-shadow(0 0 8px rgba(255,199,44,.85));
-      animation:sweep 2.5s linear infinite;
-    }
-
-    .scan-ring.found{
-      border-color:var(--success);
-      box-shadow:0 0 26px rgba(93,242,165,.25), inset 0 0 0 9999px rgba(0,0,0,.05);
-    }
-
-    @keyframes sweep{
-      0%{ transform:translateY(0); opacity:.2; }
-      50%{ transform:translateY(44px); opacity:1; }
-      100%{ transform:translateY(88px); opacity:.2; }
-    }
-
-    .stage-top{
-      position:absolute;
-      left:12px;
-      right:12px;
-      top:12px;
-      z-index:3;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-
-    .stage-bottom{
-      position:absolute;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      z-index:3;
-      display:grid;
-      gap:10px;
-    }
-
-    .overlay-pill{
-      padding:9px 11px;
-      border-radius:999px;
-      background:rgba(0,0,0,.56);
-      border:1px solid rgba(255,255,255,.12);
-      color:#fff;
-      font-size:.8rem;
-      font-weight:700;
-      backdrop-filter:blur(10px);
-    }
-
-    .overlay-pill strong{
-      color:var(--gold);
-    }
-
-    .reveal-card{
-      display:none;
-      padding:16px;
-      background:rgba(0,0,0,.68);
-      border:1px solid rgba(255,255,255,.1);
-      border-radius:20px;
-      backdrop-filter:blur(12px);
-    }
-
-    .reveal-card.active{
-      display:block;
-      animation:rise .42s ease;
-    }
-
-    @keyframes rise{
-      from{ opacity:0; transform:translateY(10px) scale(.985); }
-      to{ opacity:1; transform:translateY(0) scale(1); }
-    }
-
-    .reveal-kicker{
-      color:var(--gold);
-      font-size:.72rem;
-      text-transform:uppercase;
-      letter-spacing:.16em;
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .reveal-card h3{
-      margin:0;
-      font-size:1.34rem;
-      line-height:1.05;
-      letter-spacing:-.03em;
-      text-transform:uppercase;
-    }
-
-    .reveal-card p{
-      margin:8px 0 0;
-      color:var(--muted);
-      line-height:1.48;
-      font-size:.95rem;
-    }
-
-    .major-rotator{
-      margin-top:12px;
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .major-rotator .label{
-      color:var(--gold);
-      font-size:.68rem;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .major-rotator .text{
-      font-size:1rem;
-      font-weight:800;
-      line-height:1.35;
-      min-height:2.8em;
-    }
-
-    .count-grid{
-      margin-top:12px;
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-    }
-
-    .count{
-      border-radius:16px;
-      padding:12px 8px;
-      text-align:center;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .count-num{
-      font-size:1.35rem;
-      font-weight:900;
-      line-height:1;
-      color:var(--gold);
-    }
-
-    .count-label{
-      margin-top:6px;
-      color:var(--soft);
-      font-size:.68rem;
-      text-transform:uppercase;
-      letter-spacing:.12em;
-      font-weight:800;
-    }
-
-    .debug-card{
-      padding:14px;
-      border-radius:18px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .debug-card .label{
-      color:var(--gold);
-      font-size:.7rem;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .debug-card .text{
-      color:var(--soft);
-      font-size:.83rem;
-      line-height:1.4;
-      white-space:pre-wrap;
-      max-height:96px;
-      overflow:auto;
-    }
-
-    .quick-proof{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-    }
-
-    .proof-item{
-      padding:14px 16px;
-      border-radius:18px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .proof-label{
-      color:var(--gold);
-      font-size:.7rem;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .proof-value{
-      font-size:.96rem;
-      font-weight:800;
-      line-height:1.4;
-    }
-
-    .section{
-      padding:12px 0;
-    }
-
-    .section-card,
-    .course-card,
-    .dates-card,
-    .funnel-card,
-    .social-card,
-    .camera-card{
-      padding:20px;
-    }
-
-    .section-label{
-      color:var(--gold);
-      font-size:.72rem;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-weight:900;
-      margin-bottom:8px;
-    }
-
-    .section-title{
-      margin:0;
-      font-size:clamp(1.5rem, 4vw, 2.4rem);
-      line-height:1;
-      letter-spacing:-.04em;
-      text-transform:uppercase;
-    }
-
-    .section-copy{
-      margin:10px 0 0;
-      color:var(--muted);
-      line-height:1.56;
-      max-width:70ch;
-    }
-
-    .features{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-    }
-
-    .feature{
-      padding:16px;
-      border-radius:20px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .feature h3{
-      margin:0 0 6px;
-      font-size:1rem;
-      text-transform:uppercase;
-      letter-spacing:.02em;
-    }
-
-    .feature p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.5;
-    }
-
-    .social-grid{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-    }
-
-    .social-card .quote{
-      margin:0;
-      font-size:1rem;
-      line-height:1.6;
-      color:#fff;
-      font-weight:700;
-    }
-
-    .social-card .by{
-      margin-top:10px;
-      color:var(--soft);
-      font-size:.88rem;
-    }
-
-    .course-grid{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-    }
-
-    .course-row{
-      display:grid;
-      grid-template-columns:120px 1fr;
-      gap:10px;
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .course-row .k{
-      color:var(--gold);
-      font-weight:900;
-      font-size:.8rem;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      line-height:1.2;
-    }
-
-    .course-row .v{
-      color:var(--muted);
-      font-weight:700;
-      line-height:1.4;
-    }
-
-    .dates-list{
-      margin-top:14px;
-      display:grid;
-      gap:8px;
-      max-height:360px;
-      overflow:auto;
-      padding-right:4px;
-    }
-
-    .date-row{
-      display:grid;
-      grid-template-columns:118px 1fr;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .date-row .date{
-      color:var(--gold);
-      font-weight:900;
-      font-size:.8rem;
-      line-height:1.25;
-    }
-
-    .date-row .event{
-      color:var(--muted);
-      font-size:.84rem;
-      line-height:1.35;
-    }
-
-    .funnel-grid{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:16px;
-    }
-
-    .path-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .path-btn{
-      width:100%;
-      text-align:left;
-      padding:14px;
-      border-radius:18px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-      transition:.16s ease;
-      min-height:72px;
-    }
-
-    .path-btn.active,
-    .path-btn:hover{
-      background:rgba(255,199,44,.12);
-      border-color:rgba(255,199,44,.34);
-    }
-
-    .path-title{
-      display:block;
-      font-size:.96rem;
-      margin-bottom:4px;
-    }
-
-    .path-sub{
-      display:block;
-      color:var(--soft);
-      font-size:.82rem;
-      line-height:1.35;
-      font-weight:600;
-    }
-
-    .persona-panel{
-      padding:16px;
-      border-radius:20px;
-      background:
-        linear-gradient(180deg, rgba(255,199,44,.14), rgba(255,199,44,.04)),
-        rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .persona-panel h3{
-      margin:0;
-      font-size:1.2rem;
-      line-height:1.05;
-      text-transform:uppercase;
-      letter-spacing:-.03em;
-    }
-
-    .persona-panel p{
-      margin:10px 0 0;
-      color:var(--muted);
-      line-height:1.55;
-    }
-
-    .persona-tags{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:14px;
-    }
-
-    .tag{
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      color:#fff;
-      font-size:.8rem;
-      font-weight:700;
-    }
-
-    .interest-form{
-      display:grid;
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .field{
-      display:grid;
-      gap:6px;
-    }
-
-    .field label{
-      color:#fff;
-      font-size:.9rem;
-      font-weight:800;
-    }
-
-    .field input,
-    .field select{
-      width:100%;
-      min-height:52px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      color:#fff;
-      padding:0 14px;
-      outline:none;
-    }
-
-    .field input::placeholder{
-      color:rgba(255,255,255,.42);
-    }
-
-    .field input:focus,
-    .field select:focus{
-      border-color:rgba(255,199,44,.65);
-      box-shadow:0 0 0 4px rgba(255,199,44,.1);
-    }
-
-    .error{
-      color:#ffd0d0;
-      font-size:.84rem;
-      display:none;
-    }
-
-    .form-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      margin-top:4px;
-    }
-
-    .form-note{
-      color:var(--soft);
-      font-size:.82rem;
-      line-height:1.45;
-    }
-
-    .success-panel{
-      margin-top:14px;
-      display:none;
-      padding:16px;
-      border-radius:18px;
-      background:rgba(93,242,165,.12);
-      border:1px solid rgba(93,242,165,.28);
-    }
-
-    .success-panel h4{
-      margin:0 0 6px;
-      font-size:1rem;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-    }
-
-    .success-panel p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.5;
-    }
-
-    .sticky-cta{
-      position:fixed;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      z-index:60;
-      display:flex;
-      gap:10px;
-      padding:10px;
-      border-radius:22px;
-      background:rgba(7,7,7,.78);
-      border:1px solid rgba(255,255,255,.1);
-      backdrop-filter:blur(16px);
-      box-shadow:var(--shadow);
-    }
-
-    .sticky-cta .btn{
-      flex:1;
-      min-height:52px;
-    }
-
-    .final-screen{
-      position:fixed;
-      inset:0;
-      z-index:80;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      padding:24px 18px calc(24px + env(safe-area-inset-bottom));
-      text-align:center;
-      background:
-        radial-gradient(circle at 50% 24%, rgba(255,199,44,.2), transparent 24%),
-        linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%),
-        linear-gradient(180deg,#0b0b0b 0%, #020202 100%);
-      opacity:0;
-      pointer-events:none;
-      transform:scale(1.03);
-      transition:.45s ease;
-    }
-
-    .final-screen.active{
-      opacity:1;
-      pointer-events:auto;
-      transform:scale(1);
-    }
-
-    .final-kicker{
-      color:var(--gold);
-      font-size:.8rem;
-      text-transform:uppercase;
-      letter-spacing:.2em;
-      font-weight:900;
-      margin-bottom:12px;
-    }
-
-    .final-title{
-      margin:0;
-      font-size:clamp(2.1rem, 8vw, 4.2rem);
-      line-height:.92;
-      letter-spacing:-.05em;
-      text-transform:uppercase;
-    }
-
-    .final-title .gold{
-      color:var(--gold);
-    }
-
-    .final-copy{
-      margin:16px auto 0;
-      max-width:42rem;
-      color:var(--muted);
-      line-height:1.58;
-      white-space:pre-line;
-      font-size:1rem;
-    }
-
-    .final-meta{
-      margin-top:18px;
-      display:grid;
-      gap:10px;
-      width:min(100%, 680px);
-    }
-
-    .final-chip{
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--border);
-      font-weight:800;
-      line-height:1.4;
-    }
-
-    .final-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:18px;
-      width:min(100%, 680px);
-    }
-
-    @media (min-width:860px){
-      .hero-grid{
-        grid-template-columns:1.1fr .9fr;
-      }
-
-      .features{
-        grid-template-columns:repeat(2,1fr);
-      }
-
-      .social-grid{
-        grid-template-columns:repeat(3,1fr);
-      }
-
-      .funnel-grid{
-        grid-template-columns:.95fr 1.05fr;
-      }
-    }
-
-    @media (max-width:719px){
-      .topbar-actions .pill{
-        display:none;
-      }
-
-      .course-row,
-      .date-row{
-        grid-template-columns:1fr;
-      }
-
-      .path-grid{
-        grid-template-columns:1fr;
-      }
-
-      .hero-meta{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (min-width:900px){
-      .sticky-cta{
-        left:auto;
-        right:20px;
-        bottom:20px;
-        width:360px;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>INF 125: AI Literacy | NKU</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#0b0b0b;
+  color:#fff;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:24px;
+}
+
+h1{
+  font-size:2.5rem;
+  line-height:1.1;
+}
+
+.gold{color:#FFC72C;}
+
+.btn{
+  display:block;
+  padding:16px;
+  margin-top:12px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+.btn-primary{
+  background:#FFC72C;
+  color:#000;
+}
+
+.btn-secondary{
+  background:#222;
+  color:#fff;
+}
+
+.card{
+  background:#151515;
+  padding:16px;
+  border-radius:14px;
+  margin-top:16px;
+}
+
+.grid{
+  display:grid;
+  gap:10px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+}
+
+.label{
+  color:#FFC72C;
+  font-size:.8rem;
+}
+
+.sticky{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:12px;
+  background:#000;
+  border-top:1px solid #333;
+}
+
+.center{
+  text-align:center;
+}
+</style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="shell topbar-inner">
-      <div class="brand">
-        <div class="brand-mark">AI</div>
-        <div class="brand-copy">
-          <div class="brand-kicker">Northern Kentucky University</div>
-          <div class="brand-title">INF 125: AI Literacy • Open to All Majors</div>
-        </div>
-      </div>
-      <div class="topbar-actions">
-        <div class="pill"><span class="dot"></span>Fall 2026</div>
-        <a class="btn btn-primary" href="#funnel">Get the registration checklist</a>
-      </div>
-    </div>
-  </header>
 
-  <main>
-    <section class="hero">
-      <div class="shell hero-grid">
-        <div class="hero-panel">
-          <div class="eyebrow">AI Literacy for Every Major</div>
-          <h1>See where <span class="gradient-text">AI fits your future.</span></h1>
-          <p class="hero-copy">
-            <strong>INF 125: AI Literacy</strong> is a welcoming, interactive course built for students from
-            <strong>all majors</strong>. Whether you care about business, health, communication, education,
-            design, media, or just understanding the future, this class helps you explore how AI connects
-            to your world.
-          </p>
+<div class="container">
 
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#funnel">I’m interested</a>
-            <a class="btn btn-secondary" href="#experience">Preview the experience</a>
-          </div>
+  <!-- HERO -->
+  <h1>
+    AI is changing every major.<br>
+    <span class="gold">Come explore where you fit.</span>
+  </h1>
 
-          <div class="hero-meta">
-            <div class="stat">
-              <div class="stat-label">Who it’s for</div>
-              <div class="stat-value">All majors • Beginner friendly • No advanced technical background required</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">What you’ll explore</div>
-              <div class="stat-value">AI in careers, creativity, ethics, communication, decision-making, and everyday life</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">Course format</div>
-              <div class="stat-value">Interactive discussions, real examples, hands-on moments, and approachable AI literacy</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">When & where</div>
-              <div class="stat-value">Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall (GH) 160</div>
-            </div>
-          </div>
-        </div>
+  <p>
+    INF 125: AI Literacy is designed for students from <strong>all majors</strong>.
+    No technical background needed—just curiosity.
+  </p>
 
-        <div class="visual-panel" id="experience">
-          <div class="live-stage">
-            <video id="video" autoplay playsinline muted></video>
-            <canvas id="snapshotCanvas"></canvas>
+  <!-- PRIMARY CTA -->
+  <a class="btn btn-primary"
+     href="https://one.nku.edu/task/all/registerforclass"
+     target="_blank">
+     Register for Classes at NKU
+  </a>
 
-            <div class="fallback-bg" id="fallbackBg">
-              <div>
-                <h2>AI literacy starts here.</h2>
-                <p>
-                  Explore a course designed to help students from every major understand and use AI with confidence.
-                </p>
-              </div>
-            </div>
+  <a class="btn btn-secondary" href="#details">
+     See course details
+  </a>
 
-            <div class="stage-top">
-              <div class="overlay-pill">Target room: <strong id="targetRoomPill">Griffin Hall 160</strong></div>
-              <div class="overlay-pill" id="cameraStatus">Camera not started</div>
-              <div class="overlay-pill" id="scanStatus">Experience ready</div>
-            </div>
-
-            <div class="scan-ring" id="scanRing"></div>
-
-            <div class="stage-bottom">
-              <div class="reveal-card" id="revealCard">
-                <div class="reveal-kicker">You found it</div>
-                <h3 id="revealTitle">A course for every major in an AI-driven world</h3>
-                <p id="revealText">
-                  INF 125 invites students across NKU to explore how AI is shaping careers, creativity, communication, business, healthcare, and everyday decisions.
-                </p>
-
-                <div class="major-rotator">
-                  <div class="label">Who might see themselves here?</div>
-                  <div class="text" id="majorText">Future teacher? Future entrepreneur? Future creator? AI will touch your field too.</div>
-                </div>
-
-                <div class="count-grid">
-                  <div class="count">
-                    <div class="count-num" id="days">0</div>
-                    <div class="count-label">Days</div>
-                  </div>
-                  <div class="count">
-                    <div class="count-num" id="hours">00</div>
-                    <div class="count-label">Hours</div>
-                  </div>
-                  <div class="count">
-                    <div class="count-num" id="minutes">00</div>
-                    <div class="count-label">Minutes</div>
-                  </div>
-                  <div class="count">
-                    <div class="count-num" id="seconds">00</div>
-                    <div class="count-label">Seconds</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="debug-card">
-                <div class="label">Live preview</div>
-                <div class="text" id="ocrOutput">Start the camera or skip straight into the course reveal.</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="quick-proof">
-            <div class="proof-item">
-              <div class="proof-label">Why this feels modern</div>
-              <div class="proof-value">Big visual hierarchy, fast-scanning cards, motion, and mobile-first interactions</div>
-            </div>
-            <div class="proof-item">
-              <div class="proof-label">Why students stay</div>
-              <div class="proof-value">The message is clear: this course is relevant, welcoming, and built for real futures</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="shell">
-        <div class="section-card">
-          <div class="section-label">Why students are drawn to this course</div>
-          <h2 class="section-title">AI isn’t just for computer science majors</h2>
-          <p class="section-copy">
-            INF 125 is designed to be approachable, engaging, and useful whether you study business,
-            health sciences, communication, education, informatics, the arts, or something else entirely.
-          </p>
-
-          <div class="features">
-            <div class="feature">
-              <h3>Welcoming</h3>
-              <p>Built for beginners and curious students from any major.</p>
-            </div>
-            <div class="feature">
-              <h3>Relevant</h3>
-              <p>Connect AI to careers, industries, and decisions already shaping the world around you.</p>
-            </div>
-            <div class="feature">
-              <h3>Interactive</h3>
-              <p>Expect hands-on moments, discussion, examples, and real-world applications instead of dry jargon.</p>
-            </div>
-            <div class="feature">
-              <h3>Future-focused</h3>
-              <p>Build confidence around a technology that is already changing every field.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="shell social-grid">
-        <div class="social-card">
-          <div class="section-label">What students care about</div>
-          <p class="quote">“How will AI affect my major, my career, and the work I’ll actually do?”</p>
-          <div class="by">This course is built around that question.</div>
-        </div>
-        <div class="social-card">
-          <div class="section-label">What makes it approachable</div>
-          <p class="quote">“I want to understand AI without feeling like I need a technical background first.”</p>
-          <div class="by">INF 125 is designed for exactly that starting point.</div>
-        </div>
-        <div class="social-card">
-          <div class="section-label">What makes it worth taking</div>
-          <p class="quote">“I want a class that feels useful now, not someday.”</p>
-          <div class="by">AI literacy is practical across majors, jobs, and industries.</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="shell funnel-grid" id="funnel">
-        <div class="funnel-card">
-          <div class="section-label">Step 1 • Pick your path</div>
-          <h2 class="section-title">See yourself in the course</h2>
-          <p class="section-copy">
-            Choose the path that feels closest to you. The page will personalize the message to show why this course matters for your interests.
-          </p>
-
-          <div class="path-grid" id="pathGrid">
-            <button class="path-btn active" type="button" data-path="business">
-              <span class="path-title">Business & Leadership</span>
-              <span class="path-sub">Strategy, decision-making, entrepreneurship, careers</span>
-            </button>
-            <button class="path-btn" type="button" data-path="health">
-              <span class="path-title">Health & Helping Fields</span>
-              <span class="path-sub">Care, data, ethics, human-centered use</span>
-            </button>
-            <button class="path-btn" type="button" data-path="creative">
-              <span class="path-title">Creative & Media</span>
-              <span class="path-sub">Content, design, communication, storytelling</span>
-            </button>
-            <button class="path-btn" type="button" data-path="education">
-              <span class="path-title">Education & Social Impact</span>
-              <span class="path-sub">Learning, access, people, future readiness</span>
-            </button>
-            <button class="path-btn" type="button" data-path="tech">
-              <span class="path-title">Tech & Data Curious</span>
-              <span class="path-sub">Systems, tools, responsible use, innovation</span>
-            </button>
-            <button class="path-btn" type="button" data-path="undecided">
-              <span class="path-title">Still Figuring It Out</span>
-              <span class="path-sub">Explore the future without needing it all mapped out</span>
-            </button>
-          </div>
-
-          <div class="persona-panel" id="personaPanel">
-            <h3>AI literacy for business-minded students</h3>
-            <p id="personaCopy">
-              If you care about leadership, strategy, entrepreneurship, or decision-making, this course helps you understand how AI is changing work, value, and competitive advantage.
-            </p>
-            <div class="persona-tags" id="personaTags">
-              <span class="tag">Careers</span>
-              <span class="tag">Decision-making</span>
-              <span class="tag">Innovation</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="funnel-card">
-          <div class="section-label">Step 2 • Raise your hand</div>
-          <h2 class="section-title">Get the registration checklist</h2>
-          <p class="section-copy">
-            This gives students a simple next step. Replace the placeholder registration link below with NKU’s actual registration page or course page.
-          </p>
-
-          <form class="interest-form" id="interestForm" novalidate>
-            <div class="field">
-              <label for="studentName">First name</label>
-              <input id="studentName" name="studentName" type="text" placeholder="Your first name" />
-              <div class="error" id="nameError">Please enter your first name.</div>
-            </div>
-
-            <div class="field">
-              <label for="studentEmail">Email</label>
-              <input id="studentEmail" name="studentEmail" type="email" placeholder="you@nku.edu" />
-              <div class="error" id="emailError">Please enter a valid email address.</div>
-            </div>
-
-            <div class="field">
-              <label for="studentMajor">Major or area of interest</label>
-              <select id="studentMajor" name="studentMajor">
-                <option value="">Select one</option>
-                <option>Business</option>
-                <option>Health Sciences</option>
-                <option>Communication / Media</option>
-                <option>Education</option>
-                <option>Arts / Design</option>
-                <option>Informatics / Technology</option>
-                <option>Undeclared / Exploring</option>
-                <option>Other</option>
-              </select>
-              <div class="error" id="majorError">Please choose a major or area of interest.</div>
-            </div>
-
-            <div class="field">
-              <label for="studentReason">What makes this class interesting to you?</label>
-              <select id="studentReason" name="studentReason">
-                <option value="">Select one</option>
-                <option>I want to understand how AI affects my future career</option>
-                <option>I want a beginner-friendly intro to AI</option>
-                <option>I’m curious how AI connects to my major</option>
-                <option>I want to be more prepared for the future</option>
-                <option>I’m interested in creativity, ethics, and real-world examples</option>
-              </select>
-              <div class="error" id="reasonError">Please choose what interests you most.</div>
-            </div>
-
-            <div class="form-actions">
-              <button class="btn btn-primary" type="submit">Get my next steps</button>
-              <a class="btn btn-secondary" id="registerLink" href="#" aria-label="Replace this with your real registration page URL">Registration link placeholder</a>
-            </div>
-
-            <div class="form-note">
-              Suggested funnel: collect interest → show personalized confirmation → send students to the official course page or registration system.
-            </div>
-          </form>
-
-          <div class="success-panel" id="successPanel" aria-live="polite">
-            <h4>You’re on the path.</h4>
-            <p id="successCopy">
-              You’re a great fit for INF 125. Next: use the course details below and click the registration link when it’s ready.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="shell course-card">
-        <div class="section-label">Step 3 • Register with confidence</div>
-        <h2 class="section-title">What to look for when you register</h2>
-        <p class="section-copy">
-          Keep the details simple, scannable, and easy to screenshot.
-        </p>
-
-        <div class="course-grid">
-          <div class="course-row">
-            <div class="k">Course</div>
-            <div class="v">INF 125: AI Literacy</div>
-          </div>
-          <div class="course-row">
-            <div class="k">Days</div>
-            <div class="v">Tuesdays and Thursdays</div>
-          </div>
-          <div class="course-row">
-            <div class="k">Time</div>
-            <div class="v">10:50 AM – 12:05 PM</div>
-          </div>
-          <div class="course-row">
-            <div class="k">Location</div>
-            <div class="v">Griffin Hall (GH) 160</div>
-          </div>
-          <div class="course-row">
-            <div class="k">Session</div>
-            <div class="v">Fall 2026 Full Session • August 24 – December 11</div>
-          </div>
-          <div class="course-row">
-            <div class="k">Open Registration</div>
-            <div class="v">Begins April 13, 2026</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="shell dates-card">
-        <div class="section-label">Important Fall 2026 dates</div>
-        <h2 class="section-title">The planning timeline</h2>
-        <p class="section-copy">
-          Helpful for registration, add/drop decisions, and semester planning.
-        </p>
-        <div class="dates-list" id="datesList"></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="shell camera-card">
-        <div class="section-label">Optional live preview controls</div>
-        <h2 class="section-title">Run the room-finder experience</h2>
-        <p class="section-copy">
-          Camera access is optional. If a student skips it, the page still goes straight to the reveal and countdown.
-        </p>
-
-        <div class="hero-actions">
-          <button class="btn btn-primary" id="startBtn" type="button">Start camera</button>
-          <button class="btn btn-secondary" id="scanBtn" type="button">Start scan</button>
-          <button class="btn btn-secondary" id="flipBtn" type="button">Flip camera</button>
-          <button class="btn btn-secondary" id="skipBtn" type="button">Skip to reveal</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div class="sticky-cta">
-    <a class="btn btn-primary" href="#funnel">Get the checklist</a>
-    <a class="btn btn-secondary" href="#registerLink">Register link</a>
+  <!-- VALUE SECTION -->
+  <div class="card">
+    <div class="label">Why students take this course</div>
+    <ul>
+      <li>Understand AI without needing coding experience</li>
+      <li>See how AI impacts YOUR major</li>
+      <li>Explore real-world applications</li>
+      <li>Be prepared for the future workforce</li>
+    </ul>
   </div>
 
-  <section class="final-screen" id="finalScreen" aria-hidden="true">
-    <div class="final-kicker">Northern Kentucky University</div>
-    <h2 class="final-title"><span class="gold">AI Literacy</span><br>For Every Major</h2>
-    <div class="final-copy" id="finalCopy">
-A welcoming course for students from all majors.
+  <!-- COURSE DETAILS -->
+  <div id="details" class="card">
+    <div class="label">Course Info</div>
 
-Explore how AI connects to careers, creativity, communication, ethics, and everyday life.
-
-INF 125: AI Literacy
-Tuesdays & Thursdays • 10:50 AM – 12:05 PM
-Griffin Hall (GH) 160
+    <div class="grid">
+      <div class="row"><span>Course</span><span>INF 125</span></div>
+      <div class="row"><span>Title</span><span>AI Literacy</span></div>
+      <div class="row"><span>Days</span><span>T / Th</span></div>
+      <div class="row"><span>Time</span><span>10:50 – 12:05</span></div>
+      <div class="row"><span>Location</span><span>GH 160</span></div>
+      <div class="row"><span>Start</span><span>Aug 24, 2026</span></div>
     </div>
-    <div class="final-meta">
-      <div class="final-chip">Open to students from all majors</div>
-      <div class="final-chip">Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
-      <div class="final-chip">Open Registration begins Monday, April 13, 2026</div>
-    </div>
-    <div class="final-actions">
-      <button class="btn btn-primary" id="replayBtn" type="button">Replay experience</button>
-      <a class="btn btn-secondary" href="#funnel">Get the checklist</a>
-    </div>
-  </section>
+  </div>
+
+  <!-- REGISTRATION STEP -->
+  <div class="card">
+    <div class="label">How to register</div>
+    <p>
+      Go to NKU registration and search:
+      <strong>INF 125: AI Literacy</strong>
+    </p>
+
+    <a class="btn btn-primary"
+       href="https://one.nku.edu/task/all/registerforclass"
+       target="_blank">
+       Go to NKU Registration
+    </a>
+
+    <a class="btn btn-secondary"
+       href="https://inside.nku.edu/registrar/registration.html"
+       target="_blank">
+       Need help registering?
+    </a>
+  </div>
+
+  <!-- EXPERIENCE (SIMPLIFIED) -->
+  <div class="card center">
+    <div class="label">Interactive Experience</div>
+    <p>
+      Walk to Griffin Hall 160 to unlock the live countdown experience.
+    </p>
+
+    <button class="btn btn-secondary" onclick="startExperience()">
+      Start Experience
+    </button>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="card center" id="countdownCard" style="display:none;">
+    <h2 class="gold">Course Starts In</h2>
+    <div id="countdown"></div>
+  </div>
+
+</div>
+
+<!-- STICKY CTA -->
+<div class="sticky">
+  <a class="btn btn-primary"
+     href="https://one.nku.edu/task/all/registerforclass"
+     target="_blank">
+     Register for INF 125
+  </a>
+</div>
+
+<script>
+// COUNTDOWN
+const startDate = new Date("2026-08-24T10:50:00");
+
+function startExperience(){
+  document.getElementById("countdownCard").style.display = "block";
+  updateCountdown();
+  setInterval(updateCountdown,1000);
+}
+
+function updateCountdown(){
+  const now = new Date();
+  const diff = startDate - now;
+
+  if(diff <= 0){
+    document.getElementById("countdown").innerHTML = "Class has started!";
+    return;
+  }
+
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff/(1000*60*60)) % 24);
+  const minutes = Math.floor((diff/(1000*60)) % 60);
+
+  document.getElementById("countdown").innerHTML =
+    `${days} days ${hours} hrs ${minutes} min`;
+}
+</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script>
-    const CONFIG = {
-      targetRoomText: "griffin hall 160",
-      alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
-      startDateISO: "2026-08-24T10:50:00-04:00",
-      scanIntervalMs: 2600,
-      ocrScale: 1,
-      autoShowFinalMs: 5200,
-      majorMessages: [
-        "Future teacher? AI will shape your classroom too.",
-        "Future entrepreneur? AI will reshape how ideas become businesses.",
-        "Future creator? AI is changing media, design, and storytelling.",
-        "Future healthcare leader? AI is transforming care, data, and decisions.",
-        "Future communicator? AI is reshaping messages, audiences, and platforms.",
-        "Future analyst? AI will influence how people interpret and act on data.",
-        "Future professional in any field? AI will touch your world too."
-      ],
-      personaContent: {
-        business: {
-          title: "AI literacy for business-minded students",
-          copy: "If you care about leadership, strategy, entrepreneurship, or decision-making, this course helps you understand how AI is changing work, value, and competitive advantage.",
-          tags: ["Careers", "Decision-making", "Innovation"]
-        },
-        health: {
-          title: "AI literacy for helping professions",
-          copy: "If you care about people, care, ethics, or responsible use, this course helps you think about how AI intersects with healthcare, support systems, and real human impact.",
-          tags: ["Ethics", "Care", "Human-centered use"]
-        },
-        creative: {
-          title: "AI literacy for creators and communicators",
-          copy: "If you’re drawn to storytelling, design, media, or content, this course helps you explore how AI is reshaping creativity, communication, and expression.",
-          tags: ["Creativity", "Media", "Storytelling"]
-        },
-        education: {
-          title: "AI literacy for educators and changemakers",
-          copy: "If you care about learning, access, people, and impact, this course helps you examine how AI can support and disrupt the way people learn and work.",
-          tags: ["Learning", "Access", "Impact"]
-        },
-        tech: {
-          title: "AI literacy for tech-curious students",
-          copy: "If you’re interested in tools, systems, or innovation, this course helps you build broader literacy around how AI works in real settings, beyond hype.",
-          tags: ["Tools", "Systems", "Responsible innovation"]
-        },
-        undecided: {
-          title: "AI literacy for students still figuring it out",
-          copy: "If you’re exploring your future, this course gives you a smart, welcoming way to understand one of the biggest forces shaping work and life across every field.",
-          tags: ["Exploration", "Confidence", "Future readiness"]
-        }
-      },
-      importantDates: [
-        { date: "March 26, 2026", event: "Priority Registration begins for current students" },
-        { date: "April 13, 2026", event: "Open Registration begins" },
-        { date: "August 24, 2026", event: "Classes begin" },
-        { date: "August 31, 2026", event: "Last day to drop with a 100% tuition adjustment • Last day to add a course • Last day to change grading option" },
-        { date: "September 7, 2026", event: "Labor Day — University Closed / No Classes" },
-        { date: "September 15, 2026", event: "Last day to drop a course without a grade appearing on transcript • Last day to drop with a 50% tuition adjustment" },
-        { date: "October 12, 2026", event: "Faculty begin submitting full session mid-term grades • Undergraduate students and academic advisors may access full session mid-term grades" },
-        { date: "October 17, 2026", event: "Midterm" },
-        { date: "October 19–20, 2026", event: "Fall Break — University Open / No Classes" },
-        { date: "October 21, 2026", event: "9:00 a.m. faculty deadline for submitting full session mid-term grades" },
-        { date: "November 2, 2026", event: "Last day to drop a course with a grade of W" },
-        { date: "November 26–27, 2026", event: "Thanksgiving Holiday — University Closed / No Classes" },
-        { date: "November 30, 2026", event: "Deadline for filing application for degree candidacy for Spring graduation with the Office of the Registrar. Late fees applied after this date." },
-        { date: "December 11, 2026", event: "Last day of classes • Last day to withdraw fall graduation application" },
-        { date: "December 12–18, 2026", event: "Final Examinations" },
-        { date: "December 19, 2026", event: "Commencement" },
-        { date: "December 22, 2026", event: "9:00 a.m. faculty deadline for grade submission" }
-      ]
-    };
-
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("snapshotCanvas");
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-
-    const targetRoomPill = document.getElementById("targetRoomPill");
-    const fallbackBg = document.getElementById("fallbackBg");
-    const scanRing = document.getElementById("scanRing");
-    const cameraStatus = document.getElementById("cameraStatus");
-    const scanStatus = document.getElementById("scanStatus");
-    const ocrOutput = document.getElementById("ocrOutput");
-    const revealCard = document.getElementById("revealCard");
-    const majorText = document.getElementById("majorText");
-    const finalScreen = document.getElementById("finalScreen");
-
-    const daysEl = document.getElementById("days");
-    const hoursEl = document.getElementById("hours");
-    const minutesEl = document.getElementById("minutes");
-    const secondsEl = document.getElementById("seconds");
-
-    const datesList = document.getElementById("datesList");
-
-    const startBtn = document.getElementById("startBtn");
-    const scanBtn = document.getElementById("scanBtn");
-    const flipBtn = document.getElementById("flipBtn");
-    const skipBtn = document.getElementById("skipBtn");
-    const replayBtn = document.getElementById("replayBtn");
-
-    const pathGrid = document.getElementById("pathGrid");
-    const personaPanel = document.getElementById("personaPanel");
-    const personaCopy = document.getElementById("personaCopy");
-    const personaTags = document.getElementById("personaTags");
-
-    const interestForm = document.getElementById("interestForm");
-    const successPanel = document.getElementById("successPanel");
-    const successCopy = document.getElementById("successCopy");
-
-    const studentName = document.getElementById("studentName");
-    const studentEmail = document.getElementById("studentEmail");
-    const studentMajor = document.getElementById("studentMajor");
-    const studentReason = document.getElementById("studentReason");
-
-    const nameError = document.getElementById("nameError");
-    const emailError = document.getElementById("emailError");
-    const majorError = document.getElementById("majorError");
-    const reasonError = document.getElementById("reasonError");
-
-    let stream = null;
-    let facingMode = "environment";
-    let scanning = false;
-    let found = false;
-    let ocrBusy = false;
-    let scanTimer = null;
-    let countdownTimer = null;
-    let finalTimer = null;
-    let majorRotationTimer = null;
-    let majorIndex = 0;
-    let fallbackMode = true;
-    let selectedPath = "business";
-
-    targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
-    renderDates();
-    startMajorRotation();
-    updatePersona("business");
-    startCountdown();
-
-    function renderDates() {
-      datesList.innerHTML = "";
-      CONFIG.importantDates.forEach(item => {
-        const row = document.createElement("div");
-        row.className = "date-row";
-        row.innerHTML = `
-          <div class="date">${item.date}</div>
-          <div class="event">${item.event}</div>
-        `;
-        datesList.appendChild(row);
-      });
-    }
-
-    function toTitleCase(str) {
-      return str.replace(/\b\w/g, c => c.toUpperCase());
-    }
-
-    function normalizeText(text) {
-      return text
-        .toLowerCase()
-        .replace(/[|]/g, "l")
-        .replace(/[^a-z0-9\s]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function matchesTarget(text) {
-      const cleaned = normalizeText(text);
-      const candidates = [CONFIG.targetRoomText, ...CONFIG.alternateMatches].map(normalizeText);
-      return candidates.some(candidate => cleaned.includes(candidate));
-    }
-
-    function startMajorRotation() {
-      majorText.textContent = CONFIG.majorMessages[0];
-      majorRotationTimer = setInterval(() => {
-        majorIndex = (majorIndex + 1) % CONFIG.majorMessages.length;
-        majorText.textContent = CONFIG.majorMessages[majorIndex];
-      }, 2400);
-    }
-
-    function updatePersona(pathKey) {
-      selectedPath = pathKey;
-      const item = CONFIG.personaContent[pathKey];
-      personaPanel.querySelector("h3").textContent = item.title;
-      personaCopy.textContent = item.copy;
-      personaTags.innerHTML = item.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
-    }
-
-    pathGrid.addEventListener("click", (e) => {
-      const btn = e.target.closest(".path-btn");
-      if (!btn) return;
-      pathGrid.querySelectorAll(".path-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      updatePersona(btn.dataset.path);
-    });
-
-    function startCountdown() {
-      if (countdownTimer) clearInterval(countdownTimer);
-
-      function updateCountdown() {
-        const now = new Date().getTime();
-        const target = new Date(CONFIG.startDateISO).getTime();
-        const diff = target - now;
-
-        if (diff <= 0) {
-          daysEl.textContent = "0";
-          hoursEl.textContent = "00";
-          minutesEl.textContent = "00";
-          secondsEl.textContent = "00";
-          return;
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-
-        daysEl.textContent = String(days);
-        hoursEl.textContent = String(hours).padStart(2, "0");
-        minutesEl.textContent = String(minutes).padStart(2, "0");
-        secondsEl.textContent = String(seconds).padStart(2, "0");
-      }
-
-      updateCountdown();
-      countdownTimer = setInterval(updateCountdown, 1000);
-    }
-
-    async function startCamera() {
-      stopCamera();
-      fallbackMode = false;
-
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: facingMode },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        });
-
-        video.srcObject = stream;
-        fallbackBg.style.display = "none";
-        cameraStatus.textContent = `Camera live (${facingMode === "environment" ? "rear" : "front"})`;
-        scanStatus.textContent = "Ready to scan";
-        ocrOutput.textContent = "Camera live. Point at Griffin Hall 160 or skip straight to the reveal.";
-      } catch (err) {
-        console.error(err);
-        startFallbackReveal();
-      }
-    }
-
-    function stopCamera() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
-      video.srcObject = null;
-    }
-
-    function startFallbackReveal() {
-      fallbackMode = true;
-      cameraStatus.textContent = "Camera unavailable";
-      scanStatus.textContent = "Course reveal active";
-      fallbackBg.style.display = "grid";
-      ocrOutput.textContent = "No camera? No problem — launching the course reveal now.";
-      onTargetFound("camera skipped");
-    }
-
-    async function runOCRScan() {
-      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
-
-      ocrBusy = true;
-      scanStatus.textContent = "Scanning room signage...";
-
-      try {
-        const vw = video.videoWidth;
-        const vh = video.videoHeight;
-
-        const cropW = vw * 0.84;
-        const cropH = vh * 0.3;
-        const cropX = (vw - cropW) / 2;
-        const cropY = (vh - cropH) / 2;
-
-        canvas.width = Math.floor(cropW * CONFIG.ocrScale);
-        canvas.height = Math.floor(cropH * CONFIG.ocrScale);
-
-        ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
-
-        const result = await Tesseract.recognize(canvas, "eng", { logger: () => {} });
-        const text = result.data.text || "";
-        const cleaned = normalizeText(text);
-
-        ocrOutput.textContent = cleaned || "No readable signage detected in this scan.";
-
-        if (matchesTarget(cleaned)) {
-          onTargetFound(cleaned);
-        } else {
-          scanStatus.textContent = "Scanning... target room not found yet";
-        }
-      } catch (err) {
-        console.error(err);
-        scanStatus.textContent = "Scan error";
-      } finally {
-        ocrBusy = false;
-      }
-    }
-
-    function startScanning() {
-      if (scanning || fallbackMode) return;
-      if (!video.srcObject) {
-        startFallbackReveal();
-        return;
-      }
-
-      scanning = true;
-      scanStatus.textContent = "Scanner started";
-      runOCRScan();
-      scanTimer = setInterval(runOCRScan, CONFIG.scanIntervalMs);
-    }
-
-    function stopScanning() {
-      scanning = false;
-      if (scanTimer) {
-        clearInterval(scanTimer);
-        scanTimer = null;
-      }
-    }
-
-    function onTargetFound(matchText) {
-      if (found) return;
-
-      found = true;
-      stopScanning();
-      revealCard.classList.add("active");
-      scanRing.classList.add("found");
-      scanStatus.textContent = fallbackMode ? "Course reveal active" : "Room found";
-      ocrOutput.textContent = fallbackMode
-        ? "Direct launch mode:\nShowing the course reveal without camera access."
-        : `Match found:\n${matchText}`;
-
-      if (navigator.vibrate) {
-        navigator.vibrate([160, 70, 180]);
-      }
-
-      if (finalTimer) clearTimeout(finalTimer);
-      finalTimer = setTimeout(showFinalScreen, CONFIG.autoShowFinalMs);
-    }
-
-    function showFinalScreen() {
-      finalScreen.classList.add("active");
-      finalScreen.setAttribute("aria-hidden", "false");
-    }
-
-    function hideFinalScreen() {
-      finalScreen.classList.remove("active");
-      finalScreen.setAttribute("aria-hidden", "true");
-    }
-
-    function resetExperience() {
-      found = false;
-      fallbackMode = true;
-      stopScanning();
-      stopCamera();
-      scanRing.classList.remove("found");
-      revealCard.classList.remove("active");
-      cameraStatus.textContent = "Camera not started";
-      scanStatus.textContent = "Experience ready";
-      ocrOutput.textContent = "Start the camera or skip straight into the course reveal.";
-      fallbackBg.style.display = "grid";
-      hideFinalScreen();
-    }
-
-    startBtn.addEventListener("click", startCamera);
-
-    scanBtn.addEventListener("click", () => {
-      if (!scanning) {
-        startScanning();
-        scanBtn.textContent = fallbackMode ? "Experience active" : "Stop scan";
-      } else {
-        stopScanning();
-        scanBtn.textContent = "Start scan";
-        scanStatus.textContent = "Scan paused";
-      }
-    });
-
-    flipBtn.addEventListener("click", async () => {
-      facingMode = facingMode === "environment" ? "user" : "environment";
-      await startCamera();
-    });
-
-    skipBtn.addEventListener("click", startFallbackReveal);
-    replayBtn.addEventListener("click", () => {
-      hideFinalScreen();
-      resetExperience();
-    });
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function hideErrors() {
-      [nameError, emailError, majorError, reasonError].forEach(el => el.style.display = "none");
-    }
-
-    interestForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      hideErrors();
-
-      let valid = true;
-
-      if (!studentName.value.trim()) {
-        nameError.style.display = "block";
-        valid = false;
-      }
-
-      if (!validateEmail(studentEmail.value.trim())) {
-        emailError.style.display = "block";
-        valid = false;
-      }
-
-      if (!studentMajor.value) {
-        majorError.style.display = "block";
-        valid = false;
-      }
-
-      if (!studentReason.value) {
-        reasonError.style.display = "block";
-        valid = false;
-      }
-
-      if (!valid) return;
-
-      const persona = CONFIG.personaContent[selectedPath];
-      successCopy.textContent =
-        `${studentName.value.trim()}, you look like a strong fit for INF 125. Based on your interest in ${studentReason.value.toLowerCase()}, this course gives you a welcoming way to explore AI through the lens of ${persona.tags.join(", ").toLowerCase()}. Your next step: use the course details above and connect this button to NKU’s real registration page.`;
-
-      successPanel.style.display = "block";
-      successPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-
-    window.addEventListener("beforeunload", () => {
-      stopScanning();
-      stopCamera();
-      if (countdownTimer) clearInterval(countdownTimer);
-      if (majorRotationTimer) clearInterval(majorRotationTimer);
-      if (finalTimer) clearTimeout(finalTimer);
-    });
-  </script>
 </body>
 </html>
