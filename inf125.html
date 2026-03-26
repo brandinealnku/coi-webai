@@ -214,7 +214,7 @@
 
     .stage{
       position:relative;
-      min-height:500px;
+      min-height:520px;
       border-radius:20px;
       overflow:hidden;
       background:
@@ -292,8 +292,69 @@
 
     .overlay-sub{
       color:var(--muted);
-      font-size:.9rem;
+      font-size:.92rem;
       margin-bottom:12px;
+      line-height:1.45;
+    }
+
+    .overlay-sub strong{
+      color:#fff;
+    }
+
+    .scan-demo{
+      margin:0 auto 14px;
+      width:min(100%, 320px);
+      height:92px;
+      border-radius:18px;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)),
+        radial-gradient(circle at 50% 10%, rgba(255,199,44,.12), transparent 40%);
+      display:grid;
+      place-items:center;
+    }
+
+    .scan-demo-sign{
+      width:72%;
+      max-width:220px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.16);
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#fff;
+      position:relative;
+      z-index:2;
+    }
+
+    .scan-demo-line{
+      position:absolute;
+      left:18px;
+      right:18px;
+      top:16px;
+      height:2px;
+      background:linear-gradient(90deg, transparent, var(--gold), transparent);
+      filter:drop-shadow(0 0 8px rgba(255,199,44,.8));
+      animation:demoSweep 2.1s ease-in-out infinite;
+      z-index:3;
+    }
+
+    .scan-demo-frame{
+      position:absolute;
+      inset:14px;
+      border:2px solid rgba(255,255,255,.26);
+      border-radius:16px;
+      z-index:1;
+    }
+
+    @keyframes demoSweep{
+      0%{transform:translateY(0);opacity:.25}
+      50%{transform:translateY(44px);opacity:1}
+      100%{transform:translateY(0);opacity:.25}
     }
 
     .path-grid-overlay{
@@ -526,7 +587,7 @@
       font-size:.8rem;
       line-height:1.35;
       white-space:pre-wrap;
-      max-height:80px;
+      max-height:100px;
       overflow:auto;
     }
 
@@ -685,7 +746,6 @@
       font-size:1.2rem;
       color:var(--gold);
       line-height:1;
-      transition:transform .2s ease;
     }
 
     .dates-accordion[open] summary::after{
@@ -841,7 +901,7 @@
       }
 
       .stage{
-        min-height:540px;
+        min-height:600px;
       }
     }
 
@@ -886,7 +946,7 @@
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
             A welcoming AI course for students from <strong>every major</strong>.
-            Choose your path, then decide whether to enable the camera or skip straight to the reveal.
+            Choose your path, then either scan <strong>GH 160</strong> with your camera to unlock the full effect or skip straight to the reveal.
           </p>
 
           <div class="hero-mini">
@@ -908,14 +968,24 @@
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>Select a path first. Then enable the camera or skip straight to the reveal.</p>
+                <p>Choose a path first. Then scan GH 160 with your camera or skip straight to the reveal.</p>
               </div>
             </div>
 
             <div class="path-overlay" id="pathOverlay">
               <div class="path-overlay-content">
                 <div class="overlay-title">Choose your path</div>
-                <div class="overlay-sub">This personalizes the experience first. Camera is optional.</div>
+                <div class="overlay-sub">
+                  This personalizes the experience first.
+                  <br />
+                  <strong>Then point your camera at GH 160 to unlock the full reveal.</strong>
+                </div>
+
+                <div class="scan-demo" aria-hidden="true">
+                  <div class="scan-demo-frame"></div>
+                  <div class="scan-demo-line"></div>
+                  <div class="scan-demo-sign">GH 160</div>
+                </div>
 
                 <div class="path-grid-overlay">
                   <button class="path-card active" data-path="business" type="button">Business</button>
@@ -927,8 +997,16 @@
                 </div>
 
                 <div class="cta-stack" style="justify-content:center;">
-                  <button class="btn btn-primary" id="enableCameraBtn" type="button">Enable Camera</button>
-                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">Skip to Reveal</button>
+                  <button class="btn btn-primary" id="enableCameraBtn" type="button">
+                    📷 Scan GH 160 to Unlock
+                  </button>
+                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">
+                    Skip → Just show me
+                  </button>
+                </div>
+
+                <div class="small-note">
+                  Camera access lets the page recognize the room number and trigger your personalized reveal.
                 </div>
 
                 <button class="skip-overlay-btn" id="hideOverlayBtn" type="button">
@@ -982,7 +1060,7 @@
 
               <div class="debug-card">
                 <div class="debug-label">Live preview</div>
-                <div class="debug-text" id="ocrOutput">Choose a path, then enable the camera or skip to reveal.</div>
+                <div class="debug-text" id="ocrOutput">Choose a path, then scan GH 160 with your camera or skip to reveal.</div>
               </div>
             </div>
           </div>
@@ -1385,12 +1463,12 @@ Griffin Hall 160
 
         video.srcObject = stream;
         cameraStatus.textContent = "Camera live";
-        ocrOutput.textContent = "Camera enabled. Point it at Griffin Hall 160 to trigger the reveal.";
+        ocrOutput.textContent = "Camera enabled. Point it at GH 160 to unlock your personalized reveal.";
         startScanning();
       } catch (err) {
         console.error(err);
         cameraStatus.textContent = "Camera unavailable";
-        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still skip straight to the reveal.";
+        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Skip → Just show me.";
         fallbackMode = true;
         scanRing.classList.remove("active");
       }
@@ -1413,7 +1491,7 @@ Griffin Hall 160
       fallbackStage.style.display = "grid";
       scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
-      ocrOutput.textContent = "Launching reveal without camera access.";
+      ocrOutput.textContent = "Launching your personalized reveal without camera access.";
       onTargetFound("camera skipped");
     }
 
@@ -1447,7 +1525,7 @@ Griffin Hall 160
         }
       } catch (err) {
         console.error(err);
-        ocrOutput.textContent = "Scan error. You can replay and choose skip to reveal instead.";
+        ocrOutput.textContent = "Scan error. Replay and try again, or skip straight to the reveal.";
       } finally {
         ocrBusy = false;
       }
@@ -1603,7 +1681,7 @@ Griffin Hall 160
       scanRing.classList.remove("found", "active");
       revealCard.classList.remove("active");
       cameraStatus.textContent = "Camera optional";
-      ocrOutput.textContent = "Choose a path, then enable the camera or skip to reveal.";
+      ocrOutput.textContent = "Choose a path, then scan GH 160 with your camera or skip to reveal.";
       fallbackStage.style.display = "grid";
       pathOverlay.classList.remove("hidden");
       hideFinalScreen();
@@ -1636,7 +1714,7 @@ Griffin Hall 160
         pathCards.forEach(c => c.classList.remove("active"));
         card.classList.add("active");
         updatePersona(card.dataset.path);
-        ocrOutput.textContent = "Path selected. Enable the camera or skip straight to the reveal.";
+        ocrOutput.textContent = "Path selected. Scan GH 160 with your camera to unlock the full reveal, or skip straight to it.";
       });
     });
 
@@ -1645,7 +1723,7 @@ Griffin Hall 160
 
     hideOverlayBtn.addEventListener("click", () => {
       pathOverlay.classList.add("hidden");
-      ocrOutput.textContent = "You can keep browsing, or replay later to start the experience.";
+      ocrOutput.textContent = "You can keep browsing, or replay later to scan GH 160 and trigger the reveal.";
     });
 
     voiceBtn.addEventListener("click", () => {
