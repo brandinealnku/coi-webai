@@ -2,43 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Sees Your Future | NKU INF 125</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>INF 125 AI Literacy | NKU</title>
   <meta name="theme-color" content="#0a0a0a" />
   <meta
     name="description"
-    content="Interactive NKU experience for INF 125: AI Literacy. Designed for students from every major."
+    content="Interactive NKU INF 125: AI Literacy experience for students from every major."
   />
   <style>
     :root{
-      --bg:#060606;
-      --bg2:#101114;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.09);
-      --border:rgba(255,255,255,.12);
-      --text:#ffffff;
+      --bg:#050505;
+      --panel:rgba(255,255,255,.06);
+      --panel-2:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.1);
+      --text:#fff;
       --muted:rgba(255,255,255,.78);
-      --soft:rgba(255,255,255,.58);
+      --soft:rgba(255,255,255,.6);
       --gold:#FFC72C;
-      --gold2:#ffe08e;
+      --gold-2:#ffe59c;
       --success:#66f2ad;
-      --danger:#ff8a8a;
-      --shadow:0 24px 60px rgba(0,0,0,.42);
-      --radius:24px;
-      --max:1120px;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+      --radius:22px;
+      --max:1080px;
     }
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-
     body{
       margin:0;
-      font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at 15% 0%, rgba(255,199,44,.12), transparent 24%),
-        radial-gradient(circle at 100% 10%, rgba(255,255,255,.05), transparent 20%),
-        linear-gradient(180deg, #111 0%, #080808 38%, #050505 100%);
+        radial-gradient(circle at 20% 0%, rgba(255,199,44,.12), transparent 24%),
+        radial-gradient(circle at 100% 15%, rgba(255,255,255,.05), transparent 18%),
+        linear-gradient(180deg,#111 0%,#080808 40%,#050505 100%);
       overflow-x:hidden;
     }
 
@@ -48,93 +45,63 @@
     .shell{
       width:min(100%, var(--max));
       margin:0 auto;
-      padding:0 16px;
+      padding:0 14px;
     }
 
     .topbar{
       position:sticky;
       top:0;
-      z-index:60;
-      background:rgba(6,6,6,.74);
-      backdrop-filter:blur(16px);
+      z-index:50;
+      background:rgba(5,5,5,.78);
+      backdrop-filter:blur(14px);
       border-bottom:1px solid rgba(255,255,255,.08);
     }
 
     .topbar-inner{
-      min-height:72px;
+      min-height:64px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:14px;
+      gap:12px;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:10px;
       min-width:0;
     }
 
     .brand-mark{
-      width:42px;
-      height:42px;
-      border-radius:14px;
+      width:38px;
+      height:38px;
       display:grid;
       place-items:center;
-      font-weight:900;
-      background:linear-gradient(135deg, var(--gold2), var(--gold));
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--gold-2),var(--gold));
       color:#111;
-      box-shadow:var(--shadow);
+      font-weight:900;
       flex-shrink:0;
+      box-shadow:var(--shadow);
     }
 
     .brand-copy{min-width:0}
-
     .brand-kicker{
+      font-size:.66rem;
       color:var(--gold);
-      font-size:.7rem;
       text-transform:uppercase;
-      letter-spacing:.15em;
+      letter-spacing:.14em;
       font-weight:900;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-
     .brand-title{
-      font-size:.96rem;
+      font-size:.9rem;
       font-weight:800;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-    }
-
-    .topbar-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-shrink:0;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.05);
-      border:1px solid var(--border);
-      color:var(--muted);
-      font-size:.8rem;
-      font-weight:750;
-    }
-
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:var(--gold);
-      box-shadow:0 0 0 6px rgba(255,199,44,.12);
     }
 
     .btn{
@@ -142,18 +109,17 @@
       border:none;
       cursor:pointer;
       border-radius:999px;
-      padding:14px 18px;
+      padding:13px 16px;
       font-weight:850;
-      transition:transform .16s ease, opacity .16s ease, background .16s ease, border-color .16s ease;
+      transition:transform .15s ease, opacity .15s ease, background .15s ease;
     }
-
     .btn:hover{transform:translateY(-1px)}
     .btn:active{transform:translateY(0)}
 
     .btn-primary{
-      background:linear-gradient(135deg, var(--gold2), var(--gold));
+      background:linear-gradient(135deg,var(--gold-2),var(--gold));
       color:#111;
-      box-shadow:0 10px 26px rgba(255,199,44,.2);
+      box-shadow:0 10px 24px rgba(255,199,44,.22);
     }
 
     .btn-secondary{
@@ -163,121 +129,91 @@
     }
 
     .hero{
-      padding:56px 0 28px;
-      position:relative;
-      overflow:hidden;
+      padding:22px 0 14px;
     }
 
     .hero-grid{
       display:grid;
       grid-template-columns:1fr;
-      gap:18px;
-      align-items:stretch;
+      gap:14px;
     }
 
     .panel{
-      background:var(--card);
+      background:var(--panel);
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      backdrop-filter:blur(14px);
+      backdrop-filter:blur(12px);
     }
 
     .hero-copy-panel{
-      padding:26px;
-      position:relative;
-      overflow:hidden;
+      padding:20px;
     }
 
     .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
       color:var(--gold);
+      font-size:.7rem;
       text-transform:uppercase;
       letter-spacing:.14em;
-      font-size:.72rem;
       font-weight:900;
-      margin-bottom:14px;
+      margin-bottom:10px;
     }
 
     h1{
       margin:0;
-      font-size:clamp(2.3rem, 7vw, 5.2rem);
+      font-size:clamp(2rem, 8vw, 4.6rem);
       line-height:.92;
       letter-spacing:-.05em;
       text-transform:uppercase;
-      max-width:10ch;
+      max-width:9ch;
     }
 
     .gradient-text{
-      background:linear-gradient(135deg, #fff 0%, var(--gold2) 45%, var(--gold) 100%);
+      background:linear-gradient(135deg,#fff 0%,var(--gold-2) 45%,var(--gold) 100%);
       -webkit-background-clip:text;
       background-clip:text;
       color:transparent;
     }
 
     .hero-copy{
-      margin:18px 0 0;
+      margin:12px 0 0;
       color:var(--muted);
-      font-size:1.05rem;
-      line-height:1.6;
-      max-width:58ch;
-    }
-
-    .hero-copy strong{color:#fff}
-
-    .hero-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .hero-stats{
-      margin-top:22px;
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:12px;
-    }
-
-    .stat{
-      padding:14px 16px;
-      border-radius:18px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .stat-label{
-      color:var(--gold);
-      font-size:.7rem;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .stat-value{
+      line-height:1.5;
       font-size:1rem;
-      font-weight:800;
-      line-height:1.35;
+      max-width:55ch;
     }
 
-    .experience-panel{
-      padding:18px;
+    .hero-mini{
+      margin-top:14px;
       display:grid;
-      gap:14px;
-      align-content:start;
+      gap:8px;
+    }
+
+    .mini-row{
+      padding:11px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:750;
+      color:var(--muted);
+      line-height:1.35;
+      font-size:.92rem;
+    }
+
+    .mini-row strong{color:#fff}
+
+    .stage-panel{
+      padding:14px;
     }
 
     .stage{
       position:relative;
-      min-height:520px;
+      min-height:420px;
+      border-radius:20px;
       overflow:hidden;
-      border-radius:22px;
       background:
-        radial-gradient(circle at 28% 20%, rgba(255,199,44,.16), transparent 26%),
-        linear-gradient(180deg, #181818 0%, #090909 100%);
+        radial-gradient(circle at 30% 20%, rgba(255,199,44,.16), transparent 26%),
+        linear-gradient(180deg,#181818 0%,#090909 100%);
       border:1px solid rgba(255,255,255,.08);
     }
 
@@ -295,7 +231,7 @@
       display:grid;
       place-items:center;
       text-align:center;
-      padding:24px;
+      padding:20px;
       background:
         radial-gradient(circle at 50% 20%, rgba(255,199,44,.14), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
@@ -303,8 +239,8 @@
     }
 
     .fallback-stage h2{
-      margin:0 0 10px;
-      font-size:clamp(1.8rem, 5vw, 3rem);
+      margin:0 0 8px;
+      font-size:clamp(1.7rem, 6vw, 2.8rem);
       line-height:.95;
       letter-spacing:-.04em;
       text-transform:uppercase;
@@ -314,30 +250,28 @@
       margin:0;
       color:var(--muted);
       max-width:28ch;
-      line-height:1.5;
-      font-size:1rem;
+      line-height:1.45;
     }
 
     .stage-top{
       position:absolute;
-      left:12px;
-      right:12px;
-      top:12px;
-      z-index:5;
+      left:10px;
+      right:10px;
+      top:10px;
+      z-index:4;
       display:flex;
       flex-wrap:wrap;
       gap:8px;
     }
 
     .overlay-pill{
-      padding:9px 11px;
+      padding:8px 10px;
       border-radius:999px;
-      background:rgba(0,0,0,.56);
+      background:rgba(0,0,0,.58);
       border:1px solid rgba(255,255,255,.12);
-      color:#fff;
-      font-size:.8rem;
-      font-weight:700;
       backdrop-filter:blur(10px);
+      font-size:.78rem;
+      font-weight:750;
     }
 
     .overlay-pill strong{color:var(--gold)}
@@ -350,11 +284,11 @@
       height:26%;
       transform:translate(-50%,-50%);
       border:2px solid rgba(255,255,255,.85);
-      border-radius:24px;
-      box-shadow:inset 0 0 0 9999px rgba(0,0,0,.16);
+      border-radius:22px;
+      box-shadow:inset 0 0 0 9999px rgba(0,0,0,.14);
       overflow:hidden;
-      transition:.25s ease;
-      z-index:4;
+      transition:.24s ease;
+      z-index:3;
     }
 
     .scan-ring::before{
@@ -365,63 +299,63 @@
       top:14px;
       height:2px;
       background:linear-gradient(90deg, transparent, var(--gold), transparent);
-      filter:drop-shadow(0 0 8px rgba(255,199,44,.85));
+      filter:drop-shadow(0 0 7px rgba(255,199,44,.85));
       animation:sweep 2.4s linear infinite;
     }
 
     .scan-ring.found{
       border-color:var(--success);
-      box-shadow:0 0 26px rgba(102,242,173,.25), inset 0 0 0 9999px rgba(0,0,0,.04);
+      box-shadow:0 0 24px rgba(102,242,173,.25), inset 0 0 0 9999px rgba(0,0,0,.04);
     }
 
     @keyframes sweep{
-      0%{transform:translateY(0);opacity:.2}
-      50%{transform:translateY(44px);opacity:1}
-      100%{transform:translateY(88px);opacity:.2}
+      0%{transform:translateY(0);opacity:.25}
+      50%{transform:translateY(40px);opacity:1}
+      100%{transform:translateY(82px);opacity:.25}
     }
 
     .stage-bottom{
       position:absolute;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      z-index:5;
+      left:10px;
+      right:10px;
+      bottom:10px;
+      z-index:4;
       display:grid;
-      gap:10px;
+      gap:8px;
     }
 
     .reveal-card{
       display:none;
-      padding:16px;
+      padding:14px;
+      border-radius:18px;
       background:rgba(0,0,0,.68);
       border:1px solid rgba(255,255,255,.1);
-      border-radius:20px;
-      backdrop-filter:blur(12px);
+      backdrop-filter:blur(10px);
     }
 
     .reveal-card.active{
       display:block;
-      animation:rise .42s ease;
+      animation:rise .35s ease;
     }
 
     @keyframes rise{
-      from{opacity:0;transform:translateY(10px) scale(.985)}
-      to{opacity:1;transform:translateY(0) scale(1)}
+      from{opacity:0;transform:translateY(8px)}
+      to{opacity:1;transform:translateY(0)}
     }
 
     .reveal-kicker{
       color:var(--gold);
-      font-size:.72rem;
+      font-size:.68rem;
       text-transform:uppercase;
-      letter-spacing:.16em;
+      letter-spacing:.14em;
       font-weight:900;
-      margin-bottom:6px;
+      margin-bottom:5px;
     }
 
     .reveal-card h3{
       margin:0;
-      font-size:1.38rem;
-      line-height:1.05;
+      font-size:1.18rem;
+      line-height:1.06;
       letter-spacing:-.03em;
       text-transform:uppercase;
     }
@@ -429,21 +363,21 @@
     .reveal-card p{
       margin:8px 0 0;
       color:var(--muted);
-      line-height:1.48;
-      font-size:.96rem;
+      line-height:1.45;
+      font-size:.93rem;
     }
 
     .major-rotator{
-      margin-top:12px;
-      padding:12px 14px;
-      border-radius:16px;
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
     }
 
     .major-label{
       color:var(--gold);
-      font-size:.68rem;
+      font-size:.65rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -451,80 +385,86 @@
     }
 
     .major-text{
-      font-size:1rem;
+      font-size:.95rem;
       font-weight:800;
-      line-height:1.35;
-      min-height:2.8em;
+      line-height:1.32;
+      min-height:2.4em;
     }
 
     .count-grid{
-      margin-top:12px;
+      margin-top:10px;
       display:grid;
       grid-template-columns:repeat(4,1fr);
-      gap:8px;
+      gap:6px;
     }
 
     .count{
-      border-radius:16px;
-      padding:12px 8px;
+      border-radius:14px;
+      padding:10px 6px;
       text-align:center;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
     }
 
     .count-num{
-      font-size:1.35rem;
+      font-size:1.15rem;
       font-weight:900;
       line-height:1;
       color:var(--gold);
     }
 
     .count-label{
-      margin-top:6px;
+      margin-top:5px;
       color:var(--soft);
-      font-size:.68rem;
+      font-size:.63rem;
       text-transform:uppercase;
       letter-spacing:.12em;
       font-weight:800;
     }
 
     .debug-card{
-      padding:14px;
-      border-radius:18px;
-      background:rgba(255,255,255,.045);
+      padding:11px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.05);
       border:1px solid rgba(255,255,255,.08);
     }
 
     .debug-label{
       color:var(--gold);
-      font-size:.7rem;
+      font-size:.66rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
-      margin-bottom:6px;
+      margin-bottom:5px;
     }
 
     .debug-text{
       color:var(--soft);
-      font-size:.83rem;
-      line-height:1.4;
+      font-size:.8rem;
+      line-height:1.35;
       white-space:pre-wrap;
-      max-height:96px;
+      max-height:80px;
       overflow:auto;
     }
 
-    .quick-actions{
+    .action-grid{
+      margin-top:10px;
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:10px;
+      gap:8px;
     }
 
-    .section{padding:12px 0}
-    .section-card{padding:22px}
+    .section{
+      padding:8px 0 16px;
+    }
+
+    .section-card{
+      padding:18px;
+    }
 
     .section-label{
       color:var(--gold);
-      font-size:.72rem;
+      font-size:.7rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -533,7 +473,7 @@
 
     .section-title{
       margin:0;
-      font-size:clamp(1.5rem, 4vw, 2.5rem);
+      font-size:clamp(1.35rem, 4vw, 2.2rem);
       line-height:1;
       letter-spacing:-.04em;
       text-transform:uppercase;
@@ -542,34 +482,35 @@
     .section-copy{
       margin:10px 0 0;
       color:var(--muted);
-      line-height:1.58;
-      max-width:70ch;
+      line-height:1.5;
+      font-size:.95rem;
+      max-width:65ch;
     }
 
     .funnel-grid{
       display:grid;
       grid-template-columns:1fr;
-      gap:16px;
+      gap:14px;
     }
 
     .path-grid{
+      margin-top:12px;
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
     }
 
     .path-btn{
       width:100%;
       text-align:left;
-      padding:14px;
-      border-radius:18px;
+      padding:12px;
+      border-radius:16px;
       background:rgba(255,255,255,.045);
       border:1px solid rgba(255,255,255,.08);
       color:#fff;
-      font-weight:800;
       cursor:pointer;
-      transition:.16s ease;
-      min-height:76px;
+      transition:.15s ease;
+      min-height:68px;
     }
 
     .path-btn.active,
@@ -578,19 +519,25 @@
       border-color:rgba(255,199,44,.34);
     }
 
-    .path-title{display:block;font-size:.96rem;margin-bottom:4px}
+    .path-title{
+      display:block;
+      font-size:.9rem;
+      font-weight:850;
+      margin-bottom:3px;
+    }
+
     .path-sub{
       display:block;
       color:var(--soft);
-      font-size:.82rem;
-      line-height:1.35;
-      font-weight:600;
+      font-size:.76rem;
+      line-height:1.28;
+      font-weight:650;
     }
 
     .persona-panel{
-      margin-top:14px;
-      padding:16px;
-      border-radius:20px;
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
       background:
         linear-gradient(180deg, rgba(255,199,44,.14), rgba(255,199,44,.04)),
         rgba(255,255,255,.045);
@@ -599,131 +546,125 @@
 
     .persona-panel h3{
       margin:0;
-      font-size:1.2rem;
-      line-height:1.05;
+      font-size:1.05rem;
+      line-height:1.08;
       text-transform:uppercase;
       letter-spacing:-.03em;
     }
 
     .persona-panel p{
-      margin:10px 0 0;
+      margin:8px 0 0;
       color:var(--muted);
-      line-height:1.55;
+      line-height:1.45;
+      font-size:.92rem;
     }
 
     .persona-tags{
       display:flex;
       flex-wrap:wrap;
-      gap:8px;
-      margin-top:14px;
+      gap:7px;
+      margin-top:12px;
     }
 
     .tag{
-      padding:8px 10px;
+      padding:7px 9px;
       border-radius:999px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
-      color:#fff;
-      font-size:.8rem;
+      font-size:.76rem;
       font-weight:700;
     }
 
-    .funnel-list{
+    .compact-list{
+      margin-top:12px;
       display:grid;
-      gap:10px;
-      margin-top:16px;
+      gap:8px;
     }
 
-    .course-row{
-      display:grid;
-      grid-template-columns:120px 1fr;
-      gap:10px;
-      padding:12px 14px;
-      border-radius:16px;
+    .compact-row{
+      padding:11px 12px;
+      border-radius:15px;
       background:rgba(255,255,255,.045);
       border:1px solid rgba(255,255,255,.08);
-    }
-
-    .course-row .k{
-      color:var(--gold);
-      font-weight:900;
-      font-size:.8rem;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      line-height:1.2;
-    }
-
-    .course-row .v{
       color:var(--muted);
+      font-size:.9rem;
+      line-height:1.35;
       font-weight:700;
-      line-height:1.4;
+    }
+
+    .compact-row strong{
+      color:var(--gold);
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      display:block;
+      margin-bottom:4px;
     }
 
     .cta-stack{
       display:flex;
       flex-wrap:wrap;
-      gap:10px;
-      margin-top:16px;
+      gap:8px;
+      margin-top:12px;
     }
 
     .small-note{
-      margin-top:10px;
+      margin-top:8px;
       color:var(--soft);
-      font-size:.84rem;
-      line-height:1.45;
+      font-size:.8rem;
+      line-height:1.4;
     }
 
     .dates-list{
-      margin-top:14px;
+      margin-top:12px;
       display:grid;
       gap:8px;
-      max-height:360px;
+      max-height:270px;
       overflow:auto;
-      padding-right:4px;
     }
 
     .date-row{
-      display:grid;
-      grid-template-columns:118px 1fr;
-      gap:10px;
       padding:10px 12px;
       border-radius:14px;
       background:rgba(255,255,255,.04);
       border:1px solid rgba(255,255,255,.08);
     }
 
-    .date-row .date{
+    .date{
       color:var(--gold);
       font-weight:900;
-      font-size:.8rem;
-      line-height:1.25;
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      margin-bottom:4px;
     }
 
-    .date-row .event{
+    .event{
       color:var(--muted);
-      font-size:.84rem;
+      font-size:.85rem;
       line-height:1.35;
     }
 
     .sticky-cta{
       position:fixed;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      z-index:70;
+      left:10px;
+      right:10px;
+      bottom:10px;
+      z-index:60;
       display:flex;
-      gap:10px;
-      padding:10px;
-      border-radius:22px;
-      background:rgba(6,6,6,.8);
+      gap:8px;
+      padding:9px;
+      border-radius:20px;
+      background:rgba(5,5,5,.84);
       border:1px solid rgba(255,255,255,.1);
-      backdrop-filter:blur(16px);
+      backdrop-filter:blur(14px);
       box-shadow:var(--shadow);
     }
 
     .sticky-cta .btn{
       flex:1;
-      min-height:52px;
+      min-height:48px;
+      padding:12px 14px;
     }
 
     .confetti{
@@ -731,7 +672,7 @@
       inset:0;
       pointer-events:none;
       overflow:hidden;
-      z-index:90;
+      z-index:80;
     }
 
     .confetti-piece{
@@ -743,26 +684,20 @@
     }
 
     @keyframes confetti-fall{
-      0%{
-        transform:translate3d(0,-20px,0) rotate(0deg);
-        opacity:1;
-      }
-      100%{
-        transform:translate3d(var(--x),100vh,0) rotate(540deg);
-        opacity:0;
-      }
+      0%{transform:translate3d(0,-20px,0) rotate(0deg);opacity:1}
+      100%{transform:translate3d(var(--x),100vh,0) rotate(540deg);opacity:0}
     }
 
     .final-screen{
       position:fixed;
       inset:0;
-      z-index:80;
+      z-index:70;
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
-      padding:24px 18px calc(24px + env(safe-area-inset-bottom));
       text-align:center;
+      padding:22px 16px calc(22px + env(safe-area-inset-bottom));
       background:
         radial-gradient(circle at 50% 24%, rgba(255,199,44,.2), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%),
@@ -770,7 +705,7 @@
       opacity:0;
       pointer-events:none;
       transform:scale(1.03);
-      transition:.45s ease;
+      transition:.4s ease;
     }
 
     .final-screen.active{
@@ -781,16 +716,16 @@
 
     .final-kicker{
       color:var(--gold);
-      font-size:.8rem;
+      font-size:.76rem;
       text-transform:uppercase;
-      letter-spacing:.2em;
+      letter-spacing:.18em;
       font-weight:900;
-      margin-bottom:12px;
+      margin-bottom:10px;
     }
 
     .final-title{
       margin:0;
-      font-size:clamp(2.2rem, 8vw, 4.4rem);
+      font-size:clamp(2rem, 8vw, 4.1rem);
       line-height:.92;
       letter-spacing:-.05em;
       text-transform:uppercase;
@@ -799,56 +734,44 @@
     .final-title .gold{color:var(--gold)}
 
     .final-copy{
-      margin:16px auto 0;
-      max-width:42rem;
+      margin:14px auto 0;
+      max-width:38rem;
       color:var(--muted);
-      line-height:1.58;
+      line-height:1.5;
       white-space:pre-line;
-      font-size:1rem;
-    }
-
-    .final-meta{
-      margin-top:18px;
-      display:grid;
-      gap:10px;
-      width:min(100%, 680px);
-    }
-
-    .final-chip{
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--border);
-      font-weight:800;
-      line-height:1.4;
+      font-size:.96rem;
     }
 
     .final-actions{
       display:flex;
       flex-wrap:wrap;
-      gap:10px;
-      margin-top:18px;
-      width:min(100%, 680px);
+      gap:8px;
+      margin-top:16px;
+      width:min(100%, 620px);
     }
 
     @media (min-width:860px){
-      .hero-grid{grid-template-columns:1.06fr .94fr}
-      .funnel-grid{grid-template-columns:.95fr 1.05fr}
+      .hero-grid{grid-template-columns:1.02fr .98fr}
+      .funnel-grid{grid-template-columns:1fr 1fr}
     }
 
-    @media (max-width:719px){
-      .topbar-actions .pill{display:none}
-      .course-row, .date-row{grid-template-columns:1fr}
-      .path-grid, .quick-actions{grid-template-columns:1fr}
-      .hero-stats{grid-template-columns:1fr}
+    @media (max-width:640px){
+      .path-grid,
+      .action-grid{
+        grid-template-columns:1fr;
+      }
+
+      .topbar-inner .top-action{
+        display:none;
+      }
     }
 
     @media (min-width:900px){
       .sticky-cta{
         left:auto;
-        right:20px;
-        bottom:20px;
-        width:360px;
+        right:18px;
+        bottom:18px;
+        width:340px;
       }
     }
   </style>
@@ -862,15 +785,12 @@
         <div class="brand-mark">AI</div>
         <div class="brand-copy">
           <div class="brand-kicker">Northern Kentucky University</div>
-          <div class="brand-title">College of Informatics • INF 125: AI Literacy • Open to All Majors</div>
+          <div class="brand-title">INF 125: AI Literacy • Open to All Majors</div>
         </div>
       </div>
-      <div class="topbar-actions">
-        <div class="pill"><span class="dot"></span>Fall 2026</div>
-        <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
-          Register at NKU
-        </a>
-      </div>
+      <a class="btn btn-primary top-action" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+        Register
+      </a>
     </div>
   </header>
 
@@ -878,49 +798,33 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div class="panel hero-copy-panel">
+          <div class="eyebrow">Fall 2026 • NKU College of Informatics</div>
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
-            This is a fast, personalized experience that shows students from
-            <strong>every major</strong> why <strong>INF 125: AI Literacy</strong> matters to their future.
-            Business, health, arts, communication, education, technology, undecided - all welcome.
+            A welcoming AI course for students from <strong>every major</strong>.
+            Pick your path, unlock your reveal, and go straight to registration.
           </p>
 
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#funnel">See where you fit</a>
-            <a class="btn btn-secondary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
-              Register now
-            </a>
-          </div>
-
-          <div class="hero-stats">
-            <div class="stat">
-              <div class="stat-label">Who it’s for</div>
-              <div class="stat-value">All majors • Beginner friendly • No advanced technical background required</div>
-            </div>
-            <div class="stat">
-              <div class="stat-label">Course details</div>
-              <div class="stat-value">Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
-            </div>
+          <div class="hero-mini">
+            <div class="mini-row"><strong>Who it’s for:</strong> All majors • beginner friendly • no advanced technical background required</div>
+            <div class="mini-row"><strong>When + where:</strong> Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
           </div>
         </div>
 
-        <div class="panel experience-panel">
+        <div class="panel stage-panel">
           <div class="stage">
             <video id="video" autoplay playsinline muted></video>
 
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>
-                  Pick your path, unlock your reveal, and see why INF 125 belongs on your schedule.
-                </p>
+                <p>Use the experience below or skip straight to the countdown and reveal.</p>
               </div>
             </div>
 
             <div class="stage-top">
-              <div class="overlay-pill">Target room: <strong id="targetRoomPill">Griffin Hall 160</strong></div>
+              <div class="overlay-pill">Target: <strong id="targetRoomPill">Griffin Hall 160</strong></div>
               <div class="overlay-pill" id="cameraStatus">Camera optional</div>
-              <div class="overlay-pill" id="scanStatus">Experience ready</div>
               <div class="overlay-pill" id="voiceStatus">Voice off</div>
             </div>
 
@@ -963,17 +867,16 @@
 
               <div class="debug-card">
                 <div class="debug-label">Live preview</div>
-                <div class="debug-text" id="ocrOutput">Pick a path below, or start the camera for the room-finder reveal.</div>
+                <div class="debug-text" id="ocrOutput">Tap Start Experience or pick a path below.</div>
               </div>
             </div>
           </div>
 
-          <div class="quick-actions">
-            <button class="btn btn-primary" id="startBtn" type="button">Start camera</button>
-            <button class="btn btn-secondary" id="scanBtn" type="button">Start scan</button>
-            <button class="btn btn-secondary" id="flipBtn" type="button">Flip camera</button>
-            <button class="btn btn-secondary" id="voiceBtn" type="button">Enable voice</button>
-            <button class="btn btn-primary" id="skipCountdownBtn" type="button">Skip camera & start countdown</button>
+          <div class="action-grid">
+            <button class="btn btn-primary" id="startExperienceBtn" type="button">Start Experience</button>
+            <button class="btn btn-secondary" id="skipBtn" type="button">Skip to Reveal</button>
+            <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
+            <button class="btn btn-secondary" id="sharePageBtn" type="button">Share Page</button>
           </div>
         </div>
       </div>
@@ -982,36 +885,36 @@
     <section class="section" id="funnel">
       <div class="shell funnel-grid">
         <div class="panel section-card">
-          <div class="section-label">Step 1 • Pick your path</div>
-          <h2 class="section-title">See yourself in the course</h2>
+          <div class="section-label">Step 1</div>
+          <h2 class="section-title">Pick your path</h2>
           <p class="section-copy">
-            Choose the option that feels closest to you. The message will personalize to show why this course matters for your interests and future.
+            Choose the version of the future that feels closest to you.
           </p>
 
           <div class="path-grid" id="pathGrid">
             <button class="path-btn active" type="button" data-path="business">
               <span class="path-title">Business & Leadership</span>
-              <span class="path-sub">Strategy, entrepreneurship, careers, decision-making</span>
+              <span class="path-sub">Strategy, entrepreneurship, careers</span>
             </button>
             <button class="path-btn" type="button" data-path="health">
               <span class="path-title">Health & Helping Fields</span>
-              <span class="path-sub">Care, ethics, human-centered use, impact</span>
+              <span class="path-sub">Care, ethics, human impact</span>
             </button>
             <button class="path-btn" type="button" data-path="creative">
               <span class="path-title">Creative & Media</span>
-              <span class="path-sub">Design, content, storytelling, communication</span>
+              <span class="path-sub">Design, storytelling, communication</span>
             </button>
             <button class="path-btn" type="button" data-path="education">
               <span class="path-title">Education & Social Impact</span>
-              <span class="path-sub">Learning, people, access, future readiness</span>
+              <span class="path-sub">Learning, access, future readiness</span>
             </button>
             <button class="path-btn" type="button" data-path="tech">
               <span class="path-title">Tech & Data Curious</span>
-              <span class="path-sub">Tools, systems, innovation, responsible use</span>
+              <span class="path-sub">Tools, systems, responsible use</span>
             </button>
             <button class="path-btn" type="button" data-path="undecided">
               <span class="path-title">Still Figuring It Out</span>
-              <span class="path-sub">Explore the future without needing it all mapped out</span>
+              <span class="path-sub">Explore without needing it all mapped out</span>
             </button>
           </div>
 
@@ -1026,60 +929,35 @@
               <span class="tag">Innovation</span>
             </div>
           </div>
-
-          <div class="cta-stack">
-            <button class="btn btn-primary" type="button" id="sharePageBtn">Share this page</button>
-            <button class="btn btn-secondary" type="button" id="triggerRevealBtn">Trigger my reveal</button>
-          </div>
-
-          <div class="small-note" id="shareFeedback">Tap share to quickly send this experience to someone else.</div>
         </div>
 
         <div class="panel section-card">
-          <div class="section-label">Step 2 • Go straight to NKU registration</div>
-          <h2 class="section-title">Ready to take INF 125?</h2>
+          <div class="section-label">Step 2</div>
+          <h2 class="section-title">Register faster</h2>
           <p class="section-copy">
-            When you’re ready, go directly to NKU’s official registration page and search for <strong>INF 125: AI Literacy</strong>.
+            Go directly to NKU registration and search for <strong>INF 125: AI Literacy</strong>.
           </p>
 
-          <div class="funnel-list">
-            <div class="course-row">
-              <div class="k">Search for</div>
-              <div class="v">INF 125: AI Literacy</div>
-            </div>
-            <div class="course-row">
-              <div class="k">Days</div>
-              <div class="v">Tuesdays and Thursdays</div>
-            </div>
-            <div class="course-row">
-              <div class="k">Time</div>
-              <div class="v">10:50 AM – 12:05 PM</div>
-            </div>
-            <div class="course-row">
-              <div class="k">Location</div>
-              <div class="v">Griffin Hall (GH) 160</div>
-            </div>
-            <div class="course-row">
-              <div class="k">Session</div>
-              <div class="v">Fall 2026 Full Session • August 24 – December 11</div>
-            </div>
-            <div class="course-row">
-              <div class="k">Open registration</div>
-              <div class="v">Begins April 13, 2026</div>
-            </div>
+          <div class="compact-list">
+            <div class="compact-row"><strong>Search for</strong>INF 125: AI Literacy</div>
+            <div class="compact-row"><strong>Days</strong>Tuesdays and Thursdays</div>
+            <div class="compact-row"><strong>Time</strong>10:50 AM – 12:05 PM</div>
+            <div class="compact-row"><strong>Location</strong>Griffin Hall (GH) 160</div>
+            <div class="compact-row"><strong>Session</strong>Fall 2026 • August 24 – December 11</div>
+            <div class="compact-row"><strong>Open registration</strong>Begins April 13, 2026</div>
           </div>
 
           <div class="cta-stack">
             <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
-              Register for classes at NKU
+              Register at NKU
             </a>
-            <a class="btn btn-secondary" href="https://inside.nku.edu/registrar/registration.html" target="_blank" rel="noopener noreferrer">
-              Registration help
-            </a>
+            <button class="btn btn-secondary" id="stickyShareMirrorBtn" type="button">
+              Share
+            </button>
           </div>
 
-          <div class="small-note">
-            Tip: once students open myNKU registration, they should search for INF 125 and confirm the meeting time and location listed above.
+          <div class="small-note" id="shareFeedback">
+            Share this page with a friend or go straight to registration.
           </div>
         </div>
       </div>
@@ -1088,11 +966,7 @@
     <section class="section">
       <div class="shell panel section-card">
         <div class="section-label">Important Fall 2026 dates</div>
-        <h2 class="section-title">The planning timeline</h2>
-        <p class="section-copy">
-          Helpful for registration, add/drop decisions, and semester planning.
-        </p>
-
+        <h2 class="section-title">Planning timeline</h2>
         <div class="dates-list" id="datesList"></div>
       </div>
     </section>
@@ -1100,7 +974,7 @@
 
   <div class="sticky-cta">
     <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
-      Register at NKU
+      Register
     </a>
     <button class="btn btn-secondary" id="stickyShareBtn" type="button">Share</button>
   </div>
@@ -1109,24 +983,19 @@
     <div class="final-kicker">Northern Kentucky University</div>
     <h2 class="final-title"><span class="gold">AI Literacy</span><br>For Every Major</h2>
     <div class="final-copy">
-A welcoming course for students from all majors.
+INF 125: AI Literacy
 
+A welcoming course for students from all majors.
 Explore how AI connects to careers, creativity, communication, ethics, and everyday life.
 
-INF 125: AI Literacy
 Tuesdays & Thursdays • 10:50 AM – 12:05 PM
-Griffin Hall (GH) 160
-    </div>
-    <div class="final-meta">
-      <div class="final-chip">Open to students from all majors</div>
-      <div class="final-chip">Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
-      <div class="final-chip">Open Registration begins Monday, April 13, 2026</div>
+Griffin Hall 160
     </div>
     <div class="final-actions">
       <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
         Register for INF 125
       </a>
-      <button class="btn btn-secondary" id="replayBtn" type="button">Replay experience</button>
+      <button class="btn btn-secondary" id="replayBtn" type="button">Replay</button>
     </div>
   </section>
 
@@ -1138,7 +1007,7 @@ Griffin Hall (GH) 160
       startDateISO: "2026-08-24T10:50:00-04:00",
       scanIntervalMs: 2600,
       ocrScale: 1,
-      autoShowFinalMs: 5000,
+      autoShowFinalMs: 4500,
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1157,8 +1026,7 @@ Griffin Hall (GH) 160
           revealText: "INF 125 helps you explore strategy, automation, entrepreneurship, and the role AI will play in leadership and business careers.",
           voiceLines: [
             "Nice. You found INF one twenty five.",
-            "AI literacy at NKU.",
-            "For business students, this is where AI starts to connect to leadership, strategy, and real decisions.",
+            "For business students, this is where AI connects to leadership, strategy, and real decisions.",
             "If that sounds like your future, go register."
           ]
         },
@@ -1170,7 +1038,6 @@ Griffin Hall (GH) 160
           revealText: "INF 125 helps you explore the real-world role of AI in care, support systems, ethics, and human-centered problem-solving.",
           voiceLines: [
             "Nice. You found INF one twenty five.",
-            "AI literacy at NKU.",
             "For students in health and helping fields, this course connects AI to care, ethics, and real human impact.",
             "If that feels relevant, go register."
           ]
@@ -1183,7 +1050,6 @@ Griffin Hall (GH) 160
           revealText: "INF 125 helps you explore how AI intersects with design, storytelling, content, communication, and creative work.",
           voiceLines: [
             "Nice. You found INF one twenty five.",
-            "AI literacy at NKU.",
             "For creators and communicators, this course explores how AI is reshaping media, storytelling, and expression.",
             "If that sounds like you, go register."
           ]
@@ -1196,7 +1062,6 @@ Griffin Hall (GH) 160
           revealText: "INF 125 helps you explore how AI affects learning, teaching, access, support, and human development across contexts.",
           voiceLines: [
             "Nice. You found INF one twenty five.",
-            "AI literacy at NKU.",
             "For future educators and changemakers, this course explores how AI is reshaping learning, access, and support.",
             "If that matters to you, go register."
           ]
@@ -1209,7 +1074,6 @@ Griffin Hall (GH) 160
           revealText: "INF 125 helps you understand real-world AI systems, responsible use, adoption, and how AI shapes products and people.",
           voiceLines: [
             "Nice. You found INF one twenty five.",
-            "AI literacy at NKU.",
             "For tech curious students, this course goes beyond the hype and shows how AI works in real systems and real decisions.",
             "If you want that foundation, go register."
           ]
@@ -1222,7 +1086,6 @@ Griffin Hall (GH) 160
           revealText: "INF 125 helps you explore one of the biggest forces shaping careers and everyday life — without needing to already know your path.",
           voiceLines: [
             "Nice. You found INF one twenty five.",
-            "AI literacy at NKU.",
             "If you are still figuring things out, this course is built for that too.",
             "It gives you a strong start in understanding how AI is shaping every field.",
             "If that feels useful, go register."
@@ -1233,20 +1096,14 @@ Griffin Hall (GH) 160
         { date: "March 26, 2026", event: "Priority Registration begins for current students" },
         { date: "April 13, 2026", event: "Open Registration begins" },
         { date: "August 24, 2026", event: "Classes begin" },
-        { date: "August 31, 2026", event: "Last day to drop with a 100% tuition adjustment • Last day to add a course • Last day to change grading option" },
-        { date: "September 7, 2026", event: "Labor Day — University Closed / No Classes" },
-        { date: "September 15, 2026", event: "Last day to drop a course without a grade appearing on transcript • Last day to drop with a 50% tuition adjustment" },
-        { date: "October 12, 2026", event: "Faculty begin submitting full session mid-term grades • Undergraduate students and academic advisors may access full session mid-term grades" },
-        { date: "October 17, 2026", event: "Midterm" },
-        { date: "October 19–20, 2026", event: "Fall Break — University Open / No Classes" },
-        { date: "October 21, 2026", event: "9:00 a.m. faculty deadline for submitting full session mid-term grades" },
-        { date: "November 2, 2026", event: "Last day to drop a course with a grade of W" },
-        { date: "November 26–27, 2026", event: "Thanksgiving Holiday — University Closed / No Classes" },
-        { date: "November 30, 2026", event: "Deadline for filing application for degree candidacy for Spring graduation with the Office of the Registrar. Late fees applied after this date." },
-        { date: "December 11, 2026", event: "Last day of classes • Last day to withdraw fall graduation application" },
+        { date: "August 31, 2026", event: "Last day to add a course or change grading option" },
+        { date: "September 15, 2026", event: "Last day to drop without a grade appearing on transcript" },
+        { date: "October 19–20, 2026", event: "Fall Break — No Classes" },
+        { date: "November 2, 2026", event: "Last day to drop with a W" },
+        { date: "November 26–27, 2026", event: "Thanksgiving Holiday — No Classes" },
+        { date: "December 11, 2026", event: "Last day of classes" },
         { date: "December 12–18, 2026", event: "Final Examinations" },
-        { date: "December 19, 2026", event: "Commencement" },
-        { date: "December 22, 2026", event: "9:00 a.m. faculty deadline for grade submission" }
+        { date: "December 19, 2026", event: "Commencement" }
       ]
     };
 
@@ -1258,7 +1115,6 @@ Griffin Hall (GH) 160
     const fallbackStage = document.getElementById("fallbackStage");
     const scanRing = document.getElementById("scanRing");
     const cameraStatus = document.getElementById("cameraStatus");
-    const scanStatus = document.getElementById("scanStatus");
     const voiceStatus = document.getElementById("voiceStatus");
     const ocrOutput = document.getElementById("ocrOutput");
     const revealCard = document.getElementById("revealCard");
@@ -1275,15 +1131,13 @@ Griffin Hall (GH) 160
     const minutesEl = document.getElementById("minutes");
     const secondsEl = document.getElementById("seconds");
 
-    const startBtn = document.getElementById("startBtn");
-    const scanBtn = document.getElementById("scanBtn");
-    const flipBtn = document.getElementById("flipBtn");
+    const startExperienceBtn = document.getElementById("startExperienceBtn");
+    const skipBtn = document.getElementById("skipBtn");
     const voiceBtn = document.getElementById("voiceBtn");
     const replayBtn = document.getElementById("replayBtn");
-    const triggerRevealBtn = document.getElementById("triggerRevealBtn");
-    const skipCountdownBtn = document.getElementById("skipCountdownBtn");
     const sharePageBtn = document.getElementById("sharePageBtn");
     const stickyShareBtn = document.getElementById("stickyShareBtn");
+    const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
 
     const pathGrid = document.getElementById("pathGrid");
     const personaPanel = document.getElementById("personaPanel");
@@ -1304,13 +1158,12 @@ Griffin Hall (GH) 160
     let selectedPath = "business";
     let voiceEnabled = false;
     let voicesReady = false;
-    let activeUtterances = [];
     let speechCancelled = false;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
-    startMajorRotation();
     updatePersona("business");
+    startMajorRotation();
     startCountdown();
 
     if ("speechSynthesis" in window) {
@@ -1352,14 +1205,6 @@ Griffin Hall (GH) 160
       return candidates.some(candidate => cleaned.includes(candidate));
     }
 
-    function startMajorRotation() {
-      majorText.textContent = CONFIG.majorMessages[0];
-      majorRotationTimer = setInterval(() => {
-        majorIndex = (majorIndex + 1) % CONFIG.majorMessages.length;
-        majorText.textContent = CONFIG.majorMessages[majorIndex];
-      }, 2400);
-    }
-
     function updatePersona(pathKey) {
       selectedPath = pathKey;
       const item = CONFIG.personaContent[pathKey];
@@ -1377,6 +1222,14 @@ Griffin Hall (GH) 160
       btn.classList.add("active");
       updatePersona(btn.dataset.path);
     });
+
+    function startMajorRotation() {
+      majorText.textContent = CONFIG.majorMessages[0];
+      majorRotationTimer = setInterval(() => {
+        majorIndex = (majorIndex + 1) % CONFIG.majorMessages.length;
+        majorText.textContent = CONFIG.majorMessages[majorIndex];
+      }, 2400);
+    }
 
     function startCountdown() {
       if (countdownTimer) clearInterval(countdownTimer);
@@ -1409,9 +1262,14 @@ Griffin Hall (GH) 160
       countdownTimer = setInterval(updateCountdown, 1000);
     }
 
-    async function startCamera() {
+    async function startExperience() {
+      if (scanning || found) return;
+
       stopCamera();
       fallbackMode = false;
+      found = false;
+      revealCard.classList.remove("active");
+      scanRing.classList.remove("found");
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -1426,8 +1284,8 @@ Griffin Hall (GH) 160
         video.srcObject = stream;
         fallbackStage.style.display = "none";
         cameraStatus.textContent = `Camera live (${facingMode === "environment" ? "rear" : "front"})`;
-        scanStatus.textContent = "Ready to scan";
-        ocrOutput.textContent = "Camera live. Point at Griffin Hall 160 or use the skip button.";
+        ocrOutput.textContent = "Scanning for Griffin Hall 160...";
+        startScanning();
       } catch (err) {
         console.error(err);
         startFallbackReveal();
@@ -1445,9 +1303,8 @@ Griffin Hall (GH) 160
     function startFallbackReveal() {
       fallbackMode = true;
       cameraStatus.textContent = "Camera skipped";
-      scanStatus.textContent = "Countdown started";
       fallbackStage.style.display = "grid";
-      ocrOutput.textContent = "No camera? No problem — launching the personalized reveal and countdown now.";
+      ocrOutput.textContent = "Launching reveal without camera access.";
       onTargetFound("camera skipped");
     }
 
@@ -1455,7 +1312,6 @@ Griffin Hall (GH) 160
       if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
 
       ocrBusy = true;
-      scanStatus.textContent = "Scanning room signage...";
 
       try {
         const vw = video.videoWidth;
@@ -1475,30 +1331,22 @@ Griffin Hall (GH) 160
         const text = result.data.text || "";
         const cleaned = normalizeText(text);
 
-        ocrOutput.textContent = cleaned || "No readable signage detected in this scan.";
+        ocrOutput.textContent = cleaned || "Scanning... no readable room sign found yet.";
 
         if (matchesTarget(cleaned)) {
           onTargetFound(cleaned);
-        } else {
-          scanStatus.textContent = "Scanning... target room not found yet";
         }
       } catch (err) {
         console.error(err);
-        scanStatus.textContent = "Scan error";
+        ocrOutput.textContent = "Scan error. You can skip straight to the reveal.";
       } finally {
         ocrBusy = false;
       }
     }
 
     function startScanning() {
-      if (scanning || fallbackMode) return;
-      if (!video.srcObject) {
-        startFallbackReveal();
-        return;
-      }
-
+      if (scanning) return;
       scanning = true;
-      scanStatus.textContent = "Scanner started";
       runOCRScan();
       scanTimer = setInterval(runOCRScan, CONFIG.scanIntervalMs);
     }
@@ -1509,24 +1357,6 @@ Griffin Hall (GH) 160
         clearInterval(scanTimer);
         scanTimer = null;
       }
-    }
-
-    function triggerConfetti() {
-      confettiLayer.innerHTML = "";
-      const count = 42;
-      for (let i = 0; i < count; i++) {
-        const piece = document.createElement("span");
-        piece.className = "confetti-piece";
-        piece.style.left = `${Math.random() * 100}%`;
-        piece.style.top = `${Math.random() * 10}%`;
-        piece.style.background = Math.random() > 0.5 ? "var(--gold)" : "#fff";
-        piece.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
-        piece.style.animationDelay = `${Math.random() * 180}ms`;
-        confettiLayer.appendChild(piece);
-      }
-      setTimeout(() => {
-        confettiLayer.innerHTML = "";
-      }, 1800);
     }
 
     function getBestVoice() {
@@ -1561,7 +1391,6 @@ Griffin Hall (GH) 160
 
     function stopSpeech() {
       speechCancelled = true;
-      activeUtterances = [];
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
@@ -1579,8 +1408,7 @@ Griffin Hall (GH) 160
       function nextLine() {
         if (speechCancelled || index >= lines.length) return;
 
-        const line = lines[index];
-        const utterance = new SpeechSynthesisUtterance(line);
+        const utterance = new SpeechSynthesisUtterance(lines[index]);
         utterance.lang = "en-US";
         utterance.voice = voice;
         utterance.rate = 1.02;
@@ -1599,11 +1427,28 @@ Griffin Hall (GH) 160
           setTimeout(nextLine, 120);
         };
 
-        activeUtterances.push(utterance);
         window.speechSynthesis.speak(utterance);
       }
 
       nextLine();
+    }
+
+    function triggerConfetti() {
+      confettiLayer.innerHTML = "";
+      const count = 36;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.top = `${Math.random() * 10}%`;
+        piece.style.background = Math.random() > 0.5 ? "var(--gold)" : "#fff";
+        piece.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
+        piece.style.animationDelay = `${Math.random() * 180}ms`;
+        confettiLayer.appendChild(piece);
+      }
+      setTimeout(() => {
+        confettiLayer.innerHTML = "";
+      }, 1800);
     }
 
     function onTargetFound(matchText) {
@@ -1613,9 +1458,8 @@ Griffin Hall (GH) 160
       stopScanning();
       revealCard.classList.add("active");
       scanRing.classList.add("found");
-      scanStatus.textContent = fallbackMode ? "Countdown active" : "Room found";
       ocrOutput.textContent = fallbackMode
-        ? "DIRECT LAUNCH MODE:\nShowing the personalized course reveal without camera access."
+        ? "DIRECT LAUNCH MODE:\nShowing your personalized reveal without camera access."
         : `MATCH FOUND:\n${matchText}`;
 
       triggerConfetti();
@@ -1624,7 +1468,7 @@ Griffin Hall (GH) 160
       speakLines(persona.voiceLines);
 
       if (navigator.vibrate) {
-        navigator.vibrate([160, 70, 180]);
+        navigator.vibrate([140, 70, 170]);
       }
 
       if (finalTimer) clearTimeout(finalTimer);
@@ -1650,11 +1494,9 @@ Griffin Hall (GH) 160
       scanRing.classList.remove("found");
       revealCard.classList.remove("active");
       cameraStatus.textContent = "Camera optional";
-      scanStatus.textContent = "Experience ready";
-      ocrOutput.textContent = "Pick a path below, or start the camera for the room-finder reveal.";
+      ocrOutput.textContent = "Tap Start Experience or pick a path below.";
       fallbackStage.style.display = "grid";
       hideFinalScreen();
-      scanBtn.textContent = "Start scan";
     }
 
     async function sharePage() {
@@ -1679,28 +1521,13 @@ Griffin Hall (GH) 160
       }
     }
 
-    startBtn.addEventListener("click", startCamera);
-
-    scanBtn.addEventListener("click", () => {
-      if (!scanning) {
-        startScanning();
-        scanBtn.textContent = fallbackMode ? "Reveal active" : "Stop scan";
-      } else {
-        stopScanning();
-        scanBtn.textContent = "Start scan";
-        scanStatus.textContent = "Scan paused";
-      }
-    });
-
-    flipBtn.addEventListener("click", async () => {
-      facingMode = facingMode === "environment" ? "user" : "environment";
-      await startCamera();
-    });
+    startExperienceBtn.addEventListener("click", startExperience);
+    skipBtn.addEventListener("click", startFallbackReveal);
 
     voiceBtn.addEventListener("click", () => {
       voiceEnabled = !voiceEnabled;
       voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
-      voiceBtn.textContent = voiceEnabled ? "Disable voice" : "Enable voice";
+      voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
 
       if (voiceEnabled && "speechSynthesis" in window && !voicesReady) {
         window.speechSynthesis.getVoices();
@@ -1712,21 +1539,10 @@ Griffin Hall (GH) 160
       }
     });
 
-    skipCountdownBtn.addEventListener("click", () => {
-      startFallbackReveal();
-    });
-
-    replayBtn.addEventListener("click", () => {
-      hideFinalScreen();
-      resetExperience();
-    });
-
-    triggerRevealBtn.addEventListener("click", () => {
-      startFallbackReveal();
-    });
-
+    replayBtn.addEventListener("click", resetExperience);
     sharePageBtn.addEventListener("click", sharePage);
     stickyShareBtn.addEventListener("click", sharePage);
+    stickyShareMirrorBtn.addEventListener("click", sharePage);
 
     window.addEventListener("beforeunload", () => {
       stopScanning();
