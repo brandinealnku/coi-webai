@@ -2,845 +2,1021 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Is It AI? | NKU 10-Second Challenge</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta
-    name="description"
-    content="A fast, one-screen NKU AI Literacy challenge built for LinkedIn engagement."
-  />
-  <meta name="theme-color" content="#201747" />
-
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    crossorigin="anonymous"
-  />
-
+  <title>NKU COI | AI Literacy Launch Reveal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Mobile NKU College of Informatics launch experience for INF 125: AI Literacy." />
   <style>
-    :root {
-      --nku-purple: #201747;
-      --nku-purple-dark: #120d25;
-      --nku-gold: #fdb913;
-      --nku-gold-soft: #ffd66d;
-      --white: #ffffff;
-      --muted: rgba(255,255,255,0.76);
-      --glass: rgba(255,255,255,0.08);
-      --glass-border: rgba(255,255,255,0.14);
-      --success: #34d399;
-      --danger: #fb7185;
-      --cyan: #67e8f9;
+    :root{
+      --nku-gold:#FFC72C;
+      --nku-black:#000000;
+      --nku-white:#ffffff;
+      --panel:rgba(0,0,0,.68);
+      --border:rgba(255,255,255,.12);
+      --text:#fff;
+      --muted:rgba(255,255,255,.75);
+      --soft:rgba(255,255,255,.58);
+      --success:#56f19f;
+      --shadow:0 14px 40px rgba(0,0,0,.42);
     }
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--white);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{
+      margin:0;padding:0;min-height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(253,185,19,0.18), transparent 25%),
-        radial-gradient(circle at bottom right, rgba(103,232,249,0.13), transparent 24%),
-        linear-gradient(145deg, #0b0715 0%, #201747 45%, #09070f 100%);
-      overflow-x: hidden;
+        radial-gradient(circle at top, rgba(255,199,44,.18), transparent 24%),
+        linear-gradient(180deg,#121212 0%, #050505 60%, #000 100%);
+      color:var(--text);
+      overflow-x:hidden;
     }
 
-    .app-shell {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px;
+    body.launching .intro-screen{
+      opacity:0;pointer-events:none;transform:scale(1.03);
+    }
+    body.launching .app{
+      opacity:1;transform:translateY(0);
     }
 
-    .glass {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 28px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 24px 70px rgba(0,0,0,0.28);
-    }
+    .intro-screen,.app,.final-screen{transition:.6s ease}
 
-    .hero {
-      padding: 30px 26px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      right: -90px;
-      top: -90px;
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(253,185,19,0.35), transparent 72%);
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      left: -60px;
-      bottom: -100px;
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(103,232,249,0.18), transparent 70%);
-      pointer-events: none;
-    }
-
-    .badge-nku {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      border-radius: 999px;
-      padding: 9px 15px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.14);
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .hero-title {
-      margin: 18px 0 10px;
-      font-size: clamp(2.4rem, 6vw, 4.7rem);
-      line-height: 0.95;
-      font-weight: 950;
-      letter-spacing: -0.04em;
-    }
-
-    .gold {
-      color: var(--nku-gold);
-      text-shadow: 0 0 26px rgba(253,185,19,0.16);
-    }
-
-    .hero-subtitle {
-      max-width: 760px;
-      font-size: 1.04rem;
-      color: var(--muted);
-      margin-bottom: 18px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 13px;
-      margin: 6px 8px 0 0;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
-    .btn-brand,
-    .btn-soft,
-    .choice-btn {
-      border-radius: 999px;
-      font-weight: 900;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-    }
-
-    .btn-brand {
-      background: linear-gradient(135deg, var(--nku-gold), var(--nku-gold-soft));
-      color: #1a1435;
-      border: none;
-      padding: 14px 22px;
-      box-shadow: 0 14px 30px rgba(253,185,19,0.22);
-    }
-
-    .btn-soft {
-      background: rgba(255,255,255,0.08);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 14px 20px;
-    }
-
-    .btn-brand:hover,
-    .btn-soft:hover,
-    .choice-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 22px;
-      margin-top: 22px;
-    }
-
-    .panel {
-      padding: 22px;
-    }
-
-    .scanner-box {
-      position: relative;
-      min-height: 280px;
-      border-radius: 24px;
-      overflow: hidden;
+    .intro-screen{
+      position:fixed;inset:0;z-index:30;
+      display:flex;flex-direction:column;justify-content:space-between;
+      padding:24px 18px calc(24px + env(safe-area-inset-bottom));
       background:
-        radial-gradient(circle at top left, rgba(253,185,19,0.12), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(103,232,249,0.12), transparent 30%),
-        linear-gradient(145deg, #0d0a18 0%, #1b1536 45%, #0a0812 100%);
-      border: 1px solid rgba(255,255,255,0.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+        radial-gradient(circle at 50% 16%, rgba(255,199,44,.16), transparent 22%),
+        linear-gradient(180deg,#0e0e0e 0%, #020202 100%);
     }
 
-    .scanner-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-      box-shadow: 0 0 18px rgba(103,232,249,0.75);
-      animation: scan 2s linear infinite;
-      opacity: 0.9;
+    .brand-chip{
+      display:inline-flex;flex-direction:column;gap:4px;
+      padding:10px 12px;border-radius:16px;
+      border:1px solid rgba(255,199,44,.35);
+      background:rgba(255,199,44,.08);
+      max-width:80%;
+      box-shadow:var(--shadow);
+    }
+    .brand-chip .mini{
+      color:var(--nku-gold);
+      font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em;
+    }
+    .brand-chip .title{
+      font-size:.94rem;font-weight:800;line-height:1.2;
     }
 
-    @keyframes scan {
-      0% { top: 12%; }
-      50% { top: 82%; }
-      100% { top: 12%; }
+    .live-badge{
+      padding:9px 12px;border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      font-size:.78rem;font-weight:800;color:var(--nku-gold);
     }
 
-    .scanner-content {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      max-width: 460px;
+    .toprow{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
     }
 
-    .scanner-headline {
-      font-size: clamp(1.9rem, 4vw, 3.4rem);
-      font-weight: 950;
-      line-height: 0.95;
-      letter-spacing: -0.04em;
-      margin-bottom: 12px;
+    .eyebrow{
+      margin-top:22px;
+      color:var(--nku-gold);
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.76rem;
+      font-weight:900;
     }
 
-    .scanner-sub {
-      color: var(--muted);
-      margin-bottom: 18px;
-      font-size: 1rem;
+    h1{
+      margin:10px 0 12px;
+      font-size:clamp(2rem, 7vw, 3.3rem);
+      line-height:.95;
+      letter-spacing:-.04em;
+      text-transform:uppercase;
+    }
+    h1 .gold{color:var(--nku-gold)}
+
+    .lead{
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+      font-size:1rem;
+      max-width:36rem;
     }
 
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
+    .hero-cards{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:16px;
     }
 
-    .stat-box {
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      text-align: center;
+    .info-card,.top-panel,.reveal-card,.debug-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
     }
 
-    .stat-box .big {
-      font-size: 1.5rem;
-      font-weight: 950;
-      color: var(--nku-gold);
-      line-height: 1;
+    .info-card{ padding:14px; }
+    .info-card .label{
+      color:var(--nku-gold);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .info-card .value{
+      font-size:1rem;
+      font-weight:700;
+      line-height:1.25;
     }
 
-    .stat-box .label {
-      margin-top: 6px;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      font-weight: 800;
+    .hero-actions,.final-actions{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:14px;
     }
 
-    .round-card {
-      border-radius: 24px;
-      padding: 18px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 14px;
-      transition: 0.2s ease;
+    button{
+      appearance:none;
+      border:0;
+      border-radius:18px;
+      padding:16px;
+      font-size:1rem;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .14s ease, opacity .14s ease;
+    }
+    button:active{transform:scale(.985)}
+
+    .btn-gold{
+      background:linear-gradient(135deg,#ffd86c,var(--nku-gold));
+      color:#111;
+    }
+    .btn-dark{
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      border:1px solid var(--border);
     }
 
-    .round-card.done {
-      opacity: 0.82;
+    .intro-footer{
+      color:var(--soft);
+      font-size:.84rem;
+      line-height:1.35;
     }
 
-    .round-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
+    .app{
+      opacity:0;
+      transform:translateY(18px);
+      min-height:100vh;
+      padding:calc(12px + env(safe-area-inset-top)) 12px calc(18px + env(safe-area-inset-bottom));
+      display:flex;
+      flex-direction:column;
+      gap:12px;
     }
 
-    .round-tag {
-      display: inline-block;
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--nku-gold);
-      font-weight: 900;
+    .top-panel{ padding:12px; border-radius:20px; }
+
+    .top-panel-row{
+      display:flex;justify-content:space-between;gap:10px;align-items:center;
+      margin-bottom:8px;
     }
 
-    .round-status {
-      font-size: 0.8rem;
-      font-weight: 900;
-      color: var(--muted);
+    .lockup .school{
+      color:var(--nku-gold);
+      font-size:.7rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+    }
+    .lockup .program{
+      font-size:.98rem;
+      font-weight:800;
+      line-height:1.15;
     }
 
-    .sample-box {
-      border-radius: 18px;
-      padding: 16px;
-      background: rgba(10,7,19,0.48);
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.98rem;
-      line-height: 1.52;
-      margin-bottom: 12px;
+    .status-dot{
+      display:inline-flex;align-items:center;gap:8px;
+      color:var(--muted);font-size:.82rem;
+    }
+    .status-dot::before{
+      content:"";
+      width:10px;height:10px;border-radius:50%;
+      background:var(--nku-gold);
+      box-shadow:0 0 12px rgba(255,199,44,.7);
     }
 
-    .choice-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .desc{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.35;
     }
 
-    .choice-btn {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.08);
-      color: white;
-      padding: 14px 14px;
-      font-size: 0.98rem;
+    .camera-shell{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      min-height:58vh;
+      background:#000;
+      border:1px solid rgba(255,255,255,.1);
+      box-shadow:var(--shadow);
     }
 
-    .choice-btn.correct {
-      background: rgba(52,211,153,0.16);
-      border-color: rgba(52,211,153,0.4);
+    video{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      background:#000;
+    }
+    #snapshotCanvas{display:none}
+
+    .camera-overlay{
+      position:absolute;inset:0;pointer-events:none;z-index:2;
     }
 
-    .choice-btn.incorrect {
-      background: rgba(251,113,133,0.16);
-      border-color: rgba(251,113,133,0.42);
+    .hud-top{
+      position:absolute;left:10px;right:10px;top:10px;
+      display:flex;flex-direction:column;gap:8px;
+    }
+    .hud-row{
+      display:flex;flex-wrap:wrap;gap:8px;
     }
 
-    .feedback {
-      margin-top: 10px;
-      font-size: 0.92rem;
-      font-weight: 700;
-      display: none;
+    .pill{
+      padding:8px 11px;border-radius:999px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;font-size:.8rem;
+      backdrop-filter:blur(8px);
+    }
+    .pill strong{color:var(--nku-gold)}
+
+    .scan-zone{
+      position:absolute;
+      left:50%;top:50%;
+      width:84%;height:23%;
+      transform:translate(-50%,-50%);
+      border:3px solid rgba(255,255,255,.88);
+      border-radius:24px;
+      box-shadow:inset 0 0 0 9999px rgba(0,0,0,.18);
+      overflow:hidden;
+      transition:.28s ease;
     }
 
-    .feedback.show {
-      display: block;
+    .scan-zone::before,.scan-zone::after{
+      content:"";
+      position:absolute;
+      left:10px;right:10px;height:2px;
+      background:linear-gradient(90deg, transparent, var(--nku-gold), transparent);
+      filter:drop-shadow(0 0 8px rgba(255,199,44,.85));
+      animation:sweep 2.6s linear infinite;
+    }
+    .scan-zone::before{top:14px}
+    .scan-zone::after{bottom:14px;animation-delay:1.1s}
+
+    @keyframes sweep{
+      0%{transform:translateY(0);opacity:.2}
+      50%{transform:translateY(34px);opacity:1}
+      100%{transform:translateY(68px);opacity:.2}
     }
 
-    .feedback.good {
-      color: #dcfce7;
+    .found .scan-zone{
+      border-color:var(--success);
+      box-shadow:0 0 30px rgba(86,241,159,.35), inset 0 0 0 9999px rgba(0,0,0,.06);
     }
 
-    .feedback.bad {
-      color: #ffe4e6;
+    .hud-bottom{
+      position:absolute;left:10px;right:10px;bottom:10px;
+      display:flex;flex-direction:column;gap:10px;
     }
 
-    .results-panel {
-      padding: 22px;
+    .reveal-card,.debug-card{padding:14px;border-radius:20px}
+    .reveal-card{
+      display:none;
+      background:rgba(0,0,0,.64);
+    }
+    .reveal-card.active{
+      display:block;
+      animation:revealUp .45s ease;
+    }
+    @keyframes revealUp{
+      0%{transform:translateY(14px) scale(.98);opacity:0}
+      100%{transform:translateY(0) scale(1);opacity:1}
     }
 
-    .result-score {
-      font-size: clamp(3rem, 8vw, 5.2rem);
-      line-height: 0.95;
-      font-weight: 950;
-      color: var(--nku-gold);
-      margin-bottom: 12px;
+    .reveal-mini{
+      color:var(--nku-gold);
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:.72rem;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .reveal-title{
+      margin:0;
+      font-size:1.35rem;
+      line-height:1.02;
+      text-transform:uppercase;
+      letter-spacing:-.03em;
+    }
+    .reveal-text{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.95rem;
+      line-height:1.35;
     }
 
-    .result-badge {
-      display: inline-block;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.14);
-      font-weight: 900;
-      margin-bottom: 14px;
+    .count-grid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
     }
 
-    .share-box {
-      width: 100%;
-      min-height: 130px;
-      padding: 16px;
-      border-radius: 18px;
-      resize: vertical;
-      outline: none;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: white;
+    .count-box{
+      border-radius:16px;
+      padding:12px 8px;
+      text-align:center;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.09);
+    }
+    .count-num{
+      font-size:1.45rem;
+      font-weight:900;
+      line-height:1;
+      color:var(--nku-gold);
+    }
+    .count-label{
+      margin-top:6px;
+      font-size:.68rem;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      color:var(--soft);
+      font-weight:700;
     }
 
-    .launch-banner {
-      margin-top: 18px;
-      padding: 18px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, rgba(253,185,19,0.16), rgba(103,232,249,0.12));
-      border: 1px solid rgba(253,185,19,0.22);
+    .debug-card .label{
+      color:var(--nku-gold);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .debug-text{
+      color:var(--soft);
+      font-size:.82rem;
+      line-height:1.4;
+      white-space:pre-wrap;
+      max-height:84px;
+      overflow:auto;
     }
 
-    .launch-banner h3 {
-      margin: 0 0 8px;
-      font-size: 1.2rem;
-      font-weight: 900;
+    .controls{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
     }
 
-    .muted { color: var(--muted); }
-
-    .hidden { display: none !important; }
-
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 16px;
-      top: -20px;
-      z-index: 9999;
-      pointer-events: none;
-      opacity: 0.95;
-      animation: fall linear forwards;
+    .footer-note{
+      text-align:center;
+      color:var(--soft);
+      font-size:.8rem;
+      line-height:1.35;
+      padding:2px 8px 0;
     }
 
-    @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(720deg);
-        opacity: 1;
-      }
+    .spark-layer{
+      position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;
+    }
+    .spark{
+      position:absolute;width:10px;height:10px;border-radius:50%;
+      background:var(--nku-gold);opacity:0;
+      animation:spark 1.7s ease forwards;
+    }
+    @keyframes spark{
+      0%{transform:translate(0,0) scale(.3);opacity:1}
+      100%{transform:translate(var(--x),var(--y)) scale(1.45);opacity:0}
     }
 
-    @media (max-width: 992px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
+    .final-screen{
+      position:fixed;inset:0;z-index:40;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:24px 18px calc(24px + env(safe-area-inset-bottom));
+      text-align:center;
+      background:
+        radial-gradient(circle at 50% 26%, rgba(255,199,44,.2), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%),
+        linear-gradient(180deg,#0b0b0b 0%, #020202 100%);
+      opacity:0;
+      pointer-events:none;
+      transform:scale(1.03);
+    }
+    .final-screen.active{
+      opacity:1;
+      pointer-events:auto;
+      transform:scale(1);
     }
 
-    @media (max-width: 576px) {
-      .stats-row,
-      .choice-row {
-        grid-template-columns: 1fr;
-      }
+    .final-kicker{
+      color:var(--nku-gold);
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+    .final-title{
+      margin:0;
+      font-size:clamp(2.2rem, 8vw, 4rem);
+      line-height:.92;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+    }
+    .final-title .gold{color:var(--nku-gold)}
+    .final-sub{
+      margin:16px auto 0;
+      color:var(--muted);
+      font-size:1rem;
+      line-height:1.45;
+      max-width:36rem;
+      white-space:pre-line;
+    }
+    .final-meta{
+      margin-top:18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      width:min(100%, 540px);
+    }
+    .final-chip{
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      font-weight:800;
+    }
+
+    @media (min-width:700px){
+      .hero-cards{grid-template-columns:repeat(3,1fr)}
+      .hero-actions,.final-actions{flex-direction:row}
+      .hero-actions button,.final-actions button{flex:1}
+    }
+
+    @media (max-width:420px){
+      h1{font-size:1.95rem}
+      .count-num{font-size:1.2rem}
+      .count-label{font-size:.62rem}
+      .reveal-title{font-size:1.15rem}
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <section class="glass hero">
-      <div class="badge-nku">⚡ NKU • AI Literacy Day • 10-Second Challenge</div>
-      <h1 class="hero-title">
-        <span class="gold">IS IT AI?</span><br />
-        Comment your score
-      </h1>
-      <p class="hero-subtitle">
-        A one-screen NKU challenge built for fast completions, comments, and shares —
-        and to build hype for <strong>INF 125: AI Literacy</strong> this fall.
+  <section class="intro-screen">
+    <div>
+      <div class="toprow">
+        <div class="brand-chip">
+          <div class="mini">Northern Kentucky University</div>
+          <div class="title">College of Informatics</div>
+        </div>
+        <div class="live-badge">LIVE DEMO</div>
+      </div>
+
+      <div class="eyebrow">Griffin Hall • Fall 2026 Reveal</div>
+      <h1>Find the room.<br><span class="gold">Unlock AI Literacy.</span></h1>
+      <p class="lead">
+        Walk through Griffin Hall, detect the right room, and trigger a cinematic reveal for
+        <strong>INF 125: AI Literacy</strong>.
       </p>
 
-      <div class="mb-3">
-        <span class="chip">⏱ about 10 seconds</span>
-        <span class="chip">📱 mobile friendly</span>
-        <span class="chip">💬 comment your score</span>
-        <span class="chip">🚀 LinkedIn ready</span>
+      <div class="hero-cards">
+        <div class="info-card">
+          <div class="label">Experience</div>
+          <div class="value">Mobile hallway finder + countdown reveal</div>
+        </div>
+        <div class="info-card">
+          <div class="label">Target Room</div>
+          <div class="value" id="launchRoomLabel">Griffin Hall 302</div>
+        </div>
+        <div class="info-card">
+          <div class="label">Launch</div>
+          <div class="value">INF 125: AI Literacy • Fall 2026</div>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn-gold" id="enterExperienceBtn">Enter Launch Experience</button>
+        <button class="btn-dark" id="skipIntroBtn">Skip Intro</button>
+      </div>
+    </div>
+
+    <div class="intro-footer">
+      Built for mobile video capture, social sharing, and NKU College of Informatics hype.
+    </div>
+  </section>
+
+  <main class="app">
+    <section class="top-panel">
+      <div class="top-panel-row">
+        <div class="lockup">
+          <div class="school">Northern Kentucky University</div>
+          <div class="program">College of Informatics • INF 125: AI Literacy</div>
+        </div>
+        <div class="status-dot">Griffin Hall Finder</div>
+      </div>
+      <div class="desc">
+        Point your phone at door signage or hallway text. When the target room is detected, the reveal activates automatically.
       </div>
     </section>
 
-    <div class="layout">
-      <section class="glass panel">
-        <div class="scanner-box mb-4">
-          <div class="scanner-line"></div>
-          <div class="scanner-content">
-            <div class="scanner-headline">
-              3 fast rounds.<br /><span class="gold">Trust your instinct.</span>
-            </div>
-            <div class="scanner-sub">
-              Tap AI or Human for each one. Then share your score.
-            </div>
-            <button id="startBtn" class="btn-brand">Start the Challenge</button>
+    <section class="camera-shell" id="cameraShell">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="snapshotCanvas"></canvas>
+      <div class="spark-layer" id="sparkLayer"></div>
+
+      <div class="camera-overlay">
+        <div class="hud-top">
+          <div class="hud-row">
+            <div class="pill">Target: <strong id="targetRoomPill">Griffin Hall 302</strong></div>
+            <div class="pill">Course: <strong>INF 125</strong></div>
+          </div>
+          <div class="hud-row">
+            <div class="pill" id="cameraStatus">Camera not started</div>
+            <div class="pill" id="scanStatus">Scan idle</div>
+            <div class="pill" id="voiceStatus">Voice on</div>
           </div>
         </div>
 
-        <div id="gameArea" class="hidden">
-          <div class="stats-row">
-            <div class="stat-box">
-              <div id="scoreCorrect" class="big">0</div>
-              <div class="label">Correct</div>
+        <div class="scan-zone"></div>
+
+        <div class="hud-bottom">
+          <div class="reveal-card" id="revealCard">
+            <div class="reveal-mini">Room detected</div>
+            <h2 class="reveal-title" id="revealTitle">Welcome to AI Literacy at NKU</h2>
+            <div class="reveal-text" id="revealText">
+              The countdown to INF 125: AI Literacy has officially begun.
             </div>
-            <div class="stat-box">
-              <div id="scoreWrong" class="big">0</div>
-              <div class="label">Wrong</div>
-            </div>
-            <div class="stat-box">
-              <div id="scorePercent" class="big">0%</div>
-              <div class="label">Score</div>
-            </div>
-          </div>
 
-          <div id="roundsWrap"></div>
-        </div>
-      </section>
-
-      <section class="glass results-panel">
-        <div id="resultEmpty">
-          <div class="result-score">?</div>
-          <div class="result-badge">Waiting for your score</div>
-          <p class="muted">
-            Finish all 3 rounds to unlock your caption and challenge text.
-          </p>
-        </div>
-
-        <div id="resultReady" class="hidden">
-          <div id="finalPercent" class="result-score">100%</div>
-          <div id="finalBadge" class="result-badge">AI Spotter</div>
-          <p id="finalDescription" class="muted mb-4"></p>
-
-          <div class="d-flex flex-wrap gap-2 mb-4">
-            <button id="copyBtn" class="btn-brand">Copy Caption</button>
-            <button id="linkedinBtn" class="btn-soft">Open LinkedIn Share</button>
-            <button id="challengeBtn" class="btn-soft">Copy Challenge Text</button>
-            <button id="restartBtn" class="btn-soft">Play Again</button>
-          </div>
-
-          <textarea id="shareText" class="share-box" readonly></textarea>
-
-          <div class="launch-banner">
-            <h3>NKU is launching INF 125: AI Literacy this fall</h3>
-            <div class="muted">
-              Students won’t just use AI. They’ll learn how to question it, understand it, and build with it.
+            <div class="count-grid">
+              <div class="count-box">
+                <div class="count-num" id="days">0</div>
+                <div class="count-label">Days</div>
+              </div>
+              <div class="count-box">
+                <div class="count-num" id="hours">00</div>
+                <div class="count-label">Hours</div>
+              </div>
+              <div class="count-box">
+                <div class="count-num" id="minutes">00</div>
+                <div class="count-label">Minutes</div>
+              </div>
+              <div class="count-box">
+                <div class="count-num" id="seconds">00</div>
+                <div class="count-label">Seconds</div>
+              </div>
             </div>
           </div>
+
+          <div class="debug-card">
+            <div class="label">Live detection preview</div>
+            <div class="debug-text" id="ocrOutput">No hallway text detected yet.</div>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
+
+    <section class="controls">
+      <button class="btn-gold" id="startBtn">Start Camera</button>
+      <button class="btn-dark" id="scanBtn">Start Scan</button>
+      <button class="btn-dark" id="flipBtn">Flip Camera</button>
+      <button class="btn-dark" id="muteBtn">Mute Voice</button>
+      <button class="btn-dark" id="resetBtn">Reset</button>
+    </section>
+
+    <div class="footer-note" id="footerNote">
+      Countdown target: August 24, 2026
     </div>
-  </div>
+  </main>
 
+  <section class="final-screen" id="finalScreen">
+    <div class="final-kicker">Northern Kentucky University</div>
+    <h2 class="final-title">
+      <span class="gold">INF 125</span><br>
+      AI Literacy
+    </h2>
+    <p class="final-sub" id="finalSub">
+      Fall 2026 • College of Informatics
+      The future of AI starts here.
+    </p>
+
+    <div class="final-meta">
+      <div class="final-chip" id="finalRoomChip">Unlocked in Griffin Hall 302</div>
+      <div class="final-chip" id="finalDateChip">Starting Monday, August 24, 2026</div>
+    </div>
+
+    <div class="final-actions">
+      <button class="btn-gold" id="replayBtn">Replay Experience</button>
+      <button class="btn-dark" id="backToCameraBtn">Back to Camera</button>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
-    const rounds = [
-      {
-        text: "In today’s rapidly evolving digital landscape, organizations must embrace intelligent synergy to unlock unprecedented value creation.",
-        answer: "ai",
-        explainRight: "Correct. Polished, vague, and buzzword-heavy.",
-        explainWrong: "This was AI. It sounds smooth, but says very little."
-      },
-      {
-        text: "I missed the bus because I swore I had five more minutes, and somehow that became twenty.",
-        answer: "human",
-        explainRight: "Correct. Specific and naturally messy.",
-        explainWrong: "This one was human. The personal detail gives it away."
-      },
-      {
-        text: "For a first-year college audience, explain AI bias using one simple example from hiring and one from social media recommendations.",
-        answer: "human",
-        explainRight: "Correct. That’s a focused human prompt.",
-        explainWrong: "This was human. Strong prompting is part of AI literacy."
-      }
-    ];
+    const CONFIG = {
+      targetRoomText: "griffin hall 302",
+      alternateMatches: ["griffin 302", "room 302", "gh 302", "302"],
+      courseName: "INF 125: AI Literacy",
+      startDateISO: "2026-08-24T08:00:00-04:00",
+      revealTitle: "Welcome to AI Literacy at NKU",
+      revealText: "The countdown to INF 125: AI Literacy has officially begun.",
+      finalSubtext: "Fall 2026 • College of Informatics\nThe future of AI starts here.",
+      voiceLineFound: "You found the future of AI literacy at NKU.",
+      voiceLineFinal: "INF 125 AI Literacy. Fall 2026. Northern Kentucky University College of Informatics.",
+      scanIntervalMs: 2600,
+      ocrScale: 1.0,
+      autoShowFinalMs: 5000,
+      voiceRate: 0.96,
+      voicePitch: 1.0,
+      voiceVolume: 1.0
+    };
 
-    let correct = 0;
-    let wrong = 0;
-    let started = false;
-    let audioCtx = null;
+    const body = document.body;
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("snapshotCanvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
+    const enterExperienceBtn = document.getElementById("enterExperienceBtn");
+    const skipIntroBtn = document.getElementById("skipIntroBtn");
     const startBtn = document.getElementById("startBtn");
-    const gameArea = document.getElementById("gameArea");
-    const roundsWrap = document.getElementById("roundsWrap");
+    const scanBtn = document.getElementById("scanBtn");
+    const flipBtn = document.getElementById("flipBtn");
+    const muteBtn = document.getElementById("muteBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const replayBtn = document.getElementById("replayBtn");
+    const backToCameraBtn = document.getElementById("backToCameraBtn");
 
-    const scoreCorrect = document.getElementById("scoreCorrect");
-    const scoreWrong = document.getElementById("scoreWrong");
-    const scorePercent = document.getElementById("scorePercent");
+    const launchRoomLabel = document.getElementById("launchRoomLabel");
+    const targetRoomPill = document.getElementById("targetRoomPill");
+    const footerNote = document.getElementById("footerNote");
+    const finalScreen = document.getElementById("finalScreen");
+    const finalRoomChip = document.getElementById("finalRoomChip");
+    const finalDateChip = document.getElementById("finalDateChip");
+    const finalSub = document.getElementById("finalSub");
 
-    const resultEmpty = document.getElementById("resultEmpty");
-    const resultReady = document.getElementById("resultReady");
-    const finalPercent = document.getElementById("finalPercent");
-    const finalBadge = document.getElementById("finalBadge");
-    const finalDescription = document.getElementById("finalDescription");
-    const shareText = document.getElementById("shareText");
+    const cameraShell = document.getElementById("cameraShell");
+    const sparkLayer = document.getElementById("sparkLayer");
+    const cameraStatus = document.getElementById("cameraStatus");
+    const scanStatus = document.getElementById("scanStatus");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const ocrOutput = document.getElementById("ocrOutput");
+    const revealCard = document.getElementById("revealCard");
+    const revealTitle = document.getElementById("revealTitle");
+    const revealText = document.getElementById("revealText");
 
-    const copyBtn = document.getElementById("copyBtn");
-    const linkedinBtn = document.getElementById("linkedinBtn");
-    const challengeBtn = document.getElementById("challengeBtn");
-    const restartBtn = document.getElementById("restartBtn");
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minutesEl = document.getElementById("minutes");
+    const secondsEl = document.getElementById("seconds");
 
-    function ensureAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === "suspended") {
-        audioCtx.resume();
-      }
+    let stream = null;
+    let facingMode = "environment";
+    let scanning = false;
+    let found = false;
+    let ocrBusy = false;
+    let scanTimer = null;
+    let countdownTimer = null;
+    let finalTimer = null;
+    let voiceEnabled = true;
+    let voiceHasBeenUnlocked = false;
+
+    const roomLabelText = toTitleCase(CONFIG.targetRoomText);
+    launchRoomLabel.textContent = roomLabelText;
+    targetRoomPill.textContent = roomLabelText;
+    revealTitle.textContent = CONFIG.revealTitle;
+    revealText.textContent = CONFIG.revealText;
+    finalSub.textContent = CONFIG.finalSubtext;
+    finalRoomChip.textContent = `Unlocked in ${roomLabelText}`;
+    finalDateChip.textContent = `Starting ${formatFriendlyDate(CONFIG.startDateISO)}`;
+    footerNote.textContent = `Countdown target: ${formatFriendlyDate(CONFIG.startDateISO)}`;
+    updateVoiceUI();
+
+    function toTitleCase(str){
+      return str.replace(/\b\w/g, c => c.toUpperCase());
     }
 
-    function playTone(type) {
-      if (!audioCtx) return;
-
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-
-      if (type === "success") {
-        oscillator.type = "sine";
-        oscillator.frequency.setValueAtTime(700, audioCtx.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(980, audioCtx.currentTime + 0.12);
-        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.10, audioCtx.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.20);
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.22);
-      } else {
-        oscillator.type = "sawtooth";
-        oscillator.frequency.setValueAtTime(260, audioCtx.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.16);
-        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.07, audioCtx.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.18);
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.20);
-      }
-    }
-
-    function getPercent() {
-      return Math.round((correct / rounds.length) * 100);
-    }
-
-    function updateStats() {
-      scoreCorrect.textContent = correct;
-      scoreWrong.textContent = wrong;
-      scorePercent.textContent = `${getPercent()}%`;
-    }
-
-    function getBadge(percent) {
-      if (percent === 100) {
-        return {
-          title: "AI Mind Reader",
-          desc: "Perfect score. That’s very comment-worthy.",
-          hype: "I just got 100% on NKU’s quick “Is It AI?” challenge."
-        };
-      }
-      if (percent >= 67) {
-        return {
-          title: "AI Spotter",
-          desc: "Strong instincts. You can usually tell when something feels machine-made.",
-          hype: "I just played NKU’s quick “Is It AI?” challenge and scored strong."
-        };
-      }
-      if (percent >= 34) {
-        return {
-          title: "Prompt Detective",
-          desc: "You’re getting there. That’s exactly why AI literacy matters.",
-          hype: "NKU’s quick “Is It AI?” challenge reminded me how tricky this is getting."
-        };
-      }
-      return {
-        title: "Human After All",
-        desc: "This one got you. Which is kind of the point.",
-        hype: "NKU’s quick “Is It AI?” challenge humbled me a little."
-      };
-    }
-
-    function renderRounds() {
-      roundsWrap.innerHTML = "";
-
-      rounds.forEach((round, index) => {
-        const card = document.createElement("div");
-        card.className = "round-card";
-        card.innerHTML = `
-          <div class="round-top">
-            <div class="round-tag">Round ${index + 1}</div>
-            <div class="round-status" id="status-${index}">Waiting</div>
-          </div>
-
-          <div class="sample-box">“${round.text}”</div>
-
-          <div class="choice-row">
-            <button class="choice-btn" data-round="${index}" data-choice="ai">🤖 AI</button>
-            <button class="choice-btn" data-round="${index}" data-choice="human">👤 Human</button>
-          </div>
-
-          <div class="feedback" id="feedback-${index}"></div>
-        `;
-        roundsWrap.appendChild(card);
-      });
-
-      document.querySelectorAll(".choice-btn").forEach((button) => {
-        button.addEventListener("click", handleChoice);
+    function formatFriendlyDate(dateISO){
+      const d = new Date(dateISO);
+      return d.toLocaleString([], {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
       });
     }
 
-    function handleChoice(event) {
-      ensureAudio();
-
-      const button = event.currentTarget;
-      const roundIndex = Number(button.dataset.round);
-      const choice = button.dataset.choice;
-      const round = rounds[roundIndex];
-
-      const card = button.closest(".round-card");
-      if (card.classList.contains("done")) return;
-
-      const buttons = card.querySelectorAll(".choice-btn");
-      const feedback = document.getElementById(`feedback-${roundIndex}`);
-      const status = document.getElementById(`status-${roundIndex}`);
-
-      buttons.forEach(btn => btn.disabled = true);
-      card.classList.add("done");
-
-      const isRight = choice === round.answer;
-
-      if (isRight) {
-        correct++;
-        button.classList.add("correct");
-        feedback.textContent = round.explainRight;
-        feedback.className = "feedback show good";
-        status.textContent = "Correct";
-        playTone("success");
-      } else {
-        wrong++;
-        button.classList.add("incorrect");
-        feedback.textContent = round.explainWrong;
-        feedback.className = "feedback show bad";
-        status.textContent = "Not quite";
-        playTone("fail");
-
-        buttons.forEach(btn => {
-          if (btn.dataset.choice === round.answer) {
-            btn.classList.add("correct");
-          }
-        });
-      }
-
-      updateStats();
-      checkCompletion();
+    function normalizeText(text){
+      return text
+        .toLowerCase()
+        .replace(/[|]/g, "l")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
     }
 
-    function checkCompletion() {
-      const doneCount = document.querySelectorAll(".round-card.done").length;
-      if (doneCount === rounds.length) {
-        finishGame();
+    function matchesTarget(text){
+      const cleaned = normalizeText(text);
+      const candidates = [CONFIG.targetRoomText, ...CONFIG.alternateMatches].map(normalizeText);
+      return candidates.some(candidate => cleaned.includes(candidate));
+    }
+
+    function unlockVoice(){
+      voiceHasBeenUnlocked = true;
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
       }
     }
 
-    function finishGame() {
-      const percent = getPercent();
-      const badge = getBadge(percent);
-
-      finalPercent.textContent = `${percent}%`;
-      finalBadge.textContent = badge.title;
-      finalDescription.textContent = badge.desc;
-
-      shareText.value = `${badge.hype} I scored ${percent}% — ${badge.title}.
-
-This fall, NKU is launching INF 125: AI Literacy.
-
-Students won’t just use AI.
-They’ll learn how to question it, understand it, and build with it.
-
-Comment your score 👇
-
-#AILiteracyDay #NKU #AIinEducation #ArtificialIntelligence #HigherEd`;
-
-      resultEmpty.classList.add("hidden");
-      resultReady.classList.remove("hidden");
-
-      if (percent >= 67) {
-        launchConfetti();
-      }
+    function updateVoiceUI(){
+      voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice muted";
+      muteBtn.textContent = voiceEnabled ? "Mute Voice" : "Voice On";
     }
 
-    async function copyText(text) {
+    function speakLine(text){
+      if (!voiceEnabled || !voiceHasBeenUnlocked || !("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = CONFIG.voiceRate;
+      utterance.pitch = CONFIG.voicePitch;
+      utterance.volume = CONFIG.voiceVolume;
+
+      const voices = window.speechSynthesis.getVoices();
+      const preferred =
+        voices.find(v => /Samantha/i.test(v.name)) ||
+        voices.find(v => /Karen/i.test(v.name)) ||
+        voices.find(v => /Google US English/i.test(v.name)) ||
+        voices.find(v => /English/i.test(v.lang));
+
+      if (preferred) utterance.voice = preferred;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function enterExperience(){
+      unlockVoice();
+      body.classList.add("launching");
+      setTimeout(() => {
+        startCamera();
+      }, 250);
+    }
+
+    async function startCamera(){
+      stopCamera();
       try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch {
-        return false;
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+        video.srcObject = stream;
+        cameraStatus.textContent = `Camera live (${facingMode === "environment" ? "rear" : "front"})`;
+      } catch (err) {
+        console.error(err);
+        cameraStatus.textContent = "Camera access failed";
+        alert("Camera access failed. Use HTTPS and allow camera permissions.");
       }
     }
 
-    async function copyCaption() {
-      const ok = await copyText(shareText.value);
-      copyBtn.textContent = ok ? "Copied!" : "Copy Failed";
-      setTimeout(() => copyBtn.textContent = "Copy Caption", 1200);
-    }
-
-    async function copyChallengeText() {
-      const challengeText = `I just played NKU’s quick “Is It AI?” challenge and scored ${getPercent()}%.
-
-Can you beat me? Comment your score.
-
-NKU is launching INF 125: AI Literacy this fall.
-
-#AILiteracyDay #NKU #AIinEducation`;
-      const ok = await copyText(challengeText);
-      challengeBtn.textContent = ok ? "Copied!" : "Copy Failed";
-      setTimeout(() => challengeBtn.textContent = "Copy Challenge Text", 1200);
-    }
-
-    function shareOnLinkedIn() {
-      const linkedInUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText.value);
-      window.open(linkedInUrl, "_blank", "noopener,noreferrer");
-    }
-
-    function launchConfetti() {
-      const pieces = 60;
-      const colors = ["#fdb913", "#ffd66d", "#67e8f9", "#ffffff", "#a78bfa"];
-
-      for (let i = 0; i < pieces; i++) {
-        const el = document.createElement("div");
-        el.className = "confetti";
-        el.style.left = Math.random() * 100 + "vw";
-        el.style.background = colors[Math.floor(Math.random() * colors.length)];
-        el.style.animationDuration = (2.2 + Math.random() * 1.8) + "s";
-        el.style.animationDelay = (Math.random() * 0.25) + "s";
-        el.style.transform = `rotate(${Math.random() * 360}deg)`;
-        el.style.width = (8 + Math.random() * 7) + "px";
-        el.style.height = (12 + Math.random() * 10) + "px";
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 4500);
+    function stopCamera(){
+      if (stream){
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
       }
     }
 
-    function startGame() {
-      if (started) return;
-      started = true;
-      ensureAudio();
-      gameArea.classList.remove("hidden");
-      startBtn.textContent = "Challenge Started";
-      startBtn.disabled = true;
-      renderRounds();
-      updateStats();
+    async function runOCRScan(){
+      if (!video.videoWidth || !video.videoHeight || ocrBusy || found) return;
+
+      ocrBusy = true;
+      scanStatus.textContent = "Scanning hallway signage...";
+
+      try {
+        const vw = video.videoWidth;
+        const vh = video.videoHeight;
+
+        const cropW = vw * 0.84;
+        const cropH = vh * 0.30;
+        const cropX = (vw - cropW) / 2;
+        const cropY = (vh - cropH) / 2;
+
+        canvas.width = Math.floor(cropW * CONFIG.ocrScale);
+        canvas.height = Math.floor(cropH * CONFIG.ocrScale);
+
+        ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
+
+        const result = await Tesseract.recognize(canvas, "eng", { logger: () => {} });
+        const text = result.data.text || "";
+        const cleaned = normalizeText(text);
+
+        ocrOutput.textContent = cleaned || "No readable hallway text in this scan.";
+
+        if (matchesTarget(cleaned)) {
+          onTargetFound(cleaned);
+        } else {
+          scanStatus.textContent = "Scanning... target room not found yet";
+        }
+      } catch (err) {
+        console.error(err);
+        scanStatus.textContent = "Scan error";
+      } finally {
+        ocrBusy = false;
+      }
     }
 
-    function resetGame() {
-      correct = 0;
-      wrong = 0;
-      started = false;
-      gameArea.classList.add("hidden");
-      resultEmpty.classList.remove("hidden");
-      resultReady.classList.add("hidden");
-      startBtn.textContent = "Start the Challenge";
-      startBtn.disabled = false;
-      roundsWrap.innerHTML = "";
-      updateStats();
+    function startScanning(){
+      if (scanning) return;
+      if (!video.srcObject){
+        alert("Start the camera first.");
+        return;
+      }
+      scanning = true;
+      scanStatus.textContent = "Scanner started";
+      runOCRScan();
+      scanTimer = setInterval(runOCRScan, CONFIG.scanIntervalMs);
     }
 
-    startBtn.addEventListener("click", startGame);
-    copyBtn.addEventListener("click", copyCaption);
-    linkedinBtn.addEventListener("click", shareOnLinkedIn);
-    challengeBtn.addEventListener("click", copyChallengeText);
-    restartBtn.addEventListener("click", resetGame);
+    function stopScanning(){
+      scanning = false;
+      if (scanTimer){
+        clearInterval(scanTimer);
+        scanTimer = null;
+      }
+    }
 
-    updateStats();
+    function onTargetFound(matchedText){
+      found = true;
+      stopScanning();
+
+      cameraShell.classList.add("found");
+      revealCard.classList.add("active");
+      scanStatus.textContent = "Target room detected";
+      ocrOutput.textContent = `MATCH FOUND:\n${matchedText}`;
+
+      burstSparks();
+      startCountdown();
+      speakLine(CONFIG.voiceLineFound);
+
+      if ("vibrate" in navigator){
+        navigator.vibrate([180, 70, 180, 70, 280]);
+      }
+
+      finalTimer = setTimeout(() => {
+        showFinalScreen();
+      }, CONFIG.autoShowFinalMs);
+    }
+
+    function burstSparks(){
+      sparkLayer.innerHTML = "";
+      for (let i = 0; i < 28; i++){
+        const spark = document.createElement("span");
+        spark.className = "spark";
+        spark.style.left = `${50 + (Math.random() * 20 - 10)}%`;
+        spark.style.top = `${50 + (Math.random() * 20 - 10)}%`;
+        spark.style.setProperty("--x", `${(Math.random() * 260 - 130)}px`);
+        spark.style.setProperty("--y", `${(Math.random() * 280 - 140)}px`);
+        spark.style.animationDelay = `${Math.random() * 0.16}s`;
+        sparkLayer.appendChild(spark);
+      }
+    }
+
+    function startCountdown(){
+      if (countdownTimer) clearInterval(countdownTimer);
+
+      function updateCountdown(){
+        const now = new Date().getTime();
+        const target = new Date(CONFIG.startDateISO).getTime();
+        const diff = target - now;
+
+        if (diff <= 0){
+          daysEl.textContent = "0";
+          hoursEl.textContent = "00";
+          minutesEl.textContent = "00";
+          secondsEl.textContent = "00";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        daysEl.textContent = String(days);
+        hoursEl.textContent = String(hours).padStart(2, "0");
+        minutesEl.textContent = String(minutes).padStart(2, "0");
+        secondsEl.textContent = String(seconds).padStart(2, "0");
+      }
+
+      updateCountdown();
+      countdownTimer = setInterval(updateCountdown, 1000);
+    }
+
+    function showFinalScreen(){
+      finalScreen.classList.add("active");
+      setTimeout(() => {
+        speakLine(CONFIG.voiceLineFinal);
+      }, 250);
+    }
+
+    function hideFinalScreen(){
+      finalScreen.classList.remove("active");
+    }
+
+    function resetExperience(){
+      found = false;
+      stopScanning();
+      if (countdownTimer) clearInterval(countdownTimer);
+      if (finalTimer) clearTimeout(finalTimer);
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+
+      revealCard.classList.remove("active");
+      cameraShell.classList.remove("found");
+      sparkLayer.innerHTML = "";
+      ocrOutput.textContent = "No hallway text detected yet.";
+      scanStatus.textContent = "Scan idle";
+      scanBtn.textContent = "Start Scan";
+      hideFinalScreen();
+
+      daysEl.textContent = "0";
+      hoursEl.textContent = "00";
+      minutesEl.textContent = "00";
+      secondsEl.textContent = "00";
+    }
+
+    enterExperienceBtn.addEventListener("click", enterExperience);
+    skipIntroBtn.addEventListener("click", enterExperience);
+    startBtn.addEventListener("click", () => {
+      unlockVoice();
+      startCamera();
+    });
+
+    scanBtn.addEventListener("click", () => {
+      unlockVoice();
+      if (!scanning){
+        startScanning();
+        scanBtn.textContent = "Stop Scan";
+      } else {
+        stopScanning();
+        scanBtn.textContent = "Start Scan";
+        scanStatus.textContent = "Scan paused";
+      }
+    });
+
+    flipBtn.addEventListener("click", async () => {
+      unlockVoice();
+      facingMode = facingMode === "environment" ? "user" : "environment";
+      await startCamera();
+    });
+
+    muteBtn.addEventListener("click", () => {
+      voiceEnabled = !voiceEnabled;
+      if (!voiceEnabled && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      updateVoiceUI();
+    });
+
+    resetBtn.addEventListener("click", resetExperience);
+
+    replayBtn.addEventListener("click", () => {
+      hideFinalScreen();
+      resetExperience();
+    });
+
+    backToCameraBtn.addEventListener("click", () => {
+      hideFinalScreen();
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    });
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => {};
+    }
+
+    window.addEventListener("beforeunload", () => {
+      stopScanning();
+      stopCamera();
+      if (countdownTimer) clearInterval(countdownTimer);
+      if (finalTimer) clearTimeout(finalTimer);
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    });
   </script>
 </body>
 </html>
