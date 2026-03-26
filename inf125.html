@@ -16,7 +16,6 @@
     :root{
       --bg:#050505;
       --panel:rgba(255,255,255,.06);
-      --panel-2:rgba(255,255,255,.08);
       --border:rgba(255,255,255,.1);
       --text:#fff;
       --muted:rgba(255,255,255,.78);
@@ -31,6 +30,7 @@
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
+
     body{
       margin:0;
       font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
@@ -43,7 +43,7 @@
     }
 
     a{color:inherit;text-decoration:none}
-    button,input,select{font:inherit}
+    button{font:inherit}
 
     .shell{
       width:min(100%, var(--max));
@@ -89,6 +89,7 @@
     }
 
     .brand-copy{min-width:0}
+
     .brand-kicker{
       font-size:.66rem;
       color:var(--gold);
@@ -99,6 +100,7 @@
       overflow:hidden;
       text-overflow:ellipsis;
     }
+
     .brand-title{
       font-size:.9rem;
       font-weight:800;
@@ -116,6 +118,7 @@
       font-weight:850;
       transition:transform .15s ease, opacity .15s ease, background .15s ease;
     }
+
     .btn:hover{transform:translateY(-1px)}
     .btn:active{transform:translateY(0)}
 
@@ -211,7 +214,7 @@
 
     .stage{
       position:relative;
-      min-height:460px;
+      min-height:500px;
       border-radius:20px;
       overflow:hidden;
       background:
@@ -269,9 +272,13 @@
       padding:16px;
     }
 
+    .path-overlay.hidden{
+      display:none;
+    }
+
     .path-overlay-content{
       width:100%;
-      max-width:440px;
+      max-width:460px;
       text-align:center;
     }
 
@@ -307,7 +314,8 @@
       min-height:58px;
     }
 
-    .path-card:hover{
+    .path-card:hover,
+    .path-card.active{
       background:rgba(255,199,44,.2);
       border-color:rgba(255,199,44,.5);
       transform:translateY(-1px);
@@ -359,6 +367,11 @@
       overflow:hidden;
       transition:.24s ease;
       z-index:3;
+      opacity:0;
+    }
+
+    .scan-ring.active{
+      opacity:1;
     }
 
     .scan-ring::before{
@@ -644,12 +657,45 @@
       line-height:1.4;
     }
 
-    .dates-list{
+    details.dates-accordion{
       margin-top:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+
+    .dates-accordion summary{
+      list-style:none;
+      cursor:pointer;
+      padding:14px 16px;
+      font-weight:850;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .dates-accordion summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .dates-accordion summary::after{
+      content:"+";
+      font-size:1.2rem;
+      color:var(--gold);
+      line-height:1;
+      transition:transform .2s ease;
+    }
+
+    .dates-accordion[open] summary::after{
+      content:"–";
+    }
+
+    .dates-list{
+      padding:0 12px 12px;
       display:grid;
       gap:8px;
-      max-height:270px;
-      overflow:auto;
     }
 
     .date-row{
@@ -795,7 +841,7 @@
       }
 
       .stage{
-        min-height:500px;
+        min-height:540px;
       }
     }
 
@@ -840,7 +886,7 @@
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
             A welcoming AI course for students from <strong>every major</strong>.
-            Tap your path, unlock your reveal, and go straight to registration.
+            Choose your path, then decide whether to enable the camera or skip straight to the reveal.
           </p>
 
           <div class="hero-mini">
@@ -862,17 +908,17 @@
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>Tap a path to start, or skip straight to the reveal.</p>
+                <p>Select a path first. Then enable the camera or skip straight to the reveal.</p>
               </div>
             </div>
 
             <div class="path-overlay" id="pathOverlay">
               <div class="path-overlay-content">
-                <div class="overlay-title">Tap your future</div>
-                <div class="overlay-sub">This takes 3 seconds</div>
+                <div class="overlay-title">Choose your path</div>
+                <div class="overlay-sub">This personalizes the experience first. Camera is optional.</div>
 
                 <div class="path-grid-overlay">
-                  <button class="path-card" data-path="business" type="button">Business</button>
+                  <button class="path-card active" data-path="business" type="button">Business</button>
                   <button class="path-card" data-path="health" type="button">Health</button>
                   <button class="path-card" data-path="creative" type="button">Creative</button>
                   <button class="path-card" data-path="education" type="button">Education</button>
@@ -880,8 +926,13 @@
                   <button class="path-card" data-path="undecided" type="button">Explore</button>
                 </div>
 
-                <button class="skip-overlay-btn" id="skipOverlayBtn" type="button">
-                  Skip → Just show me
+                <div class="cta-stack" style="justify-content:center;">
+                  <button class="btn btn-primary" id="enableCameraBtn" type="button">Enable Camera</button>
+                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">Skip to Reveal</button>
+                </div>
+
+                <button class="skip-overlay-btn" id="hideOverlayBtn" type="button">
+                  Stay here and keep browsing
                 </button>
               </div>
             </div>
@@ -931,7 +982,7 @@
 
               <div class="debug-card">
                 <div class="debug-label">Live preview</div>
-                <div class="debug-text" id="ocrOutput">Tap a path to start the experience.</div>
+                <div class="debug-text" id="ocrOutput">Choose a path, then enable the camera or skip to reveal.</div>
               </div>
             </div>
           </div>
@@ -950,7 +1001,7 @@
           <div class="section-label">Personalized focus</div>
           <h2 class="section-title">Why this course fits</h2>
           <p class="section-copy">
-            The experience personalizes this message based on the path you choose.
+            The message below updates based on the path you choose.
           </p>
 
           <div class="persona-panel" id="personaPanel">
@@ -1007,7 +1058,11 @@
       <div class="shell panel section-card">
         <div class="section-label">Important Fall 2026 dates</div>
         <h2 class="section-title">Planning timeline</h2>
-        <div class="dates-list" id="datesList"></div>
+
+        <details class="dates-accordion">
+          <summary>Show important dates</summary>
+          <div class="dates-list" id="datesList"></div>
+        </details>
       </div>
     </section>
   </main>
@@ -1164,7 +1219,9 @@ Griffin Hall 160
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
     const pathOverlay = document.getElementById("pathOverlay");
-    const skipOverlayBtn = document.getElementById("skipOverlayBtn");
+    const hideOverlayBtn = document.getElementById("hideOverlayBtn");
+    const enableCameraBtn = document.getElementById("enableCameraBtn");
+    const skipRevealBtn = document.getElementById("skipRevealBtn");
     const pathCards = document.querySelectorAll(".path-card");
     const scanRing = document.getElementById("scanRing");
     const cameraStatus = document.getElementById("cameraStatus");
@@ -1303,16 +1360,18 @@ Griffin Hall 160
       countdownTimer = setInterval(updateCountdown, 1000);
     }
 
-    async function startExperience() {
+    async function startCameraExperience() {
       if (scanning || found) return;
 
       stopCamera();
-      fallbackMode = false;
+      stopScanning();
       found = false;
+      fallbackMode = false;
       revealCard.classList.remove("active");
       scanRing.classList.remove("found");
+      scanRing.classList.add("active");
       fallbackStage.style.display = "none";
-      pathOverlay.style.display = "none";
+      pathOverlay.classList.add("hidden");
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -1326,11 +1385,14 @@ Griffin Hall 160
 
         video.srcObject = stream;
         cameraStatus.textContent = "Camera live";
-        ocrOutput.textContent = "Scanning for Griffin Hall 160...";
+        ocrOutput.textContent = "Camera enabled. Point it at Griffin Hall 160 to trigger the reveal.";
         startScanning();
       } catch (err) {
         console.error(err);
-        startFallbackReveal();
+        cameraStatus.textContent = "Camera unavailable";
+        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still skip straight to the reveal.";
+        fallbackMode = true;
+        scanRing.classList.remove("active");
       }
     }
 
@@ -1347,8 +1409,9 @@ Griffin Hall 160
       found = false;
       stopScanning();
       stopCamera();
-      pathOverlay.style.display = "none";
+      pathOverlay.classList.add("hidden");
       fallbackStage.style.display = "grid";
+      scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
       ocrOutput.textContent = "Launching reveal without camera access.";
       onTargetFound("camera skipped");
@@ -1384,7 +1447,7 @@ Griffin Hall 160
         }
       } catch (err) {
         console.error(err);
-        ocrOutput.textContent = "Scan error. You can replay and skip straight to the reveal.";
+        ocrOutput.textContent = "Scan error. You can replay and choose skip to reveal instead.";
       } finally {
         ocrBusy = false;
       }
@@ -1537,12 +1600,12 @@ Griffin Hall 160
       stopScanning();
       stopCamera();
       stopSpeech();
-      scanRing.classList.remove("found");
+      scanRing.classList.remove("found", "active");
       revealCard.classList.remove("active");
       cameraStatus.textContent = "Camera optional";
-      ocrOutput.textContent = "Tap a path to start the experience.";
+      ocrOutput.textContent = "Choose a path, then enable the camera or skip to reveal.";
       fallbackStage.style.display = "grid";
-      pathOverlay.style.display = "flex";
+      pathOverlay.classList.remove("hidden");
       hideFinalScreen();
     }
 
@@ -1570,14 +1633,19 @@ Griffin Hall 160
 
     pathCards.forEach(card => {
       card.addEventListener("click", () => {
-        const path = card.dataset.path;
-        updatePersona(path);
-        startExperience();
+        pathCards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        updatePersona(card.dataset.path);
+        ocrOutput.textContent = "Path selected. Enable the camera or skip straight to the reveal.";
       });
     });
 
-    skipOverlayBtn.addEventListener("click", () => {
-      startFallbackReveal();
+    enableCameraBtn.addEventListener("click", startCameraExperience);
+    skipRevealBtn.addEventListener("click", startFallbackReveal);
+
+    hideOverlayBtn.addEventListener("click", () => {
+      pathOverlay.classList.add("hidden");
+      ocrOutput.textContent = "You can keep browsing, or replay later to start the experience.";
     });
 
     voiceBtn.addEventListener("click", () => {
