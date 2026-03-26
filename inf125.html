@@ -1,163 +1,1703 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Sees Your Future | NKU</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Sees Your Future | NKU INF 125</title>
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta
+    name="description"
+    content="Interactive NKU experience for INF 125: AI Literacy. Designed for students from every major."
+  />
+  <style>
+    :root{
+      --bg:#060606;
+      --bg2:#101114;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.09);
+      --border:rgba(255,255,255,.12);
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.78);
+      --soft:rgba(255,255,255,.58);
+      --gold:#FFC72C;
+      --gold2:#ffe08e;
+      --success:#66f2ad;
+      --danger:#ff8a8a;
+      --shadow:0 24px 60px rgba(0,0,0,.42);
+      --radius:24px;
+      --radius-sm:18px;
+      --max:1120px;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family:system-ui;
-  background:#000;
-  color:#fff;
-  text-align:center;
-}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(255,199,44,.12), transparent 24%),
+        radial-gradient(circle at 100% 10%, rgba(255,255,255,.05), transparent 20%),
+        linear-gradient(180deg, #111 0%, #080808 38%, #050505 100%);
+      overflow-x:hidden;
+    }
 
-.container{
-  padding:24px;
-  max-width:700px;
-  margin:auto;
-}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
 
-h1{
-  font-size:2.5rem;
-  line-height:1.1;
-}
+    .shell{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:0 16px;
+    }
 
-.gold{color:#FFC72C;}
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:60;
+      background:rgba(6,6,6,.74);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
 
-.btn{
-  display:block;
-  margin-top:14px;
-  padding:16px;
-  border-radius:12px;
-  font-weight:bold;
-  text-decoration:none;
-}
+    .topbar-inner{
+      min-height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
 
-.primary{background:#FFC72C;color:#000;}
-.secondary{background:#222;color:#fff;}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
 
-select{
-  width:100%;
-  padding:14px;
-  margin-top:16px;
-  border-radius:10px;
-  font-size:1rem;
-}
+    .brand-mark{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      background:linear-gradient(135deg, var(--gold2), var(--gold));
+      color:#111;
+      box-shadow:var(--shadow);
+      flex-shrink:0;
+    }
 
-#reveal{
-  display:none;
-  margin-top:30px;
-  font-size:1.3rem;
-}
+    .brand-copy{min-width:0}
+    .brand-kicker{
+      color:var(--gold);
+      font-size:.7rem;
+      text-transform:uppercase;
+      letter-spacing:.15em;
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand-title{
+      font-size:.96rem;
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
 
-#countdown{
-  margin-top:20px;
-  font-size:1.5rem;
-}
+    .topbar-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-shrink:0;
+    }
 
-.sticky{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#000;
-  padding:12px;
-}
-</style>
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      color:var(--muted);
+      font-size:.8rem;
+      font-weight:750;
+    }
+
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background:var(--gold);
+      box-shadow:0 0 0 6px rgba(255,199,44,.12);
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:14px 18px;
+      font-weight:850;
+      transition:transform .16s ease, opacity .16s ease, background .16s ease, border-color .16s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--gold2), var(--gold));
+      color:#111;
+      box-shadow:0 10px 26px rgba(255,199,44,.2);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      border:1px solid var(--border);
+    }
+
+    .hero{
+      padding:56px 0 28px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+    }
+
+    .hero-copy-panel{
+      padding:26px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--gold);
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-size:.72rem;
+      font-weight:900;
+      margin-bottom:14px;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(2.3rem, 7vw, 5.2rem);
+      line-height:.92;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+      max-width:10ch;
+    }
+
+    .gradient-text{
+      background:linear-gradient(135deg, #fff 0%, var(--gold2) 45%, var(--gold) 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .hero-copy{
+      margin:18px 0 0;
+      color:var(--muted);
+      font-size:1.05rem;
+      line-height:1.6;
+      max-width:58ch;
+    }
+
+    .hero-copy strong{color:#fff}
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .hero-stats{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+
+    .stat{
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .stat-label{
+      color:var(--gold);
+      font-size:.7rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .stat-value{
+      font-size:1rem;
+      font-weight:800;
+      line-height:1.35;
+    }
+
+    .experience-panel{
+      padding:18px;
+      display:grid;
+      gap:14px;
+      align-content:start;
+    }
+
+    .stage{
+      position:relative;
+      min-height:520px;
+      overflow:hidden;
+      border-radius:22px;
+      background:
+        radial-gradient(circle at 28% 20%, rgba(255,199,44,.16), transparent 26%),
+        linear-gradient(180deg, #181818 0%, #090909 100%);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    video{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      background:#000;
+    }
+
+    .fallback-stage{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:24px;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,199,44,.14), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
+        linear-gradient(180deg, #191919 0%, #080808 100%);
+    }
+
+    .fallback-stage h2{
+      margin:0 0 10px;
+      font-size:clamp(1.8rem, 5vw, 3rem);
+      line-height:.95;
+      letter-spacing:-.04em;
+      text-transform:uppercase;
+    }
+
+    .fallback-stage p{
+      margin:0;
+      color:var(--muted);
+      max-width:28ch;
+      line-height:1.5;
+      font-size:1rem;
+    }
+
+    .stage-top{
+      position:absolute;
+      left:12px;
+      right:12px;
+      top:12px;
+      z-index:5;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .overlay-pill{
+      padding:9px 11px;
+      border-radius:999px;
+      background:rgba(0,0,0,.56);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-size:.8rem;
+      font-weight:700;
+      backdrop-filter:blur(10px);
+    }
+
+    .overlay-pill strong{color:var(--gold)}
+
+    .scan-ring{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:78%;
+      height:26%;
+      transform:translate(-50%,-50%);
+      border:2px solid rgba(255,255,255,.85);
+      border-radius:24px;
+      box-shadow:inset 0 0 0 9999px rgba(0,0,0,.16);
+      overflow:hidden;
+      transition:.25s ease;
+      z-index:4;
+    }
+
+    .scan-ring::before{
+      content:"";
+      position:absolute;
+      left:10px;
+      right:10px;
+      top:14px;
+      height:2px;
+      background:linear-gradient(90deg, transparent, var(--gold), transparent);
+      filter:drop-shadow(0 0 8px rgba(255,199,44,.85));
+      animation:sweep 2.4s linear infinite;
+    }
+
+    .scan-ring.found{
+      border-color:var(--success);
+      box-shadow:0 0 26px rgba(102,242,173,.25), inset 0 0 0 9999px rgba(0,0,0,.04);
+    }
+
+    @keyframes sweep{
+      0%{transform:translateY(0);opacity:.2}
+      50%{transform:translateY(44px);opacity:1}
+      100%{transform:translateY(88px);opacity:.2}
+    }
+
+    .stage-bottom{
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      z-index:5;
+      display:grid;
+      gap:10px;
+    }
+
+    .reveal-card{
+      display:none;
+      padding:16px;
+      background:rgba(0,0,0,.68);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:20px;
+      backdrop-filter:blur(12px);
+    }
+
+    .reveal-card.active{
+      display:block;
+      animation:rise .42s ease;
+    }
+
+    @keyframes rise{
+      from{opacity:0;transform:translateY(10px) scale(.985)}
+      to{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    .reveal-kicker{
+      color:var(--gold);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .reveal-card h3{
+      margin:0;
+      font-size:1.38rem;
+      line-height:1.05;
+      letter-spacing:-.03em;
+      text-transform:uppercase;
+    }
+
+    .reveal-card p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.48;
+      font-size:.96rem;
+    }
+
+    .major-rotator{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .major-label{
+      color:var(--gold);
+      font-size:.68rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .major-text{
+      font-size:1rem;
+      font-weight:800;
+      line-height:1.35;
+      min-height:2.8em;
+    }
+
+    .count-grid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+    }
+
+    .count{
+      border-radius:16px;
+      padding:12px 8px;
+      text-align:center;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .count-num{
+      font-size:1.35rem;
+      font-weight:900;
+      line-height:1;
+      color:var(--gold);
+    }
+
+    .count-label{
+      margin-top:6px;
+      color:var(--soft);
+      font-size:.68rem;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-weight:800;
+    }
+
+    .debug-card{
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .debug-label{
+      color:var(--gold);
+      font-size:.7rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .debug-text{
+      color:var(--soft);
+      font-size:.83rem;
+      line-height:1.4;
+      white-space:pre-wrap;
+      max-height:96px;
+      overflow:auto;
+    }
+
+    .quick-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .section{padding:12px 0}
+    .section-card{padding:22px}
+
+    .section-label{
+      color:var(--gold);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+
+    .section-title{
+      margin:0;
+      font-size:clamp(1.5rem, 4vw, 2.5rem);
+      line-height:1;
+      letter-spacing:-.04em;
+      text-transform:uppercase;
+    }
+
+    .section-copy{
+      margin:10px 0 0;
+      color:var(--muted);
+      line-height:1.58;
+      max-width:70ch;
+    }
+
+    .features{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+
+    .feature{
+      padding:16px;
+      border-radius:20px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .feature h3{
+      margin:0 0 6px;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+    }
+
+    .feature p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .funnel-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-top:18px;
+    }
+
+    .path-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .path-btn{
+      width:100%;
+      text-align:left;
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      transition:.16s ease;
+      min-height:76px;
+    }
+
+    .path-btn.active,
+    .path-btn:hover{
+      background:rgba(255,199,44,.12);
+      border-color:rgba(255,199,44,.34);
+    }
+
+    .path-title{display:block;font-size:.96rem;margin-bottom:4px}
+    .path-sub{
+      display:block;
+      color:var(--soft);
+      font-size:.82rem;
+      line-height:1.35;
+      font-weight:600;
+    }
+
+    .persona-panel{
+      margin-top:14px;
+      padding:16px;
+      border-radius:20px;
+      background:
+        linear-gradient(180deg, rgba(255,199,44,.14), rgba(255,199,44,.04)),
+        rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .persona-panel h3{
+      margin:0;
+      font-size:1.2rem;
+      line-height:1.05;
+      text-transform:uppercase;
+      letter-spacing:-.03em;
+    }
+
+    .persona-panel p{
+      margin:10px 0 0;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .persona-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .tag{
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      font-size:.8rem;
+      font-weight:700;
+    }
+
+    .funnel-list{
+      display:grid;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .course-row{
+      display:grid;
+      grid-template-columns:120px 1fr;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .course-row .k{
+      color:var(--gold);
+      font-weight:900;
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      line-height:1.2;
+    }
+
+    .course-row .v{
+      color:var(--muted);
+      font-weight:700;
+      line-height:1.4;
+    }
+
+    .cta-stack{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .share-box{
+      margin-top:18px;
+      padding:16px;
+      border-radius:20px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .share-box p{
+      margin:0 0 12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .share-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .small-note{
+      margin-top:10px;
+      color:var(--soft);
+      font-size:.84rem;
+      line-height:1.45;
+    }
+
+    .dates-list{
+      margin-top:14px;
+      display:grid;
+      gap:8px;
+      max-height:360px;
+      overflow:auto;
+      padding-right:4px;
+    }
+
+    .date-row{
+      display:grid;
+      grid-template-columns:118px 1fr;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .date-row .date{
+      color:var(--gold);
+      font-weight:900;
+      font-size:.8rem;
+      line-height:1.25;
+    }
+
+    .date-row .event{
+      color:var(--muted);
+      font-size:.84rem;
+      line-height:1.35;
+    }
+
+    .sticky-cta{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      z-index:70;
+      display:flex;
+      gap:10px;
+      padding:10px;
+      border-radius:22px;
+      background:rgba(6,6,6,.8);
+      border:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+    }
+
+    .sticky-cta .btn{
+      flex:1;
+      min-height:52px;
+    }
+
+    .confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:90;
+    }
+
+    .confetti-piece{
+      position:absolute;
+      width:10px;
+      height:16px;
+      opacity:0;
+      animation:confetti-fall 1600ms ease-out forwards;
+    }
+
+    @keyframes confetti-fall{
+      0%{
+        transform:translate3d(0,-20px,0) rotate(0deg);
+        opacity:1;
+      }
+      100%{
+        transform:translate3d(var(--x),100vh,0) rotate(540deg);
+        opacity:0;
+      }
+    }
+
+    .final-screen{
+      position:fixed;
+      inset:0;
+      z-index:80;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:24px 18px calc(24px + env(safe-area-inset-bottom));
+      text-align:center;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255,199,44,.2), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%),
+        linear-gradient(180deg,#0b0b0b 0%, #020202 100%);
+      opacity:0;
+      pointer-events:none;
+      transform:scale(1.03);
+      transition:.45s ease;
+    }
+
+    .final-screen.active{
+      opacity:1;
+      pointer-events:auto;
+      transform:scale(1);
+    }
+
+    .final-kicker{
+      color:var(--gold);
+      font-size:.8rem;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+
+    .final-title{
+      margin:0;
+      font-size:clamp(2.2rem, 8vw, 4.4rem);
+      line-height:.92;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+    }
+
+    .final-title .gold{color:var(--gold)}
+
+    .final-copy{
+      margin:16px auto 0;
+      max-width:42rem;
+      color:var(--muted);
+      line-height:1.58;
+      white-space:pre-line;
+      font-size:1rem;
+    }
+
+    .final-meta{
+      margin-top:18px;
+      display:grid;
+      gap:10px;
+      width:min(100%, 680px);
+    }
+
+    .final-chip{
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    .final-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+      width:min(100%, 680px);
+    }
+
+    @media (min-width:860px){
+      .hero-grid{grid-template-columns:1.06fr .94fr}
+      .features{grid-template-columns:repeat(2,1fr)}
+      .funnel-grid{grid-template-columns:.95fr 1.05fr}
+    }
+
+    @media (max-width:719px){
+      .topbar-actions .pill{display:none}
+      .course-row, .date-row{grid-template-columns:1fr}
+      .path-grid, .share-grid, .quick-actions{grid-template-columns:1fr}
+      .hero-stats{grid-template-columns:1fr}
+    }
+
+    @media (min-width:900px){
+      .sticky-cta{
+        left:auto;
+        right:20px;
+        bottom:20px;
+        width:360px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="confetti" id="confettiLayer"></div>
 
-<div class="container">
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">AI</div>
+        <div class="brand-copy">
+          <div class="brand-kicker">Northern Kentucky University</div>
+          <div class="brand-title">INF 125: AI Literacy • Open to All Majors</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="pill"><span class="dot"></span>Fall 2026</div>
+        <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+          Register at NKU
+        </a>
+      </div>
+    </div>
+  </header>
 
-<h1>
-AI is coming for your future.<br>
-<span class="gold">Let’s see how.</span>
-</h1>
+  <main>
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="panel hero-copy-panel">
+          <div class="eyebrow">Viral Course Experience • All Majors Welcome</div>
+          <h1>AI sees <span class="gradient-text">your future.</span></h1>
+          <p class="hero-copy">
+            This is not just a course page. It’s a fast, personalized experience that shows students from
+            <strong>every major</strong> why <strong>INF 125: AI Literacy</strong> matters to their future.
+            Business, health, arts, communication, education, technology, undecided — all welcome.
+          </p>
 
-<p>Select your major 👇</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#funnel">See where you fit</a>
+            <a class="btn btn-secondary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+              Register now
+            </a>
+          </div>
 
-<select id="major">
-  <option value="">Choose your major</option>
-  <option>Business</option>
-  <option>Health</option>
-  <option>Education</option>
-  <option>Communication</option>
-  <option>Arts</option>
-  <option>Technology</option>
-  <option>Undecided</option>
-</select>
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-label">Who it’s for</div>
+              <div class="stat-value">All majors • Beginner friendly • No advanced technical background required</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">What it feels like</div>
+              <div class="stat-value">Interactive, welcoming, relevant, and built for curious students</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Course details</div>
+              <div class="stat-value">Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Best next step</div>
+              <div class="stat-value">Try the experience, then go straight to NKU registration</div>
+            </div>
+          </div>
+        </div>
 
-<button class="btn primary" onclick="revealFuture()">
-See My AI Future
-</button>
+        <div class="panel experience-panel">
+          <div class="stage">
+            <video id="video" autoplay playsinline muted></video>
 
-<div id="reveal"></div>
-<div id="countdown"></div>
+            <div class="fallback-stage" id="fallbackStage">
+              <div>
+                <h2>Your major is next.</h2>
+                <p>
+                  Pick your path, unlock your reveal, and see why INF 125 belongs on your schedule.
+                </p>
+              </div>
+            </div>
 
-<a class="btn primary"
-href="https://one.nku.edu/task/all/registerforclass"
-target="_blank">
-Register for INF 125
-</a>
+            <div class="stage-top">
+              <div class="overlay-pill">Target room: <strong id="targetRoomPill">Griffin Hall 160</strong></div>
+              <div class="overlay-pill" id="cameraStatus">Camera optional</div>
+              <div class="overlay-pill" id="scanStatus">Experience ready</div>
+              <div class="overlay-pill" id="voiceStatus">Voice off</div>
+            </div>
 
-</div>
+            <div class="scan-ring" id="scanRing"></div>
 
-<div class="sticky">
-<a class="btn primary"
-href="https://one.nku.edu/task/all/registerforclass"
-target="_blank">
-Register Now
-</a>
-</div>
+            <div class="stage-bottom">
+              <div class="reveal-card" id="revealCard">
+                <div class="reveal-kicker">You found it</div>
+                <h3 id="revealTitle">A course for every major in an AI-driven world</h3>
+                <p id="revealText">
+                  INF 125 invites students across NKU to explore how AI is shaping careers, creativity, communication, business, healthcare, and everyday decisions.
+                </p>
 
-<script>
-const messages = {
-  "Business": "AI will automate decisions, marketing, and strategy.",
-  "Health": "AI will assist diagnosis, treatment, and patient care.",
-  "Education": "AI will reshape how students learn and teachers teach.",
-  "Communication": "AI will generate content, media, and messaging.",
-  "Arts": "AI is already creating music, visuals, and design.",
-  "Technology": "AI will redefine software, systems, and innovation.",
-  "Undecided": "AI will shape EVERY career path."
-};
+                <div class="major-rotator">
+                  <div class="major-label">What kind of future are you heading toward?</div>
+                  <div class="major-text" id="majorText">
+                    Future teacher? Future entrepreneur? Future creator? AI will touch your field too.
+                  </div>
+                </div>
 
-function revealFuture(){
-  const major = document.getElementById("major").value;
+                <div class="count-grid">
+                  <div class="count">
+                    <div class="count-num" id="days">0</div>
+                    <div class="count-label">Days</div>
+                  </div>
+                  <div class="count">
+                    <div class="count-num" id="hours">00</div>
+                    <div class="count-label">Hours</div>
+                  </div>
+                  <div class="count">
+                    <div class="count-num" id="minutes">00</div>
+                    <div class="count-label">Minutes</div>
+                  </div>
+                  <div class="count">
+                    <div class="count-num" id="seconds">00</div>
+                    <div class="count-label">Seconds</div>
+                  </div>
+                </div>
+              </div>
 
-  if(!major){
-    alert("Pick a major first 👀");
-    return;
-  }
+              <div class="debug-card">
+                <div class="debug-label">Live preview</div>
+                <div class="debug-text" id="ocrOutput">Pick a path below, or start the camera for the room-finder reveal.</div>
+              </div>
+            </div>
+          </div>
 
-  const text = messages[major];
+          <div class="quick-actions">
+            <button class="btn btn-primary" id="startBtn" type="button">Start camera</button>
+            <button class="btn btn-secondary" id="scanBtn" type="button">Start scan</button>
+            <button class="btn btn-secondary" id="flipBtn" type="button">Flip camera</button>
+            <button class="btn btn-secondary" id="voiceBtn" type="button">Enable voice</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  document.getElementById("reveal").style.display="block";
-  document.getElementById("reveal").innerHTML =
-    `<span class="gold">For ${major} majors:</span><br>${text}<br><br>
-     This is exactly why INF 125 exists.`;
+    <section class="section">
+      <div class="shell panel section-card">
+        <div class="section-label">Why students are drawn to this course</div>
+        <h2 class="section-title">AI isn’t just for computer science majors</h2>
+        <p class="section-copy">
+          INF 125 is built to be approachable, relevant, and useful whether you study business,
+          health sciences, communication, education, arts, informatics, or something else entirely.
+        </p>
 
-  startCountdown();
-}
+        <div class="features">
+          <div class="feature">
+            <h3>Welcoming</h3>
+            <p>Designed for beginners and curious students from any major.</p>
+          </div>
+          <div class="feature">
+            <h3>Relevant</h3>
+            <p>Connect AI to careers, industries, and real decisions happening now.</p>
+          </div>
+          <div class="feature">
+            <h3>Interactive</h3>
+            <p>Explore hands-on moments, discussion, examples, and real-world applications.</p>
+          </div>
+          <div class="feature">
+            <h3>Future-focused</h3>
+            <p>Build confidence around a technology that is already reshaping every field.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-function startCountdown(){
-  const target = new Date("2026-08-24T10:50:00");
+    <section class="section" id="funnel">
+      <div class="shell funnel-grid">
+        <div class="panel section-card">
+          <div class="section-label">Step 1 • Pick your path</div>
+          <h2 class="section-title">See yourself in the course</h2>
+          <p class="section-copy">
+            Choose the option that feels closest to you. The message will personalize to show why this course matters for your interests and future.
+          </p>
 
-  setInterval(()=>{
-    const now = new Date();
-    const diff = target - now;
+          <div class="path-grid" id="pathGrid">
+            <button class="path-btn active" type="button" data-path="business">
+              <span class="path-title">Business & Leadership</span>
+              <span class="path-sub">Strategy, entrepreneurship, careers, decision-making</span>
+            </button>
+            <button class="path-btn" type="button" data-path="health">
+              <span class="path-title">Health & Helping Fields</span>
+              <span class="path-sub">Care, ethics, human-centered use, impact</span>
+            </button>
+            <button class="path-btn" type="button" data-path="creative">
+              <span class="path-title">Creative & Media</span>
+              <span class="path-sub">Design, content, storytelling, communication</span>
+            </button>
+            <button class="path-btn" type="button" data-path="education">
+              <span class="path-title">Education & Social Impact</span>
+              <span class="path-sub">Learning, people, access, future readiness</span>
+            </button>
+            <button class="path-btn" type="button" data-path="tech">
+              <span class="path-title">Tech & Data Curious</span>
+              <span class="path-sub">Tools, systems, innovation, responsible use</span>
+            </button>
+            <button class="path-btn" type="button" data-path="undecided">
+              <span class="path-title">Still Figuring It Out</span>
+              <span class="path-sub">Explore the future without needing it all mapped out</span>
+            </button>
+          </div>
 
-    const days = Math.floor(diff/(1000*60*60*24));
-    const hrs = Math.floor((diff/(1000*60*60))%24);
+          <div class="persona-panel" id="personaPanel">
+            <h3>AI literacy for business-minded students</h3>
+            <p id="personaCopy">
+              If you care about leadership, strategy, entrepreneurship, or decision-making, this course helps you understand how AI is changing work, value, and competitive advantage.
+            </p>
+            <div class="persona-tags" id="personaTags">
+              <span class="tag">Careers</span>
+              <span class="tag">Decision-making</span>
+              <span class="tag">Innovation</span>
+            </div>
+          </div>
 
-    document.getElementById("countdown").innerHTML =
-      `Course starts in ${days} days ${hrs} hrs`;
-  },1000);
-}
-</script>
+          <div class="share-box">
+            <p><strong>Make it shareable:</strong> after you pick a path, use the button below to copy a caption students can paste into a text, story, or post.</p>
+            <div class="share-grid">
+              <button class="btn btn-primary" type="button" id="copyCaptionBtn">Copy share caption</button>
+              <button class="btn btn-secondary" type="button" id="triggerRevealBtn">Trigger my reveal</button>
+            </div>
+            <div class="small-note" id="shareFeedback">Suggested campus hook: “This AI page told me how my major is about to change 👀”</div>
+          </div>
+        </div>
 
+        <div class="panel section-card">
+          <div class="section-label">Step 2 • Go straight to NKU registration</div>
+          <h2 class="section-title">Ready to take INF 125?</h2>
+          <p class="section-copy">
+            When you’re ready, go directly to NKU’s official registration page and search for <strong>INF 125: AI Literacy</strong>.
+          </p>
+
+          <div class="funnel-list">
+            <div class="course-row">
+              <div class="k">Search for</div>
+              <div class="v">INF 125: AI Literacy</div>
+            </div>
+            <div class="course-row">
+              <div class="k">Days</div>
+              <div class="v">Tuesdays and Thursdays</div>
+            </div>
+            <div class="course-row">
+              <div class="k">Time</div>
+              <div class="v">10:50 AM – 12:05 PM</div>
+            </div>
+            <div class="course-row">
+              <div class="k">Location</div>
+              <div class="v">Griffin Hall (GH) 160</div>
+            </div>
+            <div class="course-row">
+              <div class="k">Session</div>
+              <div class="v">Fall 2026 Full Session • August 24 – December 11</div>
+            </div>
+            <div class="course-row">
+              <div class="k">Open registration</div>
+              <div class="v">Begins April 13, 2026</div>
+            </div>
+          </div>
+
+          <div class="cta-stack">
+            <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+              Register for classes at NKU
+            </a>
+            <a class="btn btn-secondary" href="https://inside.nku.edu/registrar/registration.html" target="_blank" rel="noopener noreferrer">
+              Registration help
+            </a>
+          </div>
+
+          <div class="small-note">
+            Tip: once students open myNKU registration, they should search for INF 125 and confirm the meeting time and location listed above.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell panel section-card">
+        <div class="section-label">Important Fall 2026 dates</div>
+        <h2 class="section-title">The planning timeline</h2>
+        <p class="section-copy">
+          Helpful for registration, add/drop decisions, and semester planning.
+        </p>
+
+        <div class="dates-list" id="datesList"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="sticky-cta">
+    <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+      Register at NKU
+    </a>
+    <a class="btn btn-secondary" href="https://inside.nku.edu/registrar/registration.html" target="_blank" rel="noopener noreferrer">
+      Help
+    </a>
+  </div>
+
+  <section class="final-screen" id="finalScreen" aria-hidden="true">
+    <div class="final-kicker">Northern Kentucky University</div>
+    <h2 class="final-title"><span class="gold">AI Literacy</span><br>For Every Major</h2>
+    <div class="final-copy" id="finalCopy">
+A welcoming course for students from all majors.
+
+Explore how AI connects to careers, creativity, communication, ethics, and everyday life.
+
+INF 125: AI Literacy
+Tuesdays & Thursdays • 10:50 AM – 12:05 PM
+Griffin Hall (GH) 160
+    </div>
+    <div class="final-meta">
+      <div class="final-chip">Open to students from all majors</div>
+      <div class="final-chip">Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160</div>
+      <div class="final-chip">Open Registration begins Monday, April 13, 2026</div>
+    </div>
+    <div class="final-actions">
+      <a class="btn btn-primary" href="https://one.nku.edu/task/all/registerforclass" target="_blank" rel="noopener noreferrer">
+        Register for INF 125
+      </a>
+      <button class="btn btn-secondary" id="replayBtn" type="button">Replay experience</button>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script>
+    const CONFIG = {
+      targetRoomText: "griffin hall 160",
+      alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
+      startDateISO: "2026-08-24T10:50:00-04:00",
+      scanIntervalMs: 2600,
+      ocrScale: 1,
+      autoShowFinalMs: 5000,
+      majorMessages: [
+        "Future teacher? AI will shape your classroom too.",
+        "Future entrepreneur? AI will reshape how ideas become businesses.",
+        "Future creator? AI is changing media, design, and storytelling.",
+        "Future healthcare leader? AI is transforming care, data, and decisions.",
+        "Future communicator? AI is reshaping messages, audiences, and platforms.",
+        "Future analyst? AI will influence how people interpret and act on data.",
+        "Future professional in any field? AI will touch your world too."
+      ],
+      personaContent: {
+        business: {
+          title: "AI literacy for business-minded students",
+          copy: "If you care about leadership, strategy, entrepreneurship, or decision-making, this course helps you understand how AI is changing work, value, and competitive advantage.",
+          tags: ["Careers", "Decision-making", "Innovation"],
+          revealTitle: "Business students: AI is changing how decisions get made",
+          revealText: "INF 125 helps you explore strategy, automation, entrepreneurship, and the role AI will play in leadership and business careers."
+        },
+        health: {
+          title: "AI literacy for helping professions",
+          copy: "If you care about people, care, ethics, or responsible use, this course helps you think about how AI intersects with healthcare, support systems, and real human impact.",
+          tags: ["Ethics", "Care", "Human-centered use"],
+          revealTitle: "Health students: AI is changing care and decision-making",
+          revealText: "INF 125 helps you explore the real-world role of AI in care, support systems, ethics, and human-centered problem-solving."
+        },
+        creative: {
+          title: "AI literacy for creators and communicators",
+          copy: "If you’re drawn to storytelling, design, media, or content, this course helps you explore how AI is reshaping creativity, communication, and expression.",
+          tags: ["Creativity", "Media", "Storytelling"],
+          revealTitle: "Creative students: AI is reshaping media and expression",
+          revealText: "INF 125 helps you explore how AI intersects with design, storytelling, content, communication, and creative work."
+        },
+        education: {
+          title: "AI literacy for educators and changemakers",
+          copy: "If you care about learning, access, people, and impact, this course helps you examine how AI can support and disrupt the way people learn and work.",
+          tags: ["Learning", "Access", "Impact"],
+          revealTitle: "Education students: AI is reshaping how people learn",
+          revealText: "INF 125 helps you explore how AI affects learning, teaching, access, support, and human development across contexts."
+        },
+        tech: {
+          title: "AI literacy for tech-curious students",
+          copy: "If you’re interested in tools, systems, or innovation, this course helps you build broader literacy around how AI works in real settings, beyond hype.",
+          tags: ["Tools", "Systems", "Responsible innovation"],
+          revealTitle: "Tech-curious students: AI literacy matters beyond the code",
+          revealText: "INF 125 helps you understand real-world AI systems, responsible use, adoption, and how AI shapes products and people."
+        },
+        undecided: {
+          title: "AI literacy for students still figuring it out",
+          copy: "If you’re exploring your future, this course gives you a smart, welcoming way to understand one of the biggest forces shaping work and life across every field.",
+          tags: ["Exploration", "Confidence", "Future readiness"],
+          revealTitle: "Undecided? That’s exactly why this course fits",
+          revealText: "INF 125 helps you explore one of the biggest forces shaping careers and everyday life — without needing to already know your path."
+        }
+      },
+      importantDates: [
+        { date: "March 26, 2026", event: "Priority Registration begins for current students" },
+        { date: "April 13, 2026", event: "Open Registration begins" },
+        { date: "August 24, 2026", event: "Classes begin" },
+        { date: "August 31, 2026", event: "Last day to drop with a 100% tuition adjustment • Last day to add a course • Last day to change grading option" },
+        { date: "September 7, 2026", event: "Labor Day — University Closed / No Classes" },
+        { date: "September 15, 2026", event: "Last day to drop a course without a grade appearing on transcript • Last day to drop with a 50% tuition adjustment" },
+        { date: "October 12, 2026", event: "Faculty begin submitting full session mid-term grades • Undergraduate students and academic advisors may access full session mid-term grades" },
+        { date: "October 17, 2026", event: "Midterm" },
+        { date: "October 19–20, 2026", event: "Fall Break — University Open / No Classes" },
+        { date: "October 21, 2026", event: "9:00 a.m. faculty deadline for submitting full session mid-term grades" },
+        { date: "November 2, 2026", event: "Last day to drop a course with a grade of W" },
+        { date: "November 26–27, 2026", event: "Thanksgiving Holiday — University Closed / No Classes" },
+        { date: "November 30, 2026", event: "Deadline for filing application for degree candidacy for Spring graduation with the Office of the Registrar. Late fees applied after this date." },
+        { date: "December 11, 2026", event: "Last day of classes • Last day to withdraw fall graduation application" },
+        { date: "December 12–18, 2026", event: "Final Examinations" },
+        { date: "December 19, 2026", event: "Commencement" },
+        { date: "December 22, 2026", event: "9:00 a.m. faculty deadline for grade submission" }
+      ]
+    };
+
+    const video = document.getElementById("video");
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+    const targetRoomPill = document.getElementById("targetRoomPill");
+    const fallbackStage = document.getElementById("fallbackStage");
+    const scanRing = document.getElementById("scanRing");
+    const cameraStatus = document.getElementById("cameraStatus");
+    const scanStatus = document.getElementById("scanStatus");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const ocrOutput = document.getElementById("ocrOutput");
+    const revealCard = document.getElementById("revealCard");
+    const revealTitle = document.getElementById("revealTitle");
+    const revealText = document.getElementById("revealText");
+    const majorText = document.getElementById("majorText");
+    const datesList = document.getElementById("datesList");
+    const confettiLayer = document.getElementById("confettiLayer");
+    const finalScreen = document.getElementById("finalScreen");
+    const shareFeedback = document.getElementById("shareFeedback");
+
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minutesEl = document.getElementById("minutes");
+    const secondsEl = document.getElementById("seconds");
+
+    const startBtn = document.getElementById("startBtn");
+    const scanBtn = document.getElementById("scanBtn");
+    const flipBtn = document.getElementById("flipBtn");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const replayBtn = document.getElementById("replayBtn");
+    const copyCaptionBtn = document.getElementById("copyCaptionBtn");
+    const triggerRevealBtn = document.getElementById("triggerRevealBtn");
+
+    const pathGrid = document.getElementById("pathGrid");
+    const personaPanel = document.getElementById("personaPanel");
+    const personaCopy = document.getElementById("personaCopy");
+    const personaTags = document.getElementById("personaTags");
+
+    let stream = null;
+    let facingMode = "environment";
+    let scanning = false;
+    let found = false;
+    let ocrBusy = false;
+    let scanTimer = null;
+    let countdownTimer = null;
+    let finalTimer = null;
+    let majorRotationTimer = null;
+    let majorIndex = 0;
+    let fallbackMode = true;
+    let selectedPath = "business";
+    let voiceEnabled = false;
+    let voicesReady = false;
+
+    targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
+    renderDates();
+    startMajorRotation();
+    updatePersona("business");
+    startCountdown();
+
+    function renderDates() {
+      datesList.innerHTML = "";
+      CONFIG.importantDates.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "date-row";
+        row.innerHTML = `
+          <div class="date">${item.date}</div>
+          <div class="event">${item.event}</div>
+        `;
+        datesList.appendChild(row);
+      });
+    }
+
+    function toTitleCase(str) {
+      return str.replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .replace(/[|]/g, "l")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function matchesTarget(text) {
+      const cleaned = normalizeText(text);
+      const candidates = [CONFIG.targetRoomText, ...CONFIG.alternateMatches].map(normalizeText);
+      return candidates.some(candidate => cleaned.includes(candidate));
+    }
+
+    function startMajorRotation() {
+      majorText.textContent = CONFIG.majorMessages[0];
+      majorRotationTimer = setInterval(() => {
+        majorIndex = (majorIndex + 1) % CONFIG.majorMessages.length;
+        majorText.textContent = CONFIG.majorMessages[majorIndex];
+      }, 2400);
+    }
+
+    function updatePersona(pathKey) {
+      selectedPath = pathKey;
+      const item = CONFIG.personaContent[pathKey];
+      personaPanel.querySelector("h3").textContent = item.title;
+      personaCopy.textContent = item.copy;
+      personaTags.innerHTML = item.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+      revealTitle.textContent = item.revealTitle;
+      revealText.textContent = item.revealText;
+      shareFeedback.textContent = `Suggested hook: “This AI page told me how ${labelForPath(pathKey).toLowerCase()} is about to change 👀”`;
+    }
+
+    function labelForPath(pathKey) {
+      const labels = {
+        business: "Business",
+        health: "Health",
+        creative: "Creative majors",
+        education: "Education",
+        tech: "Tech-curious students",
+        undecided: "Undecided students"
+      };
+      return labels[pathKey] || "my field";
+    }
+
+    pathGrid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".path-btn");
+      if (!btn) return;
+      pathGrid.querySelectorAll(".path-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      updatePersona(btn.dataset.path);
+    });
+
+    function startCountdown() {
+      if (countdownTimer) clearInterval(countdownTimer);
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const target = new Date(CONFIG.startDateISO).getTime();
+        const diff = target - now;
+
+        if (diff <= 0) {
+          daysEl.textContent = "0";
+          hoursEl.textContent = "00";
+          minutesEl.textContent = "00";
+          secondsEl.textContent = "00";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        daysEl.textContent = String(days);
+        hoursEl.textContent = String(hours).padStart(2, "0");
+        minutesEl.textContent = String(minutes).padStart(2, "0");
+        secondsEl.textContent = String(seconds).padStart(2, "0");
+      }
+
+      updateCountdown();
+      countdownTimer = setInterval(updateCountdown, 1000);
+    }
+
+    async function startCamera() {
+      stopCamera();
+      fallbackMode = false;
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+        fallbackStage.style.display = "none";
+        cameraStatus.textContent = `Camera live (${facingMode === "environment" ? "rear" : "front"})`;
+        scanStatus.textContent = "Ready to scan";
+        ocrOutput.textContent = "Camera live. Point at Griffin Hall 160 or trigger the reveal below.";
+      } catch (err) {
+        console.error(err);
+        startFallbackReveal();
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      video.srcObject = null;
+    }
+
+    function startFallbackReveal() {
+      fallbackMode = true;
+      cameraStatus.textContent = "Camera skipped";
+      scanStatus.textContent = "Personalized reveal active";
+      fallbackStage.style.display = "grid";
+      ocrOutput.textContent = "No camera? No problem — launching the personalized reveal now.";
+      onTargetFound("camera skipped");
+    }
+
+    async function runOCRScan() {
+      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
+
+      ocrBusy = true;
+      scanStatus.textContent = "Scanning room signage...";
+
+      try {
+        const vw = video.videoWidth;
+        const vh = video.videoHeight;
+
+        const cropW = vw * 0.84;
+        const cropH = vh * 0.30;
+        const cropX = (vw - cropW) / 2;
+        const cropY = (vh - cropH) / 2;
+
+        canvas.width = Math.floor(cropW * CONFIG.ocrScale);
+        canvas.height = Math.floor(cropH * CONFIG.ocrScale);
+
+        ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
+
+        const result = await Tesseract.recognize(canvas, "eng", { logger: () => {} });
+        const text = result.data.text || "";
+        const cleaned = normalizeText(text);
+
+        ocrOutput.textContent = cleaned || "No readable signage detected in this scan.";
+
+        if (matchesTarget(cleaned)) {
+          onTargetFound(cleaned);
+        } else {
+          scanStatus.textContent = "Scanning... target room not found yet";
+        }
+      } catch (err) {
+        console.error(err);
+        scanStatus.textContent = "Scan error";
+      } finally {
+        ocrBusy = false;
+      }
+    }
+
+    function startScanning() {
+      if (scanning || fallbackMode) return;
+      if (!video.srcObject) {
+        startFallbackReveal();
+        return;
+      }
+
+      scanning = true;
+      scanStatus.textContent = "Scanner started";
+      runOCRScan();
+      scanTimer = setInterval(runOCRScan, CONFIG.scanIntervalMs);
+    }
+
+    function stopScanning() {
+      scanning = false;
+      if (scanTimer) {
+        clearInterval(scanTimer);
+        scanTimer = null;
+      }
+    }
+
+    function triggerConfetti() {
+      confettiLayer.innerHTML = "";
+      const count = 42;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.top = `${Math.random() * 10}%`;
+        piece.style.background = Math.random() > 0.5 ? "var(--gold)" : "#fff";
+        piece.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
+        piece.style.animationDelay = `${Math.random() * 180}ms`;
+        confettiLayer.appendChild(piece);
+      }
+      setTimeout(() => {
+        confettiLayer.innerHTML = "";
+      }, 1800);
+    }
+
+    function speak(text) {
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred =
+        voices.find(v => /Samantha/i.test(v.name)) ||
+        voices.find(v => /Google US English/i.test(v.name)) ||
+        voices.find(v => /English/i.test(v.lang));
+      if (preferred) utterance.voice = preferred;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function onTargetFound(matchText) {
+      if (found) return;
+
+      found = true;
+      stopScanning();
+      revealCard.classList.add("active");
+      scanRing.classList.add("found");
+      scanStatus.textContent = fallbackMode ? "Personalized reveal active" : "Room found";
+      ocrOutput.textContent = fallbackMode
+        ? "DIRECT LAUNCH MODE:\nShowing the personalized course reveal without camera access."
+        : `MATCH FOUND:\n${matchText}`;
+
+      triggerConfetti();
+      speak(`You found INF 125. ${CONFIG.personaContent[selectedPath].revealTitle}. Register for AI Literacy at NKU.`);
+
+      if (navigator.vibrate) {
+        navigator.vibrate([160, 70, 180]);
+      }
+
+      if (finalTimer) clearTimeout(finalTimer);
+      finalTimer = setTimeout(showFinalScreen, CONFIG.autoShowFinalMs);
+    }
+
+    function showFinalScreen() {
+      finalScreen.classList.add("active");
+      finalScreen.setAttribute("aria-hidden", "false");
+    }
+
+    function hideFinalScreen() {
+      finalScreen.classList.remove("active");
+      finalScreen.setAttribute("aria-hidden", "true");
+    }
+
+    function resetExperience() {
+      found = false;
+      fallbackMode = true;
+      stopScanning();
+      stopCamera();
+      scanRing.classList.remove("found");
+      revealCard.classList.remove("active");
+      cameraStatus.textContent = "Camera optional";
+      scanStatus.textContent = "Experience ready";
+      ocrOutput.textContent = "Pick a path below, or start the camera for the room-finder reveal.";
+      fallbackStage.style.display = "grid";
+      hideFinalScreen();
+    }
+
+    startBtn.addEventListener("click", startCamera);
+
+    scanBtn.addEventListener("click", () => {
+      if (!scanning) {
+        startScanning();
+        scanBtn.textContent = fallbackMode ? "Reveal active" : "Stop scan";
+      } else {
+        stopScanning();
+        scanBtn.textContent = "Start scan";
+        scanStatus.textContent = "Scan paused";
+      }
+    });
+
+    flipBtn.addEventListener("click", async () => {
+      facingMode = facingMode === "environment" ? "user" : "environment";
+      await startCamera();
+    });
+
+    voiceBtn.addEventListener("click", () => {
+      voiceEnabled = !voiceEnabled;
+      voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
+      voiceBtn.textContent = voiceEnabled ? "Disable voice" : "Enable voice";
+      if (voiceEnabled && "speechSynthesis" in window && !voicesReady) {
+        window.speechSynthesis.getVoices();
+        voicesReady = true;
+      }
+    });
+
+    replayBtn.addEventListener("click", () => {
+      hideFinalScreen();
+      resetExperience();
+    });
+
+    triggerRevealBtn.addEventListener("click", () => {
+      startFallbackReveal();
+    });
+
+    copyCaptionBtn.addEventListener("click", async () => {
+      const caption = `This AI page told me how ${labelForPath(selectedPath).toLowerCase()} is about to change 👀\n\nINF 125: AI Literacy at NKU might actually be for all majors.\n\nTues/Thurs • 10:50 AM–12:05 PM • GH 160`;
+      try {
+        await navigator.clipboard.writeText(caption);
+        shareFeedback.textContent = "Copied. Paste it into a text, story, or post.";
+      } catch (e) {
+        shareFeedback.textContent = "Copy didn’t work on this device, but the caption is ready to use manually.";
+      }
+    });
+
+    window.addEventListener("beforeunload", () => {
+      stopScanning();
+      stopCamera();
+      if (countdownTimer) clearInterval(countdownTimer);
+      if (majorRotationTimer) clearInterval(majorRotationTimer);
+      if (finalTimer) clearTimeout(finalTimer);
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    });
+  </script>
 </body>
 </html>
