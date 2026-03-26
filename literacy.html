@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Is It AI? | NKU 10-Second Challenge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    name="description"
+    content="A fast, one-screen NKU AI Literacy challenge built for LinkedIn engagement."
+  />
+  <meta name="theme-color" content="#201747" />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    :root {
+      --nku-purple: #201747;
+      --nku-purple-dark: #120d25;
+      --nku-gold: #fdb913;
+      --nku-gold-soft: #ffd66d;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.76);
+      --glass: rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.14);
+      --success: #34d399;
+      --danger: #fb7185;
+      --cyan: #67e8f9;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--white);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(253,185,19,0.18), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(103,232,249,0.13), transparent 24%),
+        linear-gradient(145deg, #0b0715 0%, #201747 45%, #09070f 100%);
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.28);
+    }
+
+    .hero {
+      padding: 30px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -90px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(253,185,19,0.35), transparent 72%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -60px;
+      bottom: -100px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(103,232,249,0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge-nku {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 9px 15px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .hero-title {
+      margin: 18px 0 10px;
+      font-size: clamp(2.4rem, 6vw, 4.7rem);
+      line-height: 0.95;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+    }
+
+    .gold {
+      color: var(--nku-gold);
+      text-shadow: 0 0 26px rgba(253,185,19,0.16);
+    }
+
+    .hero-subtitle {
+      max-width: 760px;
+      font-size: 1.04rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      margin: 6px 8px 0 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .btn-brand,
+    .btn-soft,
+    .choice-btn {
+      border-radius: 999px;
+      font-weight: 900;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .btn-brand {
+      background: linear-gradient(135deg, var(--nku-gold), var(--nku-gold-soft));
+      color: #1a1435;
+      border: none;
+      padding: 14px 22px;
+      box-shadow: 0 14px 30px rgba(253,185,19,0.22);
+    }
+
+    .btn-soft {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 14px 20px;
+    }
+
+    .btn-brand:hover,
+    .btn-soft:hover,
+    .choice-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .scanner-box {
+      position: relative;
+      min-height: 280px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(253,185,19,0.12), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(103,232,249,0.12), transparent 30%),
+        linear-gradient(145deg, #0d0a18 0%, #1b1536 45%, #0a0812 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .scanner-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      box-shadow: 0 0 18px rgba(103,232,249,0.75);
+      animation: scan 2s linear infinite;
+      opacity: 0.9;
+    }
+
+    @keyframes scan {
+      0% { top: 12%; }
+      50% { top: 82%; }
+      100% { top: 12%; }
+    }
+
+    .scanner-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 460px;
+    }
+
+    .scanner-headline {
+      font-size: clamp(1.9rem, 4vw, 3.4rem);
+      font-weight: 950;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+    }
+
+    .scanner-sub {
+      color: var(--muted);
+      margin-bottom: 18px;
+      font-size: 1rem;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-box {
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+    }
+
+    .stat-box .big {
+      font-size: 1.5rem;
+      font-weight: 950;
+      color: var(--nku-gold);
+      line-height: 1;
+    }
+
+    .stat-box .label {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .round-card {
+      border-radius: 24px;
+      padding: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 14px;
+      transition: 0.2s ease;
+    }
+
+    .round-card.done {
+      opacity: 0.82;
+    }
+
+    .round-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .round-tag {
+      display: inline-block;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--nku-gold);
+      font-weight: 900;
+    }
+
+    .round-status {
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: var(--muted);
+    }
+
+    .sample-box {
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(10,7,19,0.48);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.98rem;
+      line-height: 1.52;
+      margin-bottom: 12px;
+    }
+
+    .choice-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .choice-btn {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      padding: 14px 14px;
+      font-size: 0.98rem;
+    }
+
+    .choice-btn.correct {
+      background: rgba(52,211,153,0.16);
+      border-color: rgba(52,211,153,0.4);
+    }
+
+    .choice-btn.incorrect {
+      background: rgba(251,113,133,0.16);
+      border-color: rgba(251,113,133,0.42);
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.good {
+      color: #dcfce7;
+    }
+
+    .feedback.bad {
+      color: #ffe4e6;
+    }
+
+    .results-panel {
+      padding: 22px;
+    }
+
+    .result-score {
+      font-size: clamp(3rem, 8vw, 5.2rem);
+      line-height: 0.95;
+      font-weight: 950;
+      color: var(--nku-gold);
+      margin-bottom: 12px;
+    }
+
+    .result-badge {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .share-box {
+      width: 100%;
+      min-height: 130px;
+      padding: 16px;
+      border-radius: 18px;
+      resize: vertical;
+      outline: none;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    .launch-banner {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(253,185,19,0.16), rgba(103,232,249,0.12));
+      border: 1px solid rgba(253,185,19,0.22);
+    }
+
+    .launch-banner h3 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+
+    .muted { color: var(--muted); }
+
+    .hidden { display: none !important; }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 16px;
+      top: -20px;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.95;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-row,
+      .choice-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <section class="glass hero">
+      <div class="badge-nku">⚡ NKU • AI Literacy Day • 10-Second Challenge</div>
+      <h1 class="hero-title">
+        <span class="gold">IS IT AI?</span><br />
+        Comment your score
+      </h1>
+      <p class="hero-subtitle">
+        A one-screen NKU challenge built for fast completions, comments, and shares —
+        and to build hype for <strong>INF 125: AI Literacy</strong> this fall.
+      </p>
+
+      <div class="mb-3">
+        <span class="chip">⏱ about 10 seconds</span>
+        <span class="chip">📱 mobile friendly</span>
+        <span class="chip">💬 comment your score</span>
+        <span class="chip">🚀 LinkedIn ready</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="glass panel">
+        <div class="scanner-box mb-4">
+          <div class="scanner-line"></div>
+          <div class="scanner-content">
+            <div class="scanner-headline">
+              3 fast rounds.<br /><span class="gold">Trust your instinct.</span>
+            </div>
+            <div class="scanner-sub">
+              Tap AI or Human for each one. Then share your score.
+            </div>
+            <button id="startBtn" class="btn-brand">Start the Challenge</button>
+          </div>
+        </div>
+
+        <div id="gameArea" class="hidden">
+          <div class="stats-row">
+            <div class="stat-box">
+              <div id="scoreCorrect" class="big">0</div>
+              <div class="label">Correct</div>
+            </div>
+            <div class="stat-box">
+              <div id="scoreWrong" class="big">0</div>
+              <div class="label">Wrong</div>
+            </div>
+            <div class="stat-box">
+              <div id="scorePercent" class="big">0%</div>
+              <div class="label">Score</div>
+            </div>
+          </div>
+
+          <div id="roundsWrap"></div>
+        </div>
+      </section>
+
+      <section class="glass results-panel">
+        <div id="resultEmpty">
+          <div class="result-score">?</div>
+          <div class="result-badge">Waiting for your score</div>
+          <p class="muted">
+            Finish all 3 rounds to unlock your caption and challenge text.
+          </p>
+        </div>
+
+        <div id="resultReady" class="hidden">
+          <div id="finalPercent" class="result-score">100%</div>
+          <div id="finalBadge" class="result-badge">AI Spotter</div>
+          <p id="finalDescription" class="muted mb-4"></p>
+
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <button id="copyBtn" class="btn-brand">Copy Caption</button>
+            <button id="linkedinBtn" class="btn-soft">Open LinkedIn Share</button>
+            <button id="challengeBtn" class="btn-soft">Copy Challenge Text</button>
+            <button id="restartBtn" class="btn-soft">Play Again</button>
+          </div>
+
+          <textarea id="shareText" class="share-box" readonly></textarea>
+
+          <div class="launch-banner">
+            <h3>NKU is launching INF 125: AI Literacy this fall</h3>
+            <div class="muted">
+              Students won’t just use AI. They’ll learn how to question it, understand it, and build with it.
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const rounds = [
+      {
+        text: "In today’s rapidly evolving digital landscape, organizations must embrace intelligent synergy to unlock unprecedented value creation.",
+        answer: "ai",
+        explainRight: "Correct. Polished, vague, and buzzword-heavy.",
+        explainWrong: "This was AI. It sounds smooth, but says very little."
+      },
+      {
+        text: "I missed the bus because I swore I had five more minutes, and somehow that became twenty.",
+        answer: "human",
+        explainRight: "Correct. Specific and naturally messy.",
+        explainWrong: "This one was human. The personal detail gives it away."
+      },
+      {
+        text: "For a first-year college audience, explain AI bias using one simple example from hiring and one from social media recommendations.",
+        answer: "human",
+        explainRight: "Correct. That’s a focused human prompt.",
+        explainWrong: "This was human. Strong prompting is part of AI literacy."
+      }
+    ];
+
+    let correct = 0;
+    let wrong = 0;
+    let started = false;
+    let audioCtx = null;
+
+    const startBtn = document.getElementById("startBtn");
+    const gameArea = document.getElementById("gameArea");
+    const roundsWrap = document.getElementById("roundsWrap");
+
+    const scoreCorrect = document.getElementById("scoreCorrect");
+    const scoreWrong = document.getElementById("scoreWrong");
+    const scorePercent = document.getElementById("scorePercent");
+
+    const resultEmpty = document.getElementById("resultEmpty");
+    const resultReady = document.getElementById("resultReady");
+    const finalPercent = document.getElementById("finalPercent");
+    const finalBadge = document.getElementById("finalBadge");
+    const finalDescription = document.getElementById("finalDescription");
+    const shareText = document.getElementById("shareText");
+
+    const copyBtn = document.getElementById("copyBtn");
+    const linkedinBtn = document.getElementById("linkedinBtn");
+    const challengeBtn = document.getElementById("challengeBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function ensureAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(type) {
+      if (!audioCtx) return;
+
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      if (type === "success") {
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(700, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(980, audioCtx.currentTime + 0.12);
+        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.10, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.20);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.22);
+      } else {
+        oscillator.type = "sawtooth";
+        oscillator.frequency.setValueAtTime(260, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.16);
+        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.07, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.18);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.20);
+      }
+    }
+
+    function getPercent() {
+      return Math.round((correct / rounds.length) * 100);
+    }
+
+    function updateStats() {
+      scoreCorrect.textContent = correct;
+      scoreWrong.textContent = wrong;
+      scorePercent.textContent = `${getPercent()}%`;
+    }
+
+    function getBadge(percent) {
+      if (percent === 100) {
+        return {
+          title: "AI Mind Reader",
+          desc: "Perfect score. That’s very comment-worthy.",
+          hype: "I just got 100% on NKU’s quick “Is It AI?” challenge."
+        };
+      }
+      if (percent >= 67) {
+        return {
+          title: "AI Spotter",
+          desc: "Strong instincts. You can usually tell when something feels machine-made.",
+          hype: "I just played NKU’s quick “Is It AI?” challenge and scored strong."
+        };
+      }
+      if (percent >= 34) {
+        return {
+          title: "Prompt Detective",
+          desc: "You’re getting there. That’s exactly why AI literacy matters.",
+          hype: "NKU’s quick “Is It AI?” challenge reminded me how tricky this is getting."
+        };
+      }
+      return {
+        title: "Human After All",
+        desc: "This one got you. Which is kind of the point.",
+        hype: "NKU’s quick “Is It AI?” challenge humbled me a little."
+      };
+    }
+
+    function renderRounds() {
+      roundsWrap.innerHTML = "";
+
+      rounds.forEach((round, index) => {
+        const card = document.createElement("div");
+        card.className = "round-card";
+        card.innerHTML = `
+          <div class="round-top">
+            <div class="round-tag">Round ${index + 1}</div>
+            <div class="round-status" id="status-${index}">Waiting</div>
+          </div>
+
+          <div class="sample-box">“${round.text}”</div>
+
+          <div class="choice-row">
+            <button class="choice-btn" data-round="${index}" data-choice="ai">🤖 AI</button>
+            <button class="choice-btn" data-round="${index}" data-choice="human">👤 Human</button>
+          </div>
+
+          <div class="feedback" id="feedback-${index}"></div>
+        `;
+        roundsWrap.appendChild(card);
+      });
+
+      document.querySelectorAll(".choice-btn").forEach((button) => {
+        button.addEventListener("click", handleChoice);
+      });
+    }
+
+    function handleChoice(event) {
+      ensureAudio();
+
+      const button = event.currentTarget;
+      const roundIndex = Number(button.dataset.round);
+      const choice = button.dataset.choice;
+      const round = rounds[roundIndex];
+
+      const card = button.closest(".round-card");
+      if (card.classList.contains("done")) return;
+
+      const buttons = card.querySelectorAll(".choice-btn");
+      const feedback = document.getElementById(`feedback-${roundIndex}`);
+      const status = document.getElementById(`status-${roundIndex}`);
+
+      buttons.forEach(btn => btn.disabled = true);
+      card.classList.add("done");
+
+      const isRight = choice === round.answer;
+
+      if (isRight) {
+        correct++;
+        button.classList.add("correct");
+        feedback.textContent = round.explainRight;
+        feedback.className = "feedback show good";
+        status.textContent = "Correct";
+        playTone("success");
+      } else {
+        wrong++;
+        button.classList.add("incorrect");
+        feedback.textContent = round.explainWrong;
+        feedback.className = "feedback show bad";
+        status.textContent = "Not quite";
+        playTone("fail");
+
+        buttons.forEach(btn => {
+          if (btn.dataset.choice === round.answer) {
+            btn.classList.add("correct");
+          }
+        });
+      }
+
+      updateStats();
+      checkCompletion();
+    }
+
+    function checkCompletion() {
+      const doneCount = document.querySelectorAll(".round-card.done").length;
+      if (doneCount === rounds.length) {
+        finishGame();
+      }
+    }
+
+    function finishGame() {
+      const percent = getPercent();
+      const badge = getBadge(percent);
+
+      finalPercent.textContent = `${percent}%`;
+      finalBadge.textContent = badge.title;
+      finalDescription.textContent = badge.desc;
+
+      shareText.value = `${badge.hype} I scored ${percent}% — ${badge.title}.
+
+This fall, NKU is launching INF 125: AI Literacy.
+
+Students won’t just use AI.
+They’ll learn how to question it, understand it, and build with it.
+
+Comment your score 👇
+
+#AILiteracyDay #NKU #AIinEducation #ArtificialIntelligence #HigherEd`;
+
+      resultEmpty.classList.add("hidden");
+      resultReady.classList.remove("hidden");
+
+      if (percent >= 67) {
+        launchConfetti();
+      }
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async function copyCaption() {
+      const ok = await copyText(shareText.value);
+      copyBtn.textContent = ok ? "Copied!" : "Copy Failed";
+      setTimeout(() => copyBtn.textContent = "Copy Caption", 1200);
+    }
+
+    async function copyChallengeText() {
+      const challengeText = `I just played NKU’s quick “Is It AI?” challenge and scored ${getPercent()}%.
+
+Can you beat me? Comment your score.
+
+NKU is launching INF 125: AI Literacy this fall.
+
+#AILiteracyDay #NKU #AIinEducation`;
+      const ok = await copyText(challengeText);
+      challengeBtn.textContent = ok ? "Copied!" : "Copy Failed";
+      setTimeout(() => challengeBtn.textContent = "Copy Challenge Text", 1200);
+    }
+
+    function shareOnLinkedIn() {
+      const linkedInUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText.value);
+      window.open(linkedInUrl, "_blank", "noopener,noreferrer");
+    }
+
+    function launchConfetti() {
+      const pieces = 60;
+      const colors = ["#fdb913", "#ffd66d", "#67e8f9", "#ffffff", "#a78bfa"];
+
+      for (let i = 0; i < pieces; i++) {
+        const el = document.createElement("div");
+        el.className = "confetti";
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.animationDuration = (2.2 + Math.random() * 1.8) + "s";
+        el.style.animationDelay = (Math.random() * 0.25) + "s";
+        el.style.transform = `rotate(${Math.random() * 360}deg)`;
+        el.style.width = (8 + Math.random() * 7) + "px";
+        el.style.height = (12 + Math.random() * 10) + "px";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4500);
+      }
+    }
+
+    function startGame() {
+      if (started) return;
+      started = true;
+      ensureAudio();
+      gameArea.classList.remove("hidden");
+      startBtn.textContent = "Challenge Started";
+      startBtn.disabled = true;
+      renderRounds();
+      updateStats();
+    }
+
+    function resetGame() {
+      correct = 0;
+      wrong = 0;
+      started = false;
+      gameArea.classList.add("hidden");
+      resultEmpty.classList.remove("hidden");
+      resultReady.classList.add("hidden");
+      startBtn.textContent = "Start the Challenge";
+      startBtn.disabled = false;
+      roundsWrap.innerHTML = "";
+      updateStats();
+    }
+
+    startBtn.addEventListener("click", startGame);
+    copyBtn.addEventListener("click", copyCaption);
+    linkedinBtn.addEventListener("click", shareOnLinkedIn);
+    challengeBtn.addEventListener("click", copyChallengeText);
+    restartBtn.addEventListener("click", resetGame);
+
+    updateStats();
+  </script>
+</body>
+</html>
