@@ -30,7 +30,6 @@
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-
     body{
       margin:0;
       font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
@@ -134,11 +133,6 @@
       border:1px solid var(--border);
     }
 
-    .btn-wide-mobile{
-      min-width:220px;
-      white-space:nowrap;
-    }
-
     .hero{
       padding:18px 0 14px;
     }
@@ -163,7 +157,7 @@
 
     .eyebrow{
       color:var(--gold);
-      font-size:.7rem;
+      font-size:.72rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -172,11 +166,11 @@
 
     h1{
       margin:0;
-      font-size:clamp(2rem, 8vw, 4.6rem);
-      line-height:.92;
+      font-size:clamp(2.3rem, 9vw, 5rem);
+      line-height:.9;
       letter-spacing:-.05em;
       text-transform:uppercase;
-      max-width:9ch;
+      max-width:10ch;
     }
 
     .gradient-text{
@@ -219,33 +213,22 @@
 
     .stage{
       position:relative;
-      min-height:520px;
-      border-radius:20px;
+      min-height:640px;
+      border-radius:22px;
       overflow:hidden;
       background:
         radial-gradient(circle at 30% 20%, rgba(255,199,44,.16), transparent 26%),
         linear-gradient(180deg,#181818 0%,#090909 100%);
       border:1px solid rgba(255,255,255,.08);
-    }
-
-    video,
-    .overlay-canvas{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      display:block;
+      isolation:isolate;
     }
 
     video{
+      width:100%;
+      height:100%;
       object-fit:cover;
+      display:block;
       background:#000;
-      z-index:0;
-    }
-
-    .overlay-canvas{
-      z-index:2;
-      pointer-events:none;
     }
 
     .fallback-stage{
@@ -254,7 +237,7 @@
       display:grid;
       place-items:center;
       text-align:center;
-      padding:20px;
+      padding:24px;
       background:
         radial-gradient(circle at 50% 20%, rgba(255,199,44,.14), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
@@ -264,17 +247,18 @@
 
     .fallback-stage h2{
       margin:0 0 8px;
-      font-size:clamp(1.7rem, 6vw, 2.8rem);
-      line-height:.95;
+      font-size:clamp(2rem, 7vw, 3.2rem);
+      line-height:.92;
       letter-spacing:-.04em;
       text-transform:uppercase;
     }
 
     .fallback-stage p{
-      margin:0;
+      margin:0 auto;
       color:var(--muted);
       max-width:28ch;
       line-height:1.45;
+      font-size:1rem;
     }
 
     .path-overlay{
@@ -300,7 +284,7 @@
     }
 
     .overlay-title{
-      font-size:1.2rem;
+      font-size:1.25rem;
       font-weight:900;
       margin-bottom:6px;
       letter-spacing:-.02em;
@@ -309,75 +293,18 @@
 
     .overlay-sub{
       color:var(--muted);
-      font-size:.92rem;
+      font-size:.95rem;
       margin-bottom:12px;
       line-height:1.45;
     }
 
-    .overlay-sub strong{
-      color:#fff;
-    }
-
-    .scan-demo{
-      margin:0 auto 14px;
-      width:min(100%, 320px);
-      height:92px;
-      border-radius:18px;
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)),
-        radial-gradient(circle at 50% 10%, rgba(255,199,44,.12), transparent 40%);
-      display:grid;
-      place-items:center;
-    }
-
-    .scan-demo-sign{
-      width:72%;
-      max-width:220px;
-      padding:12px 14px;
-      border-radius:14px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.16);
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#fff;
-      position:relative;
-      z-index:2;
-    }
-
-    .scan-demo-line{
-      position:absolute;
-      left:18px;
-      right:18px;
-      top:16px;
-      height:2px;
-      background:linear-gradient(90deg, transparent, var(--gold), transparent);
-      filter:drop-shadow(0 0 8px rgba(255,199,44,.8));
-      animation:demoSweep 2.1s ease-in-out infinite;
-      z-index:3;
-    }
-
-    .scan-demo-frame{
-      position:absolute;
-      inset:14px;
-      border:2px solid rgba(255,255,255,.26);
-      border-radius:16px;
-      z-index:1;
-    }
-
-    @keyframes demoSweep{
-      0%{transform:translateY(0);opacity:.25}
-      50%{transform:translateY(44px);opacity:1}
-      100%{transform:translateY(0);opacity:.25}
-    }
+    .overlay-sub strong{color:#fff}
 
     .path-grid-overlay{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:8px;
+      margin-bottom:12px;
     }
 
     .path-card{
@@ -399,14 +326,19 @@
       transform:translateY(-1px);
     }
 
-    .skip-overlay-btn{
+    .cta-stack{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:center;
       margin-top:10px;
-      background:none;
-      border:none;
-      color:rgba(255,255,255,.76);
-      font-size:.88rem;
-      font-weight:700;
-      cursor:pointer;
+    }
+
+    .small-note{
+      margin-top:8px;
+      color:var(--soft);
+      font-size:.82rem;
+      line-height:1.4;
     }
 
     .stage-top{
@@ -426,7 +358,7 @@
       background:rgba(0,0,0,.58);
       border:1px solid rgba(255,255,255,.12);
       backdrop-filter:blur(10px);
-      font-size:.78rem;
+      font-size:.8rem;
       font-weight:750;
     }
 
@@ -435,9 +367,9 @@
     .scan-ring{
       position:absolute;
       left:50%;
-      top:50%;
-      width:78%;
-      height:26%;
+      top:48%;
+      width:80%;
+      height:28%;
       transform:translate(-50%,-50%);
       border:2px solid rgba(255,255,255,.85);
       border-radius:22px;
@@ -461,7 +393,7 @@
       height:2px;
       background:linear-gradient(90deg, transparent, var(--gold), transparent);
       filter:drop-shadow(0 0 7px rgba(255,199,44,.85));
-      animation:sweep 2.4s linear infinite;
+      animation:sweep 2.2s linear infinite;
     }
 
     .scan-ring.found{
@@ -471,8 +403,57 @@
 
     @keyframes sweep{
       0%{transform:translateY(0);opacity:.25}
-      50%{transform:translateY(40px);opacity:1}
-      100%{transform:translateY(82px);opacity:.25}
+      50%{transform:translateY(42px);opacity:1}
+      100%{transform:translateY(86px);opacity:.25}
+    }
+
+    .cinematic-overlay{
+      position:absolute;
+      inset:0;
+      z-index:10;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:24px;
+      background:rgba(0,0,0,.56);
+      backdrop-filter:blur(8px);
+      opacity:0;
+      pointer-events:none;
+      transition:.35s ease;
+    }
+
+    .cinematic-overlay.active{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .cinematic-kicker{
+      color:var(--gold);
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+
+    .cinematic-title{
+      font-size:clamp(2rem, 10vw, 4.2rem);
+      line-height:.9;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+      font-weight:900;
+      margin:0;
+      max-width:10ch;
+    }
+
+    .cinematic-sub{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:1rem;
+      line-height:1.45;
+      max-width:26ch;
     }
 
     .stage-bottom{
@@ -487,9 +468,9 @@
 
     .reveal-card{
       display:none;
-      padding:14px;
+      padding:16px;
       border-radius:18px;
-      background:rgba(0,0,0,.68);
+      background:rgba(0,0,0,.72);
       border:1px solid rgba(255,255,255,.1);
       backdrop-filter:blur(10px);
     }
@@ -506,7 +487,7 @@
 
     .reveal-kicker{
       color:var(--gold);
-      font-size:.68rem;
+      font-size:.72rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -515,8 +496,8 @@
 
     .reveal-card h3{
       margin:0;
-      font-size:1.18rem;
-      line-height:1.06;
+      font-size:1.35rem;
+      line-height:1.02;
       letter-spacing:-.03em;
       text-transform:uppercase;
     }
@@ -525,12 +506,12 @@
       margin:8px 0 0;
       color:var(--muted);
       line-height:1.45;
-      font-size:.93rem;
+      font-size:.96rem;
     }
 
     .major-rotator{
-      margin-top:10px;
-      padding:10px 12px;
+      margin-top:12px;
+      padding:12px 14px;
       border-radius:14px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
@@ -538,7 +519,7 @@
 
     .major-label{
       color:var(--gold);
-      font-size:.65rem;
+      font-size:.68rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -546,66 +527,45 @@
     }
 
     .major-text{
-      font-size:.95rem;
+      font-size:1rem;
       font-weight:800;
       line-height:1.32;
-      min-height:2.4em;
+      min-height:2.6em;
     }
 
     .count-grid{
-      margin-top:10px;
+      margin-top:12px;
       display:grid;
       grid-template-columns:repeat(4,1fr);
-      gap:6px;
+      gap:8px;
     }
 
     .count{
       border-radius:14px;
-      padding:10px 6px;
+      padding:12px 8px;
       text-align:center;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
     }
 
     .count-num{
-      font-size:1.15rem;
+      font-size:1.3rem;
       font-weight:900;
       line-height:1;
       color:var(--gold);
     }
 
     .count-label{
-      margin-top:5px;
+      margin-top:6px;
       color:var(--soft);
-      font-size:.63rem;
+      font-size:.64rem;
       text-transform:uppercase;
       letter-spacing:.12em;
       font-weight:800;
     }
 
     .debug-card{
-      padding:11px 12px;
-      border-radius:16px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .debug-label{
-      color:var(--gold);
-      font-size:.66rem;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      font-weight:900;
-      margin-bottom:5px;
-    }
-
-    .debug-text{
-      color:var(--soft);
-      font-size:.8rem;
-      line-height:1.35;
-      white-space:pre-wrap;
-      max-height:100px;
-      overflow:auto;
+      display:none;
     }
 
     .action-grid{
@@ -721,20 +681,6 @@
       margin-bottom:4px;
     }
 
-    .cta-stack{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
-    }
-
-    .small-note{
-      margin-top:8px;
-      color:var(--soft);
-      font-size:.8rem;
-      line-height:1.4;
-    }
-
     details.dates-accordion{
       margin-top:12px;
       border-radius:18px;
@@ -819,6 +765,10 @@
       padding:12px 14px;
     }
 
+    .demo-hide{
+      display:none !important;
+    }
+
     .confetti{
       position:fixed;
       inset:0;
@@ -877,7 +827,7 @@
 
     .final-title{
       margin:0;
-      font-size:clamp(2rem, 8vw, 4.1rem);
+      font-size:clamp(2.2rem, 9vw, 4.4rem);
       line-height:.92;
       letter-spacing:-.05em;
       text-transform:uppercase;
@@ -891,7 +841,7 @@
       color:var(--muted);
       line-height:1.5;
       white-space:pre-line;
-      font-size:.96rem;
+      font-size:1rem;
     }
 
     .final-actions{
@@ -900,6 +850,7 @@
       gap:8px;
       margin-top:16px;
       width:min(100%, 620px);
+      justify-content:center;
     }
 
     @media (min-width:860px){
@@ -918,12 +869,11 @@
       }
 
       .stage{
-        min-height:600px;
+        min-height:690px;
       }
 
-      .btn-wide-mobile{
-        width:100%;
-        min-width:0;
+      .sticky-cta{
+        padding-bottom:calc(9px + env(safe-area-inset-bottom));
       }
     }
 
@@ -968,7 +918,7 @@
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
             A welcoming AI course for students from <strong>every major</strong>.
-            Choose your path, then either scan <strong>GH 160</strong> with your camera to unlock the full effect or skip straight to the reveal.
+            Pick a path, unlock the reveal, and share a screen-recorded moment that feels made for LinkedIn.
           </p>
 
           <div class="hero-mini">
@@ -980,18 +930,21 @@
               <strong>When + where:</strong>
               Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160
             </div>
+            <div class="mini-row">
+              <strong>Best for recording:</strong>
+              Turn on Demo Mode in the code, refresh, and screen record the automatic reveal
+            </div>
           </div>
         </div>
 
         <div class="panel stage-panel">
-          <div class="stage">
+          <div class="stage" id="stage">
             <video id="video" autoplay playsinline muted></video>
-            <canvas id="overlayCanvas" class="overlay-canvas"></canvas>
 
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>Choose a path first. Then scan GH 160 with your camera or skip straight to the reveal.</p>
+                <p>Choose a path, then scan GH 160 or use Demo Mode to create a cleaner screen-recorded moment.</p>
               </div>
             </div>
 
@@ -999,15 +952,9 @@
               <div class="path-overlay-content">
                 <div class="overlay-title">Choose your path</div>
                 <div class="overlay-sub">
-                  This personalizes the experience first.
+                  This personalizes the reveal first.
                   <br />
-                  <strong>Then point your camera at GH 160 to unlock the full reveal.</strong>
-                </div>
-
-                <div class="scan-demo" aria-hidden="true">
-                  <div class="scan-demo-frame"></div>
-                  <div class="scan-demo-line"></div>
-                  <div class="scan-demo-sign">GH 160</div>
+                  <strong>For the cleanest mobile recording, use Demo Mode.</strong>
                 </div>
 
                 <div class="path-grid-overlay">
@@ -1019,22 +966,18 @@
                   <button class="path-card" data-path="undecided" type="button">Explore</button>
                 </div>
 
-                <div class="cta-stack" style="justify-content:center;">
+                <div class="cta-stack">
                   <button class="btn btn-primary" id="enableCameraBtn" type="button">
-                    📷 Scan GH 160 to Unlock
+                    📷 Scan GH 160
                   </button>
-                  <button class="btn btn-secondary btn-wide-mobile" id="skipRevealBtn" type="button">
-                    Skip → Just show me
+                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">
+                    Skip to Reveal
                   </button>
                 </div>
 
                 <div class="small-note">
-                  Camera access lets the page recognize the room number and trigger your personalized reveal.
+                  Camera mode is for live interaction. Demo Mode is better for recording a polished clip.
                 </div>
-
-                <button class="skip-overlay-btn" id="hideOverlayBtn" type="button">
-                  Stay here and keep browsing
-                </button>
               </div>
             </div>
 
@@ -1045,6 +988,14 @@
             </div>
 
             <div class="scan-ring" id="scanRing"></div>
+
+            <div class="cinematic-overlay" id="cinematicOverlay">
+              <div class="cinematic-kicker" id="cinematicKicker">NKU AI Literacy</div>
+              <h2 class="cinematic-title" id="cinematicTitle">Scanning GH 160</h2>
+              <div class="cinematic-sub" id="cinematicSub">
+                Hold for the reveal.
+              </div>
+            </div>
 
             <div class="stage-bottom">
               <div class="reveal-card" id="revealCard">
@@ -1082,13 +1033,12 @@
               </div>
 
               <div class="debug-card">
-                <div class="debug-label">Live preview</div>
-                <div class="debug-text" id="ocrOutput">Choose a path, then scan GH 160 with your camera or skip to reveal.</div>
+                <div id="ocrOutput">Ready</div>
               </div>
             </div>
           </div>
 
-          <div class="action-grid">
+          <div class="action-grid" id="actionGrid">
             <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
             <button class="btn btn-secondary" id="sharePageBtn" type="button">Share Page</button>
           </div>
@@ -1168,7 +1118,7 @@
     </section>
   </main>
 
-  <div class="sticky-cta">
+  <div class="sticky-cta" id="stickyCta">
     <a
       class="btn btn-primary"
       href="https://one.nku.edu/task/all/registerforclass"
@@ -1208,12 +1158,16 @@ Griffin Hall 160
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     const CONFIG = {
+      // TURN THIS ON FOR LINKEDIN / MOBILE SCREEN RECORDING
+      demoMode: true,
+
       targetRoomText: "griffin hall 160",
       alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
       startDateISO: "2026-08-24T10:50:00-04:00",
       scanIntervalMs: 2600,
       ocrScale: 1,
       autoShowFinalMs: 4500,
+
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1223,6 +1177,7 @@ Griffin Hall 160
         "Future analyst? AI will influence how people interpret and act on data.",
         "Future professional in any field? AI will touch your world too."
       ],
+
       personaContent: {
         business: {
           title: "AI literacy for business-minded students",
@@ -1231,7 +1186,7 @@ Griffin Hall 160
           revealTitle: "Business students: AI is changing how decisions get made",
           revealText: "INF 125 helps you explore strategy, automation, entrepreneurship, and the role AI will play in leadership and business careers.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For business students, this is where AI connects to leadership, strategy, and real decisions.",
             "If that sounds like your future, go register."
           ]
@@ -1243,7 +1198,7 @@ Griffin Hall 160
           revealTitle: "Health students: AI is changing care and decision-making",
           revealText: "INF 125 helps you explore the real-world role of AI in care, support systems, ethics, and human-centered problem-solving.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For students in health and helping fields, this course connects AI to care, ethics, and real human impact.",
             "If that feels relevant, go register."
           ]
@@ -1255,7 +1210,7 @@ Griffin Hall 160
           revealTitle: "Creative students: AI is reshaping media and expression",
           revealText: "INF 125 helps you explore how AI intersects with design, storytelling, content, communication, and creative work.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For creators and communicators, this course explores how AI is reshaping media, storytelling, and expression.",
             "If that sounds like you, go register."
           ]
@@ -1267,7 +1222,7 @@ Griffin Hall 160
           revealTitle: "Education students: AI is reshaping how people learn",
           revealText: "INF 125 helps you explore how AI affects learning, teaching, access, support, and human development across contexts.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For future educators and changemakers, this course explores how AI is reshaping learning, access, and support.",
             "If that matters to you, go register."
           ]
@@ -1279,7 +1234,7 @@ Griffin Hall 160
           revealTitle: "Tech-curious students: AI literacy matters beyond the code",
           revealText: "INF 125 helps you understand real-world AI systems, responsible use, adoption, and how AI shapes products and people.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For tech curious students, this course goes beyond the hype and shows how AI works in real systems and real decisions.",
             "If you want that foundation, go register."
           ]
@@ -1291,13 +1246,14 @@ Griffin Hall 160
           revealTitle: "Undecided? That’s exactly why this course fits",
           revealText: "INF 125 helps you explore one of the biggest forces shaping careers and everyday life — without needing to already know your path.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "If you are still figuring things out, this course is built for that too.",
             "It gives you a strong start in understanding how AI is shaping every field.",
             "If that feels useful, go register."
           ]
         }
       },
+
       importantDates: [
         { date: "March 26, 2026", event: "Priority Registration begins for current students" },
         { date: "April 13, 2026", event: "Open Registration begins" },
@@ -1314,23 +1270,19 @@ Griffin Hall 160
     };
 
     const video = document.getElementById("video");
-    const overlayCanvas = document.getElementById("overlayCanvas");
-    const overlayCtx = overlayCanvas.getContext("2d");
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-    const ocrCanvas = document.createElement("canvas");
-    const ocrCtx = ocrCanvas.getContext("2d", { willReadFrequently: true });
-
+    const stage = document.getElementById("stage");
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
     const pathOverlay = document.getElementById("pathOverlay");
-    const hideOverlayBtn = document.getElementById("hideOverlayBtn");
     const enableCameraBtn = document.getElementById("enableCameraBtn");
     const skipRevealBtn = document.getElementById("skipRevealBtn");
     const pathCards = document.querySelectorAll(".path-card");
     const scanRing = document.getElementById("scanRing");
     const cameraStatus = document.getElementById("cameraStatus");
     const voiceStatus = document.getElementById("voiceStatus");
-    const ocrOutput = document.getElementById("ocrOutput");
     const revealCard = document.getElementById("revealCard");
     const revealTitle = document.getElementById("revealTitle");
     const revealText = document.getElementById("revealText");
@@ -1350,6 +1302,13 @@ Griffin Hall 160
     const sharePageBtn = document.getElementById("sharePageBtn");
     const stickyShareBtn = document.getElementById("stickyShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
+    const stickyCta = document.getElementById("stickyCta");
+    const actionGrid = document.getElementById("actionGrid");
+
+    const cinematicOverlay = document.getElementById("cinematicOverlay");
+    const cinematicKicker = document.getElementById("cinematicKicker");
+    const cinematicTitle = document.getElementById("cinematicTitle");
+    const cinematicSub = document.getElementById("cinematicSub");
 
     const personaPanel = document.getElementById("personaPanel");
     const personaCopy = document.getElementById("personaCopy");
@@ -1370,17 +1329,11 @@ Griffin Hall 160
     let voicesReady = false;
     let speechCancelled = false;
 
-    let lastDetected160Box = null;
-    let overlayAnimationId = null;
-    let lastDetectedAt = 0;
-
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
     updatePersona("business");
     startMajorRotation();
     startCountdown();
-    resizeOverlayCanvas();
-    startOverlayLoop();
 
     if ("speechSynthesis" in window) {
       window.speechSynthesis.getVoices();
@@ -1388,8 +1341,6 @@ Griffin Hall 160
         voicesReady = true;
       };
     }
-
-    window.addEventListener("resize", resizeOverlayCanvas);
 
     function renderDates() {
       datesList.innerHTML = "";
@@ -1404,14 +1355,6 @@ Griffin Hall 160
       });
     }
 
-    function resizeOverlayCanvas() {
-      const rect = overlayCanvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      overlayCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      overlayCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
     function toTitleCase(str) {
       return str.replace(/\b\w/g, c => c.toUpperCase());
     }
@@ -1419,8 +1362,7 @@ Griffin Hall 160
     function normalizeText(text) {
       return text
         .toLowerCase()
-        .replace(/[|]/g, "1")
-        .replace(/[oO]/g, "0")
+        .replace(/[|]/g, "l")
         .replace(/[^a-z0-9\s]/g, " ")
         .replace(/\s+/g, " ")
         .trim();
@@ -1486,15 +1428,15 @@ Griffin Hall 160
 
       stopCamera();
       stopScanning();
-      clearDetectedOverlay();
-
       found = false;
       fallbackMode = false;
+
       revealCard.classList.remove("active");
       scanRing.classList.remove("found");
       scanRing.classList.add("active");
       fallbackStage.style.display = "none";
       pathOverlay.classList.add("hidden");
+      hideCinematic();
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -1508,14 +1450,13 @@ Griffin Hall 160
 
         video.srcObject = stream;
         cameraStatus.textContent = "Camera live";
-        ocrOutput.textContent = "Camera enabled. Point it at GH 160 to unlock your personalized reveal.";
         startScanning();
       } catch (err) {
         console.error(err);
         cameraStatus.textContent = "Camera unavailable";
-        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Skip → Just show me.";
         fallbackMode = true;
         scanRing.classList.remove("active");
+        startFallbackReveal();
       }
     }
 
@@ -1532,164 +1473,11 @@ Griffin Hall 160
       found = false;
       stopScanning();
       stopCamera();
-      clearDetectedOverlay();
       pathOverlay.classList.add("hidden");
-      fallbackStage.style.display = "grid";
+      fallbackStage.style.display = "none";
       scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
-      ocrOutput.textContent = "Launching your personalized reveal without camera access.";
-      onTargetFound("camera skipped");
-    }
-
-    function find160WordBox(words) {
-      if (!Array.isArray(words)) return null;
-
-      let best = null;
-
-      for (const w of words) {
-        const raw = String(w.text || "").trim();
-        const cleaned = raw.replace(/\s+/g, "");
-        const normalized = cleaned
-          .replace(/[|Il]/g, "1")
-          .replace(/[oO]/g, "0")
-          .replace(/[^0-9]/g, "");
-
-        if (normalized === "160" || normalized === "16" || normalized === "60") {
-          const bbox = w.bbox || {};
-          const x0 = Number(bbox.x0 ?? 0);
-          const y0 = Number(bbox.y0 ?? 0);
-          const x1 = Number(bbox.x1 ?? 0);
-          const y1 = Number(bbox.y1 ?? 0);
-          const width = Math.max(0, x1 - x0);
-          const height = Math.max(0, y1 - y0);
-          const area = width * height;
-
-          if (!best || area > best.area) {
-            best = { x0, y0, x1, y1, width, height, area, raw };
-          }
-        }
-      }
-
-      return best;
-    }
-
-    function setDetectedOverlay(box, cropMeta) {
-      lastDetected160Box = { ...box, cropMeta };
-      lastDetectedAt = performance.now();
-    }
-
-    function clearDetectedOverlay() {
-      lastDetected160Box = null;
-      lastDetectedAt = 0;
-    }
-
-    function startOverlayLoop() {
-      function draw() {
-        drawDetectedOverlay();
-        overlayAnimationId = requestAnimationFrame(draw);
-      }
-      draw();
-    }
-
-    function drawDetectedOverlay() {
-      const w = overlayCanvas.clientWidth;
-      const h = overlayCanvas.clientHeight;
-      overlayCtx.clearRect(0, 0, w, h);
-
-      if (!lastDetected160Box || !video.videoWidth || !video.videoHeight) return;
-
-      const age = performance.now() - lastDetectedAt;
-      if (age > 2200) {
-        clearDetectedOverlay();
-        return;
-      }
-
-      const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 180);
-      const alpha = Math.max(0, 1 - age / 2200);
-
-      const { x0, y0, x1, y1, cropMeta } = lastDetected160Box;
-      const { cropX, cropY, cropW, cropH } = cropMeta;
-
-      const vidW = video.videoWidth;
-      const vidH = video.videoHeight;
-
-      const sx0 = cropX + x0;
-      const sy0 = cropY + y0;
-      const sx1 = cropX + x1;
-      const sy1 = cropY + y1;
-
-      const dx0 = (sx0 / vidW) * w;
-      const dy0 = (sy0 / vidH) * h;
-      const dx1 = (sx1 / vidW) * w;
-      const dy1 = (sy1 / vidH) * h;
-
-      let boxW = dx1 - dx0;
-      let boxH = dy1 - dy0;
-
-      if (boxW <= 0 || boxH <= 0) return;
-
-      const padX = Math.max(10, boxW * 0.18);
-      const padY = Math.max(10, boxH * 0.35);
-
-      const x = dx0 - padX;
-      const y = dy0 - padY;
-      const width = boxW + padX * 2;
-      const height = boxH + padY * 2;
-      const radius = 16;
-
-      overlayCtx.save();
-      overlayCtx.globalAlpha = alpha;
-
-      overlayCtx.shadowColor = `rgba(255, 199, 44, ${0.85 * alpha})`;
-      overlayCtx.shadowBlur = 24 + pulse * 12;
-      overlayCtx.strokeStyle = `rgba(255, 199, 44, ${0.95})`;
-      overlayCtx.lineWidth = 3;
-      roundRect(overlayCtx, x, y, width, height, radius);
-      overlayCtx.stroke();
-
-      overlayCtx.shadowBlur = 0;
-      overlayCtx.strokeStyle = `rgba(102, 242, 173, ${0.95})`;
-      overlayCtx.lineWidth = 2;
-
-      const corner = Math.min(22, Math.max(12, Math.min(width, height) * 0.18));
-      drawCornerBrackets(overlayCtx, x, y, width, height, corner);
-
-      overlayCtx.fillStyle = `rgba(0,0,0,${0.58 * alpha})`;
-      roundRect(overlayCtx, x, y - 42, 84, 34, 12);
-      overlayCtx.fill();
-
-      overlayCtx.shadowColor = `rgba(255,199,44,${0.9 * alpha})`;
-      overlayCtx.shadowBlur = 14;
-      overlayCtx.fillStyle = `rgba(255, 199, 44, 1)`;
-      overlayCtx.font = "900 20px Inter, system-ui, sans-serif";
-      overlayCtx.textAlign = "center";
-      overlayCtx.textBaseline = "middle";
-      overlayCtx.fillText("160", x + 42, y - 25);
-
-      overlayCtx.restore();
-    }
-
-    function roundRect(ctx, x, y, width, height, radius) {
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.lineTo(x + width - radius, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-      ctx.lineTo(x + width, y + height - radius);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-      ctx.lineTo(x + radius, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-      ctx.lineTo(x, y + radius);
-      ctx.quadraticCurveTo(x, y, x + radius, y);
-      ctx.closePath();
-    }
-
-    function drawCornerBrackets(ctx, x, y, w, h, c) {
-      ctx.beginPath();
-      ctx.moveTo(x, y + c); ctx.lineTo(x, y); ctx.lineTo(x + c, y);
-      ctx.moveTo(x + w - c, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + c);
-      ctx.moveTo(x + w, y + h - c); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w - c, y + h);
-      ctx.moveTo(x + c, y + h); ctx.lineTo(x, y + h); ctx.lineTo(x, y + h - c);
-      ctx.stroke();
+      runCinematicSequence(false);
     }
 
     async function runOCRScan() {
@@ -1706,29 +1494,20 @@ Griffin Hall 160
         const cropX = (vw - cropW) / 2;
         const cropY = (vh - cropH) / 2;
 
-        ocrCanvas.width = Math.floor(cropW * CONFIG.ocrScale);
-        ocrCanvas.height = Math.floor(cropH * CONFIG.ocrScale);
+        canvas.width = Math.floor(cropW * CONFIG.ocrScale);
+        canvas.height = Math.floor(cropH * CONFIG.ocrScale);
 
-        ocrCtx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, ocrCanvas.width, ocrCanvas.height);
+        ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
 
-        const result = await Tesseract.recognize(ocrCanvas, "eng", { logger: () => {} });
+        const result = await Tesseract.recognize(canvas, "eng", { logger: () => {} });
         const text = result.data.text || "";
         const cleaned = normalizeText(text);
-
-        ocrOutput.textContent = cleaned || "Scanning... no readable room sign found yet.";
-
-        const words = result.data.words || [];
-        const box160 = find160WordBox(words);
-        if (box160) {
-          setDetectedOverlay(box160, { cropX, cropY, cropW, cropH });
-        }
 
         if (matchesTarget(cleaned)) {
           onTargetFound(cleaned);
         }
       } catch (err) {
         console.error(err);
-        ocrOutput.textContent = "Scan error. Replay and try again, or skip straight to the reveal.";
       } finally {
         ocrBusy = false;
       }
@@ -1841,6 +1620,43 @@ Griffin Hall 160
       }, 1800);
     }
 
+    function showCinematic(kicker, title, sub) {
+      cinematicKicker.textContent = kicker;
+      cinematicTitle.textContent = title;
+      cinematicSub.textContent = sub;
+      cinematicOverlay.classList.add("active");
+    }
+
+    function hideCinematic() {
+      cinematicOverlay.classList.remove("active");
+    }
+
+    function runCinematicSequence(fromDemo = false) {
+      revealCard.classList.remove("active");
+      fallbackStage.style.display = "none";
+      scanRing.classList.add("active");
+
+      showCinematic("NKU AI Literacy", "Scanning GH 160", fromDemo
+        ? "Demo mode is building a cleaner screen-recorded reveal."
+        : "Hold steady while the experience checks the room number.");
+
+      setTimeout(() => {
+        cinematicTitle.textContent = "Analyzing";
+        cinematicSub.textContent = "Looking for the match.";
+      }, 1200);
+
+      setTimeout(() => {
+        cinematicTitle.textContent = "Match Found";
+        cinematicSub.textContent = "Launching your personalized reveal.";
+        scanRing.classList.add("found");
+      }, 2400);
+
+      setTimeout(() => {
+        hideCinematic();
+        onTargetFound(fromDemo ? "demo mode" : "camera skipped");
+      }, 3200);
+    }
+
     function onTargetFound(matchText) {
       if (found) return;
 
@@ -1848,9 +1664,7 @@ Griffin Hall 160
       stopScanning();
       revealCard.classList.add("active");
       scanRing.classList.add("found");
-      ocrOutput.textContent = fallbackMode
-        ? "DIRECT LAUNCH MODE:\nShowing your personalized reveal without camera access."
-        : `MATCH FOUND:\n${matchText}`;
+      fallbackStage.style.display = "none";
 
       triggerConfetti();
 
@@ -1881,14 +1695,18 @@ Griffin Hall 160
       stopScanning();
       stopCamera();
       stopSpeech();
-      clearDetectedOverlay();
-      revealCard.classList.remove("active");
+
       scanRing.classList.remove("found", "active");
+      revealCard.classList.remove("active");
       cameraStatus.textContent = "Camera optional";
-      ocrOutput.textContent = "Choose a path, then scan GH 160 with your camera or skip to reveal.";
       fallbackStage.style.display = "grid";
       pathOverlay.classList.remove("hidden");
       hideFinalScreen();
+      hideCinematic();
+
+      if (CONFIG.demoMode) {
+        setTimeout(runDemoMode, 350);
+      }
     }
 
     async function sharePage() {
@@ -1913,22 +1731,39 @@ Griffin Hall 160
       }
     }
 
+    function applyDemoModeUi() {
+      pathOverlay.classList.add("hidden");
+      fallbackStage.style.display = "none";
+      actionGrid.classList.add("demo-hide");
+      stickyCta.classList.add("demo-hide");
+      cameraStatus.textContent = "Demo mode";
+      scanRing.classList.remove("found");
+      scanRing.classList.add("active");
+    }
+
+    function runDemoMode() {
+      found = false;
+      fallbackMode = true;
+      stopScanning();
+      stopCamera();
+      stopSpeech();
+      hideFinalScreen();
+      revealCard.classList.remove("active");
+      updatePersona("business");
+      applyDemoModeUi();
+      runCinematicSequence(true);
+    }
+
     pathCards.forEach(card => {
       card.addEventListener("click", () => {
         pathCards.forEach(c => c.classList.remove("active"));
         card.classList.add("active");
         updatePersona(card.dataset.path);
-        ocrOutput.textContent = "Path selected. Scan GH 160 with your camera to unlock the full reveal, or skip straight to it.";
       });
     });
 
     enableCameraBtn.addEventListener("click", startCameraExperience);
     skipRevealBtn.addEventListener("click", startFallbackReveal);
-
-    hideOverlayBtn.addEventListener("click", () => {
-      pathOverlay.classList.add("hidden");
-      ocrOutput.textContent = "You can keep browsing, or replay later to scan GH 160 and trigger the reveal.";
-    });
 
     voiceBtn.addEventListener("click", () => {
       voiceEnabled = !voiceEnabled;
@@ -1950,6 +1785,12 @@ Griffin Hall 160
     stickyShareBtn.addEventListener("click", sharePage);
     stickyShareMirrorBtn.addEventListener("click", sharePage);
 
+    window.addEventListener("load", () => {
+      if (CONFIG.demoMode) {
+        runDemoMode();
+      }
+    });
+
     window.addEventListener("beforeunload", () => {
       stopScanning();
       stopCamera();
@@ -1957,7 +1798,6 @@ Griffin Hall 160
       if (countdownTimer) clearInterval(countdownTimer);
       if (majorRotationTimer) clearInterval(majorRotationTimer);
       if (finalTimer) clearTimeout(finalTimer);
-      if (overlayAnimationId) cancelAnimationFrame(overlayAnimationId);
     });
   </script>
 </body>
