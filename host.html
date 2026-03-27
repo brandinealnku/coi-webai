@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdCode Host</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --nku-gold: #f7b718;
+      --nku-black: #111111;
+      --bg1: #0f1021;
+      --bg2: #1b1d3a;
+      --panel: rgba(255,255,255,.08);
+      --border: rgba(255,255,255,.18);
+      --text: #f8f8fb;
+      --muted: #c5c7d3;
+      --good: #37d67a;
+      --danger: #ff6b6b;
+      --shadow: 0 18px 48px rgba(0,0,0,.28);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(247,183,24,.16), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(255,102,196,.14), transparent 22%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      padding: 22px;
+    }
+
+    .shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .sidebar { padding: 22px; }
+    .stage { padding: 22px; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .brand-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--nku-gold), #ffd86e);
+      color: var(--nku-black);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .brand p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 700;
+      font-size: .92rem;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: .97rem;
+      outline: none;
+    }
+    .field textarea { min-height: 88px; resize: vertical; }
+
+    .small-note {
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+    button, .fake-btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: transform .18s ease, opacity .18s ease, filter .18s ease;
+    }
+    button:hover { transform: translateY(-1px); filter: brightness(1.03); }
+    button.primary { background: linear-gradient(135deg, var(--nku-gold), #ffd86e); color: var(--nku-black); }
+    button.secondary { background: rgba(255,255,255,.1); color: var(--text); border: 1px solid rgba(255,255,255,.14); }
+    button.danger { background: rgba(255,107,107,.14); color: #ffd0d0; border: 1px solid rgba(255,107,107,.25); }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      font-weight: 700;
+      margin: 4px 0 16px;
+    }
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--danger);
+      box-shadow: 0 0 0 6px rgba(255,107,107,.14);
+    }
+    .dot.live { background: var(--good); box-shadow: 0 0 0 6px rgba(55,214,122,.14); }
+
+    .join-card {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      margin-bottom: 18px;
+      align-items: center;
+    }
+    #qrcode {
+      width: 160px;
+      height: 160px;
+      background: white;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+    }
+    .join-url {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .join-url code {
+      display: block;
+      word-break: break-all;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: #fff7d6;
+      flex: 1 1 320px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.11);
+    }
+    .stat .label { color: var(--muted); font-size: .85rem; margin-bottom: 6px; }
+    .stat .value { font-size: 1.8rem; font-weight: 800; }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .preview-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    .subtle {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .phone-wall {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+    .phone {
+      aspect-ratio: 9 / 16;
+      border-radius: 28px;
+      border: 2px solid rgba(255,255,255,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.04));
+      position: relative;
+      overflow: hidden;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .phone::before {
+      content: '';
+      width: 42%; height: 18px;
+      background: rgba(255,255,255,.12);
+      border-radius: 0 0 16px 16px;
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+    }
+    .phone-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255,255,255,.82);
+      font-size: .78rem;
+      margin-top: 12px;
+    }
+    .phone-slot {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 12px;
+    }
+    .tile-big {
+      font-weight: 900;
+      line-height: .95;
+      font-size: clamp(2rem, 5vw, 4rem);
+      letter-spacing: -.03em;
+      text-shadow: 0 8px 22px rgba(0,0,0,.24);
+    }
+    .tile-small {
+      font-size: .9rem;
+      color: rgba(255,255,255,.85);
+      margin-top: 10px;
+      line-height: 1.35;
+    }
+    .phone-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .8rem;
+      color: rgba(255,255,255,.72);
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: .85rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 680px) {
+      body { padding: 14px; }
+      .join-card { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="panel sidebar">
+      <div class="brand">
+        <div class="brand-badge">CC</div>
+        <div>
+          <h1>CrowdCode Host</h1>
+          <p>Synchronized multi-phone reveal experience</p>
+        </div>
+      </div>
+
+      <div class="status-pill">
+        <span id="statusDot" class="dot"></span>
+        <span id="statusText">Connecting…</span>
+      </div>
+
+      <div class="field">
+        <label for="sessionName">Session title</label>
+        <input id="sessionName" value="AI Literacy Day Reveal" />
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="layoutType">Reveal type</label>
+          <select id="layoutType">
+            <option value="message" selected>Message / words</option>
+            <option value="countdown">Numbers / countdown tiles</option>
+            <option value="cta">Call to action</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="countdownSeconds">Countdown seconds</label>
+          <input id="countdownSeconds" type="number" min="3" max="30" value="8" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="tileInput">Tiles to distribute</label>
+        <textarea id="tileInput">AI|LITERACY|STARTS|HERE</textarea>
+        <div class="small-note">Use the pipe symbol <strong>|</strong> to separate each phone tile. Example: AI|AT|NKU or 3|2|1|GO</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="finalHeadline">Final headline</label>
+          <input id="finalHeadline" value="INF 125: AI Literacy" />
+        </div>
+        <div class="field">
+          <label for="finalSubhead">Final subhead</label>
+          <input id="finalSubhead" value="Scan to explore. Register for Fall 2026." />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="ctaUrl">CTA link for finale / selfie share</label>
+        <input id="ctaUrl" value="https://www.nku.edu/" />
+      </div>
+
+      <div class="button-row">
+        <button class="primary" id="saveBtn">Save setup</button>
+        <button class="secondary" id="openLobbyBtn">Open lobby</button>
+        <button class="secondary" id="startCountdownBtn">Start countdown</button>
+        <button class="secondary" id="revealBtn">Final reveal</button>
+        <button class="secondary" id="selfieBtn">Selfie moment</button>
+        <button class="danger" id="resetBtn">Reset session</button>
+      </div>
+
+      <div class="join-card">
+        <div id="qrcode"></div>
+        <div>
+          <h3 style="margin:0 0 8px;">Audience join link</h3>
+          <div class="subtle">Have guests scan the QR code or open the link below. Each device auto-claims an open tile.</div>
+          <div class="join-url">
+            <code id="joinUrlText">Preparing link…</code>
+            <button class="secondary" id="copyLinkBtn">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        Best results: open the host on a laptop/tablet and let the audience join on phones. You can film the moment as the countdown syncs across devices and then trigger the final reveal for a share-worthy crowd reaction.
+      </div>
+    </section>
+
+    <section class="panel stage">
+      <div class="stats">
+        <div class="stat"><div class="label">Connected phones</div><div class="value" id="connectedCount">0</div></div>
+        <div class="stat"><div class="label">Configured tiles</div><div class="value" id="tileCount">0</div></div>
+        <div class="stat"><div class="label">Current phase</div><div class="value" id="phaseText" style="font-size:1.2rem;">LOBBY</div></div>
+        <div class="stat"><div class="label">Countdown</div><div class="value" id="countdownDisplay">—</div></div>
+      </div>
+
+      <div class="preview-header">
+        <div>
+          <h2>Audience phone wall preview</h2>
+          <div class="subtle">Live preview of what each connected device should be showing.</div>
+        </div>
+        <div class="subtle" id="sessionCodeLabel">Session: —</div>
+      </div>
+
+      <div id="phoneWall" class="phone-wall"></div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+    import {
+      getDatabase,
+      ref,
+      set,
+      update,
+      get,
+      onValue,
+      onDisconnect,
+      serverTimestamp,
+      remove,
+      push
+    } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+
+    // -----------------------------
+    // 1) ADD YOUR FIREBASE CONFIG
+    // -----------------------------
+    const firebaseConfig = {
+      apiKey: 'REPLACE_ME',
+      authDomain: 'REPLACE_ME.firebaseapp.com',
+      databaseURL: 'https://REPLACE_ME-default-rtdb.firebaseio.com',
+      projectId: 'REPLACE_ME',
+      storageBucket: 'REPLACE_ME.appspot.com',
+      messagingSenderId: 'REPLACE_ME',
+      appId: 'REPLACE_ME'
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const els = {
+      sessionName: document.getElementById('sessionName'),
+      layoutType: document.getElementById('layoutType'),
+      countdownSeconds: document.getElementById('countdownSeconds'),
+      tileInput: document.getElementById('tileInput'),
+      finalHeadline: document.getElementById('finalHeadline'),
+      finalSubhead: document.getElementById('finalSubhead'),
+      ctaUrl: document.getElementById('ctaUrl'),
+      saveBtn: document.getElementById('saveBtn'),
+      openLobbyBtn: document.getElementById('openLobbyBtn'),
+      startCountdownBtn: document.getElementById('startCountdownBtn'),
+      revealBtn: document.getElementById('revealBtn'),
+      selfieBtn: document.getElementById('selfieBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      copyLinkBtn: document.getElementById('copyLinkBtn'),
+      qrcode: document.getElementById('qrcode'),
+      joinUrlText: document.getElementById('joinUrlText'),
+      connectedCount: document.getElementById('connectedCount'),
+      tileCount: document.getElementById('tileCount'),
+      phaseText: document.getElementById('phaseText'),
+      countdownDisplay: document.getElementById('countdownDisplay'),
+      phoneWall: document.getElementById('phoneWall'),
+      statusDot: document.getElementById('statusDot'),
+      statusText: document.getElementById('statusText'),
+      sessionCodeLabel: document.getElementById('sessionCodeLabel')
+    };
+
+    const url = new URL(window.location.href);
+    let sessionId = url.searchParams.get('session');
+    if (!sessionId) {
+      sessionId = crypto.randomUUID().slice(0, 8).toUpperCase();
+      url.searchParams.set('session', sessionId);
+      window.history.replaceState({}, '', url);
+    }
+
+    const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
+    const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
+    const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
+
+    const state = {
+      session: null,
+      participants: {},
+      countdownTimer: null
+    };
+
+    els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
+
+    function escapeHtml(str = '') {
+      return str.replace(/[&<>"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[s]));
+    }
+
+    function parseTiles() {
+      return els.tileInput.value
+        .split('|')
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function buildJoinUrl() {
+      const audienceUrl = new URL('./audience.html', window.location.href);
+      audienceUrl.searchParams.set('session', sessionId);
+      return audienceUrl.toString();
+    }
+
+    async function renderQR() {
+      const joinUrl = buildJoinUrl();
+      els.joinUrlText.textContent = joinUrl;
+      els.qrcode.innerHTML = '';
+      await QRCode.toCanvas(joinUrl, { width: 136, margin: 1 }, (err, canvas) => {
+        if (!err) els.qrcode.appendChild(canvas);
+      });
+    }
+
+    function sessionPayload(overrides = {}) {
+      const tiles = parseTiles();
+      return {
+        sessionName: els.sessionName.value.trim() || 'CrowdCode Session',
+        layoutType: els.layoutType.value,
+        countdownSeconds: Number(els.countdownSeconds.value) || 8,
+        tiles,
+        finalHeadline: els.finalHeadline.value.trim() || 'Final Reveal',
+        finalSubhead: els.finalSubhead.value.trim() || 'Thanks for joining',
+        ctaUrl: els.ctaUrl.value.trim() || '',
+        phase: 'lobby',
+        countdownStartAt: null,
+        countdownTargetAt: null,
+        updatedAt: Date.now(),
+        ...overrides
+      };
+    }
+
+    async function ensureSession() {
+      const snap = await get(sessionRef);
+      if (!snap.exists()) {
+        await set(sessionRef, sessionPayload());
+      }
+      await set(hostPresenceRef, { online: true, updatedAt: serverTimestamp() });
+      onDisconnect(hostPresenceRef).remove();
+    }
+
+    async function saveSetup(extra = {}) {
+      const currentPhase = state.session?.phase || 'lobby';
+      await update(sessionRef, sessionPayload({ phase: currentPhase, ...extra }));
+    }
+
+    async function openLobby() {
+      await saveSetup({ phase: 'lobby', countdownStartAt: null, countdownTargetAt: null });
+    }
+
+    async function startCountdown() {
+      const seconds = Number(els.countdownSeconds.value) || 8;
+      const startAt = Date.now() + 1500;
+      const targetAt = startAt + seconds * 1000;
+      await saveSetup({ phase: 'countdown', countdownStartAt: startAt, countdownTargetAt: targetAt });
+    }
+
+    async function finalReveal() {
+      await saveSetup({ phase: 'reveal', countdownStartAt: null, countdownTargetAt: null });
+    }
+
+    async function selfieMoment() {
+      await saveSetup({ phase: 'selfie', countdownStartAt: null, countdownTargetAt: null });
+    }
+
+    async function resetSession() {
+      if (state.countdownTimer) clearInterval(state.countdownTimer);
+      await remove(participantsRef);
+      await set(sessionRef, sessionPayload({ phase: 'lobby', countdownStartAt: null, countdownTargetAt: null }));
+    }
+
+    function getAssignedTile(index) {
+      const tiles = state.session?.tiles || [];
+      if (!tiles.length) return 'JOIN';
+      return tiles[index] ?? `+${index + 1}`;
+    }
+
+    function renderPhoneWall() {
+      const participants = Object.entries(state.participants || {}).sort((a, b) => (a[1]?.joinedAt || 0) - (b[1]?.joinedAt || 0));
+      els.connectedCount.textContent = participants.length;
+      els.tileCount.textContent = (state.session?.tiles || []).length;
+      const phase = (state.session?.phase || 'lobby').toUpperCase();
+      els.phaseText.textContent = phase;
+
+      if (!participants.length) {
+        els.phoneWall.innerHTML = `
+          <div class="phone" style="min-height:280px; grid-column: 1 / -1; aspect-ratio:auto;">
+            <div class="phone-slot">
+              <div>
+                <div class="tile-big">Scan to Join</div>
+                <div class="tile-small">Audience phones will appear here once they connect to the session.</div>
+              </div>
+            </div>
+          </div>`;
+        return;
+      }
+
+      els.phoneWall.innerHTML = participants.map(([id, p], idx) => {
+        const tile = p.tileText || getAssignedTile(p.tileIndex ?? idx);
+        const label = p.nickname || `Phone ${idx + 1}`;
+        const ready = p.ready ? 'Ready' : 'Connecting';
+        return `
+          <div class="phone">
+            <div class="phone-top">
+              <span>${escapeHtml(label)}</span>
+              <span>${escapeHtml(ready)}</span>
+            </div>
+            <div class="phone-slot">
+              <div>
+                <div class="tile-big">${escapeHtml(tile)}</div>
+                <div class="tile-small">${escapeHtml(state.session?.sessionName || 'CrowdCode')}</div>
+              </div>
+            </div>
+            <div class="phone-bottom">
+              <span>#${(p.tileIndex ?? idx) + 1}</span>
+              <span>${escapeHtml(state.session?.phase || 'lobby')}</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function syncCountdownDisplay() {
+      if (state.countdownTimer) clearInterval(state.countdownTimer);
+      const phase = state.session?.phase;
+      if (phase !== 'countdown' || !state.session?.countdownTargetAt) {
+        els.countdownDisplay.textContent = '—';
+        return;
+      }
+      const tick = () => {
+        const remaining = Math.max(0, Math.ceil((state.session.countdownTargetAt - Date.now()) / 1000));
+        els.countdownDisplay.textContent = remaining;
+        if (remaining <= 0) {
+          clearInterval(state.countdownTimer);
+          setTimeout(() => {
+            finalReveal().catch(console.error);
+          }, 800);
+        }
+      };
+      tick();
+      state.countdownTimer = setInterval(tick, 250);
+    }
+
+    onValue(sessionRef, (snap) => {
+      const data = snap.val();
+      if (!data) return;
+      state.session = data;
+      els.statusDot.classList.add('live');
+      els.statusText.textContent = 'Live session connected';
+      els.sessionName.value = data.sessionName || '';
+      els.layoutType.value = data.layoutType || 'message';
+      els.countdownSeconds.value = data.countdownSeconds || 8;
+      els.tileInput.value = (data.tiles || []).join('|');
+      els.finalHeadline.value = data.finalHeadline || '';
+      els.finalSubhead.value = data.finalSubhead || '';
+      els.ctaUrl.value = data.ctaUrl || '';
+      renderPhoneWall();
+      syncCountdownDisplay();
+    }, (error) => {
+      console.error(error);
+      els.statusDot.classList.remove('live');
+      els.statusText.textContent = 'Connection problem';
+    });
+
+    onValue(participantsRef, (snap) => {
+      state.participants = snap.val() || {};
+      renderPhoneWall();
+    });
+
+    els.saveBtn.addEventListener('click', () => saveSetup().catch(console.error));
+    els.openLobbyBtn.addEventListener('click', () => openLobby().catch(console.error));
+    els.startCountdownBtn.addEventListener('click', () => startCountdown().catch(console.error));
+    els.revealBtn.addEventListener('click', () => finalReveal().catch(console.error));
+    els.selfieBtn.addEventListener('click', () => selfieMoment().catch(console.error));
+    els.resetBtn.addEventListener('click', () => resetSession().catch(console.error));
+    els.copyLinkBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(buildJoinUrl());
+        els.copyLinkBtn.textContent = 'Copied';
+        setTimeout(() => els.copyLinkBtn.textContent = 'Copy', 1600);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    await ensureSession();
+    await renderQR();
+  </script>
+</body>
+</html>
