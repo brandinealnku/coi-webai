@@ -134,6 +134,11 @@
       border:1px solid var(--border);
     }
 
+    .btn-wide-mobile{
+      min-width:220px;
+      white-space:nowrap;
+    }
+
     .hero{
       padding:18px 0 14px;
     }
@@ -223,12 +228,24 @@
       border:1px solid rgba(255,255,255,.08);
     }
 
-    video{
+    video,
+    .overlay-canvas{
+      position:absolute;
+      inset:0;
       width:100%;
       height:100%;
-      object-fit:cover;
       display:block;
+    }
+
+    video{
+      object-fit:cover;
       background:#000;
+      z-index:0;
+    }
+
+    .overlay-canvas{
+      z-index:2;
+      pointer-events:none;
     }
 
     .fallback-stage{
@@ -903,6 +920,11 @@
       .stage{
         min-height:600px;
       }
+
+      .btn-wide-mobile{
+        width:100%;
+        min-width:0;
+      }
     }
 
     @media (min-width:900px){
@@ -964,6 +986,7 @@
         <div class="panel stage-panel">
           <div class="stage">
             <video id="video" autoplay playsinline muted></video>
+            <canvas id="overlayCanvas" class="overlay-canvas"></canvas>
 
             <div class="fallback-stage" id="fallbackStage">
               <div>
@@ -1000,7 +1023,7 @@
                   <button class="btn btn-primary" id="enableCameraBtn" type="button">
                     📷 Scan GH 160 to Unlock
                   </button>
-                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">
+                  <button class="btn btn-secondary btn-wide-mobile" id="skipRevealBtn" type="button">
                     Skip → Just show me
                   </button>
                 </div>
@@ -1291,8 +1314,11 @@ Griffin Hall 160
     };
 
     const video = document.getElementById("video");
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const overlayCanvas = document.getElementById("overlayCanvas");
+    const overlayCtx = overlayCanvas.getContext("2d");
+
+    const ocrCanvas = document.createElement("canvas");
+    const ocrCtx = ocrCanvas.getContext("2d", { willReadFrequently: true });
 
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
@@ -1344,11 +1370,17 @@ Griffin Hall 160
     let voicesReady = false;
     let speechCancelled = false;
 
+    let lastDetected160Box = null;
+    let overlayAnimationId = null;
+    let lastDetectedAt = 0;
+
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
     updatePersona("business");
     startMajorRotation();
     startCountdown();
+    resizeOverlayCanvas();
+    startOverlayLoop();
 
     if ("speechSynthesis" in window) {
       window.speechSynthesis.getVoices();
@@ -1356,6 +1388,8 @@ Griffin Hall 160
         voicesReady = true;
       };
     }
+
+    window.addEventListener("resize", resizeOverlayCanvas);
 
     function renderDates() {
       datesList.innerHTML = "";
@@ -1370,6 +1404,14 @@ Griffin Hall 160
       });
     }
 
+    function resizeOverlayCanvas() {
+      const rect = overlayCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      overlayCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      overlayCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
     function toTitleCase(str) {
       return str.replace(/\b\w/g, c => c.toUpperCase());
     }
@@ -1377,7 +1419,8 @@ Griffin Hall 160
     function normalizeText(text) {
       return text
         .toLowerCase()
-        .replace(/[|]/g, "l")
+        .replace(/[|]/g, "1")
+        .replace(/[oO]/g, "0")
         .replace(/[^a-z0-9\s]/g, " ")
         .replace(/\s+/g, " ")
         .trim();
@@ -1443,6 +1486,8 @@ Griffin Hall 160
 
       stopCamera();
       stopScanning();
+      clearDetectedOverlay();
+
       found = false;
       fallbackMode = false;
       revealCard.classList.remove("active");
@@ -1487,12 +1532,164 @@ Griffin Hall 160
       found = false;
       stopScanning();
       stopCamera();
+      clearDetectedOverlay();
       pathOverlay.classList.add("hidden");
       fallbackStage.style.display = "grid";
       scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
       ocrOutput.textContent = "Launching your personalized reveal without camera access.";
       onTargetFound("camera skipped");
+    }
+
+    function find160WordBox(words) {
+      if (!Array.isArray(words)) return null;
+
+      let best = null;
+
+      for (const w of words) {
+        const raw = String(w.text || "").trim();
+        const cleaned = raw.replace(/\s+/g, "");
+        const normalized = cleaned
+          .replace(/[|Il]/g, "1")
+          .replace(/[oO]/g, "0")
+          .replace(/[^0-9]/g, "");
+
+        if (normalized === "160" || normalized === "16" || normalized === "60") {
+          const bbox = w.bbox || {};
+          const x0 = Number(bbox.x0 ?? 0);
+          const y0 = Number(bbox.y0 ?? 0);
+          const x1 = Number(bbox.x1 ?? 0);
+          const y1 = Number(bbox.y1 ?? 0);
+          const width = Math.max(0, x1 - x0);
+          const height = Math.max(0, y1 - y0);
+          const area = width * height;
+
+          if (!best || area > best.area) {
+            best = { x0, y0, x1, y1, width, height, area, raw };
+          }
+        }
+      }
+
+      return best;
+    }
+
+    function setDetectedOverlay(box, cropMeta) {
+      lastDetected160Box = { ...box, cropMeta };
+      lastDetectedAt = performance.now();
+    }
+
+    function clearDetectedOverlay() {
+      lastDetected160Box = null;
+      lastDetectedAt = 0;
+    }
+
+    function startOverlayLoop() {
+      function draw() {
+        drawDetectedOverlay();
+        overlayAnimationId = requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function drawDetectedOverlay() {
+      const w = overlayCanvas.clientWidth;
+      const h = overlayCanvas.clientHeight;
+      overlayCtx.clearRect(0, 0, w, h);
+
+      if (!lastDetected160Box || !video.videoWidth || !video.videoHeight) return;
+
+      const age = performance.now() - lastDetectedAt;
+      if (age > 2200) {
+        clearDetectedOverlay();
+        return;
+      }
+
+      const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 180);
+      const alpha = Math.max(0, 1 - age / 2200);
+
+      const { x0, y0, x1, y1, cropMeta } = lastDetected160Box;
+      const { cropX, cropY, cropW, cropH } = cropMeta;
+
+      const vidW = video.videoWidth;
+      const vidH = video.videoHeight;
+
+      const sx0 = cropX + x0;
+      const sy0 = cropY + y0;
+      const sx1 = cropX + x1;
+      const sy1 = cropY + y1;
+
+      const dx0 = (sx0 / vidW) * w;
+      const dy0 = (sy0 / vidH) * h;
+      const dx1 = (sx1 / vidW) * w;
+      const dy1 = (sy1 / vidH) * h;
+
+      let boxW = dx1 - dx0;
+      let boxH = dy1 - dy0;
+
+      if (boxW <= 0 || boxH <= 0) return;
+
+      const padX = Math.max(10, boxW * 0.18);
+      const padY = Math.max(10, boxH * 0.35);
+
+      const x = dx0 - padX;
+      const y = dy0 - padY;
+      const width = boxW + padX * 2;
+      const height = boxH + padY * 2;
+      const radius = 16;
+
+      overlayCtx.save();
+      overlayCtx.globalAlpha = alpha;
+
+      overlayCtx.shadowColor = `rgba(255, 199, 44, ${0.85 * alpha})`;
+      overlayCtx.shadowBlur = 24 + pulse * 12;
+      overlayCtx.strokeStyle = `rgba(255, 199, 44, ${0.95})`;
+      overlayCtx.lineWidth = 3;
+      roundRect(overlayCtx, x, y, width, height, radius);
+      overlayCtx.stroke();
+
+      overlayCtx.shadowBlur = 0;
+      overlayCtx.strokeStyle = `rgba(102, 242, 173, ${0.95})`;
+      overlayCtx.lineWidth = 2;
+
+      const corner = Math.min(22, Math.max(12, Math.min(width, height) * 0.18));
+      drawCornerBrackets(overlayCtx, x, y, width, height, corner);
+
+      overlayCtx.fillStyle = `rgba(0,0,0,${0.58 * alpha})`;
+      roundRect(overlayCtx, x, y - 42, 84, 34, 12);
+      overlayCtx.fill();
+
+      overlayCtx.shadowColor = `rgba(255,199,44,${0.9 * alpha})`;
+      overlayCtx.shadowBlur = 14;
+      overlayCtx.fillStyle = `rgba(255, 199, 44, 1)`;
+      overlayCtx.font = "900 20px Inter, system-ui, sans-serif";
+      overlayCtx.textAlign = "center";
+      overlayCtx.textBaseline = "middle";
+      overlayCtx.fillText("160", x + 42, y - 25);
+
+      overlayCtx.restore();
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    function drawCornerBrackets(ctx, x, y, w, h, c) {
+      ctx.beginPath();
+      ctx.moveTo(x, y + c); ctx.lineTo(x, y); ctx.lineTo(x + c, y);
+      ctx.moveTo(x + w - c, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + c);
+      ctx.moveTo(x + w, y + h - c); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w - c, y + h);
+      ctx.moveTo(x + c, y + h); ctx.lineTo(x, y + h); ctx.lineTo(x, y + h - c);
+      ctx.stroke();
     }
 
     async function runOCRScan() {
@@ -1509,16 +1706,22 @@ Griffin Hall 160
         const cropX = (vw - cropW) / 2;
         const cropY = (vh - cropH) / 2;
 
-        canvas.width = Math.floor(cropW * CONFIG.ocrScale);
-        canvas.height = Math.floor(cropH * CONFIG.ocrScale);
+        ocrCanvas.width = Math.floor(cropW * CONFIG.ocrScale);
+        ocrCanvas.height = Math.floor(cropH * CONFIG.ocrScale);
 
-        ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
+        ocrCtx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, ocrCanvas.width, ocrCanvas.height);
 
-        const result = await Tesseract.recognize(canvas, "eng", { logger: () => {} });
+        const result = await Tesseract.recognize(ocrCanvas, "eng", { logger: () => {} });
         const text = result.data.text || "";
         const cleaned = normalizeText(text);
 
         ocrOutput.textContent = cleaned || "Scanning... no readable room sign found yet.";
+
+        const words = result.data.words || [];
+        const box160 = find160WordBox(words);
+        if (box160) {
+          setDetectedOverlay(box160, { cropX, cropY, cropW, cropH });
+        }
 
         if (matchesTarget(cleaned)) {
           onTargetFound(cleaned);
@@ -1678,8 +1881,9 @@ Griffin Hall 160
       stopScanning();
       stopCamera();
       stopSpeech();
-      scanRing.classList.remove("found", "active");
+      clearDetectedOverlay();
       revealCard.classList.remove("active");
+      scanRing.classList.remove("found", "active");
       cameraStatus.textContent = "Camera optional";
       ocrOutput.textContent = "Choose a path, then scan GH 160 with your camera or skip to reveal.";
       fallbackStage.style.display = "grid";
@@ -1753,6 +1957,7 @@ Griffin Hall 160
       if (countdownTimer) clearInterval(countdownTimer);
       if (majorRotationTimer) clearInterval(majorRotationTimer);
       if (finalTimer) clearTimeout(finalTimer);
+      if (overlayAnimationId) cancelAnimationFrame(overlayAnimationId);
     });
   </script>
 </body>
