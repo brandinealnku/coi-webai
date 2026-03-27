@@ -238,6 +238,40 @@
       background:#000;
     }
 
+    #overlayCanvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:5;
+    }
+
+    .detect-badge{
+      position:absolute;
+      left:50%;
+      top:18%;
+      transform:translateX(-50%);
+      z-index:6;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(0,0,0,.68);
+      border:1px solid rgba(102,242,173,.55);
+      color:#66f2ad;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:.82rem;
+      backdrop-filter:blur(10px);
+      opacity:0;
+      transition:.25s ease;
+      box-shadow:0 0 18px rgba(102,242,173,.18);
+    }
+
+    .detect-badge.active{
+      opacity:1;
+    }
+
     .fallback-stage{
       position:absolute;
       inset:0;
@@ -960,6 +994,8 @@
         <div class="panel stage-panel">
           <div class="stage" id="stage">
             <video id="video" autoplay playsinline muted></video>
+            <canvas id="overlayCanvas" aria-hidden="true"></canvas>
+            <div class="detect-badge" id="detectBadge">Detected: 160</div>
 
             <div class="fallback-stage" id="fallbackStage">
               <div>
@@ -1180,7 +1216,6 @@ Griffin Hall 160
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     const CONFIG = {
-      demoMode: false,
       targetRoomText: "griffin hall 160",
       alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
       startDateISO: "2026-08-24T10:50:00-04:00",
@@ -1292,6 +1327,10 @@ Griffin Hall 160
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
+    const overlayCanvas = document.getElementById("overlayCanvas");
+    const overlayCtx = overlayCanvas.getContext("2d");
+    const detectBadge = document.getElementById("detectBadge");
+
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
     const pathOverlay = document.getElementById("pathOverlay");
@@ -1344,23 +1383,19 @@ Griffin Hall 160
     let fallbackMode = true;
     let selectedPath = "business";
     let voiceEnabled = false;
-    let voicesReady = false;
     let speechCancelled = false;
     let speechUnlocked = false;
     let isRecordDemoRunning = false;
+    let overlayPulseFrame = null;
+    let overlayCurrentBox = null;
+    let overlayCurrentText = null;
+    let overlayPulse = 0;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
     updatePersona("business");
     startMajorRotation();
     startCountdown();
-
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        voicesReady = true;
-      };
-    }
 
     function renderDates() {
       datesList.innerHTML = "";
@@ -1443,6 +1478,165 @@ Griffin Hall 160
       countdownTimer = setInterval(updateCountdown, 1000);
     }
 
+    function resizeOverlayCanvas() {
+      const rect = video.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      overlayCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      overlayCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      overlayCanvas.style.width = rect.width + "px";
+      overlayCanvas.style.height = rect.height + "px";
+      overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      if (overlayCurrentText) {
+        drawTraceOverlay(overlayCurrentText, overlayCurrentBox, false);
+      }
+    }
+
+    function clearOverlay() {
+      const rect = video.getBoundingClientRect();
+      overlayCtx.clearRect(0, 0, rect.width, rect.height);
+      detectBadge.classList.remove("active");
+      overlayCurrentBox = null;
+      overlayCurrentText = null;
+      if (overlayPulseFrame) {
+        cancelAnimationFrame(overlayPulseFrame);
+        overlayPulseFrame = null;
+      }
+    }
+
+    function drawRoundedRect(ctxRef, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctxRef.beginPath();
+      ctxRef.moveTo(x + radius, y);
+      ctxRef.arcTo(x + w, y, x + w, y + h, radius);
+      ctxRef.arcTo(x + w, y + h, x, y + h, radius);
+      ctxRef.arcTo(x, y + h, x, y, radius);
+      ctxRef.arcTo(x, y, x + w, y, radius);
+      ctxRef.closePath();
+    }
+
+    function drawLockCorners(box, pulseBoost = 0) {
+      const { x, y, w, h } = box;
+      const extra = 8 + pulseBoost;
+      const corner = Math.max(14, Math.min(28, w * 0.18));
+
+      overlayCtx.save();
+      overlayCtx.strokeStyle = "rgba(102,242,173,0.95)";
+      overlayCtx.lineWidth = 3;
+      overlayCtx.shadowColor = "rgba(102,242,173,0.9)";
+      overlayCtx.shadowBlur = 14;
+
+      overlayCtx.beginPath();
+
+      overlayCtx.moveTo(x - extra, y - extra + corner);
+      overlayCtx.lineTo(x - extra, y - extra);
+      overlayCtx.lineTo(x - extra + corner, y - extra);
+
+      overlayCtx.moveTo(x + w + extra - corner, y - extra);
+      overlayCtx.lineTo(x + w + extra, y - extra);
+      overlayCtx.lineTo(x + w + extra, y - extra + corner);
+
+      overlayCtx.moveTo(x - extra, y + h + extra - corner);
+      overlayCtx.lineTo(x - extra, y + h + extra);
+      overlayCtx.lineTo(x - extra + corner, y + h + extra);
+
+      overlayCtx.moveTo(x + w + extra - corner, y + h + extra);
+      overlayCtx.lineTo(x + w + extra, y + h + extra);
+      overlayCtx.lineTo(x + w + extra, y + h + extra - corner);
+
+      overlayCtx.stroke();
+      overlayCtx.restore();
+    }
+
+    function drawTraceOverlay(text = "160", box = null, animate = true) {
+      overlayCurrentText = text;
+      overlayCurrentBox = box;
+
+      const rect = video.getBoundingClientRect();
+      const localPulse = Math.sin(overlayPulse) * 4 + 4;
+
+      overlayCtx.clearRect(0, 0, rect.width, rect.height);
+
+      let x = rect.width * 0.5;
+      let y = rect.height * 0.48;
+      let fontSize = Math.min(rect.width * 0.22, 120);
+
+      if (box) {
+        x = box.x + (box.w / 2);
+        y = box.y + (box.h / 2) + 8;
+        fontSize = Math.max(52, Math.min(box.w * 1.18, 138));
+      }
+
+      overlayCtx.save();
+      overlayCtx.textAlign = "center";
+      overlayCtx.textBaseline = "middle";
+      overlayCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
+
+      overlayCtx.lineWidth = 6;
+      overlayCtx.strokeStyle = "rgba(102,242,173,0.98)";
+      overlayCtx.shadowColor = "rgba(102,242,173,0.95)";
+      overlayCtx.shadowBlur = 20 + localPulse;
+      overlayCtx.strokeText(text, x, y);
+
+      overlayCtx.lineWidth = 2;
+      overlayCtx.strokeStyle = "rgba(255,255,255,0.98)";
+      overlayCtx.shadowBlur = 8;
+      overlayCtx.strokeText(text, x, y);
+
+      overlayCtx.fillStyle = "rgba(102,242,173,0.14)";
+      overlayCtx.fillText(text, x, y);
+
+      if (box) {
+        drawRoundedRect(overlayCtx, box.x - 8, box.y - 8, box.w + 16, box.h + 16, 16);
+        overlayCtx.strokeStyle = "rgba(102,242,173,0.9)";
+        overlayCtx.lineWidth = 2;
+        overlayCtx.shadowColor = "rgba(102,242,173,0.85)";
+        overlayCtx.shadowBlur = 14;
+        overlayCtx.stroke();
+
+        drawLockCorners(box, localPulse * 0.5);
+      }
+
+      overlayCtx.restore();
+      detectBadge.classList.add("active");
+
+      if (animate) {
+        if (overlayPulseFrame) cancelAnimationFrame(overlayPulseFrame);
+        const tick = () => {
+          if (!overlayCurrentText) return;
+          overlayPulse += 0.12;
+          drawTraceOverlay(overlayCurrentText, overlayCurrentBox, false);
+          overlayPulseFrame = requestAnimationFrame(tick);
+        };
+        overlayPulseFrame = requestAnimationFrame(tick);
+      }
+    }
+
+    function mapOcrBoxToVideoOverlay(wordBox, cropMeta) {
+      const rect = video.getBoundingClientRect();
+      const scaleX = rect.width / video.videoWidth;
+      const scaleY = rect.height / video.videoHeight;
+
+      return {
+        x: (cropMeta.cropX + wordBox.x0) * scaleX,
+        y: (cropMeta.cropY + wordBox.y0) * scaleY,
+        w: Math.max(20, (wordBox.x1 - wordBox.x0) * scaleX),
+        h: Math.max(20, (wordBox.y1 - wordBox.y0) * scaleY)
+      };
+    }
+
+    function find160WordBox(words, cropMeta) {
+      if (!Array.isArray(words)) return null;
+
+      const candidate = words.find(word => {
+        const txt = normalizeText(word.text || "");
+        return txt === "160" || txt.endsWith("160") || txt.includes("160");
+      });
+
+      if (!candidate || typeof candidate.x0 !== "number") return null;
+      return mapOcrBoxToVideoOverlay(candidate, cropMeta);
+    }
+
     async function startCameraExperience() {
       if (scanning || found) return;
 
@@ -1459,6 +1653,7 @@ Griffin Hall 160
       pathOverlay.classList.add("hidden");
       hideCinematic();
       hideFinalScreen();
+      clearOverlay();
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -1471,6 +1666,11 @@ Griffin Hall 160
         });
 
         video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          resizeOverlayCanvas();
+          clearOverlay();
+        };
+
         cameraStatus.textContent = "Camera live";
         ocrOutput.textContent = "Camera enabled. Point it at GH 160. The page will wait here until the room sign is detected.";
         startScanning();
@@ -1489,6 +1689,7 @@ Griffin Hall 160
         stream = null;
       }
       video.srcObject = null;
+      clearOverlay();
     }
 
     function startFallbackReveal() {
@@ -1532,12 +1733,27 @@ Griffin Hall 160
           ? `Scanning...\n${cleaned}`
           : "Scanning... point your camera more directly at GH 160.";
 
+        const cropMeta = { cropX, cropY, cropW, cropH };
+        const box160 = find160WordBox(result.data.words || [], cropMeta);
+
+        if (cleaned.includes("160")) {
+          drawTraceOverlay("160", box160, true);
+        } else {
+          clearOverlay();
+        }
+
         if (matchesTarget(cleaned)) {
+          if (box160) {
+            drawTraceOverlay("160", box160, true);
+          } else {
+            drawTraceOverlay("160", null, true);
+          }
           onTargetFound(cleaned);
         }
       } catch (err) {
         console.error(err);
         ocrOutput.textContent = "Scan error. Try steadier framing, brighter light, or use Skip to Reveal.";
+        clearOverlay();
       } finally {
         ocrBusy = false;
       }
@@ -1558,36 +1774,6 @@ Griffin Hall 160
       }
     }
 
-    function getBestVoice() {
-      if (!("speechSynthesis" in window)) return null;
-
-      const voices = window.speechSynthesis.getVoices() || [];
-      if (!voices.length) return null;
-
-      const preferredPatterns = [
-        /Google US English/i,
-        /Samantha/i,
-        /Eddy/i,
-        /Karen/i,
-        /Moira/i,
-        /Daniel/i,
-        /Natural/i,
-        /Enhanced/i
-      ];
-
-      for (const pattern of preferredPatterns) {
-        const match = voices.find(v => pattern.test(v.name));
-        if (match) return match;
-      }
-
-      return (
-        voices.find(v => v.lang === "en-US") ||
-        voices.find(v => /^en/i.test(v.lang)) ||
-        voices[0] ||
-        null
-      );
-    }
-
     async function unlockSpeech() {
       if (!("speechSynthesis" in window)) return false;
 
@@ -1599,9 +1785,6 @@ Griffin Hall 160
         utterance.rate = 1;
         utterance.pitch = 1;
         utterance.lang = "en-US";
-
-        const voice = getBestVoice();
-        if (voice) utterance.voice = voice;
 
         await new Promise((resolve) => {
           utterance.onend = resolve;
@@ -1623,6 +1806,17 @@ Griffin Hall 160
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
+    }
+
+    function getBestVoice() {
+      if (!("speechSynthesis" in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      return (
+        voices.find(v => v.lang === "en-US") ||
+        voices.find(v => /^en/i.test(v.lang)) ||
+        voices[0] ||
+        null
+      );
     }
 
     function speakLines(lines) {
@@ -1760,6 +1954,7 @@ Griffin Hall 160
       pathOverlay.classList.remove("hidden");
       hideFinalScreen();
       hideCinematic();
+      clearOverlay();
     }
 
     async function sharePage() {
@@ -1803,6 +1998,7 @@ Griffin Hall 160
       setTimeout(() => {
         cinematicTitle.textContent = "Match Found";
         cinematicSub.textContent = "Launching your personalized reveal.";
+        drawTraceOverlay("160", null, true);
       }, 1400);
 
       setTimeout(() => {
@@ -1861,10 +2057,13 @@ Griffin Hall 160
     stickyShareBtn.addEventListener("click", sharePage);
     stickyShareMirrorBtn.addEventListener("click", sharePage);
 
+    window.addEventListener("resize", resizeOverlayCanvas);
+
     window.addEventListener("beforeunload", () => {
       stopScanning();
       stopCamera();
       stopSpeech();
+      clearOverlay();
       if (countdownTimer) clearInterval(countdownTimer);
       if (majorRotationTimer) clearInterval(majorRotationTimer);
       if (finalTimer) clearTimeout(finalTimer);
