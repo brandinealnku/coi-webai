@@ -30,6 +30,7 @@
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
+
     body{
       margin:0;
       font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
@@ -133,6 +134,12 @@
       border:1px solid var(--border);
     }
 
+    .btn-ghost{
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      border:1px dashed rgba(255,255,255,.18);
+    }
+
     .hero{
       padding:18px 0 14px;
     }
@@ -166,7 +173,7 @@
 
     h1{
       margin:0;
-      font-size:clamp(2.3rem, 9vw, 5rem);
+      font-size:clamp(2.2rem, 8.5vw, 5rem);
       line-height:.9;
       letter-spacing:-.05em;
       text-transform:uppercase;
@@ -213,7 +220,7 @@
 
     .stage{
       position:relative;
-      min-height:640px;
+      min-height:660px;
       border-radius:22px;
       overflow:hidden;
       background:
@@ -256,7 +263,7 @@
     .fallback-stage p{
       margin:0 auto;
       color:var(--muted);
-      max-width:28ch;
+      max-width:30ch;
       line-height:1.45;
       font-size:1rem;
     }
@@ -267,9 +274,9 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      background:rgba(0,0,0,.55);
+      background:rgba(0,0,0,.56);
       backdrop-filter:blur(12px);
-      z-index:6;
+      z-index:8;
       padding:16px;
     }
 
@@ -279,7 +286,7 @@
 
     .path-overlay-content{
       width:100%;
-      max-width:460px;
+      max-width:480px;
       text-align:center;
     }
 
@@ -393,7 +400,7 @@
       height:2px;
       background:linear-gradient(90deg, transparent, var(--gold), transparent);
       filter:drop-shadow(0 0 7px rgba(255,199,44,.85));
-      animation:sweep 2.2s linear infinite;
+      animation:sweep 2.5s linear infinite;
     }
 
     .scan-ring.found{
@@ -403,14 +410,14 @@
 
     @keyframes sweep{
       0%{transform:translateY(0);opacity:.25}
-      50%{transform:translateY(42px);opacity:1}
-      100%{transform:translateY(86px);opacity:.25}
+      50%{transform:translateY(44px);opacity:1}
+      100%{transform:translateY(88px);opacity:.25}
     }
 
     .cinematic-overlay{
       position:absolute;
       inset:0;
-      z-index:10;
+      z-index:7;
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -453,7 +460,7 @@
       color:var(--muted);
       font-size:1rem;
       line-height:1.45;
-      max-width:26ch;
+      max-width:28ch;
     }
 
     .stage-bottom{
@@ -496,7 +503,7 @@
 
     .reveal-card h3{
       margin:0;
-      font-size:1.35rem;
+      font-size:1.3rem;
       line-height:1.02;
       letter-spacing:-.03em;
       text-transform:uppercase;
@@ -565,13 +572,34 @@
     }
 
     .debug-card{
-      display:none;
+      padding:11px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .debug-label{
+      color:var(--gold);
+      font-size:.66rem;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:900;
+      margin-bottom:5px;
+    }
+
+    .debug-text{
+      color:var(--soft);
+      font-size:.82rem;
+      line-height:1.38;
+      white-space:pre-wrap;
+      max-height:96px;
+      overflow:auto;
     }
 
     .action-grid{
       margin-top:10px;
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr 1fr 1fr;
       gap:8px;
     }
 
@@ -765,10 +793,6 @@
       padding:12px 14px;
     }
 
-    .demo-hide{
-      display:none !important;
-    }
-
     .confetti{
       position:fixed;
       inset:0;
@@ -869,7 +893,7 @@
       }
 
       .stage{
-        min-height:690px;
+        min-height:720px;
       }
 
       .sticky-cta{
@@ -918,7 +942,7 @@
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
             A welcoming AI course for students from <strong>every major</strong>.
-            Pick a path, unlock the reveal, and share a screen-recorded moment that feels made for LinkedIn.
+            Choose a path, then scan <strong>GH 160</strong> with your camera to unlock the personalized reveal.
           </p>
 
           <div class="hero-mini">
@@ -931,8 +955,8 @@
               Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160
             </div>
             <div class="mini-row">
-              <strong>Best for recording:</strong>
-              Turn on Demo Mode in the code, refresh, and screen record the automatic reveal
+              <strong>Recording tip:</strong>
+              Use <strong>Record Demo</strong> only when you want an auto-play version for LinkedIn. For live scanning, tap <strong>Scan GH 160</strong>.
             </div>
           </div>
         </div>
@@ -944,7 +968,7 @@
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>Choose a path, then scan GH 160 or use Demo Mode to create a cleaner screen-recorded moment.</p>
+                <p>Choose a path first, then scan GH 160 with your camera or skip straight to the reveal.</p>
               </div>
             </div>
 
@@ -952,9 +976,9 @@
               <div class="path-overlay-content">
                 <div class="overlay-title">Choose your path</div>
                 <div class="overlay-sub">
-                  This personalizes the reveal first.
+                  This personalizes the message first.
                   <br />
-                  <strong>For the cleanest mobile recording, use Demo Mode.</strong>
+                  <strong>Then tap Scan GH 160 and point your camera at the room sign.</strong>
                 </div>
 
                 <div class="path-grid-overlay">
@@ -976,7 +1000,7 @@
                 </div>
 
                 <div class="small-note">
-                  Camera mode is for live interaction. Demo Mode is better for recording a polished clip.
+                  Scan mode waits for your camera. It will not auto-jump unless you choose Record Demo.
                 </div>
               </div>
             </div>
@@ -991,9 +1015,9 @@
 
             <div class="cinematic-overlay" id="cinematicOverlay">
               <div class="cinematic-kicker" id="cinematicKicker">NKU AI Literacy</div>
-              <h2 class="cinematic-title" id="cinematicTitle">Scanning GH 160</h2>
+              <h2 class="cinematic-title" id="cinematicTitle">Match Found</h2>
               <div class="cinematic-sub" id="cinematicSub">
-                Hold for the reveal.
+                Launching your personalized reveal.
               </div>
             </div>
 
@@ -1033,7 +1057,8 @@
               </div>
 
               <div class="debug-card">
-                <div id="ocrOutput">Ready</div>
+                <div class="debug-label">Live preview</div>
+                <div class="debug-text" id="ocrOutput">Choose a path, then tap Scan GH 160. The camera will stay live until it sees the room number.</div>
               </div>
             </div>
           </div>
@@ -1041,6 +1066,7 @@
           <div class="action-grid" id="actionGrid">
             <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
             <button class="btn btn-secondary" id="sharePageBtn" type="button">Share Page</button>
+            <button class="btn btn-ghost" id="recordDemoBtn" type="button">Record Demo</button>
           </div>
         </div>
       </div>
@@ -1118,7 +1144,7 @@
     </section>
   </main>
 
-  <div class="sticky-cta" id="stickyCta">
+  <div class="sticky-cta">
     <a
       class="btn btn-primary"
       href="https://one.nku.edu/task/all/registerforclass"
@@ -1158,16 +1184,15 @@ Griffin Hall 160
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     const CONFIG = {
-      // TURN THIS ON FOR LINKEDIN / MOBILE SCREEN RECORDING
-      demoMode: true,
-
+      demoMode: false,
       targetRoomText: "griffin hall 160",
       alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
       startDateISO: "2026-08-24T10:50:00-04:00",
-      scanIntervalMs: 2600,
+      scanIntervalMs: 2200,
       ocrScale: 1,
-      autoShowFinalMs: 4500,
-
+      autoShowFinalMs: 9000,
+      cinematicRevealMs: 2200,
+      recordDemoDurationMs: 2800,
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1177,7 +1202,6 @@ Griffin Hall 160
         "Future analyst? AI will influence how people interpret and act on data.",
         "Future professional in any field? AI will touch your world too."
       ],
-
       personaContent: {
         business: {
           title: "AI literacy for business-minded students",
@@ -1253,7 +1277,6 @@ Griffin Hall 160
           ]
         }
       },
-
       importantDates: [
         { date: "March 26, 2026", event: "Priority Registration begins for current students" },
         { date: "April 13, 2026", event: "Open Registration begins" },
@@ -1273,16 +1296,17 @@ Griffin Hall 160
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-    const stage = document.getElementById("stage");
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
     const pathOverlay = document.getElementById("pathOverlay");
     const enableCameraBtn = document.getElementById("enableCameraBtn");
     const skipRevealBtn = document.getElementById("skipRevealBtn");
+    const recordDemoBtn = document.getElementById("recordDemoBtn");
     const pathCards = document.querySelectorAll(".path-card");
     const scanRing = document.getElementById("scanRing");
     const cameraStatus = document.getElementById("cameraStatus");
     const voiceStatus = document.getElementById("voiceStatus");
+    const ocrOutput = document.getElementById("ocrOutput");
     const revealCard = document.getElementById("revealCard");
     const revealTitle = document.getElementById("revealTitle");
     const revealText = document.getElementById("revealText");
@@ -1302,8 +1326,6 @@ Griffin Hall 160
     const sharePageBtn = document.getElementById("sharePageBtn");
     const stickyShareBtn = document.getElementById("stickyShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
-    const stickyCta = document.getElementById("stickyCta");
-    const actionGrid = document.getElementById("actionGrid");
 
     const cinematicOverlay = document.getElementById("cinematicOverlay");
     const cinematicKicker = document.getElementById("cinematicKicker");
@@ -1328,6 +1350,7 @@ Griffin Hall 160
     let voiceEnabled = false;
     let voicesReady = false;
     let speechCancelled = false;
+    let isRecordDemoRunning = false;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
@@ -1426,6 +1449,7 @@ Griffin Hall 160
     async function startCameraExperience() {
       if (scanning || found) return;
 
+      isRecordDemoRunning = false;
       stopCamera();
       stopScanning();
       found = false;
@@ -1437,6 +1461,7 @@ Griffin Hall 160
       fallbackStage.style.display = "none";
       pathOverlay.classList.add("hidden");
       hideCinematic();
+      hideFinalScreen();
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -1450,13 +1475,14 @@ Griffin Hall 160
 
         video.srcObject = stream;
         cameraStatus.textContent = "Camera live";
+        ocrOutput.textContent = "Camera enabled. Point it at GH 160. The page will wait here until the room sign is detected.";
         startScanning();
       } catch (err) {
         console.error(err);
         cameraStatus.textContent = "Camera unavailable";
+        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Skip to Reveal or Record Demo.";
         fallbackMode = true;
         scanRing.classList.remove("active");
-        startFallbackReveal();
       }
     }
 
@@ -1469,6 +1495,7 @@ Griffin Hall 160
     }
 
     function startFallbackReveal() {
+      isRecordDemoRunning = false;
       fallbackMode = true;
       found = false;
       stopScanning();
@@ -1477,11 +1504,12 @@ Griffin Hall 160
       fallbackStage.style.display = "none";
       scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
-      runCinematicSequence(false);
+      ocrOutput.textContent = "Launching your personalized reveal without camera scanning.";
+      showRevealSequence("camera skipped");
     }
 
     async function runOCRScan() {
-      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
+      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode || isRecordDemoRunning) return;
 
       ocrBusy = true;
 
@@ -1503,11 +1531,16 @@ Griffin Hall 160
         const text = result.data.text || "";
         const cleaned = normalizeText(text);
 
+        ocrOutput.textContent = cleaned
+          ? `Scanning...\n${cleaned}`
+          : "Scanning... point your camera more directly at GH 160.";
+
         if (matchesTarget(cleaned)) {
           onTargetFound(cleaned);
         }
       } catch (err) {
         console.error(err);
+        ocrOutput.textContent = "Scan error. Try steadier framing, brighter light, or use Skip to Reveal.";
       } finally {
         ocrBusy = false;
       }
@@ -1631,33 +1664,20 @@ Griffin Hall 160
       cinematicOverlay.classList.remove("active");
     }
 
-    function runCinematicSequence(fromDemo = false) {
-      revealCard.classList.remove("active");
-      fallbackStage.style.display = "none";
-      scanRing.classList.add("active");
-
-      showCinematic("NKU AI Literacy", "Scanning GH 160", fromDemo
-        ? "Demo mode is building a cleaner screen-recorded reveal."
-        : "Hold steady while the experience checks the room number.");
-
-      setTimeout(() => {
-        cinematicTitle.textContent = "Analyzing";
-        cinematicSub.textContent = "Looking for the match.";
-      }, 1200);
-
-      setTimeout(() => {
-        cinematicTitle.textContent = "Match Found";
-        cinematicSub.textContent = "Launching your personalized reveal.";
-        scanRing.classList.add("found");
-      }, 2400);
+    function showRevealSequence(matchText) {
+      showCinematic(
+        "NKU AI Literacy",
+        "Match Found",
+        "Launching your personalized reveal."
+      );
 
       setTimeout(() => {
         hideCinematic();
-        onTargetFound(fromDemo ? "demo mode" : "camera skipped");
-      }, 3200);
+        finishReveal(matchText);
+      }, CONFIG.cinematicRevealMs);
     }
 
-    function onTargetFound(matchText) {
+    function finishReveal(matchText) {
       if (found) return;
 
       found = true;
@@ -1665,6 +1685,8 @@ Griffin Hall 160
       revealCard.classList.add("active");
       scanRing.classList.add("found");
       fallbackStage.style.display = "none";
+
+      ocrOutput.textContent = `MATCH FOUND:\n${matchText}`;
 
       triggerConfetti();
 
@@ -1677,6 +1699,11 @@ Griffin Hall 160
 
       if (finalTimer) clearTimeout(finalTimer);
       finalTimer = setTimeout(showFinalScreen, CONFIG.autoShowFinalMs);
+    }
+
+    function onTargetFound(matchText) {
+      if (found) return;
+      showRevealSequence(matchText);
     }
 
     function showFinalScreen() {
@@ -1692,21 +1719,18 @@ Griffin Hall 160
     function resetExperience() {
       found = false;
       fallbackMode = true;
+      isRecordDemoRunning = false;
       stopScanning();
       stopCamera();
       stopSpeech();
-
       scanRing.classList.remove("found", "active");
       revealCard.classList.remove("active");
       cameraStatus.textContent = "Camera optional";
+      ocrOutput.textContent = "Choose a path, then tap Scan GH 160. The camera will stay live until it sees the room number.";
       fallbackStage.style.display = "grid";
       pathOverlay.classList.remove("hidden");
       hideFinalScreen();
       hideCinematic();
-
-      if (CONFIG.demoMode) {
-        setTimeout(runDemoMode, 350);
-      }
     }
 
     async function sharePage() {
@@ -1731,27 +1755,32 @@ Griffin Hall 160
       }
     }
 
-    function applyDemoModeUi() {
+    function startRecordDemo() {
+      resetExperience();
+      isRecordDemoRunning = true;
+      found = false;
       pathOverlay.classList.add("hidden");
       fallbackStage.style.display = "none";
-      actionGrid.classList.add("demo-hide");
-      stickyCta.classList.add("demo-hide");
-      cameraStatus.textContent = "Demo mode";
-      scanRing.classList.remove("found");
+      cameraStatus.textContent = "Record demo";
       scanRing.classList.add("active");
-    }
+      ocrOutput.textContent = "Recording demo mode. This auto-plays for screen capture.";
 
-    function runDemoMode() {
-      found = false;
-      fallbackMode = true;
-      stopScanning();
-      stopCamera();
-      stopSpeech();
-      hideFinalScreen();
-      revealCard.classList.remove("active");
-      updatePersona("business");
-      applyDemoModeUi();
-      runCinematicSequence(true);
+      showCinematic(
+        "NKU AI Literacy",
+        "Scanning GH 160",
+        "Demo mode is creating a cleaner screen-recorded reveal."
+      );
+
+      setTimeout(() => {
+        cinematicTitle.textContent = "Match Found";
+        cinematicSub.textContent = "Launching your personalized reveal.";
+      }, 1400);
+
+      setTimeout(() => {
+        hideCinematic();
+        finishReveal("demo mode");
+        isRecordDemoRunning = false;
+      }, CONFIG.recordDemoDurationMs);
     }
 
     pathCards.forEach(card => {
@@ -1759,11 +1788,13 @@ Griffin Hall 160
         pathCards.forEach(c => c.classList.remove("active"));
         card.classList.add("active");
         updatePersona(card.dataset.path);
+        ocrOutput.textContent = "Path selected. Tap Scan GH 160 when you're ready to use the live camera.";
       });
     });
 
     enableCameraBtn.addEventListener("click", startCameraExperience);
     skipRevealBtn.addEventListener("click", startFallbackReveal);
+    recordDemoBtn.addEventListener("click", startRecordDemo);
 
     voiceBtn.addEventListener("click", () => {
       voiceEnabled = !voiceEnabled;
@@ -1784,12 +1815,6 @@ Griffin Hall 160
     sharePageBtn.addEventListener("click", sharePage);
     stickyShareBtn.addEventListener("click", sharePage);
     stickyShareMirrorBtn.addEventListener("click", sharePage);
-
-    window.addEventListener("load", () => {
-      if (CONFIG.demoMode) {
-        runDemoMode();
-      }
-    });
 
     window.addEventListener("beforeunload", () => {
       stopScanning();
