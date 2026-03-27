@@ -954,10 +954,6 @@
               <strong>When + where:</strong>
               Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160
             </div>
-            <div class="mini-row">
-              <strong>Recording tip:</strong>
-              Use <strong>Record Demo</strong> only when you want an auto-play version for LinkedIn. For live scanning, tap <strong>Scan GH 160</strong>.
-            </div>
           </div>
         </div>
 
@@ -1350,6 +1346,7 @@ Griffin Hall 160
     let voiceEnabled = false;
     let voicesReady = false;
     let speechCancelled = false;
+    let speechUnlocked = false;
     let isRecordDemoRunning = false;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
@@ -1591,6 +1588,36 @@ Griffin Hall 160
       );
     }
 
+    async function unlockSpeech() {
+      if (!("speechSynthesis" in window)) return false;
+
+      try {
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(" ");
+        utterance.volume = 0;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.lang = "en-US";
+
+        const voice = getBestVoice();
+        if (voice) utterance.voice = voice;
+
+        await new Promise((resolve) => {
+          utterance.onend = resolve;
+          utterance.onerror = resolve;
+          window.speechSynthesis.speak(utterance);
+          setTimeout(resolve, 150);
+        });
+
+        speechUnlocked = true;
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
+
     function stopSpeech() {
       speechCancelled = true;
       if ("speechSynthesis" in window) {
@@ -1599,7 +1626,9 @@ Griffin Hall 160
     }
 
     function speakLines(lines) {
-      if (!voiceEnabled || !("speechSynthesis" in window) || !Array.isArray(lines) || !lines.length) return;
+      if (!voiceEnabled || !speechUnlocked || !("speechSynthesis" in window) || !Array.isArray(lines) || !lines.length) {
+        return;
+      }
 
       stopSpeech();
       speechCancelled = false;
@@ -1613,20 +1642,20 @@ Griffin Hall 160
         const utterance = new SpeechSynthesisUtterance(lines[index]);
         utterance.lang = "en-US";
         utterance.voice = voice;
-        utterance.rate = 1.02;
+        utterance.rate = 1.0;
         utterance.pitch = 1.0;
         utterance.volume = 1;
 
         utterance.onend = () => {
           if (speechCancelled) return;
           index += 1;
-          setTimeout(nextLine, 120);
+          setTimeout(nextLine, 180);
         };
 
         utterance.onerror = () => {
           if (speechCancelled) return;
           index += 1;
-          setTimeout(nextLine, 120);
+          setTimeout(nextLine, 180);
         };
 
         window.speechSynthesis.speak(utterance);
@@ -1796,18 +1825,34 @@ Griffin Hall 160
     skipRevealBtn.addEventListener("click", startFallbackReveal);
     recordDemoBtn.addEventListener("click", startRecordDemo);
 
-    voiceBtn.addEventListener("click", () => {
-      voiceEnabled = !voiceEnabled;
-      voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
-      voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
-
-      if (voiceEnabled && "speechSynthesis" in window && !voicesReady) {
-        window.speechSynthesis.getVoices();
-        voicesReady = true;
+    voiceBtn.addEventListener("click", async () => {
+      if (!("speechSynthesis" in window)) {
+        voiceStatus.textContent = "Voice unsupported";
+        voiceBtn.textContent = "Voice Unsupported";
+        ocrOutput.textContent = "Speech synthesis is not supported on this browser/device.";
+        return;
       }
 
       if (!voiceEnabled) {
+        voiceEnabled = true;
+        voiceStatus.textContent = "Voice on";
+        voiceBtn.textContent = "Disable Voice";
+
+        const unlocked = await unlockSpeech();
+
+        if (unlocked) {
+          ocrOutput.textContent = "Voice enabled. When the reveal triggers, spoken lines should play.";
+        } else {
+          speechUnlocked = false;
+          ocrOutput.textContent = "Voice was turned on, but this device/browser blocked speech unlock. Try tapping Enable Voice again.";
+        }
+      } else {
+        voiceEnabled = false;
+        speechUnlocked = false;
+        voiceStatus.textContent = "Voice off";
+        voiceBtn.textContent = "Enable Voice";
         stopSpeech();
+        ocrOutput.textContent = "Voice disabled.";
       }
     });
 
