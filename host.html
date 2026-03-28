@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,6 +80,17 @@
     .tile-small{font-size:.88rem;color:rgba(255,255,255,.85);margin-top:10px;line-height:1.35}
     @media (max-width:1100px){.shell{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:680px){body{padding:14px}.join-card,.grid-2,.grid-3{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+  
+    .capture-panel{margin-top:14px;padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}
+    .capture-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:start}
+    .camera-stage{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/10;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1)}
+    .camera-stage video,.camera-stage canvas,.camera-stage img{width:100%;height:100%;object-fit:cover;display:block}
+    .camera-badge{position:absolute;top:10px;left:10px;padding:8px 10px;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);font-size:.8rem;font-weight:700}
+    .capture-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .capture-preview{border-radius:16px;overflow:hidden;aspect-ratio:1/1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+    .capture-preview img{width:100%;height:100%;object-fit:cover;display:block}
+    @media (max-width: 900px){.capture-grid{grid-template-columns:1fr}}
+
   </style>
 </head>
 <body>
@@ -154,12 +164,65 @@
           <button class="secondary" id="regenerateArtworkBtn" type="button">Regenerate artwork preview</button>
           <button class="secondary" id="clearUploadBtn" type="button">Clear uploaded image</button>
         </div>
+        
+        <div class="capture-panel">
+          <div style="font-weight:800; margin-bottom:10px;">Live photo capture</div>
+          <div class="capture-grid">
+            <div>
+              <div class="camera-stage">
+                <video id="captureVideo" playsinline muted></video>
+                <img id="captureFallbackImage" alt="Captured preview" style="display:none;" />
+                <div class="camera-badge" id="captureStatusBadge">Camera idle</div>
+              </div>
+              <div class="capture-actions">
+                <button class="secondary" id="startCameraBtn" type="button">Start camera</button>
+                <button class="secondary" id="flipCameraBtn" type="button">Flip camera</button>
+                <button class="secondary" id="capturePhotoBtn" type="button">Capture photo</button>
+                <button class="secondary" id="useCapturedBtn" type="button">Use captured photo</button>
+                <button class="secondary" id="stopCameraBtn" type="button">Stop camera</button>
+              </div>
+            </div>
+            <div>
+              <div class="capture-preview"><img id="capturedPhotoPreview" alt="Captured photo preview" /></div>
+              <div id="captureHelp" class="small-note" style="margin-top:10px;">Use this when you want the room to become a fresh crowd selfie or event photo. Start the camera, capture a frame, then apply it as the mosaic artwork.</div>
+            </div>
+          </div>
+          <canvas id="captureCanvas" width="1600" height="1000" style="display:none;"></canvas>
+        </div>
+
         <div class="small-note">Generated mode creates artwork from your headline and subhead. Upload mode lets you turn a logo, flyer, or event photo into a room-sized mosaic. If more people join than cells, slices repeat.</div>
       </div>
 
       <div class="grid-2">
         <div class="field"><label for="finalHeadline">Final headline</label><input id="finalHeadline" value="INF 125: AI Literacy" /></div>
         <div class="field"><label for="finalSubhead">Final subhead</label><input id="finalSubhead" value="Scan to explore. Register for Fall 2026." /></div>
+      </div>
+
+      <div class="art-card">
+        <div style="font-weight:800; margin-bottom:10px;">Reveal choreography</div>
+        <div class="grid-3">
+          <div class="field"><label for="animationSeconds">Animation seconds</label><input id="animationSeconds" type="number" min="2" max="20" value="5" /></div>
+          <div class="field"><label for="animationStyle">Animation style</label><select id="animationStyle"><option value="pulse" selected>Pulse</option><option value="flash">Flash</option><option value="ripple">Ripple</option><option value="audio">Audio reactive (host MP3)</option></select></div>
+          <div class="field"><label for="animationToPhase">After animation, go to</label><select id="animationToPhase"><option value="reveal" selected>Final reveal</option><option value="selfie">Selfie moment</option><option value="lobby">Lobby</option></select></div>
+        </div>
+        <div class="button-row" style="margin-top:0; margin-bottom:8px;"><button class="secondary" id="animateBtn" type="button">Animate reveal</button></div>
+      </div>
+
+      <div class="art-card">
+        <div style="font-weight:800; margin-bottom:10px;">Audio-reactive MP3 reveal</div>
+        <div class="grid-2">
+          <div class="field"><label for="audioFile">Host MP3 upload</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/*" /><div id="audioStatus" class="small-note">Upload an MP3, then start the audio-reactive reveal. The host audio stays on your device; only the live intensity level is synced to phones.</div></div>
+          <div class="field"><label for="audioToPhase">When the track ends</label><select id="audioToPhase"><option value="reveal" selected>Final reveal</option><option value="selfie">Selfie moment</option><option value="lobby">Lobby</option></select><audio id="audioPlayer" controls preload="metadata"></audio><div class="reactive-meter"><span id="reactiveMeterFill"></span></div></div>
+        </div>
+        <div class="button-row" style="margin-top:0; margin-bottom:8px;">
+          <button class="secondary" id="startAudioReactiveBtn" type="button">Start MP3 reactive reveal</button>
+          <button class="secondary" id="stopAudioReactiveBtn" type="button">Stop MP3 reveal</button>
+        </div>
+        <div class="grid-3" style="margin-top:8px;">
+          <div class="field"><label for="audioFlashMode">Phone flash style</label><select id="audioFlashMode"><option value="off">Off</option><option value="soft" selected>Soft pulse flash</option><option value="medium">Medium flash</option><option value="strobe">Short strobe bursts</option></select></div>
+          <div class="field"><label for="audioFlashColor">Flash color</label><select id="audioFlashColor"><option value="white" selected>White</option><option value="gold">Gold</option><option value="pink">Pink</option><option value="cycle">NKU color cycle</option></select></div>
+          <div class="field"><label for="audioFlashHaptics">Extra effects</label><select id="audioFlashHaptics"><option value="off" selected>Visual only</option><option value="vibrate">Add light vibration</option></select><div class="small-note">Keep strong flashing brief. Use Soft for the safest default in live rooms.</div></div>
+        </div>
       </div>
 
       <div class="field"><label for="ctaUrl">CTA link for finale / selfie share</label><input id="ctaUrl" value="https://www.nku.edu/" /></div>
@@ -191,7 +254,7 @@
         <div class="stat"><div class="label">Connected phones</div><div class="value" id="connectedCount">0</div></div>
         <div class="stat"><div class="label">Configured slots</div><div class="value" id="tileCount">0</div></div>
         <div class="stat"><div class="label">Current phase</div><div class="value" id="phaseText" style="font-size:1.15rem;">LOBBY</div></div>
-        <div class="stat"><div class="label">Countdown</div><div class="value" id="countdownDisplay">—</div></div>
+        <div class="stat"><div class="label">Countdown / animation</div><div class="value" id="countdownDisplay">—</div></div>
       </div>
 
       <div class="preview-header"><div><h2>Live mosaic preview</h2><div class="subtle">Preview of the full-room artwork or word tiles.</div></div><div class="subtle" id="sessionCodeLabel">Session: —</div></div>
@@ -226,6 +289,19 @@
       sessionName: document.getElementById('sessionName'),
       layoutType: document.getElementById('layoutType'),
       countdownSeconds: document.getElementById('countdownSeconds'),
+      animationSeconds: document.getElementById('animationSeconds'),
+      animationStyle: document.getElementById('animationStyle'),
+      animationToPhase: document.getElementById('animationToPhase'),
+      audioFile: document.getElementById('audioFile'),
+      audioPlayer: document.getElementById('audioPlayer'),
+      audioStatus: document.getElementById('audioStatus'),
+      reactiveMeterFill: document.getElementById('reactiveMeterFill'),
+      audioToPhase: document.getElementById('audioToPhase'),
+      audioFlashMode: document.getElementById('audioFlashMode'),
+      audioFlashColor: document.getElementById('audioFlashColor'),
+      audioFlashHaptics: document.getElementById('audioFlashHaptics'),
+      startAudioReactiveBtn: document.getElementById('startAudioReactiveBtn'),
+      stopAudioReactiveBtn: document.getElementById('stopAudioReactiveBtn'),
       assignmentMode: document.getElementById('assignmentMode'),
       tileSourceMode: document.getElementById('tileSourceMode'),
       tileInput: document.getElementById('tileInput'),
@@ -241,6 +317,7 @@
       rebalanceBtn: document.getElementById('rebalanceBtn'),
       openLobbyBtn: document.getElementById('openLobbyBtn'),
       startCountdownBtn: document.getElementById('startCountdownBtn'),
+      animateBtn: document.getElementById('animateBtn'),
       revealBtn: document.getElementById('revealBtn'),
       selfieBtn: document.getElementById('selfieBtn'),
       resetBtn: document.getElementById('resetBtn'),
@@ -263,7 +340,18 @@
       mosaicImageUpload: document.getElementById('mosaicImageUpload'),
       mosaicUploadStatus: document.getElementById('mosaicUploadStatus'),
       regenerateArtworkBtn: document.getElementById('regenerateArtworkBtn'),
-      clearUploadBtn: document.getElementById('clearUploadBtn')
+      clearUploadBtn: document.getElementById('clearUploadBtn'),
+      captureVideo: document.getElementById('captureVideo'),
+      captureFallbackImage: document.getElementById('captureFallbackImage'),
+      captureStatusBadge: document.getElementById('captureStatusBadge'),
+      startCameraBtn: document.getElementById('startCameraBtn'),
+      flipCameraBtn: document.getElementById('flipCameraBtn'),
+      capturePhotoBtn: document.getElementById('capturePhotoBtn'),
+      useCapturedBtn: document.getElementById('useCapturedBtn'),
+      stopCameraBtn: document.getElementById('stopCameraBtn'),
+      capturedPhotoPreview: document.getElementById('capturedPhotoPreview'),
+      captureCanvas: document.getElementById('captureCanvas'),
+      captureHelp: document.getElementById('captureHelp')
     };
 
     const url = new URL(window.location.href);
@@ -277,7 +365,7 @@
     const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
     const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
     const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
-    const state = { session:null, participants:{}, countdownTimer:null, uploadedArtworkDataUrl:'', uploadedArtworkName:'' };
+    const state = { session:null, participants:{}, countdownTimer:null, uploadedArtworkDataUrl:'', uploadedArtworkName:'', cameraStream:null, facingMode:'environment', capturedPhotoDataUrl:'', audioObjectUrl:'', audioFileName:'', audioContext:null, audioAnalyser:null, audioSourceNode:null, audioMonitorTimer:null };
 
     els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
 
@@ -299,6 +387,103 @@
       await QRCode.toCanvas(joinUrl, { width:136, margin:1 }, (err, canvas) => { if (!err) els.qrcode.appendChild(canvas); });
     }
 
+    function setAudioStatus(message){
+      els.audioStatus.textContent = message;
+    }
+
+    function clearReactiveMeter(){
+      els.reactiveMeterFill.style.width = '0%';
+    }
+
+    function ensureAudioGraph(){
+      if (!els.audioPlayer.src) return false;
+      if (!state.audioContext) state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (!state.audioSourceNode){
+        state.audioSourceNode = state.audioContext.createMediaElementSource(els.audioPlayer);
+        state.audioAnalyser = state.audioContext.createAnalyser();
+        state.audioAnalyser.fftSize = 256;
+        state.audioSourceNode.connect(state.audioAnalyser);
+        state.audioAnalyser.connect(state.audioContext.destination);
+      }
+      return true;
+    }
+
+    async function stopAudioReactive(transition = true){
+      if (state.audioMonitorTimer){
+        clearInterval(state.audioMonitorTimer);
+        state.audioMonitorTimer = null;
+      }
+      clearReactiveMeter();
+      try { els.audioPlayer.pause(); } catch (e) {}
+      await update(sessionRef, {
+        phase: 'lobby',
+        animationStyle: state.session?.animationStyle === 'audio' ? 'audio' : (state.session?.animationStyle || 'pulse'),
+        audioReactive: null,
+        animationStartAt: null,
+        animationTargetAt: null,
+        updatedAt: Date.now()
+      });
+      if (transition){
+        const nextPhase = els.audioToPhase.value || state.session?.animationToPhase || 'reveal';
+        const action = nextPhase === 'selfie' ? selfieMoment : nextPhase === 'lobby' ? openLobby : finalReveal;
+        await action();
+      }
+      setAudioStatus('Audio reactive reveal stopped.');
+    }
+
+    async function startAudioReactiveReveal(){
+      if (!els.audioPlayer.src){
+        setAudioStatus('Upload an MP3 first.');
+        return;
+      }
+      if (!ensureAudioGraph()){
+        setAudioStatus('Unable to create audio analysis.');
+        return;
+      }
+      await state.audioContext.resume();
+      const startAt = Date.now() + 250;
+      await saveSetup({
+        phase:'animate',
+        countdownStartAt:null,
+        countdownTargetAt:null,
+        animationStartAt:startAt,
+        animationTargetAt:null,
+        animationStyle:'audio',
+        animationToPhase: els.audioToPhase.value || 'reveal',
+        audioReactive: {
+          enabled: true,
+          level: 0,
+          trackName: state.audioFileName || 'Host MP3',
+          startedAt: startAt,
+          ended: false
+        }
+      });
+      try { els.audioPlayer.currentTime = 0; } catch(e) {}
+      await els.audioPlayer.play();
+      setAudioStatus(`Playing ${state.audioFileName || 'host track'} and broadcasting live intensity to the crowd.`);
+      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer);
+      const bins = new Uint8Array(state.audioAnalyser.frequencyBinCount);
+      state.audioMonitorTimer = setInterval(async () => {
+        state.audioAnalyser.getByteFrequencyData(bins);
+        const avg = bins.reduce((sum, value) => sum + value, 0) / bins.length / 255;
+        const boosted = Math.max(0, Math.min(1, Math.pow(avg * 1.85, 0.9)));
+        els.reactiveMeterFill.style.width = `${Math.round(boosted * 100)}%`;
+        try {
+          await update(sessionRef, {
+            'audioReactive/enabled': true,
+            'audioReactive/level': boosted,
+            'audioReactive/trackName': state.audioFileName || 'Host MP3',
+            'audioReactive/positionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
+            'audioReactive/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+            'audioReactive/ended': false,
+            updatedAt: Date.now()
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }, 120);
+    }
+
     function updateUploadStatus(){
       const source = els.mosaicArtworkSource.value;
       if (state.uploadedArtworkDataUrl){
@@ -311,6 +496,89 @@
       } else {
         els.mosaicUploadStatus.textContent = 'No custom image loaded yet.';
       }
+    }
+
+
+    function setCaptureStatus(message){
+      els.captureStatusBadge.textContent = message;
+      els.captureHelp.textContent = message.includes('Captured')
+        ? 'Captured photo ready. Click Use captured photo to turn it into the mosaic artwork.'
+        : 'Use this when you want the room to become a fresh crowd selfie or event photo. Start the camera, capture a frame, then apply it as the mosaic artwork.';
+    }
+
+    async function stopCamera(){
+      if (state.cameraStream){
+        state.cameraStream.getTracks().forEach(track => track.stop());
+        state.cameraStream = null;
+      }
+      els.captureVideo.srcObject = null;
+      setCaptureStatus('Camera idle');
+    }
+
+    async function startCamera(){
+      try{
+        await stopCamera();
+        const constraints = {
+          audio: false,
+          video: {
+            facingMode: { ideal: state.facingMode },
+            width: { ideal: 1600 },
+            height: { ideal: 1000 }
+          }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        state.cameraStream = stream;
+        els.captureVideo.srcObject = stream;
+        els.captureFallbackImage.style.display = state.capturedPhotoDataUrl ? 'block' : 'none';
+        setCaptureStatus(state.facingMode === 'user' ? 'Front camera live' : 'Rear camera live');
+      } catch (error){
+        console.error(error);
+        setCaptureStatus('Camera access blocked or unavailable');
+      }
+    }
+
+    async function flipCamera(){
+      state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment';
+      await startCamera();
+    }
+
+    function capturePhoto(){
+      if (!state.cameraStream || !els.captureVideo.videoWidth){
+        setCaptureStatus('Start camera first');
+        return;
+      }
+      const canvas = els.captureCanvas;
+      const video = els.captureVideo;
+      canvas.width = video.videoWidth || 1600;
+      canvas.height = video.videoHeight || 1000;
+      const ctx = canvas.getContext('2d');
+      if (state.facingMode === 'user'){
+        ctx.save();
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      } else {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      }
+      state.capturedPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      els.capturedPhotoPreview.src = state.capturedPhotoDataUrl;
+      els.captureFallbackImage.src = state.capturedPhotoDataUrl;
+      els.captureFallbackImage.style.display = 'block';
+      setCaptureStatus('Captured photo ready');
+    }
+
+    function useCapturedPhoto(){
+      if (!state.capturedPhotoDataUrl){
+        setCaptureStatus('Capture a photo first');
+        return;
+      }
+      state.uploadedArtworkDataUrl = state.capturedPhotoDataUrl;
+      state.uploadedArtworkName = `live-capture-${new Date().toISOString().replace(/[:.]/g,'-')}.jpg`;
+      els.mosaicArtworkSource.value = 'upload';
+      updateUploadStatus();
+      renderMosaicPreview();
+      setCaptureStatus('Captured photo applied to mosaic');
     }
 
     function getCurrentArtworkDataUrl(){
@@ -428,6 +696,14 @@
         phase: 'lobby',
         countdownStartAt: null,
         countdownTargetAt: null,
+        animationStartAt: null,
+        animationTargetAt: null,
+        audioReactive: null,
+        flashConfig: {
+          mode: els.audioFlashMode.value || 'soft',
+          color: els.audioFlashColor.value || 'white',
+          haptics: els.audioFlashHaptics.value || 'off'
+        },
         updatedAt: Date.now(),
         ...overrides
       };
@@ -490,19 +766,35 @@
       await update(sessionRef, sessionPayload({ phase: currentPhase, ...extra }));
       await rebalanceParticipants();
     }
-    async function openLobby(){ await saveSetup({ phase:'lobby', countdownStartAt:null, countdownTargetAt:null }); }
+    async function openLobby(){ if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await saveSetup({ phase:'lobby', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
     async function startCountdown(){
       const seconds = Number(els.countdownSeconds.value) || 8;
       const startAt = Date.now() + 1500;
       const targetAt = startAt + seconds * 1000;
-      await saveSetup({ phase:'countdown', countdownStartAt:startAt, countdownTargetAt:targetAt });
+      await saveSetup({ phase:'countdown', countdownStartAt:startAt, countdownTargetAt:targetAt, animationStartAt:null, animationTargetAt:null });
     }
-    async function finalReveal(){ await saveSetup({ phase:'reveal', countdownStartAt:null, countdownTargetAt:null }); }
-    async function selfieMoment(){ await saveSetup({ phase:'selfie', countdownStartAt:null, countdownTargetAt:null }); }
+    async function animateReveal(){
+      const seconds = Number(els.animationSeconds.value) || 5;
+      const startAt = Date.now() + 600;
+      const targetAt = startAt + seconds * 1000;
+      await saveSetup({
+        phase:'animate',
+        countdownStartAt:null,
+        countdownTargetAt:null,
+        animationStartAt:startAt,
+        animationTargetAt:targetAt,
+        animationSeconds: seconds,
+        animationStyle: els.animationStyle.value || 'pulse',
+        animationToPhase: els.animationToPhase.value || 'reveal',
+        audioReactive: null
+      });
+    }
+    async function finalReveal(){ if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await saveSetup({ phase:'reveal', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
+    async function selfieMoment(){ if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await saveSetup({ phase:'selfie', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
     async function resetSession(){
       if (state.countdownTimer) clearInterval(state.countdownTimer);
       await remove(participantsRef);
-      await set(sessionRef, sessionPayload({ phase:'lobby', countdownStartAt:null, countdownTargetAt:null }));
+      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await set(sessionRef, sessionPayload({ phase:'lobby', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }));
     }
 
     function renderMosaicPreview(){
@@ -564,17 +856,47 @@
 
     function syncCountdownDisplay(){
       if (state.countdownTimer) clearInterval(state.countdownTimer);
-      if (state.session?.phase !== 'countdown' || !state.session?.countdownTargetAt){ els.countdownDisplay.textContent = '—'; return; }
-      const tick = () => {
-        const remaining = Math.max(0, Math.ceil((state.session.countdownTargetAt - Date.now()) / 1000));
-        els.countdownDisplay.textContent = remaining;
-        if (remaining <= 0){
-          clearInterval(state.countdownTimer);
-          setTimeout(() => finalReveal().catch(console.error), 800);
-        }
-      };
-      tick();
-      state.countdownTimer = setInterval(tick, 250);
+      const phase = state.session?.phase;
+      if (phase === 'countdown' && state.session?.countdownTargetAt){
+        const tick = () => {
+          const remaining = Math.max(0, Math.ceil((state.session.countdownTargetAt - Date.now()) / 1000));
+          els.countdownDisplay.textContent = remaining;
+          if (remaining <= 0){
+            clearInterval(state.countdownTimer);
+            setTimeout(() => finalReveal().catch(console.error), 800);
+          }
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 250);
+        return;
+      }
+      if (phase === 'animate' && state.session?.animationStyle === 'audio'){
+        const tick = () => {
+          const level = Math.round(((state.session?.audioReactive?.level || 0) * 100));
+          els.countdownDisplay.textContent = `♪ ${level}%`;
+          els.reactiveMeterFill.style.width = `${level}%`;
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 180);
+        return;
+      }
+      if (phase === 'animate' && state.session?.animationTargetAt){
+        const tick = () => {
+          const remaining = Math.max(0, Math.ceil((state.session.animationTargetAt - Date.now()) / 1000));
+          const styleLabel = String(state.session?.animationStyle || 'pulse').toUpperCase();
+          els.countdownDisplay.textContent = `${styleLabel} ${remaining}`;
+          if (remaining <= 0){
+            clearInterval(state.countdownTimer);
+            const nextPhase = state.session?.animationToPhase || 'reveal';
+            const action = nextPhase === 'selfie' ? selfieMoment : nextPhase === 'lobby' ? openLobby : finalReveal;
+            setTimeout(() => action().catch(console.error), 350);
+          }
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 200);
+        return;
+      }
+      els.countdownDisplay.textContent = '—';
     }
 
     onValue(sessionRef, snap => {
@@ -600,6 +922,12 @@
       els.finalHeadline.value = data.finalHeadline || '';
       els.finalSubhead.value = data.finalSubhead || '';
       els.ctaUrl.value = data.ctaUrl || '';
+      els.audioFlashMode.value = data.flashConfig?.mode || 'soft';
+      els.audioFlashColor.value = data.flashConfig?.color || 'white';
+      els.audioFlashHaptics.value = data.flashConfig?.haptics || 'off';
+      els.animationSeconds.value = data.animationSeconds || els.animationSeconds.value || 5;
+      els.animationStyle.value = data.animationStyle || els.animationStyle.value || 'pulse';
+      els.animationToPhase.value = data.animationToPhase || els.animationToPhase.value || 'reveal';
       updateUploadStatus();
       renderMosaicPreview();
       renderPhoneWall();
@@ -620,6 +948,7 @@
     els.rebalanceBtn.addEventListener('click', () => rebalanceParticipants().catch(console.error));
     els.openLobbyBtn.addEventListener('click', () => openLobby().catch(console.error));
     els.startCountdownBtn.addEventListener('click', () => startCountdown().catch(console.error));
+    els.animateBtn.addEventListener('click', () => animateReveal().catch(console.error));
     els.revealBtn.addEventListener('click', () => finalReveal().catch(console.error));
     els.selfieBtn.addEventListener('click', () => selfieMoment().catch(console.error));
     els.resetBtn.addEventListener('click', () => resetSession().catch(console.error));
@@ -655,6 +984,27 @@
       };
       reader.readAsDataURL(file);
     });
+
+
+    els.audioFile.addEventListener('change', event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
+      state.audioObjectUrl = URL.createObjectURL(file);
+      state.audioFileName = file.name;
+      els.audioPlayer.src = state.audioObjectUrl;
+      setAudioStatus(`${file.name} loaded. Ready for audio-reactive reveal.`);
+    });
+    els.startAudioReactiveBtn.addEventListener('click', () => startAudioReactiveReveal().catch(console.error));
+    els.stopAudioReactiveBtn.addEventListener('click', () => stopAudioReactive(false).catch(console.error));
+    els.audioPlayer.addEventListener('ended', () => stopAudioReactive(true).catch(console.error));
+
+    els.startCameraBtn.addEventListener('click', () => startCamera());
+    els.flipCameraBtn.addEventListener('click', () => flipCamera());
+    els.capturePhotoBtn.addEventListener('click', () => capturePhoto());
+    els.useCapturedBtn.addEventListener('click', () => useCapturedPhoto());
+    els.stopCameraBtn.addEventListener('click', () => stopCamera());
+    window.addEventListener('beforeunload', () => { if (state.cameraStream) state.cameraStream.getTracks().forEach(track => track.stop()); if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl); });
 
     await ensureSession();
     await renderQR();
