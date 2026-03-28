@@ -42,7 +42,7 @@
     .reveal-headline{font-size:clamp(2rem,11vw,4rem);line-height:.93;font-weight:900;letter-spacing:-.05em;text-shadow:0 14px 30px rgba(0,0,0,.26)}
     .reveal-subhead{font-size:clamp(1rem,4.8vw,1.25rem);color:rgba(255,255,255,.88);line-height:1.4;margin-top:12px}
     .selfie-wrap video,.selfie-wrap canvas{width:min(88vw,360px);aspect-ratio:9/16;object-fit:cover;border-radius:28px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 50px rgba(0,0,0,.34)}
-    .tiny{margin-top:14px;color:rgba(255,255,255,.68);font-size:.84rem;line-height:1.45}
+    .tiny{margin-top:14px;color:rgba(255,255,255,.68);font-size:.84rem;line-height:1.45}.audio-note{margin-top:10px;color:rgba(255,255,255,.82);font-size:.82rem;line-height:1.4}
     .hidden{display:none !important}
     .mosaic-slice{
       width:min(92vw,560px); max-width:560px; aspect-ratio:9/16; border-radius:28px;
@@ -69,7 +69,8 @@
       <h1 class="title">Join the reveal</h1>
       <p class="subtext">Your phone becomes part of a bigger shared moment. In mosaic mode, your screen shows one slice of a larger visual.</p>
       <div class="nickname-wrap"><input id="nicknameInput" maxlength="24" placeholder="Your name or group name" /></div>
-      <div class="actions"><button id="joinBtn" class="primary">Join session</button><button id="readyBtn" class="secondary hidden">I'm ready</button></div>
+      <div class="actions"><button id="joinBtn" class="primary">Join session</button><button id="readyBtn" class="secondary hidden">I'm ready</button><button id="enableSoundBtn" class="secondary">Enable synced sound</button></div>
+      <div id="audioNote" class="audio-note">Tap Enable synced sound once so this phone can play the host's MP3 through its speaker during the reveal.</div>
       <div class="tiny">Tip: turn brightness up and hold your phone in portrait mode for the reveal.</div>
     </div>
   </section>
@@ -112,6 +113,7 @@
     </div>
   </section>
 
+  <audio id="sharedAudio" playsinline preload="auto"></audio>
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
     import { getDatabase, ref, get, set, update, onValue, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
@@ -144,6 +146,9 @@
       nicknameInput: document.getElementById('nicknameInput'),
       joinBtn: document.getElementById('joinBtn'),
       readyBtn: document.getElementById('readyBtn'),
+      enableSoundBtn: document.getElementById('enableSoundBtn'),
+      audioNote: document.getElementById('audioNote'),
+      sharedAudio: document.getElementById('sharedAudio'),
       joinSessionLabel: document.getElementById('joinSessionLabel'),
       tileIndexLabel: document.getElementById('tileIndexLabel'),
       tileMain: document.getElementById('tileMain'),
@@ -170,7 +175,66 @@
     let participantId = localStorage.getItem(`crowdcode:${sessionId}:participantId`) || crypto.randomUUID().slice(0,12);
     localStorage.setItem(`crowdcode:${sessionId}:participantId`, participantId);
     const participantRef = ref(db, `crowdcode/sessions/${sessionId}/participants/${participantId}`);
-    const state = { session:null, participant:null, countdownTimer:null, stream:null, lastFlashAt:0, lastVibrateAt:0 };
+    const state = { session:null, participant:null, countdownTimer:null, stream:null, lastFlashAt:0, lastVibrateAt:0, audioUnlocked:false, loadedAudioDataUrl:'', audioSyncTimer:null };
+
+    function setAudioNote(message){
+      els.audioNote.textContent = message;
+    }
+
+    async function unlockAudio(){
+      state.audioUnlocked = true;
+      els.sharedAudio.muted = false;
+      try {
+        await els.sharedAudio.play();
+        els.sharedAudio.pause();
+        els.sharedAudio.currentTime = 0;
+      } catch (e) {}
+      setAudioNote('Synced sound enabled on this phone. When the host starts the MP3, this device will try to play it in time.');
+      els.enableSoundBtn.textContent = 'Sound enabled';
+    }
+
+    function stopSyncedAudio(){
+      if (state.audioSyncTimer){ clearInterval(state.audioSyncTimer); state.audioSyncTimer = null; }
+      try { els.sharedAudio.pause(); } catch(e) {}
+    }
+
+    async function syncSharedAudio(){
+      const audioCfg = state.session?.audioBroadcast;
+      if (!audioCfg?.enabled || audioCfg.mode !== 'sync' || !audioCfg.dataUrl){
+        stopSyncedAudio();
+        return;
+      }
+      if (state.loadedAudioDataUrl !== audioCfg.dataUrl){
+        state.loadedAudioDataUrl = audioCfg.dataUrl;
+        els.sharedAudio.src = audioCfg.dataUrl;
+        els.sharedAudio.load();
+      }
+      if (!state.audioUnlocked){
+        setAudioNote('The host is ready to broadcast audio. Tap Enable synced sound to let this phone play it.');
+        return;
+      }
+      const desiredMs = Math.max(0, Number(audioCfg.hostPositionMs || (Date.now() - (audioCfg.startedAt || Date.now()))));
+      const desiredSec = desiredMs / 1000;
+      const drift = Math.abs((els.sharedAudio.currentTime || 0) - desiredSec);
+      if (drift > 0.35 && Number.isFinite(desiredSec)) {
+        try { els.sharedAudio.currentTime = desiredSec; } catch(e) {}
+      }
+      if (audioCfg.playing){
+        try { await els.sharedAudio.play(); } catch (e) { setAudioNote('Tap Enable synced sound again if this phone stays silent.'); }
+      } else {
+        try { els.sharedAudio.pause(); } catch(e) {}
+      }
+      setAudioNote(`Now playing host track: ${audioCfg.trackName || 'MP3'}${audioCfg.durationMs ? ` • ${Math.max(0, Math.ceil((audioCfg.durationMs - desiredMs)/1000))}s left` : ''}`);
+      if (!state.audioSyncTimer){
+        state.audioSyncTimer = setInterval(() => {
+          const cfg = state.session?.audioBroadcast;
+          if (!cfg?.enabled || cfg.mode !== 'sync' || !cfg.playing) return;
+          const shouldBe = Math.max(0, Number(cfg.hostPositionMs || 0)) / 1000;
+          const driftInner = Math.abs((els.sharedAudio.currentTime || 0) - shouldBe);
+          if (driftInner > 0.45){ try { els.sharedAudio.currentTime = shouldBe; } catch(e) {} }
+        }, 500);
+      }
+    }
 
     function show(view){
       [els.joinView, els.tileView, els.countdownView, els.revealView, els.selfieView].forEach(v => v.classList.add('hidden'));
@@ -393,14 +457,14 @@
       const phase = state.session?.phase || 'lobby';
       updateTileView();
       if (state.countdownTimer && !['countdown','animate'].includes(phase)) clearInterval(state.countdownTimer);
-      if (phase === 'lobby'){ clearAudioReactiveLevel(); setAnimationState(false); show(state.participant ? els.tileView : els.joinView); }
-      if (phase === 'countdown'){ clearAudioReactiveLevel(); setAnimationState(false); show(els.countdownView); runCountdown(); }
-      if (phase === 'animate'){ show(els.tileView); runAnimatePhase(); }
-      if (phase === 'reveal'){ clearAudioReactiveLevel(); setAnimationState(false); show(els.revealView); }
-      if (phase === 'selfie'){ clearAudioReactiveLevel(); setAnimationState(false); show(els.selfieView); ensureSelfieCamera(); }
+      if (phase === 'lobby'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(state.participant ? els.tileView : els.joinView); }
+      if (phase === 'countdown'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(els.countdownView); runCountdown(); }
+      if (phase === 'animate'){ show(els.tileView); runAnimatePhase(); syncSharedAudio().catch(console.error); }
+      if (phase === 'reveal'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(els.revealView); }
+      if (phase === 'selfie'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(els.selfieView); ensureSelfieCamera(); }
     }
 
-    onValue(sessionRef, snap => { const data = snap.val(); if (!data) return; state.session = data; applyPhase(); });
+    onValue(sessionRef, snap => { const data = snap.val(); if (!data) return; state.session = data; applyPhase(); if ((state.session?.phase || 'lobby') === 'animate' && (state.session?.animationStyle === 'audio')) syncSharedAudio().catch(console.error); });
     onValue(participantRef, snap => {
       state.participant = snap.val();
       if (state.participant){
@@ -410,8 +474,9 @@
       updateTileView();
     });
 
-    els.joinBtn.addEventListener('click', () => joinSession().catch(console.error));
-    els.readyBtn.addEventListener('click', () => setReady().catch(console.error));
+    els.joinBtn.addEventListener('click', async () => { await unlockAudio(); joinSession().catch(console.error); });
+    els.readyBtn.addEventListener('click', async () => { await unlockAudio(); setReady().catch(console.error); });
+    els.enableSoundBtn.addEventListener('click', () => unlockAudio().catch(console.error));
     els.nicknameInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinSession().catch(console.error); });
 
     els.captureBtn.addEventListener('click', () => {
@@ -448,6 +513,8 @@
     });
 
     updateTileView();
+
+    window.addEventListener('beforeunload', () => { stopSyncedAudio(); });
   </script>
 </body>
 </html>
