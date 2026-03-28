@@ -211,8 +211,8 @@
       <div class="art-card">
         <div style="font-weight:800; margin-bottom:10px;">Audio-reactive MP3 reveal</div>
         <div class="grid-2">
-          <div class="field"><label for="audioFile">Host MP3 upload</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/*" /><div id="audioStatus" class="small-note">Upload an MP3, then start the audio-reactive reveal. The host audio stays on your device; only the live intensity level is synced to phones.</div></div>
-          <div class="field"><label for="audioToPhase">When the track ends</label><select id="audioToPhase"><option value="reveal" selected>Final reveal</option><option value="selfie">Selfie moment</option><option value="lobby">Lobby</option></select><audio id="audioPlayer" controls preload="metadata"></audio><div class="reactive-meter"><span id="reactiveMeterFill"></span></div></div>
+          <div class="field"><label for="audioFile">Host MP3 upload</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/*" /><div id="audioStatus" class="small-note">Upload a short MP3 clip, then start the audio-reactive reveal. This version can also push the uploaded clip to joined phones so their speakers play in sync. Keep clips short for fastest loading.</div></div>
+          <div class="field"><label for="audioToPhase">When the track ends</label><select id="audioToPhase"><option value="reveal" selected>Final reveal</option><option value="selfie">Selfie moment</option><option value="lobby">Lobby</option></select><audio id="audioPlayer" controls preload="metadata"></audio><div class="reactive-meter"><span id="reactiveMeterFill"></span></div></div><div class="field"><label for="audioBroadcastMode">Audience speaker mode</label><select id="audioBroadcastMode"><option value="visual" selected>Visual only</option><option value="sync">Play uploaded MP3 on audience speakers</option></select><div class="small-note">Speaker sync works best after each guest taps Join or I'm ready. Use short clips for fastest loading and tighter sync.</div></div>
         </div>
         <div class="button-row" style="margin-top:0; margin-bottom:8px;">
           <button class="secondary" id="startAudioReactiveBtn" type="button">Start MP3 reactive reveal</button>
@@ -297,6 +297,7 @@
       audioStatus: document.getElementById('audioStatus'),
       reactiveMeterFill: document.getElementById('reactiveMeterFill'),
       audioToPhase: document.getElementById('audioToPhase'),
+      audioBroadcastMode: document.getElementById('audioBroadcastMode'),
       audioFlashMode: document.getElementById('audioFlashMode'),
       audioFlashColor: document.getElementById('audioFlashColor'),
       audioFlashHaptics: document.getElementById('audioFlashHaptics'),
@@ -365,7 +366,7 @@
     const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
     const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
     const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
-    const state = { session:null, participants:{}, countdownTimer:null, uploadedArtworkDataUrl:'', uploadedArtworkName:'', cameraStream:null, facingMode:'environment', capturedPhotoDataUrl:'', audioObjectUrl:'', audioFileName:'', audioContext:null, audioAnalyser:null, audioSourceNode:null, audioMonitorTimer:null };
+    const state = { session:null, participants:{}, countdownTimer:null, uploadedArtworkDataUrl:'', uploadedArtworkName:'', cameraStream:null, facingMode:'environment', capturedPhotoDataUrl:'', audioObjectUrl:'', audioFileName:'', audioFileType:'audio/mpeg', audioDataUrl:'', audioContext:null, audioAnalyser:null, audioSourceNode:null, audioMonitorTimer:null };
 
     els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
 
@@ -419,6 +420,7 @@
         phase: 'lobby',
         animationStyle: state.session?.animationStyle === 'audio' ? 'audio' : (state.session?.animationStyle || 'pulse'),
         audioReactive: null,
+        audioBroadcast: null,
         animationStartAt: null,
         animationTargetAt: null,
         updatedAt: Date.now()
@@ -440,8 +442,13 @@
         setAudioStatus('Unable to create audio analysis.');
         return;
       }
+      const broadcastMode = els.audioBroadcastMode.value || 'visual';
+      if (broadcastMode === 'sync' && !state.audioDataUrl){
+        setAudioStatus('Wait for the uploaded MP3 to finish processing, then start again.');
+        return;
+      }
       await state.audioContext.resume();
-      const startAt = Date.now() + 250;
+      const startAt = Date.now() + 1200;
       await saveSetup({
         phase:'animate',
         countdownStartAt:null,
@@ -456,6 +463,23 @@
           trackName: state.audioFileName || 'Host MP3',
           startedAt: startAt,
           ended: false
+        },
+        audioBroadcast: broadcastMode === 'sync' ? {
+          enabled: true,
+          mode: 'sync',
+          trackName: state.audioFileName || 'Host MP3',
+          mimeType: state.audioFileType || 'audio/mpeg',
+          dataUrl: state.audioDataUrl,
+          startedAt: startAt,
+          durationMs: Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+          hostPositionMs: 0,
+          playing: true
+        } : {
+          enabled: false,
+          mode: 'visual',
+          trackName: state.audioFileName || 'Host MP3',
+          startedAt: startAt,
+          playing: false
         }
       });
       try { els.audioPlayer.currentTime = 0; } catch(e) {}
@@ -476,6 +500,9 @@
             'audioReactive/positionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
             'audioReactive/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
             'audioReactive/ended': false,
+            'audioBroadcast/hostPositionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
+            'audioBroadcast/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+            'audioBroadcast/playing': !els.audioPlayer.paused,
             updatedAt: Date.now()
           });
         } catch (error) {
@@ -986,14 +1013,26 @@
     });
 
 
-    els.audioFile.addEventListener('change', event => {
+    els.audioFile.addEventListener('change', async event => {
       const file = event.target.files?.[0];
       if (!file) return;
       if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
       state.audioObjectUrl = URL.createObjectURL(file);
       state.audioFileName = file.name;
+      state.audioFileType = file.type || 'audio/mpeg';
+      state.audioDataUrl = '';
       els.audioPlayer.src = state.audioObjectUrl;
-      setAudioStatus(`${file.name} loaded. Ready for audio-reactive reveal.`);
+      setAudioStatus(`${file.name} loaded. Preparing broadcast copy for audience devices…`);
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.audioDataUrl = String(reader.result || '');
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+        setAudioStatus(`${file.name} loaded (${sizeMb} MB). Ready for host playback${els.audioBroadcastMode.value === 'sync' ? ' and synced audience speakers' : ''}.`);
+      };
+      reader.onerror = () => {
+        setAudioStatus('Loaded on the host, but failed to prepare a synced copy for audience speakers.');
+      };
+      reader.readAsDataURL(file);
     });
     els.startAudioReactiveBtn.addEventListener('click', () => startAudioReactiveReveal().catch(console.error));
     els.stopAudioReactiveBtn.addEventListener('click', () => stopAudioReactive(false).catch(console.error));
