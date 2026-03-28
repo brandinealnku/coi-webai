@@ -22,7 +22,6 @@
       --shadow: 0 18px 48px rgba(0,0,0,.28);
       --radius: 22px;
     }
-
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
@@ -35,273 +34,53 @@
         linear-gradient(135deg, var(--bg1), var(--bg2));
       padding: 22px;
     }
-
-    .shell {
-      max-width: 1500px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 430px 1fr;
-      gap: 22px;
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .sidebar { padding: 22px; }
-    .stage { padding: 22px; }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    .brand-badge {
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--nku-gold), #ffd86e);
-      color: var(--nku-black);
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 1.15rem;
-    }
-    .brand h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      line-height: 1;
-    }
-    .brand p {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: .94rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
+    .shell { max-width: 1500px; margin: 0 auto; display: grid; grid-template-columns: 430px 1fr; gap: 22px; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+    .sidebar,.stage { padding: 22px; }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+    .brand-badge { width:48px; height:48px; border-radius:16px; background: linear-gradient(135deg, var(--nku-gold), #ffd86e); color:var(--nku-black); display:grid; place-items:center; font-weight:800; font-size:1.15rem; }
+    .brand h1 { margin:0; font-size:1.5rem; line-height:1; }
+    .brand p { margin:5px 0 0; color:var(--muted); font-size:.94rem; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .field { margin-bottom: 14px; }
-    .field label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: 700;
-      font-size: .92rem;
-    }
+    .field label { display:block; margin-bottom:7px; font-weight:700; font-size:.92rem; }
     .field input, .field select, .field textarea {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      padding: 12px 14px;
-      font-size: .97rem;
-      outline: none;
+      width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.08); color:var(--text);
+      padding:12px 14px; font-size:.97rem; outline:none;
     }
-    .field textarea { min-height: 88px; resize: vertical; }
-
-    .small-note {
-      color: var(--muted);
-      font-size: .84rem;
-      line-height: 1.45;
-      margin-top: 8px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 8px;
-      margin-bottom: 16px;
-    }
-    button, .fake-btn {
-      border: 0;
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-weight: 800;
-      font-size: .95rem;
-      cursor: pointer;
-      transition: transform .18s ease, opacity .18s ease, filter .18s ease;
-    }
+    .field textarea { min-height:88px; resize:vertical; }
+    .small-note { color:var(--muted); font-size:.84rem; line-height:1.45; margin-top:8px; }
+    .button-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; margin-bottom:16px; }
+    button, .fake-btn { border:0; border-radius:14px; padding:12px 16px; font-weight:800; font-size:.95rem; cursor:pointer; transition: transform .18s ease, opacity .18s ease, filter .18s ease; }
     button:hover { transform: translateY(-1px); filter: brightness(1.03); }
     button.primary { background: linear-gradient(135deg, var(--nku-gold), #ffd86e); color: var(--nku-black); }
     button.secondary { background: rgba(255,255,255,.1); color: var(--text); border: 1px solid rgba(255,255,255,.14); }
     button.danger { background: rgba(255,107,107,.14); color: #ffd0d0; border: 1px solid rgba(255,107,107,.25); }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      font-weight: 700;
-      margin: 4px 0 16px;
-    }
-    .dot {
-      width: 10px; height: 10px; border-radius: 50%; background: var(--danger);
-      box-shadow: 0 0 0 6px rgba(255,107,107,.14);
-    }
-    .dot.live { background: var(--good); box-shadow: 0 0 0 6px rgba(55,214,122,.14); }
-
-    .join-card {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 16px;
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      margin-bottom: 18px;
-      align-items: center;
-    }
-    #qrcode {
-      width: 160px;
-      height: 160px;
-      background: white;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      padding: 12px;
-    }
-    .join-url {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    .join-url code {
-      display: block;
-      word-break: break-all;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 12px;
-      padding: 10px 12px;
-      color: #fff7d6;
-      flex: 1 1 320px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-    .stat {
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.11);
-    }
-    .stat .label { color: var(--muted); font-size: .85rem; margin-bottom: 6px; }
-    .stat .value { font-size: 1.8rem; font-weight: 800; }
-
-    .preview-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .preview-header h2 {
-      margin: 0;
-      font-size: 1.25rem;
-    }
-    .subtle {
-      color: var(--muted);
-      font-size: .95rem;
-    }
-
-    .phone-wall {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
-      gap: 16px;
-      align-items: stretch;
-    }
-    .phone {
-      aspect-ratio: 9 / 16;
-      border-radius: 28px;
-      border: 2px solid rgba(255,255,255,.16);
-      background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.04));
-      position: relative;
-      overflow: hidden;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
-    }
-    .phone::before {
-      content: '';
-      width: 42%; height: 18px;
-      background: rgba(255,255,255,.12);
-      border-radius: 0 0 16px 16px;
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-    }
-    .phone-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: rgba(255,255,255,.82);
-      font-size: .78rem;
-      margin-top: 12px;
-    }
-    .phone-slot {
-      flex: 1;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 12px;
-    }
-    .tile-big {
-      font-weight: 900;
-      line-height: .95;
-      font-size: clamp(2rem, 5vw, 4rem);
-      letter-spacing: -.03em;
-      text-shadow: 0 8px 22px rgba(0,0,0,.24);
-    }
-    .tile-small {
-      font-size: .9rem;
-      color: rgba(255,255,255,.85);
-      margin-top: 10px;
-      line-height: 1.35;
-    }
-    .phone-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: .8rem;
-      color: rgba(255,255,255,.72);
-    }
-
-    .footer-note {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: .85rem;
-      line-height: 1.45;
-    }
-
-    @media (max-width: 1100px) {
-      .shell { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 680px) {
-      body { padding: 14px; }
-      .join-card { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: 1fr; }
-      .grid-2 { grid-template-columns: 1fr; }
-    }
+    .status-pill { display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); font-weight:700; margin:4px 0 16px; }
+    .dot { width:10px; height:10px; border-radius:50%; background:var(--danger); box-shadow:0 0 0 6px rgba(255,107,107,.14); }
+    .dot.live { background:var(--good); box-shadow:0 0 0 6px rgba(55,214,122,.14); }
+    .join-card { display:grid; grid-template-columns:160px 1fr; gap:16px; padding:16px; border-radius:18px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); margin-bottom:18px; align-items:center; }
+    #qrcode { width:160px; height:160px; background:white; border-radius:14px; display:grid; place-items:center; padding:12px; }
+    .join-url { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+    .join-url code { display:block; word-break:break-all; background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; color:#fff7d6; flex:1 1 320px; }
+    .stats { display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; margin-bottom:18px; }
+    .stat { padding:16px; border-radius:18px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.11); }
+    .stat .label { color:var(--muted); font-size:.85rem; margin-bottom:6px; }
+    .stat .value { font-size:1.8rem; font-weight:800; }
+    .preview-header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; }
+    .preview-header h2 { margin:0; font-size:1.25rem; }
+    .subtle { color:var(--muted); font-size:.95rem; }
+    .phone-wall { display:grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap:16px; align-items:stretch; }
+    .phone { aspect-ratio:9/16; border-radius:28px; border:2px solid rgba(255,255,255,.16); background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.04)); position:relative; overflow:hidden; padding:14px; display:flex; flex-direction:column; justify-content:space-between; box-shadow: inset 0 1px 0 rgba(255,255,255,.12); }
+    .phone::before { content:''; width:42%; height:18px; background: rgba(255,255,255,.12); border-radius:0 0 16px 16px; position:absolute; top:0; left:50%; transform: translateX(-50%); }
+    .phone-top { display:flex; justify-content:space-between; align-items:center; color:rgba(255,255,255,.82); font-size:.78rem; margin-top:12px; }
+    .phone-slot { flex:1; display:grid; place-items:center; text-align:center; padding:12px; }
+    .tile-big { font-weight:900; line-height:.95; font-size: clamp(2rem, 5vw, 4rem); letter-spacing:-.03em; text-shadow:0 8px 22px rgba(0,0,0,.24); }
+    .tile-small { font-size:.9rem; color: rgba(255,255,255,.85); margin-top:10px; line-height:1.35; }
+    .phone-bottom { display:flex; justify-content:space-between; align-items:center; font-size:.8rem; color: rgba(255,255,255,.72); }
+    .footer-note { margin-top:16px; color: var(--muted); font-size:.85rem; line-height:1.45; }
+    @media (max-width: 1100px) { .shell { grid-template-columns:1fr; } .stats { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 680px) { body { padding:14px; } .join-card { grid-template-columns:1fr; } .stats { grid-template-columns:1fr; } .grid-2 { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -340,10 +119,29 @@
         </div>
       </div>
 
+      <div class="grid-2">
+        <div class="field">
+          <label for="assignmentMode">Participant assignment</label>
+          <select id="assignmentMode">
+            <option value="repeat" selected>Repeat tiles across room</option>
+            <option value="sections">Section blocks by crowd size</option>
+            <option value="unique">Unique tiles, then numbered overflow</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="tileSourceMode">Tile source</label>
+          <select id="tileSourceMode">
+            <option value="manual" selected>Manual pipe-separated tiles</option>
+            <option value="words">Auto-split by words</option>
+            <option value="chars">Auto-split by characters</option>
+          </select>
+        </div>
+      </div>
+
       <div class="field">
-        <label for="tileInput">Tiles to distribute</label>
+        <label for="tileInput">Tiles or phrase to distribute</label>
         <textarea id="tileInput">AI|LITERACY|STARTS|HERE</textarea>
-        <div class="small-note">Use the pipe symbol <strong>|</strong> to separate each phone tile. Example: AI|AT|NKU or 3|2|1|GO</div>
+        <div class="small-note">Manual mode uses the pipe symbol <strong>|</strong>. Word mode can use a phrase like <strong>AI LITERACY STARTS HERE</strong>. Character mode turns each non-space character into a tile.</div>
       </div>
 
       <div class="grid-2">
@@ -364,6 +162,7 @@
 
       <div class="button-row">
         <button class="primary" id="saveBtn">Save setup</button>
+        <button class="secondary" id="rebalanceBtn">Rebalance participants</button>
         <button class="secondary" id="openLobbyBtn">Open lobby</button>
         <button class="secondary" id="startCountdownBtn">Start countdown</button>
         <button class="secondary" id="revealBtn">Final reveal</button>
@@ -375,7 +174,7 @@
         <div id="qrcode"></div>
         <div>
           <h3 style="margin:0 0 8px;">Audience join link</h3>
-          <div class="subtle">Have guests scan the QR code or open the link below. Each device auto-claims an open tile.</div>
+          <div class="subtle">Have guests scan the QR code or open the link below. Every device gets an active assignment based on your selected participation mode.</div>
           <div class="join-url">
             <code id="joinUrlText">Preparing link…</code>
             <button class="secondary" id="copyLinkBtn">Copy</button>
@@ -384,7 +183,7 @@
       </div>
 
       <div class="footer-note">
-        Best results: open the host on a laptop/tablet and let the audience join on phones. You can film the moment as the countdown syncs across devices and then trigger the final reveal for a share-worthy crowd reaction.
+        Repeat mode is the best all-around option for a full room because it keeps every phone meaningful. Section mode is better if you want clear visual groups by side or block of the room.
       </div>
     </section>
 
@@ -412,30 +211,17 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
     import {
-      getDatabase,
-      ref,
-      set,
-      update,
-      get,
-      onValue,
-      onDisconnect,
-      serverTimestamp,
-      remove,
-      push
+      getDatabase, ref, set, update, get, onValue, onDisconnect, serverTimestamp, remove
     } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
-    // -----------------------------
-    // 1) ADD YOUR FIREBASE CONFIG
-    // -----------------------------
     const firebaseConfig = {
-      apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
-      authDomain: "crowdcode-713e4.firebaseapp.com",
-      databaseURL: "https://crowdcode-713e4-default-rtdb.firebaseio.com",
-      projectId: "crowdcode-713e4",
-      storageBucket: "crowdcode-713e4.firebasestorage.app",
-      messagingSenderId: "415062434213",
-      appId: "1:415062434213:web:0ac4da57c4ffe6a5e7884c",
-      measurementId: "G-E1CNDCQWC0"
+      apiKey: 'REPLACE_ME',
+      authDomain: 'REPLACE_ME.firebaseapp.com',
+      databaseURL: 'https://REPLACE_ME-default-rtdb.firebaseio.com',
+      projectId: 'REPLACE_ME',
+      storageBucket: 'REPLACE_ME.appspot.com',
+      messagingSenderId: 'REPLACE_ME',
+      appId: 'REPLACE_ME'
     };
 
     const app = initializeApp(firebaseConfig);
@@ -445,11 +231,14 @@
       sessionName: document.getElementById('sessionName'),
       layoutType: document.getElementById('layoutType'),
       countdownSeconds: document.getElementById('countdownSeconds'),
+      assignmentMode: document.getElementById('assignmentMode'),
+      tileSourceMode: document.getElementById('tileSourceMode'),
       tileInput: document.getElementById('tileInput'),
       finalHeadline: document.getElementById('finalHeadline'),
       finalSubhead: document.getElementById('finalSubhead'),
       ctaUrl: document.getElementById('ctaUrl'),
       saveBtn: document.getElementById('saveBtn'),
+      rebalanceBtn: document.getElementById('rebalanceBtn'),
       openLobbyBtn: document.getElementById('openLobbyBtn'),
       startCountdownBtn: document.getElementById('startCountdownBtn'),
       revealBtn: document.getElementById('revealBtn'),
@@ -480,23 +269,17 @@
     const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
     const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
 
-    const state = {
-      session: null,
-      participants: {},
-      countdownTimer: null
-    };
-
+    const state = { session: null, participants: {}, countdownTimer: null };
     els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
 
     function escapeHtml(str = '') {
-      return str.replace(/[&<>"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[s]));
+      return str.replace(/[&<>\"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[s]));
     }
 
-    function parseTiles() {
-      return els.tileInput.value
-        .split('|')
-        .map(s => s.trim())
-        .filter(Boolean);
+    function parseTiles(raw = els.tileInput.value, mode = els.tileSourceMode.value) {
+      if (mode === 'words') return raw.split(/\s+/).map(s => s.trim()).filter(Boolean);
+      if (mode === 'chars') return [...raw].filter(ch => ch.trim());
+      return raw.split('|').map(s => s.trim()).filter(Boolean);
     }
 
     function buildJoinUrl() {
@@ -520,6 +303,8 @@
         sessionName: els.sessionName.value.trim() || 'CrowdCode Session',
         layoutType: els.layoutType.value,
         countdownSeconds: Number(els.countdownSeconds.value) || 8,
+        assignmentMode: els.assignmentMode.value,
+        tileSourceMode: els.tileSourceMode.value,
         tiles,
         finalHeadline: els.finalHeadline.value.trim() || 'Final Reveal',
         finalSubhead: els.finalSubhead.value.trim() || 'Thanks for joining',
@@ -532,11 +317,48 @@
       };
     }
 
+    function sortedParticipants() {
+      return Object.entries(state.participants || {}).sort((a, b) => (a[1]?.joinedAt || 0) - (b[1]?.joinedAt || 0));
+    }
+
+    function computeAssignment(index, totalCount, tiles, mode) {
+      if (!tiles.length) return { tileIndex: index, tileText: `#${index + 1}`, groupIndex: index };
+      if (mode === 'unique') {
+        return {
+          tileIndex: index,
+          tileText: tiles[index] ?? `#${index + 1}`,
+          groupIndex: Math.min(index, tiles.length - 1)
+        };
+      }
+      if (mode === 'sections') {
+        const sectionSize = Math.max(1, Math.ceil(totalCount / tiles.length));
+        const sectionIndex = Math.min(Math.floor(index / sectionSize), tiles.length - 1);
+        return { tileIndex: sectionIndex, tileText: tiles[sectionIndex], groupIndex: sectionIndex };
+      }
+      const repeatedIndex = index % tiles.length;
+      return { tileIndex: repeatedIndex, tileText: tiles[repeatedIndex], groupIndex: repeatedIndex };
+    }
+
+    async function rebalanceParticipants() {
+      const participants = sortedParticipants();
+      const tiles = state.session?.tiles || parseTiles();
+      const mode = state.session?.assignmentMode || els.assignmentMode.value;
+      if (!participants.length) return;
+      const payload = {};
+      participants.forEach(([id, p], idx) => {
+        const assigned = computeAssignment(idx, participants.length, tiles, mode);
+        payload[`${id}/tileIndex`] = assigned.tileIndex;
+        payload[`${id}/tileText`] = assigned.tileText;
+        payload[`${id}/groupIndex`] = assigned.groupIndex;
+        payload[`${id}/slotNumber`] = idx + 1;
+        payload[`${id}/updatedAt`] = Date.now();
+      });
+      await update(participantsRef, payload);
+    }
+
     async function ensureSession() {
       const snap = await get(sessionRef);
-      if (!snap.exists()) {
-        await set(sessionRef, sessionPayload());
-      }
+      if (!snap.exists()) await set(sessionRef, sessionPayload());
       await set(hostPresenceRef, { online: true, updatedAt: serverTimestamp() });
       onDisconnect(hostPresenceRef).remove();
     }
@@ -544,79 +366,43 @@
     async function saveSetup(extra = {}) {
       const currentPhase = state.session?.phase || 'lobby';
       await update(sessionRef, sessionPayload({ phase: currentPhase, ...extra }));
+      await rebalanceParticipants();
     }
 
-    async function openLobby() {
-      await saveSetup({ phase: 'lobby', countdownStartAt: null, countdownTargetAt: null });
-    }
-
+    async function openLobby() { await saveSetup({ phase: 'lobby', countdownStartAt: null, countdownTargetAt: null }); }
     async function startCountdown() {
       const seconds = Number(els.countdownSeconds.value) || 8;
       const startAt = Date.now() + 1500;
       const targetAt = startAt + seconds * 1000;
       await saveSetup({ phase: 'countdown', countdownStartAt: startAt, countdownTargetAt: targetAt });
     }
-
-    async function finalReveal() {
-      await saveSetup({ phase: 'reveal', countdownStartAt: null, countdownTargetAt: null });
-    }
-
-    async function selfieMoment() {
-      await saveSetup({ phase: 'selfie', countdownStartAt: null, countdownTargetAt: null });
-    }
-
+    async function finalReveal() { await saveSetup({ phase: 'reveal', countdownStartAt: null, countdownTargetAt: null }); }
+    async function selfieMoment() { await saveSetup({ phase: 'selfie', countdownStartAt: null, countdownTargetAt: null }); }
     async function resetSession() {
       if (state.countdownTimer) clearInterval(state.countdownTimer);
       await remove(participantsRef);
       await set(sessionRef, sessionPayload({ phase: 'lobby', countdownStartAt: null, countdownTargetAt: null }));
     }
 
-    function getAssignedTile(index) {
-      const tiles = state.session?.tiles || [];
-      if (!tiles.length) return 'JOIN';
-      return tiles[index] ?? `+${index + 1}`;
-    }
-
     function renderPhoneWall() {
-      const participants = Object.entries(state.participants || {}).sort((a, b) => (a[1]?.joinedAt || 0) - (b[1]?.joinedAt || 0));
+      const participants = sortedParticipants();
       els.connectedCount.textContent = participants.length;
       els.tileCount.textContent = (state.session?.tiles || []).length;
-      const phase = (state.session?.phase || 'lobby').toUpperCase();
-      els.phaseText.textContent = phase;
+      els.phaseText.textContent = (state.session?.phase || 'lobby').toUpperCase();
 
       if (!participants.length) {
-        els.phoneWall.innerHTML = `
-          <div class="phone" style="min-height:280px; grid-column: 1 / -1; aspect-ratio:auto;">
-            <div class="phone-slot">
-              <div>
-                <div class="tile-big">Scan to Join</div>
-                <div class="tile-small">Audience phones will appear here once they connect to the session.</div>
-              </div>
-            </div>
-          </div>`;
+        els.phoneWall.innerHTML = `<div class="phone" style="min-height:280px; grid-column: 1 / -1; aspect-ratio:auto;"><div class="phone-slot"><div><div class="tile-big">Scan to Join</div><div class="tile-small">Audience phones will appear here once they connect to the session.</div></div></div></div>`;
         return;
       }
 
       els.phoneWall.innerHTML = participants.map(([id, p], idx) => {
-        const tile = p.tileText || getAssignedTile(p.tileIndex ?? idx);
         const label = p.nickname || `Phone ${idx + 1}`;
         const ready = p.ready ? 'Ready' : 'Connecting';
         return `
           <div class="phone">
-            <div class="phone-top">
-              <span>${escapeHtml(label)}</span>
-              <span>${escapeHtml(ready)}</span>
-            </div>
-            <div class="phone-slot">
-              <div>
-                <div class="tile-big">${escapeHtml(tile)}</div>
-                <div class="tile-small">${escapeHtml(state.session?.sessionName || 'CrowdCode')}</div>
-              </div>
-            </div>
-            <div class="phone-bottom">
-              <span>#${(p.tileIndex ?? idx) + 1}</span>
-              <span>${escapeHtml(state.session?.phase || 'lobby')}</span>
-            </div>
+            <div class="phone-top"><span>${escapeHtml(label)}</span><span>${escapeHtml(ready)}</span></div>
+            <div class="phone-slot"><div><div class="tile-big">${escapeHtml(p.tileText || '#')}</div><div class="tile-small">${escapeHtml(state.session?.sessionName || 'CrowdCode')}</div></div></div>
+            <div class="phone-bottom"><span>Slot ${p.slotNumber || idx + 1}</span><span>${escapeHtml(state.session?.assignmentMode || 'repeat')}</span></div>
           </div>`;
       }).join('');
     }
@@ -633,9 +419,7 @@
         els.countdownDisplay.textContent = remaining;
         if (remaining <= 0) {
           clearInterval(state.countdownTimer);
-          setTimeout(() => {
-            finalReveal().catch(console.error);
-          }, 800);
+          setTimeout(() => finalReveal().catch(console.error), 800);
         }
       };
       tick();
@@ -651,7 +435,9 @@
       els.sessionName.value = data.sessionName || '';
       els.layoutType.value = data.layoutType || 'message';
       els.countdownSeconds.value = data.countdownSeconds || 8;
-      els.tileInput.value = (data.tiles || []).join('|');
+      els.assignmentMode.value = data.assignmentMode || 'repeat';
+      els.tileSourceMode.value = data.tileSourceMode || 'manual';
+      els.tileInput.value = (data.tileSourceMode === 'manual') ? (data.tiles || []).join('|') : (data.tiles || []).join(data.tileSourceMode === 'chars' ? '' : ' ');
       els.finalHeadline.value = data.finalHeadline || '';
       els.finalSubhead.value = data.finalSubhead || '';
       els.ctaUrl.value = data.ctaUrl || '';
@@ -669,6 +455,7 @@
     });
 
     els.saveBtn.addEventListener('click', () => saveSetup().catch(console.error));
+    els.rebalanceBtn.addEventListener('click', () => rebalanceParticipants().catch(console.error));
     els.openLobbyBtn.addEventListener('click', () => openLobby().catch(console.error));
     els.startCountdownBtn.addEventListener('click', () => startCountdown().catch(console.error));
     els.revealBtn.addEventListener('click', () => finalReveal().catch(console.error));
@@ -679,9 +466,7 @@
         await navigator.clipboard.writeText(buildJoinUrl());
         els.copyLinkBtn.textContent = 'Copied';
         setTimeout(() => els.copyLinkBtn.textContent = 'Copy', 1600);
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     });
 
     await ensureSession();
