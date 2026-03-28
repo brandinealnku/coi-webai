@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,12 +50,19 @@
       background-color:#0f1021; overflow:hidden; position:relative;
     }
     .mosaic-overlay{position:absolute;inset:auto 0 0 0;padding:16px;background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.45));font-weight:700}
+    .flash-layer{position:fixed;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;z-index:30;background:#fff;}
+    .flash-layer.gold{background:linear-gradient(180deg,#fff7d0,#f7b718)}
+    .flash-layer.pink{background:linear-gradient(180deg,#fff2fb,#ff66c4)}
+    .flash-layer.cycle{background:linear-gradient(135deg,#ffffff,#f7b718,#ff66c4,#ffffff)}
+    .flash-layer.live{animation:flashBurst var(--flash-duration,180ms) linear;}
+    @keyframes flashBurst{0%{opacity:0}12%{opacity:var(--flash-opacity,.85)}100%{opacity:0}}
     @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
     @keyframes floaty{from{transform:translateY(-8px) translateX(-8px)}to{transform:translateY(12px) translateX(10px)}}
   </style>
 </head>
 <body>
   <div class="ambient"></div>
+  <div id="flashLayer" class="flash-layer"></div>
   <section id="joinView" class="screen">
     <div class="glass">
       <div class="eyebrow"><span class="dot"></span><span id="joinSessionLabel">CrowdCode</span></div>
@@ -71,6 +77,7 @@
   <section id="tileView" class="tile-screen hidden">
     <div class="tile-index" id="tileIndexLabel">SLOT 1</div>
     <div id="mosaicSlice" class="mosaic-slice hidden"><div class="mosaic-overlay" id="mosaicCellLabel">Cell 1</div></div>
+    <div id="animateOverlay" class="animate-overlay hidden"><div class="animate-badge" id="animateBadge">Pulse</div></div>
     <div id="wordTileWrap">
       <div class="tile-main" id="tileMain">JOIN</div>
       <div class="tile-caption" id="tileCaption">Waiting for the host…</div>
@@ -144,6 +151,9 @@
       wordTileWrap: document.getElementById('wordTileWrap'),
       mosaicSlice: document.getElementById('mosaicSlice'),
       mosaicCellLabel: document.getElementById('mosaicCellLabel'),
+      animateOverlay: document.getElementById('animateOverlay'),
+      animateBadge: document.getElementById('animateBadge'),
+      flashLayer: document.getElementById('flashLayer'),
       countdownNumber: document.getElementById('countdownNumber'),
       revealHeadline: document.getElementById('revealHeadline'),
       revealSubhead: document.getElementById('revealSubhead'),
@@ -160,7 +170,7 @@
     let participantId = localStorage.getItem(`crowdcode:${sessionId}:participantId`) || crypto.randomUUID().slice(0,12);
     localStorage.setItem(`crowdcode:${sessionId}:participantId`, participantId);
     const participantRef = ref(db, `crowdcode/sessions/${sessionId}/participants/${participantId}`);
-    const state = { session:null, participant:null, countdownTimer:null, stream:null };
+    const state = { session:null, participant:null, countdownTimer:null, stream:null, lastFlashAt:0, lastVibrateAt:0 };
 
     function show(view){
       [els.joinView, els.tileView, els.countdownView, els.revealView, els.selfieView].forEach(v => v.classList.add('hidden'));
@@ -217,6 +227,110 @@
     }
 
     async function setReady(){ await update(participantRef, { ready:true, online:true, updatedAt:serverTimestamp() }); }
+
+    function applyAudioReactiveLevel(level = 0){
+      const clamped = Math.max(0, Math.min(1, Number(level) || 0));
+      els.tileView.style.setProperty('--reactive-scale', (1 + clamped * 0.16).toFixed(3));
+      els.tileView.style.setProperty('--reactive-brightness', (1 + clamped * 0.65).toFixed(3));
+      els.tileView.style.setProperty('--reactive-glow', `${Math.round(clamped * 42)}px`);
+    }
+
+    function clearAudioReactiveLevel(){
+      els.tileView.style.removeProperty('--reactive-scale');
+      els.tileView.style.removeProperty('--reactive-brightness');
+      els.tileView.style.removeProperty('--reactive-glow');
+      els.tileView.classList.remove('audio-reactive');
+    }
+
+    function getFlashProfile(level = 0){
+      const config = state.session?.flashConfig || {};
+      const mode = config.mode || 'soft';
+      const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (mode === 'off' || reducedMotion) return null;
+      const profiles = {
+        soft: { threshold:0.58, opacity:0.45, duration:170, cooldown:260 },
+        medium: { threshold:0.48, opacity:0.72, duration:150, cooldown:180 },
+        strobe: { threshold:0.36, opacity:0.92, duration:110, cooldown:90 }
+      };
+      const profile = { ...(profiles[mode] || profiles.soft) };
+      if (level < profile.threshold) return null;
+      profile.color = config.color || 'white';
+      profile.haptics = config.haptics || 'off';
+      profile.opacity = Math.min(0.95, profile.opacity + Math.max(0, level - profile.threshold) * 0.45);
+      profile.duration = Math.max(80, profile.duration - Math.round(level * 25));
+      return profile;
+    }
+
+    function triggerFlash(profile){
+      if (!profile) return;
+      const now = Date.now();
+      if (now - state.lastFlashAt < profile.cooldown) return;
+      state.lastFlashAt = now;
+      els.flashLayer.className = 'flash-layer';
+      if (profile.color && profile.color !== 'white') els.flashLayer.classList.add(profile.color);
+      els.flashLayer.style.setProperty('--flash-opacity', String(profile.opacity));
+      els.flashLayer.style.setProperty('--flash-duration', `${profile.duration}ms`);
+      void els.flashLayer.offsetWidth;
+      els.flashLayer.classList.add('live');
+      if (profile.haptics === 'vibrate' && navigator.vibrate && now - state.lastVibrateAt > 220){
+        state.lastVibrateAt = now;
+        navigator.vibrate(18);
+      }
+    }
+
+    function clearFlashLayer(){
+      els.flashLayer.className = 'flash-layer';
+      els.flashLayer.style.removeProperty('--flash-opacity');
+      els.flashLayer.style.removeProperty('--flash-duration');
+    }
+
+    function setAnimationState(isLive, style='pulse', remaining=null){
+      els.tileView.classList.remove('phase-animate','flash','ripple','audio-reactive');
+      els.animateOverlay.classList.add('hidden');
+      els.animateOverlay.classList.remove('live');
+      if (!isLive){ clearFlashLayer(); return; }
+      els.tileView.classList.add('phase-animate');
+      if (style === 'flash') els.tileView.classList.add('flash');
+      if (style === 'ripple') els.tileView.classList.add('ripple');
+      if (style === 'audio') els.tileView.classList.add('audio-reactive');
+      els.animateOverlay.classList.remove('hidden');
+      requestAnimationFrame(() => els.animateOverlay.classList.add('live'));
+      const label = String(style || 'pulse').toUpperCase();
+      els.animateBadge.textContent = remaining !== null ? `${label} • ${remaining}` : label;
+    }
+
+    function runAnimatePhase(){
+      if (state.countdownTimer) clearInterval(state.countdownTimer);
+      const style = state.session?.animationStyle || 'pulse';
+      if (style === 'audio'){
+        const tick = () => {
+          const level = state.session?.audioReactive?.level || 0;
+          const label = state.session?.audioReactive?.trackName ? `AUDIO • ${Math.round(level * 100)}%` : 'AUDIO';
+          setAnimationState(true, 'audio', null);
+          els.animateBadge.textContent = label;
+          applyAudioReactiveLevel(level);
+          triggerFlash(getFlashProfile(level));
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 120);
+        return;
+      }
+      const target = state.session?.animationTargetAt;
+      if (!target){
+        setAnimationState(true, style, null);
+        return;
+      }
+      const tick = () => {
+        const remaining = Math.max(0, Math.ceil((target - Date.now()) / 1000));
+        setAnimationState(true, style, remaining);
+        if (remaining <= 0){
+          clearInterval(state.countdownTimer);
+          setAnimationState(false);
+        }
+      };
+      tick();
+      state.countdownTimer = setInterval(tick, 160);
+    }
 
     function updateTileView(){
       const p = state.participant || {};
@@ -278,10 +392,12 @@
     function applyPhase(){
       const phase = state.session?.phase || 'lobby';
       updateTileView();
-      if (phase === 'lobby') show(state.participant ? els.tileView : els.joinView);
-      if (phase === 'countdown'){ show(els.countdownView); runCountdown(); }
-      if (phase === 'reveal') show(els.revealView);
-      if (phase === 'selfie'){ show(els.selfieView); ensureSelfieCamera(); }
+      if (state.countdownTimer && !['countdown','animate'].includes(phase)) clearInterval(state.countdownTimer);
+      if (phase === 'lobby'){ clearAudioReactiveLevel(); setAnimationState(false); show(state.participant ? els.tileView : els.joinView); }
+      if (phase === 'countdown'){ clearAudioReactiveLevel(); setAnimationState(false); show(els.countdownView); runCountdown(); }
+      if (phase === 'animate'){ show(els.tileView); runAnimatePhase(); }
+      if (phase === 'reveal'){ clearAudioReactiveLevel(); setAnimationState(false); show(els.revealView); }
+      if (phase === 'selfie'){ clearAudioReactiveLevel(); setAnimationState(false); show(els.selfieView); ensureSelfieCamera(); }
     }
 
     onValue(sessionRef, snap => { const data = snap.val(); if (!data) return; state.session = data; applyPhase(); });
@@ -289,7 +405,7 @@
       state.participant = snap.val();
       if (state.participant){
         els.readyBtn.classList.remove('hidden');
-        if ((state.session?.phase || 'lobby') === 'lobby') show(els.tileView);
+        if ((state.session?.phase || 'lobby') === 'lobby'){ setAnimationState(false); show(els.tileView); }
       }
       updateTileView();
     });
