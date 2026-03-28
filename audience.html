@@ -9,242 +9,54 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --gold: #f7b718;
-      --pink: #ff66c4;
-      --ink: #101010;
-      --text: #f8f9ff;
-      --muted: rgba(255,255,255,.75);
-      --card: rgba(255,255,255,.08);
-      --border: rgba(255,255,255,.16);
+      --gold: #f7b718; --pink: #ff66c4; --ink: #101010; --text: #f8f9ff; --muted: rgba(255,255,255,.75);
     }
-
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; height: 100%; }
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(247,183,24,.20), transparent 22%),
-        radial-gradient(circle at bottom right, rgba(255,102,196,.16), transparent 24%),
-        linear-gradient(180deg, #111327, #1a1f48 58%, #111327);
+      font-family: 'Inter', system-ui, sans-serif; color: var(--text);
+      background: radial-gradient(circle at top left, rgba(247,183,24,.20), transparent 22%), radial-gradient(circle at bottom right, rgba(255,102,196,.16), transparent 24%), linear-gradient(180deg, #111327, #1a1f48 58%, #111327);
       overflow: hidden;
     }
-
-    .screen {
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: max(18px, env(safe-area-inset-top)) 18px max(22px, env(safe-area-inset-bottom));
-      position: relative;
-    }
-
-    .glass {
-      width: min(92vw, 520px);
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 28px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.28);
-      backdrop-filter: blur(18px);
-      padding: 22px 18px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.09);
-      border: 1px solid rgba(255,255,255,.12);
-      font-weight: 700;
-      font-size: .88rem;
-      margin-bottom: 14px;
-    }
-    .dot {
-      width: 10px; height: 10px; border-radius: 50%; background: #39d98a;
-      box-shadow: 0 0 0 5px rgba(57,217,138,.16);
-    }
-
-    h1, h2, p { margin: 0; }
-    .title { font-size: clamp(1.5rem, 6vw, 2.2rem); font-weight: 800; letter-spacing: -.03em; }
-    .subtext { color: var(--muted); margin-top: 10px; line-height: 1.45; }
-
-    .nickname-wrap { margin-top: 18px; }
-    input {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 16px;
-      background: rgba(255,255,255,.08);
-      color: white;
-      padding: 14px 15px;
-      font-size: 1rem;
-      outline: none;
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 14px;
-    }
-    button, a.cta {
-      width: 100%;
-      border: 0;
-      border-radius: 18px;
-      padding: 15px 18px;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform .18s ease, filter .18s ease;
-    }
-    button:hover, a.cta:hover { transform: translateY(-1px); filter: brightness(1.04); }
+    .screen,.tile-screen { min-height: 100dvh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:max(18px, env(safe-area-inset-top)) 18px max(22px, env(safe-area-inset-bottom)); position:relative; }
+    .glass,.reveal-card { width:min(92vw, 560px); background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:28px; box-shadow:0 18px 50px rgba(0,0,0,.28); backdrop-filter: blur(18px); padding:22px 18px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:10px; padding:8px 14px; border-radius:999px; background: rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.12); font-weight:700; font-size:.88rem; margin-bottom:14px; }
+    .dot { width:10px; height:10px; border-radius:50%; background:#39d98a; box-shadow:0 0 0 5px rgba(57,217,138,.16); }
+    h1,p { margin:0; }
+    .title { font-size: clamp(1.5rem, 6vw, 2.2rem); font-weight:800; letter-spacing:-.03em; }
+    .subtext { color: var(--muted); margin-top:10px; line-height:1.45; }
+    input { width:100%; border:1px solid rgba(255,255,255,.16); border-radius:16px; background: rgba(255,255,255,.08); color:white; padding:14px 15px; font-size:1rem; outline:none; }
+    .nickname-wrap,.actions,.selfie-actions { margin-top:14px; }
+    .actions,.selfie-actions { display:flex; flex-direction:column; gap:12px; }
+    button,a.cta { width:100%; border:0; border-radius:18px; padding:15px 18px; font-weight:800; font-size:1rem; cursor:pointer; text-decoration:none; transition: transform .18s ease, filter .18s ease; }
+    button:hover,a.cta:hover { transform:translateY(-1px); filter:brightness(1.04); }
     .primary { background: linear-gradient(135deg, var(--gold), #ffd86e); color: var(--ink); }
-    .secondary { background: rgba(255,255,255,.10); color: white; border: 1px solid rgba(255,255,255,.12); }
-
-    .tile-screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 22px;
-      text-align: center;
-    }
-
-    .ambient {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
-      opacity: .85;
-    }
-    .ambient::before,
-    .ambient::after {
-      content: '';
-      position: absolute;
-      width: 55vw;
-      height: 55vw;
-      max-width: 340px;
-      max-height: 340px;
-      border-radius: 50%;
-      filter: blur(30px);
-      opacity: .32;
-      animation: floaty 8s ease-in-out infinite alternate;
-    }
-    .ambient::before { background: var(--gold); top: -7%; left: -14%; }
-    .ambient::after { background: var(--pink); bottom: -10%; right: -14%; animation-duration: 9.5s; }
-
-    .tile-index {
-      font-size: .9rem;
-      font-weight: 800;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.75);
-      margin-bottom: 12px;
-    }
-    .tile-main {
-      font-size: clamp(2.5rem, 18vw, 6rem);
-      line-height: .9;
-      font-weight: 900;
-      letter-spacing: -.05em;
-      text-shadow: 0 12px 28px rgba(0,0,0,.24);
-      max-width: 95vw;
-      word-break: break-word;
-    }
-    .tile-caption {
-      margin-top: 12px;
-      color: rgba(255,255,255,.82);
-      font-size: 1rem;
-      line-height: 1.4;
-      max-width: 34ch;
-    }
-
-    .countdown {
-      font-size: clamp(4rem, 28vw, 8rem);
-      line-height: .85;
-      font-weight: 900;
-      letter-spacing: -.06em;
-      text-shadow: 0 14px 30px rgba(0,0,0,.26);
-      animation: pulse 1s ease-in-out infinite;
-    }
-
-    .reveal-card {
-      width: min(92vw, 560px);
-      padding: 24px 20px;
-      border-radius: 28px;
-      background: rgba(255,255,255,.09);
-      border: 1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 18px 50px rgba(0,0,0,.32);
-    }
-    .reveal-headline {
-      font-size: clamp(2rem, 11vw, 4rem);
-      line-height: .93;
-      font-weight: 900;
-      letter-spacing: -.05em;
-      text-shadow: 0 14px 30px rgba(0,0,0,.26);
-    }
-    .reveal-subhead {
-      font-size: clamp(1rem, 4.8vw, 1.25rem);
-      color: rgba(255,255,255,.88);
-      line-height: 1.4;
-      margin-top: 12px;
-    }
-
-    .selfie-wrap video, .selfie-wrap canvas {
-      width: min(88vw, 360px);
-      aspect-ratio: 9/16;
-      object-fit: cover;
-      border-radius: 28px;
-      background: rgba(0,0,0,.25);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 18px 50px rgba(0,0,0,.34);
-    }
-    .selfie-actions {
-      width: min(88vw, 360px);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .tiny {
-      margin-top: 14px;
-      color: rgba(255,255,255,.68);
-      font-size: .84rem;
-      line-height: 1.45;
-    }
-
-    .hidden { display: none !important; }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.04); }
-    }
-    @keyframes floaty {
-      from { transform: translateY(-8px) translateX(-8px); }
-      to { transform: translateY(12px) translateX(10px); }
-    }
+    .secondary { background: rgba(255,255,255,.10); color: white; border:1px solid rgba(255,255,255,.12); }
+    .ambient { position:absolute; inset:0; overflow:hidden; pointer-events:none; opacity:.85; }
+    .ambient::before,.ambient::after { content:''; position:absolute; width:55vw; height:55vw; max-width:340px; max-height:340px; border-radius:50%; filter: blur(30px); opacity:.32; animation: floaty 8s ease-in-out infinite alternate; }
+    .ambient::before { background: var(--gold); top:-7%; left:-14%; }
+    .ambient::after { background: var(--pink); bottom:-10%; right:-14%; animation-duration:9.5s; }
+    .tile-index { font-size:.9rem; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.75); margin-bottom:12px; }
+    .tile-main { font-size: clamp(2.5rem, 18vw, 6rem); line-height:.9; font-weight:900; letter-spacing:-.05em; text-shadow:0 12px 28px rgba(0,0,0,.24); max-width:95vw; word-break:break-word; }
+    .tile-caption { margin-top:12px; color: rgba(255,255,255,.82); font-size:1rem; line-height:1.4; max-width:34ch; }
+    .countdown { font-size: clamp(4rem, 28vw, 8rem); line-height:.85; font-weight:900; letter-spacing:-.06em; text-shadow:0 14px 30px rgba(0,0,0,.26); animation:pulse 1s ease-in-out infinite; }
+    .reveal-headline { font-size: clamp(2rem, 11vw, 4rem); line-height:.93; font-weight:900; letter-spacing:-.05em; text-shadow:0 14px 30px rgba(0,0,0,.26); }
+    .reveal-subhead { font-size: clamp(1rem, 4.8vw, 1.25rem); color: rgba(255,255,255,.88); line-height:1.4; margin-top:12px; }
+    .selfie-wrap video,.selfie-wrap canvas { width:min(88vw, 360px); aspect-ratio:9/16; object-fit:cover; border-radius:28px; background: rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.14); box-shadow:0 18px 50px rgba(0,0,0,.34); }
+    .tiny { margin-top:14px; color: rgba(255,255,255,.68); font-size:.84rem; line-height:1.45; }
+    .hidden { display:none !important; }
+    @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.04); } }
+    @keyframes floaty { from { transform: translateY(-8px) translateX(-8px); } to { transform: translateY(12px) translateX(10px); } }
   </style>
 </head>
 <body>
   <div class="ambient"></div>
-
   <section id="joinView" class="screen">
     <div class="glass">
       <div class="eyebrow"><span class="dot"></span><span id="joinSessionLabel">CrowdCode</span></div>
       <h1 class="title">Join the reveal</h1>
-      <p class="subtext">Your phone becomes one piece of a bigger shared moment. Enter your name and claim a tile.</p>
-
-      <div class="nickname-wrap">
-        <input id="nicknameInput" maxlength="24" placeholder="Your name or group name" />
-      </div>
-
+      <p class="subtext">Your phone becomes part of a bigger shared moment. In large rooms, assignments can repeat or be grouped into sections so everyone participates.</p>
+      <div class="nickname-wrap"><input id="nicknameInput" maxlength="24" placeholder="Your name or group name" /></div>
       <div class="actions">
         <button id="joinBtn" class="primary">Join session</button>
         <button id="readyBtn" class="secondary hidden">I'm ready</button>
@@ -252,29 +64,23 @@
       <div class="tiny">Tip: turn up brightness and hold your phone in portrait mode for the reveal.</div>
     </div>
   </section>
-
   <section id="tileView" class="tile-screen hidden">
-    <div class="tile-index" id="tileIndexLabel">PHONE #1</div>
+    <div class="tile-index" id="tileIndexLabel">SLOT 1</div>
     <div class="tile-main" id="tileMain">JOIN</div>
     <div class="tile-caption" id="tileCaption">Waiting for the host…</div>
   </section>
-
   <section id="countdownView" class="tile-screen hidden">
     <div class="tile-index">GET READY</div>
     <div class="countdown" id="countdownNumber">3</div>
     <div class="tile-caption">Hold your phone up when it hits zero.</div>
   </section>
-
   <section id="revealView" class="tile-screen hidden">
     <div class="reveal-card">
       <div class="reveal-headline" id="revealHeadline">Final Reveal</div>
       <div class="reveal-subhead" id="revealSubhead">Thanks for joining the CrowdCode moment.</div>
-      <div class="actions" style="margin-top:18px;">
-        <a id="revealCta" class="cta primary" href="#" target="_blank" rel="noopener">Open link</a>
-      </div>
+      <div class="actions" style="margin-top:18px;"><a id="revealCta" class="cta primary" href="#" target="_blank" rel="noopener">Open link</a></div>
     </div>
   </section>
-
   <section id="selfieView" class="screen hidden">
     <div class="selfie-wrap">
       <div class="eyebrow"><span class="dot"></span>Selfie / share moment</div>
@@ -291,20 +97,8 @@
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import {
-      getDatabase,
-      ref,
-      get,
-      set,
-      update,
-      onValue,
-      onDisconnect,
-      serverTimestamp
-    } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+    import { getDatabase, ref, get, set, update, onValue, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
-    // -----------------------------
-    // 1) ADD THE SAME FIREBASE CONFIG
-    // -----------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
       authDomain: "crowdcode-713e4.firebaseapp.com",
@@ -318,7 +112,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
     const sessionId = new URLSearchParams(window.location.search).get('session');
     if (!sessionId) {
       document.body.innerHTML = '<div style="padding:24px;color:white;font-family:Inter,sans-serif;">Missing session code.</div>';
@@ -326,81 +119,57 @@
     }
 
     const els = {
-      joinView: document.getElementById('joinView'),
-      tileView: document.getElementById('tileView'),
-      countdownView: document.getElementById('countdownView'),
-      revealView: document.getElementById('revealView'),
-      selfieView: document.getElementById('selfieView'),
-      nicknameInput: document.getElementById('nicknameInput'),
-      joinBtn: document.getElementById('joinBtn'),
-      readyBtn: document.getElementById('readyBtn'),
-      joinSessionLabel: document.getElementById('joinSessionLabel'),
-      tileIndexLabel: document.getElementById('tileIndexLabel'),
-      tileMain: document.getElementById('tileMain'),
-      tileCaption: document.getElementById('tileCaption'),
-      countdownNumber: document.getElementById('countdownNumber'),
-      revealHeadline: document.getElementById('revealHeadline'),
-      revealSubhead: document.getElementById('revealSubhead'),
-      revealCta: document.getElementById('revealCta'),
-      camera: document.getElementById('camera'),
-      snapshot: document.getElementById('snapshot'),
-      captureBtn: document.getElementById('captureBtn'),
-      retakeBtn: document.getElementById('retakeBtn'),
-      downloadBtn: document.getElementById('downloadBtn')
+      joinView: document.getElementById('joinView'), tileView: document.getElementById('tileView'), countdownView: document.getElementById('countdownView'), revealView: document.getElementById('revealView'), selfieView: document.getElementById('selfieView'),
+      nicknameInput: document.getElementById('nicknameInput'), joinBtn: document.getElementById('joinBtn'), readyBtn: document.getElementById('readyBtn'), joinSessionLabel: document.getElementById('joinSessionLabel'),
+      tileIndexLabel: document.getElementById('tileIndexLabel'), tileMain: document.getElementById('tileMain'), tileCaption: document.getElementById('tileCaption'), countdownNumber: document.getElementById('countdownNumber'),
+      revealHeadline: document.getElementById('revealHeadline'), revealSubhead: document.getElementById('revealSubhead'), revealCta: document.getElementById('revealCta'), camera: document.getElementById('camera'), snapshot: document.getElementById('snapshot'),
+      captureBtn: document.getElementById('captureBtn'), retakeBtn: document.getElementById('retakeBtn'), downloadBtn: document.getElementById('downloadBtn')
     };
 
     const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
     const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
-
     let participantId = localStorage.getItem(`crowdcode:${sessionId}:participantId`) || crypto.randomUUID().slice(0, 12);
     localStorage.setItem(`crowdcode:${sessionId}:participantId`, participantId);
-
     const participantRef = ref(db, `crowdcode/sessions/${sessionId}/participants/${participantId}`);
 
-    const state = {
-      session: null,
-      participant: null,
-      countdownTimer: null,
-      stream: null
-    };
+    const state = { session: null, participant: null, countdownTimer: null, stream: null };
 
     function show(view) {
       [els.joinView, els.tileView, els.countdownView, els.revealView, els.selfieView].forEach(v => v.classList.add('hidden'));
       view.classList.remove('hidden');
     }
 
-    function claimTileIndex(participants, tiles) {
-      const used = new Set(
-        Object.entries(participants || {})
-          .filter(([id]) => id !== participantId)
-          .map(([, p]) => p.tileIndex)
-          .filter(v => Number.isInteger(v))
-      );
-      for (let i = 0; i < tiles.length; i++) {
-        if (!used.has(i)) return i;
+    function computeAssignment(index, totalCount, tiles, mode) {
+      if (!tiles.length) return { tileIndex: index, tileText: `#${index + 1}`, groupIndex: index };
+      if (mode === 'unique') return { tileIndex: index, tileText: tiles[index] ?? `#${index + 1}`, groupIndex: Math.min(index, tiles.length - 1) };
+      if (mode === 'sections') {
+        const sectionSize = Math.max(1, Math.ceil(totalCount / tiles.length));
+        const sectionIndex = Math.min(Math.floor(index / sectionSize), tiles.length - 1);
+        return { tileIndex: sectionIndex, tileText: tiles[sectionIndex], groupIndex: sectionIndex };
       }
-      return Object.keys(participants || {}).length;
+      const repeatedIndex = index % tiles.length;
+      return { tileIndex: repeatedIndex, tileText: tiles[repeatedIndex], groupIndex: repeatedIndex };
     }
 
     async function joinSession() {
       const sessionSnap = await get(sessionRef);
-      if (!sessionSnap.exists()) {
-        alert('This session was not found.');
-        return;
-      }
+      if (!sessionSnap.exists()) { alert('This session was not found.'); return; }
       const session = sessionSnap.val();
       const participantsSnap = await get(participantsRef);
       const participants = participantsSnap.val() || {};
       const nickname = els.nicknameInput.value.trim() || `Phone ${Math.floor(Math.random() * 90) + 10}`;
-      const tiles = session.tiles || [];
+      const participantEntries = Object.entries(participants).sort((a,b)=>(a[1]?.joinedAt||0)-(b[1]?.joinedAt||0));
       const existing = participants[participantId];
-      const tileIndex = Number.isInteger(existing?.tileIndex) ? existing.tileIndex : claimTileIndex(participants, tiles);
-      const tileText = tiles[tileIndex] || `#${tileIndex + 1}`;
+      const existingIndex = participantEntries.findIndex(([id]) => id === participantId);
+      const joinIndex = existingIndex >= 0 ? existingIndex : participantEntries.length;
+      const assigned = computeAssignment(joinIndex, Math.max(1, participantEntries.length + (existing ? 0 : 1)), session.tiles || [], session.assignmentMode || 'repeat');
 
       await set(participantRef, {
         nickname,
-        tileIndex,
-        tileText,
+        tileIndex: assigned.tileIndex,
+        tileText: assigned.tileText,
+        groupIndex: assigned.groupIndex,
+        slotNumber: joinIndex + 1,
         joinedAt: existing?.joinedAt || Date.now(),
         ready: true,
         online: true,
@@ -411,22 +180,20 @@
       els.readyBtn.classList.remove('hidden');
     }
 
-    async function setReady() {
-      await update(participantRef, { ready: true, online: true, updatedAt: serverTimestamp() });
-    }
+    async function setReady() { await update(participantRef, { ready: true, online: true, updatedAt: serverTimestamp() }); }
 
     function updateTileView() {
       const p = state.participant || {};
       const session = state.session || {};
       els.joinSessionLabel.textContent = session.sessionName || `Session ${sessionId}`;
-      els.tileIndexLabel.textContent = `PHONE #${(p.tileIndex ?? 0) + 1}`;
+      els.tileIndexLabel.textContent = `SLOT ${p.slotNumber || (p.tileIndex ?? 0) + 1} • ${String(session.assignmentMode || 'repeat').toUpperCase()}`;
       els.tileMain.textContent = p.tileText || 'JOIN';
       els.tileCaption.textContent = session.sessionName || 'Waiting for the host…';
       els.revealHeadline.textContent = session.finalHeadline || 'Final Reveal';
       els.revealSubhead.textContent = session.finalSubhead || 'Thanks for joining.';
       els.revealCta.href = session.ctaUrl || '#';
       els.revealCta.textContent = session.ctaUrl ? 'Open link' : 'Thanks for joining';
-      if (!session.ctaUrl) els.revealCta.removeAttribute('target');
+      if (!session.ctaUrl) els.revealCta.removeAttribute('target'); else els.revealCta.setAttribute('target', '_blank');
     }
 
     function runCountdown() {
@@ -445,38 +212,21 @@
     async function ensureSelfieCamera() {
       if (state.stream) return;
       try {
-        state.stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } },
-          audio: false
-        });
+        state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } }, audio: false });
         els.camera.srcObject = state.stream;
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     function applyPhase() {
       const phase = state.session?.phase || 'lobby';
       updateTileView();
       if (phase === 'lobby') show(state.participant ? els.tileView : els.joinView);
-      if (phase === 'countdown') {
-        show(els.countdownView);
-        runCountdown();
-      }
+      if (phase === 'countdown') { show(els.countdownView); runCountdown(); }
       if (phase === 'reveal') show(els.revealView);
-      if (phase === 'selfie') {
-        show(els.selfieView);
-        ensureSelfieCamera();
-      }
+      if (phase === 'selfie') { show(els.selfieView); ensureSelfieCamera(); }
     }
 
-    onValue(sessionRef, snap => {
-      const data = snap.val();
-      if (!data) return;
-      state.session = data;
-      applyPhase();
-    });
-
+    onValue(sessionRef, snap => { const data = snap.val(); if (!data) return; state.session = data; applyPhase(); });
     onValue(participantRef, snap => {
       state.participant = snap.val();
       if (state.participant) {
@@ -488,48 +238,24 @@
 
     els.joinBtn.addEventListener('click', () => joinSession().catch(console.error));
     els.readyBtn.addEventListener('click', () => setReady().catch(console.error));
-    els.nicknameInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') joinSession().catch(console.error);
-    });
+    els.nicknameInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinSession().catch(console.error); });
 
     els.captureBtn.addEventListener('click', () => {
-      const video = els.camera;
-      const canvas = els.snapshot;
+      const video = els.camera, canvas = els.snapshot;
       if (!video.videoWidth || !video.videoHeight) return;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
       const grad = ctx.createLinearGradient(0, canvas.height * 0.6, 0, canvas.height);
-      grad.addColorStop(0, 'rgba(16,16,16,0)');
-      grad.addColorStop(1, 'rgba(16,16,16,.72)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = '#f7b718';
-      ctx.font = `700 ${Math.max(32, canvas.width * 0.05)}px Inter, sans-serif`;
-      ctx.fillText(state.session?.finalHeadline || 'CrowdCode', canvas.width * 0.08, canvas.height * 0.84);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = `500 ${Math.max(22, canvas.width * 0.032)}px Inter, sans-serif`;
-      ctx.fillText(state.session?.finalSubhead || '', canvas.width * 0.08, canvas.height * 0.89);
-
+      grad.addColorStop(0, 'rgba(16,16,16,0)'); grad.addColorStop(1, 'rgba(16,16,16,.72)');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#f7b718'; ctx.font = `700 ${Math.max(32, canvas.width * 0.05)}px Inter, sans-serif`; ctx.fillText(state.session?.finalHeadline || 'CrowdCode', canvas.width * 0.08, canvas.height * 0.84);
+      ctx.fillStyle = '#ffffff'; ctx.font = `500 ${Math.max(22, canvas.width * 0.032)}px Inter, sans-serif`; ctx.fillText(state.session?.finalSubhead || '', canvas.width * 0.08, canvas.height * 0.89);
       const dataUrl = canvas.toDataURL('image/png');
-      els.downloadBtn.href = dataUrl;
-      els.snapshot.classList.remove('hidden');
-      els.camera.classList.add('hidden');
-      els.downloadBtn.classList.remove('hidden');
-      els.retakeBtn.classList.remove('hidden');
-      els.captureBtn.classList.add('hidden');
+      els.downloadBtn.href = dataUrl; els.snapshot.classList.remove('hidden'); els.camera.classList.add('hidden'); els.downloadBtn.classList.remove('hidden'); els.retakeBtn.classList.remove('hidden'); els.captureBtn.classList.add('hidden');
     });
-
     els.retakeBtn.addEventListener('click', () => {
-      els.snapshot.classList.add('hidden');
-      els.camera.classList.remove('hidden');
-      els.downloadBtn.classList.add('hidden');
-      els.retakeBtn.classList.add('hidden');
-      els.captureBtn.classList.remove('hidden');
+      els.snapshot.classList.add('hidden'); els.camera.classList.remove('hidden'); els.downloadBtn.classList.add('hidden'); els.retakeBtn.classList.add('hidden'); els.captureBtn.classList.remove('hidden');
     });
 
     updateTileView();
