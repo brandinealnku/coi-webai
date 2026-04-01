@@ -274,6 +274,10 @@
       width:100%;
       max-width:460px;
       text-align:center;
+    
+      max-height:100%;
+      overflow-y:auto;
+      padding-bottom:20px; /* prevents button from hitting bottom edge */
     }
 
     .overlay-title{
@@ -700,9 +704,9 @@
 
     .cta-stack{
       display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
+      flex-direction:column; /* 🔥 better UX */
+      gap:10px;
+      margin-top:14px;
     }
 
     .small-note{
