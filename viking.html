@@ -2,19 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NKU COI WebAI Demo | Brandi Neal</title>
+  <title>NKU College of Informatics | Explore Your Future in Tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta
     name="description"
-    content="Mobile-friendly NKU College of Informatics AI showcase demo featuring real-time camera interaction, face tracking, overlays, and background effects. Built by Dr. Brandi Neal."
+    content="Try a live AI experience and explore majors, interests, and future opportunities with the NKU College of Informatics."
   />
   <meta name="theme-color" content="#111111" />
-
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    crossorigin="anonymous"
-  />
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
@@ -24,32 +18,32 @@
     :root {
       --nku-gold: #f7b718;
       --nku-black: #111111;
+      --nku-purple: #4f2d7f;
       --text: #1f2937;
-      --muted: #6b7280;
+      --muted: #64748b;
       --soft-bg: #f8fafc;
       --card-bg: rgba(255, 255, 255, 0.96);
       --border: #e5e7eb;
       --shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
-      --radius: 22px;
+      --radius: 24px;
       --success: #16a34a;
       --danger: #ef4444;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
       min-height: 100%;
+      scroll-behavior: smooth;
     }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(247, 183, 24, 0.12), transparent 24%),
-        radial-gradient(circle at top right, rgba(17, 17, 17, 0.06), transparent 26%),
-        linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
+        radial-gradient(circle at top left, rgba(247, 183, 24, 0.14), transparent 24%),
+        radial-gradient(circle at top right, rgba(79, 45, 127, 0.10), transparent 28%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
@@ -57,19 +51,13 @@
 
     a {
       color: inherit;
-    }
-
-    code {
-      background: #f3f4f6;
-      padding: 2px 6px;
-      border-radius: 8px;
-      font-size: 0.92em;
+      text-decoration: none;
     }
 
     .page-shell {
       max-width: 1220px;
       margin: 0 auto;
-      padding: 18px;
+      padding: 14px 14px 110px;
     }
 
     .topbar {
@@ -82,7 +70,7 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       box-shadow: var(--shadow);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
       backdrop-filter: blur(12px);
     }
@@ -99,7 +87,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 12px;
+      padding: 8px 12px;
       border-radius: 999px;
       background: var(--nku-gold);
       color: var(--nku-black);
@@ -111,18 +99,43 @@
     }
 
     .brand-sub {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 700;
+    }
+
+    .topbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .topbar-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .topbar-link.primary {
+      background: var(--nku-black);
+      color: #fff;
+      border-color: var(--nku-black);
     }
 
     .hero-card {
-      background: linear-gradient(135deg, rgba(17,17,17,0.96), rgba(42,45,52,0.93));
+      background: linear-gradient(135deg, rgba(17,17,17,0.99), rgba(53,40,88,0.97));
       color: white;
-      border-radius: 28px;
-      padding: 28px;
+      border-radius: 30px;
+      padding: 24px;
       box-shadow: var(--shadow);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       overflow: hidden;
       position: relative;
     }
@@ -130,42 +143,43 @@
     .hero-card::before {
       content: "";
       position: absolute;
-      width: 260px;
-      height: 260px;
-      right: -70px;
-      top: -70px;
-      background: radial-gradient(circle, rgba(247,183,24,0.26), transparent 68%);
+      width: 340px;
+      height: 340px;
+      right: -90px;
+      top: -90px;
+      background: radial-gradient(circle, rgba(247,183,24,0.32), transparent 68%);
       pointer-events: none;
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 20px;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
       position: relative;
       z-index: 1;
+      align-items: start;
     }
 
     .eyebrow {
       font-size: 0.76rem;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      opacity: 0.82;
-      margin-bottom: 8px;
+      opacity: 0.84;
+      margin-bottom: 10px;
     }
 
     h1 {
-      font-size: clamp(2rem, 4vw, 3.3rem);
-      line-height: 1.02;
+      font-size: clamp(2.05rem, 5vw, 3.7rem);
+      line-height: 1.0;
       margin: 0 0 12px 0;
       letter-spacing: -0.03em;
     }
 
     .hero-lead {
       font-size: 1.02rem;
-      line-height: 1.7;
-      color: rgba(255,255,255,0.9);
+      line-height: 1.72;
+      color: rgba(255,255,255,0.92);
       max-width: 60ch;
       margin-bottom: 16px;
     }
@@ -174,7 +188,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .hero-badge {
@@ -184,7 +198,7 @@
       border-radius: 999px;
       padding: 8px 12px;
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
       backdrop-filter: blur(8px);
     }
 
@@ -199,11 +213,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 48px;
+      min-height: 50px;
       padding: 12px 18px;
       border-radius: 999px;
-      font-weight: 800;
-      text-decoration: none;
+      font-weight: 900;
       border: 1px solid transparent;
     }
 
@@ -234,7 +247,7 @@
 
     .mini-label {
       font-size: 0.72rem;
-      font-weight: 800;
+      font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       opacity: 0.82;
@@ -244,14 +257,37 @@
     .mini-card p {
       margin: 0;
       line-height: 1.55;
-      color: rgba(255,255,255,0.92);
+      color: rgba(255,255,255,0.94);
       font-size: 0.95rem;
     }
 
-    .creator-name {
-      font-size: 1.08rem;
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .stat-num {
+      font-size: 1.4rem;
       font-weight: 900;
+      line-height: 1;
       margin-bottom: 4px;
+      color: var(--nku-gold);
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.35;
+      font-weight: 700;
     }
 
     .main-card {
@@ -265,25 +301,9 @@
 
     .content-wrap {
       display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 22px;
-      padding: 22px;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .tag {
-      background: #f3f4f6;
-      color: #374151;
-      border-radius: 999px;
-      padding: 7px 11px;
-      font-size: 0.79rem;
-      font-weight: 700;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 18px;
+      padding: 18px;
     }
 
     .section-title {
@@ -292,14 +312,22 @@
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.14em;
-      margin: 20px 0 10px;
+      margin: 18px 0 10px;
+    }
+
+    .section-heading {
+      font-size: 1.65rem;
+      font-weight: 900;
+      line-height: 1.08;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.02em;
     }
 
     .lead {
       font-size: 0.98rem;
       color: #4b5563;
-      line-height: 1.7;
-      margin-bottom: 18px;
+      line-height: 1.72;
+      margin-bottom: 16px;
     }
 
     .steps {
@@ -326,8 +354,8 @@
     .step-num {
       color: var(--nku-black);
       background: var(--nku-gold);
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
@@ -335,61 +363,184 @@
       font-weight: 900;
       flex: 0 0 auto;
       font-size: 0.83rem;
+      margin-top: 1px;
     }
 
-    .info-card {
-      background: #fafafa;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
+    .value-grid {
+      display: grid;
+      gap: 10px;
       margin-top: 14px;
     }
 
-    .info-text {
-      font-size: 0.92rem;
-      color: #4b5563;
-      line-height: 1.7;
-      margin: 0;
+    .value-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
     }
 
-    .contact-card {
-      background: linear-gradient(135deg, #fff8df 0%, #ffffff 100%);
-      border: 1px solid #f4df8b;
-      border-radius: 18px;
+    .value-card h3 {
+      font-size: 1rem;
+      margin: 0 0 6px 0;
+      font-weight: 900;
+    }
+
+    .value-card p {
+      margin: 0;
+      color: #4b5563;
+      line-height: 1.65;
+      font-size: 0.93rem;
+    }
+
+    .interest-card {
+      background: linear-gradient(135deg, #f9fbff 0%, #ffffff 100%);
+      border: 1px solid #dbe4f0;
+      border-radius: 20px;
       padding: 16px;
       margin-top: 18px;
     }
 
-    .contact-card h3 {
+    .interest-card h3 {
       margin: 0 0 6px 0;
-      font-size: 1rem;
+      font-size: 1.06rem;
       font-weight: 900;
     }
 
-    .contact-card p {
-      margin: 0 0 10px 0;
+    .interest-card p {
+      margin: 0 0 14px 0;
+      color: #4b5563;
+      line-height: 1.65;
+      font-size: 0.93rem;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field,
+    .select-field,
+    .textarea-field {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: #111827;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .field:focus,
+    .select-field:focus,
+    .textarea-field:focus {
+      border-color: var(--nku-gold);
+      box-shadow: 0 0 0 4px rgba(247,183,24,0.18);
+    }
+
+    .textarea-field {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .checkbox-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.9rem;
+      color: #374151;
+      line-height: 1.55;
+    }
+
+    .funnel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .funnel-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 900;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .funnel-btn.primary {
+      background: var(--nku-black);
+      color: #fff;
+    }
+
+    .funnel-btn.secondary {
+      background: #fff;
+      color: #111827;
+      border-color: #d1d5db;
+    }
+
+    .form-message {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--success);
+      display: none;
+    }
+
+    .quick-links-card {
+      background: linear-gradient(135deg, #fff8df 0%, #ffffff 100%);
+      border: 1px solid #f4df8b;
+      border-radius: 20px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+
+    .quick-links-card h3 {
+      margin: 0 0 6px 0;
+      font-size: 1.02rem;
+      font-weight: 900;
+    }
+
+    .quick-links-card p {
+      margin: 0 0 12px 0;
       color: #4b5563;
       line-height: 1.65;
       font-size: 0.92rem;
     }
 
-    .contact-list {
-      display: grid;
-      gap: 8px;
-      font-size: 0.92rem;
-    }
-
-    .contact-item {
+    .quick-links-row {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
-      align-items: flex-start;
-      word-break: break-word;
     }
 
-    .contact-label {
-      min-width: 82px;
+    .quick-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #d1d5db;
       font-weight: 800;
-      color: #111827;
+      font-size: 0.86rem;
+    }
+
+    .quick-link.primary {
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      border-color: transparent;
     }
 
     .demo-panel {
@@ -440,12 +591,6 @@
     @keyframes shimmer {
       0% { background-position: -120% 0; }
       100% { background-position: 120% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .video-skeleton {
-        animation: none;
-      }
     }
 
     .screen-ui {
@@ -618,7 +763,7 @@
       cursor: pointer;
       transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
       text-align: left;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .filter-btn:hover {
@@ -633,7 +778,7 @@
     .filter-btn.active {
       border-color: var(--nku-gold);
       box-shadow: 0 0 0 3px rgba(247, 183, 24, 0.18);
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .filter-thumb {
@@ -656,9 +801,10 @@
       width: 100%;
       min-height: 52px;
       border-radius: 999px;
-      font-weight: 800;
+      font-weight: 900;
       border: 1px solid transparent;
       font-size: 0.98rem;
+      cursor: pointer;
     }
 
     .btn-start {
@@ -679,8 +825,8 @@
       color: #b91c1c;
     }
 
-    .btn- {
-      background: #111827;
+    .btn-share {
+      background: var(--nku-black);
       color: white;
       border: none;
     }
@@ -717,7 +863,7 @@
     }
 
     .footer-note {
-      padding: 0 22px 22px;
+      padding: 0 18px 18px;
       font-size: 0.88rem;
       color: var(--muted);
       line-height: 1.65;
@@ -725,6 +871,46 @@
 
     .footer-note strong {
       color: #374151;
+    }
+
+    .sticky-mobile-cta {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      z-index: 30;
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 18px 50px rgba(15,23,42,0.18);
+    }
+
+    .mobile-cta-btn {
+      min-height: 50px;
+      border-radius: 999px;
+      padding: 12px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.92rem;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+
+    .mobile-cta-btn.primary {
+      background: var(--nku-black);
+      color: #fff;
+    }
+
+    .mobile-cta-btn.secondary {
+      background: var(--nku-gold);
+      color: var(--nku-black);
     }
 
     @media (max-width: 991.98px) {
@@ -736,7 +922,7 @@
 
     @media (max-width: 767.98px) {
       .page-shell {
-        padding: 12px;
+        padding: 12px 12px 118px;
       }
 
       .topbar {
@@ -783,13 +969,19 @@
       .screen-sub {
         font-size: 0.7rem;
       }
-    }
 
-    @media (max-width: 480px) {
-      .filter-group {
+      .form-row-2,
+      .filter-group,
+      .stats-grid {
         grid-template-columns: 1fr;
       }
 
+      .sticky-mobile-cta {
+        display: grid;
+      }
+    }
+
+    @media (max-width: 480px) {
       #videoContainer {
         height: min(74svh, 560px);
         min-height: 340px;
@@ -803,51 +995,216 @@
         max-width: calc(100% - 24px);
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .video-skeleton { animation: none; }
+      html, body { scroll-behavior: auto; }
+    }
   </style>
 </head>
 
 <body>
   <div class="page-shell">
-    <header class="topbar" aria-label="NKU College of Informatics interactive AI demo header">
+    <header class="topbar" aria-label="NKU College of Informatics recruiting header">
       <div class="brand">
-        <div class="brand-pill">NKU · COI</div>
-        <span class="brand-sub">WebAI Demo</span>
+        <div class="brand-pill">NKU · College of Informatics</div>
+        <span class="brand-sub">Explore your future in tech</span>
+      </div>
+
+      <div class="topbar-actions">
+        <a class="topbar-link" href="#student-info">Find Your Fit</a>
+        <a class="topbar-link" href="#demo-area">Try the AI</a>
+        <a class="topbar-link primary" href="#interest-form">Get NKU Info</a>
       </div>
     </header>
 
-    <main class="main-card" aria-labelledby="page-title">
-      <div class="content-wrap">
-        <section aria-label="Demo description">
+    <section class="hero-card" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Prospective students · hands-on technology · mobile-first experience</p>
+          <h1 id="hero-title">You could build things like this at NKU.</h1>
 
-          <p class="eyebrow" style="color:#6b7280;">College of Informatics</p>
-          <h2 id="page-title" style="font-size:clamp(1.6rem,2.8vw,2.3rem); margin:0 0 10px 0; letter-spacing:-0.02em;">
-            Interactive WebAI + AR
-          </h2>
-
-          <p class="lead">
-            This experience demonstrates how modern webpages can respond intelligently in real time using camera input, face tracking, background replacement, and visual overlays.
-            It is built to feel approachable for visitors while still showcasing meaningful AI and web technology.
+          <p class="hero-lead">
+            If you are interested in AI, apps, cybersecurity, media, websites, design, business, or data,
+            the NKU College of Informatics is a place where technology and creativity come together.
+            Try the live AI experience below, picture yourself building projects like this, and take the next step.
           </p>
 
-          <h3 class="section-title">How to use it</h3>
+          <div class="hero-badges">
+            <span class="hero-badge">Artificial Intelligence</span>
+            <span class="hero-badge">Web & App Development</span>
+            <span class="hero-badge">Cybersecurity</span>
+            <span class="hero-badge">Data & Analytics</span>
+            <span class="hero-badge">Digital Media</span>
+          </div>
+
+          <div class="hero-cta-row">
+            <a class="hero-cta primary" href="#demo-area">Try the Live AI Mirror</a>
+            <a class="hero-cta secondary" href="#interest-form">I Want More Info</a>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="mini-card">
+            <div class="mini-label">Why stop here?</div>
+            <p>
+              This is more than a flyer. It is a live example of the kind of interactive, creative, future-focused work
+              students can explore in the College of Informatics.
+            </p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-num">Create</div>
+              <div class="stat-label">Build digital experiences people remember</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">Code</div>
+              <div class="stat-label">Learn how technology actually works</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">Explore</div>
+              <div class="stat-label">Find majors tied to real careers</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">Launch</div>
+              <div class="stat-label">Turn curiosity into opportunity</div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-label">A strong fit if you like…</div>
+            <p>
+              technology, gaming, websites, apps, storytelling, cybersecurity, media, business, creativity,
+              computers, or solving problems.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="main-card" aria-labelledby="page-title">
+      <div class="content-wrap">
+        <section id="student-info" aria-label="Prospective student information">
+          <p class="section-title">Start here</p>
+          <h2 id="page-title" class="section-heading">See how your interests could connect to NKU College of Informatics.</h2>
+
+          <p class="lead">
+            You do not have to already know exactly what you want to major in. The College of Informatics is a place
+            to explore technology, creativity, communication, design, systems, AI, cybersecurity, and data in ways that feel real.
+          </p>
+
+          <h3 class="section-title">Your quick event path</h3>
           <ol class="steps">
             <li>
               <span class="step-num">1</span>
-              <span>Tap <strong>Start Camera &amp; AI</strong> and allow access to your device camera.</span>
+              <span><strong>Try the live AI experience</strong> and see what modern web technology can do in real time.</span>
             </li>
             <li>
               <span class="step-num">2</span>
-              <span>Try a mode such as <strong>Glasses</strong>, <strong>Helmet</strong>, <strong>Viking</strong>, or <strong>Griffin Hall</strong>.</span>
+              <span><strong>Think about your fit</strong>—AI, software, cybersecurity, media, design, business tech, or data.</span>
             </li>
             <li>
               <span class="step-num">3</span>
-              <span>Use <strong>Capture Snapshot</strong> to save a photo of your experience to your device.</span>
+              <span><strong>Take the next step</strong> by leaving your info or visiting the NKU links below.</span>
             </li>
           </ol>
 
-        <section id="demo-area" aria-label="Live AI demo">
+          <div class="value-grid">
+            <div class="value-card">
+              <h3>Technology you can actually experience</h3>
+              <p>
+                This page lets you interact with live browser-based AI so you can imagine what it feels like
+                to build modern digital experiences.
+              </p>
+            </div>
+
+            <div class="value-card">
+              <h3>Pathways for different kinds of students</h3>
+              <p>
+                You do not have to be “the coding kid” to belong here. Students interested in art, business,
+                storytelling, security, media, AI, and problem-solving can all find a path.
+              </p>
+            </div>
+
+            <div class="value-card">
+              <h3>Projects that feel real</h3>
+              <p>
+                Informatics is about creating, testing, designing, presenting, solving, and building
+                things that connect to the real world.
+              </p>
+            </div>
+          </div>
+
+          <section id="interest-form" class="interest-card" aria-labelledby="interest-title">
+            <h3 id="interest-title">Want NKU to follow up with you?</h3>
+            <p>
+              This demo version stores information on the device only. Later, you can connect it to Google Forms,
+              Apps Script, Airtable, Firebase, or your admissions workflow.
+            </p>
+
+            <form id="studentInterestForm" class="form-grid">
+              <div class="form-row-2">
+                <input class="field" type="text" id="studentName" name="studentName" placeholder="Your name" />
+                <input class="field" type="email" id="studentEmail" name="studentEmail" placeholder="Your email" />
+              </div>
+
+              <div class="form-row-2">
+                <input class="field" type="text" id="highSchool" name="highSchool" placeholder="School name" />
+                <input class="field" type="text" id="graduationYear" name="graduationYear" placeholder="Graduation year" />
+              </div>
+
+              <select class="select-field" id="interestArea" name="interestArea">
+                <option value="">What sounds most interesting right now?</option>
+                <option>Artificial Intelligence</option>
+                <option>Software / App Development</option>
+                <option>Cybersecurity</option>
+                <option>Data / Analytics</option>
+                <option>Web Design / Development</option>
+                <option>Digital Media / Storytelling</option>
+                <option>Business + Technology</option>
+                <option>I’m still exploring</option>
+              </select>
+
+              <textarea
+                class="textarea-field"
+                id="studentMessage"
+                name="studentMessage"
+                placeholder="What kinds of projects, majors, careers, or college opportunities are you curious about?"
+              ></textarea>
+
+              <label class="checkbox-row">
+                <input type="checkbox" id="contactPermission" />
+                <span>I’d like NKU to follow up with me about College of Informatics opportunities.</span>
+              </label>
+
+              <div class="funnel-actions">
+                <button type="submit" class="funnel-btn primary">Save My Interest</button>
+                <button type="button" id="downloadLeadBtn" class="funnel-btn secondary">Download My Info</button>
+              </div>
+
+              <div id="formMessage" class="form-message">
+                Your interest has been saved on this device for the demo.
+              </div>
+            </form>
+          </section>
+
+          <div class="quick-links-card">
+            <h3>Helpful next steps</h3>
+            <p>
+              Replace these with your real event links, landing pages, and admissions flow before the event.
+            </p>
+            <div class="quick-links-row">
+              <a class="quick-link primary" href="https://www.nku.edu/admissions.html" target="_blank" rel="noopener">Admissions</a>
+              <a class="quick-link" href="https://www.nku.edu/academics/informatics.html" target="_blank" rel="noopener">Explore Programs</a>
+              <a class="quick-link" href="https://www.nku.edu/" target="_blank" rel="noopener">Visit NKU</a>
+            </div>
+          </div>
+        </section>
+
+        <section id="demo-area" aria-label="Live AI recruiting experience">
           <div class="demo-panel">
-            <div id="videoContainer" aria-label="Live interactive AI mirror area">
+            <div id="videoContainer" aria-label="Live AI mirror recruiting experience">
               <div class="video-skeleton" id="videoSkeleton" aria-hidden="true"></div>
 
               <video
@@ -868,7 +1225,7 @@
                 <div class="screen-gradient-top"></div>
                 <div class="screen-gradient-bottom"></div>
 
-                <div class="screen-pill">NKU AI Showcase</div>
+                <div class="screen-pill">NKU Future Tech Experience</div>
 
                 <div class="screen-status">
                   <span id="screenStatusDot" class="screen-status-dot"></span>
@@ -876,12 +1233,12 @@
                 </div>
 
                 <div class="screen-footer">
-                  <div class="screen-kicker">Live demo</div>
-                  <h2 class="screen-title">Interactive AI Mirror</h2>
-                  <div class="screen-sub">Camera · Canvas · TensorFlow.js · College Showcase Experience</div>
+                  <div class="screen-kicker">Interactive recruiting experience</div>
+                  <h2 class="screen-title">Imagine what you could build at NKU.</h2>
+                  <div class="screen-sub">AI · Web Development · Creative Technology · College of Informatics</div>
                 </div>
 
-                <div class="screen-credit">Created by Dr. Brandi Neal</div>
+                <div class="screen-credit">Experience built by Dr. Brandi Neal</div>
               </div>
             </div>
 
@@ -891,7 +1248,7 @@
                 <span id="statusText" class="status-text">Tap “Start Camera &amp; AI” to begin.</span>
               </div>
               <div class="status-hint">
-                Best results: use Chrome or Edge over HTTPS with good lighting. On phones, opening from a QR code works especially well.
+                Best results: use Chrome or Edge over HTTPS with good lighting. On phones, this works especially well from a QR code.
               </div>
             </div>
 
@@ -908,13 +1265,8 @@
                 aria-pressed="true"
                 aria-checked="true"
               >
-                <img
-                  src="glasses.png"
-                  alt="Preview of glasses mode"
-                  class="filter-thumb"
-                  loading="lazy"
-                />
-                <span>Glasses</span>
+                <img src="glasses.png" alt="Preview of glasses mode" class="filter-thumb" loading="lazy" />
+                <span>Tech Glasses</span>
               </button>
 
               <button
@@ -925,13 +1277,8 @@
                 aria-pressed="false"
                 aria-checked="false"
               >
-                <img
-                  src="helmet.png"
-                  alt="Preview of helmet mode"
-                  class="filter-thumb"
-                  loading="lazy"
-                />
-                <span>Helmet</span>
+                <img src="helmet.png" alt="Preview of helmet mode" class="filter-thumb" loading="lazy" />
+                <span>Viking Helmet</span>
               </button>
 
               <button
@@ -942,12 +1289,7 @@
                 aria-pressed="false"
                 aria-checked="false"
               >
-                <img
-                  src="beard.png"
-                  alt="Preview of Viking mode."
-                  class="filter-thumb"
-                  loading="lazy"
-                />
+                <img src="beard.png" alt="Preview of Viking mode" class="filter-thumb" loading="lazy" />
                 <span>Viking Mode</span>
               </button>
 
@@ -959,13 +1301,8 @@
                 aria-pressed="false"
                 aria-checked="false"
               >
-                <img
-                  src="griffin-hall.jpg"
-                  alt="Preview of Griffin Hall mode"
-                  class="filter-thumb"
-                  loading="lazy"
-                />
-                <span>Griffin Hall</span>
+                <img src="griffin-hall.jpg" alt="Preview of campus mode" class="filter-thumb" loading="lazy" />
+                <span>Campus Scene</span>
               </button>
             </div>
 
@@ -977,7 +1314,7 @@
                 📸 Capture Snapshot
               </button>
               <button id="shareBtn" type="button" class="app-btn btn-share">
-                📲 Share Demo
+                📲 Share Experience
               </button>
               <button id="stopBtn" type="button" class="app-btn btn-stop" disabled>
                 ⏹️ Turn Camera Off
@@ -989,12 +1326,12 @@
               <div class="preview-image-wrapper">
                 <img
                   id="snapshotPreview"
-                  alt="Saved AI demo snapshot preview"
+                  alt="Saved AI experience snapshot preview"
                   loading="lazy"
                 />
               </div>
               <p class="small-note">
-                Saved locally as a PNG image. 
+                Saved locally as a PNG image.
               </p>
             </section>
           </div>
@@ -1002,18 +1339,22 @@
       </div>
 
       <div class="footer-note">
-        <strong>Privacy-first design:</strong> this demo is intended to process effects on the device in the browser, with no upload workflow built into this page.
-        <br />
+        <strong>Privacy-first design:</strong> this experience is intended to process effects on the device in the browser, with no upload workflow built into this page.
       </div>
     </main>
+  </div>
+
+  <div class="sticky-mobile-cta" aria-label="Sticky mobile actions">
+    <a class="mobile-cta-btn primary" href="#interest-form">Get NKU Info</a>
+    <a class="mobile-cta-btn secondary" href="#demo-area">Try the AI</a>
   </div>
 
   <script>
   (function () {
     "use strict";
 
-    const TARGET_FOLDER_LABEL = "NKU_COI_AI_Demo";
-    const CREATOR_CREDIT_TEXT = "Created by Dr. Brandi Neal";
+    const TARGET_FOLDER_LABEL = "NKU_COI_Student_Recruiting_Experience";
+    const CREATOR_CREDIT_TEXT = "Experience built by Dr. Brandi Neal";
 
     const video = document.getElementById("video");
     const canvas = document.getElementById("overlay");
@@ -1033,6 +1374,10 @@
 
     const previewSection = document.getElementById("previewSection");
     const snapshotPreview = document.getElementById("snapshotPreview");
+
+    const studentInterestForm = document.getElementById("studentInterestForm");
+    const formMessage = document.getElementById("formMessage");
+    const downloadLeadBtn = document.getElementById("downloadLeadBtn");
 
     let faceModel = null;
     let bodyPixModel = null;
@@ -1078,35 +1423,26 @@
 
     const bgImage = new Image();
     bgImage.src = "griffin-hall.jpg";
-    bgImage.onload = () => {
-      bgReady = true;
-      console.log("✅ Griffin Hall background loaded:", bgImage.naturalWidth, bgImage.naturalHeight);
-    };
+    bgImage.onload = () => { bgReady = true; };
     bgImage.onerror = () => {
       bgReady = false;
-      console.warn("⚠️ Could not load griffin-hall.jpg.");
+      console.warn("Could not load griffin-hall.jpg.");
     };
 
     const glassesImg = new Image();
     glassesImg.src = "glasses.png";
-    glassesImg.onload = () => {
-      glassesImgReady = true;
-    };
-    glassesImg.onerror = () => console.warn("⚠️ Could not load glasses.png");
+    glassesImg.onload = () => { glassesImgReady = true; };
+    glassesImg.onerror = () => console.warn("Could not load glasses.png");
 
     const helmetImg = new Image();
     helmetImg.src = "helmet.png";
-    helmetImg.onload = () => {
-      helmetImgReady = true;
-    };
-    helmetImg.onerror = () => console.warn("⚠️ Could not load helmet.png");
+    helmetImg.onload = () => { helmetImgReady = true; };
+    helmetImg.onerror = () => console.warn("Could not load helmet.png");
 
     const beardImg = new Image();
     beardImg.src = "beard.png";
-    beardImg.onload = () => {
-      beardImgReady = true;
-    };
-    beardImg.onerror = () => console.warn("⚠️ Could not load beard.png");
+    beardImg.onload = () => { beardImgReady = true; };
+    beardImg.onerror = () => console.warn("Could not load beard.png");
 
     function setStatus(message, mode = "idle") {
       if (message === lastStatusMsg && mode === lastStatusMode) return;
@@ -1136,9 +1472,9 @@
       }
 
       if (navigator.share) {
-        shareBtn.innerHTML = "📲 Share Demo";
+        shareBtn.innerHTML = "📲 Share Experience";
       } else {
-        shareBtn.innerHTML = "🔗 Copy Demo URL";
+        shareBtn.innerHTML = "🔗 Copy Page URL";
       }
     }
 
@@ -1151,7 +1487,6 @@
           const ok = await tf.setBackend(backendName);
           if (ok) {
             await tf.ready();
-            console.log("✅ Using TFJS backend:", tf.getBackend());
             return;
           }
         } catch (error) {
@@ -1168,10 +1503,8 @@
 
       canvas.width = renderWidth;
       canvas.height = renderHeight;
-
       tempCanvas.width = renderWidth;
       tempCanvas.height = renderHeight;
-
       bgCanvas.width = renderWidth;
       bgCanvas.height = renderHeight;
 
@@ -1407,7 +1740,8 @@
       );
     }
 
-    function drawVikingOnFace(topLeft, bottomRight) {
+    function drawVikingOnFace(topLeft, bottomRight, landmarks = null) {
+      drawHelmetOnFace(topLeft, bottomRight, landmarks);
       drawBeardOnFace(topLeft, bottomRight);
     }
 
@@ -1487,7 +1821,7 @@
 
       ctx.clearRect(0, 0, logicalW, logicalH);
 
-      if (bgReady && bodyPixModel && lastSegmentation) {
+      if (activeFilter === "griffin" && bgReady && bodyPixModel && lastSegmentation) {
         tempCtx.clearRect(0, 0, logicalW, logicalH);
         tempCtx.drawImage(video, 0, 0, logicalW, logicalH);
 
@@ -1528,12 +1862,12 @@
       targetCtx.save();
       targetCtx.fillStyle = "rgba(17,17,17,0.58)";
       targetCtx.beginPath();
-      targetCtx.roundRect(pad, outputH - boxH - pad, Math.min(outputW * 0.72, 420), boxH, 14);
+      targetCtx.roundRect(pad, outputH - boxH - pad, Math.min(outputW * 0.72, 430), boxH, 14);
       targetCtx.fill();
 
       targetCtx.fillStyle = "#ffffff";
       targetCtx.font = `700 ${Math.max(14, Math.round(outputW * 0.018))}px system-ui, sans-serif`;
-      targetCtx.fillText("NKU COI AI Showcase", pad + 14, outputH - pad - boxH / 2 + 2);
+      targetCtx.fillText("NKU College of Informatics", pad + 14, outputH - pad - boxH / 2 + 2);
 
       targetCtx.font = `500 ${Math.max(12, Math.round(outputW * 0.014))}px system-ui, sans-serif`;
       targetCtx.fillText(CREATOR_CREDIT_TEXT, pad + 14, outputH - pad - 12);
@@ -1567,20 +1901,24 @@
 
         if (activeFilter === "glasses") {
           drawGlassesOnFace(topLeft, bottomRight, landmarksToUse);
-          setStatus("Glasses mode is active.", "active");
+          setStatus("Tech Glasses mode is active.", "active");
         } else if (activeFilter === "helmet") {
           drawHelmetOnFace(topLeft, bottomRight, landmarksToUse);
-          setStatus("Helmet mode is active.", "active");
+          setStatus("Viking Helmet mode is active.", "active");
         } else if (activeFilter === "combo") {
-          drawVikingOnFace(topLeft, bottomRight);
-          setStatus("Viking mode is active.", "active");
+          drawVikingOnFace(topLeft, bottomRight, landmarksToUse);
+          setStatus("Viking Mode is active.", "active");
         } else {
-          setStatus("Griffin Hall background mode is active.", "active");
+          setStatus("Campus Scene mode is active.", "active");
         }
 
         setScreenStatus("Face Locked", true);
       } else {
-        setStatus("AI is running. Move into view to activate overlays.", "active");
+        if (activeFilter === "griffin") {
+          setStatus("AI is running. Move into view to activate the experience.", "active");
+        } else {
+          setStatus("AI is running. Move into view to activate overlays.", "active");
+        }
         setScreenStatus("Searching…", false);
       }
 
@@ -1637,11 +1975,11 @@
       setStatus("Snapshot saved to your device and ready to share.", "active");
     }
 
-    async function shareDemo() {
+    async function shareExperience() {
       const shareURL = window.location.href;
-      const shareTitle = "NKU COI WebAI Demo | Brandi Neal";
-      const demoShareText = "Try this interactive NKU College of Informatics WebAI + AR demo created by Dr. Brandi Neal.";
-      const snapshotShareText = "Check out my snapshot from this NKU COI WebAI demo by Dr. Brandi Neal.";
+      const shareTitle = "NKU College of Informatics | Explore Your Future in Tech";
+      const pageShareText = "Check out this interactive NKU College of Informatics experience.";
+      const snapshotShareText = "Check out my snapshot from this NKU College of Informatics AI experience.";
 
       try {
         if (lastSnapshotFile && navigator.share && navigator.canShare) {
@@ -1661,16 +1999,16 @@
         if (navigator.share) {
           await navigator.share({
             title: shareTitle,
-            text: demoShareText,
+            text: pageShareText,
             url: shareURL
           });
-          setStatus("Demo share sheet opened.", "active");
+          setStatus("Share sheet opened.", "active");
           return;
         }
 
         if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(shareURL);
-          setStatus("Sharing is not supported here, so the demo URL was copied to your clipboard.", "active");
+          setStatus("Page link copied to clipboard.", "active");
           return;
         }
 
@@ -1686,14 +2024,14 @@
         try {
           if (navigator.clipboard?.writeText) {
             await navigator.clipboard.writeText(shareURL);
-            setStatus("Share was unavailable, so the demo URL was copied instead.", "active");
+            setStatus("Share was unavailable, so the page URL was copied instead.", "active");
             return;
           }
         } catch (clipboardError) {
           console.warn("Clipboard fallback failed:", clipboardError);
         }
 
-        setStatus("Could not share this demo on this device. Please copy the URL manually.", "error");
+        setStatus("Could not share on this device. Please copy the URL manually.", "error");
       }
     }
 
@@ -1723,7 +2061,7 @@
             quantBytes: 2
           });
         } catch (error) {
-          console.warn("⚠️ BodyPix failed to load.", error);
+          console.warn("BodyPix failed to load.", error);
           bodyPixModel = null;
         }
 
@@ -1752,6 +2090,39 @@
       }
     }
 
+    function getLeadPayload() {
+      return {
+        studentName: document.getElementById("studentName").value.trim(),
+        studentEmail: document.getElementById("studentEmail").value.trim(),
+        highSchool: document.getElementById("highSchool").value.trim(),
+        graduationYear: document.getElementById("graduationYear").value.trim(),
+        interestArea: document.getElementById("interestArea").value,
+        studentMessage: document.getElementById("studentMessage").value.trim(),
+        contactPermission: document.getElementById("contactPermission").checked,
+        submittedAt: new Date().toISOString(),
+        source: "NKU COI Student Recruiting Experience"
+      };
+    }
+
+    function saveLeadLocally(payload) {
+      const key = "nkuStudentRecruitingLeads";
+      const existing = JSON.parse(localStorage.getItem(key) || "[]");
+      existing.push(payload);
+      localStorage.setItem(key, JSON.stringify(existing));
+    }
+
+    function downloadLeadAsJson(payload) {
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `nku-interest-${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
     filterButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         activeFilter = btn.getAttribute("data-filter") || "glasses";
@@ -1767,23 +2138,45 @@
         btn.setAttribute("aria-checked", "true");
 
         if (activeFilter === "glasses") {
-          setStatus("Glasses mode selected.", aiRunning ? "active" : "idle");
+          setStatus("Tech Glasses mode selected.", aiRunning ? "active" : "idle");
         } else if (activeFilter === "helmet") {
-          setStatus("Helmet mode selected.", aiRunning ? "active" : "idle");
+          setStatus("Viking Helmet mode selected.", aiRunning ? "active" : "idle");
         } else if (activeFilter === "combo") {
-          setStatus("Viking mode selected.", aiRunning ? "active" : "idle");
+          setStatus("Viking Mode selected.", aiRunning ? "active" : "idle");
         } else {
-          setStatus("Griffin Hall mode selected.", aiRunning ? "active" : "idle");
+          setStatus("Campus Scene mode selected.", aiRunning ? "active" : "idle");
         }
       });
     });
+
+    if (studentInterestForm) {
+      studentInterestForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const payload = getLeadPayload();
+        saveLeadLocally(payload);
+
+        formMessage.style.display = "block";
+        formMessage.textContent = "Your info was saved on this device for the demo.";
+
+        setTimeout(() => {
+          formMessage.style.display = "none";
+        }, 4000);
+      });
+    }
+
+    if (downloadLeadBtn) {
+      downloadLeadBtn.addEventListener("click", function () {
+        const payload = getLeadPayload();
+        downloadLeadAsJson(payload);
+      });
+    }
 
     updateShareButtonLabel();
 
     startBtn.addEventListener("click", startExperience);
     captureBtn.addEventListener("click", captureSnapshot);
     stopBtn.addEventListener("click", stopCamera);
-    shareBtn.addEventListener("click", shareDemo);
+    shareBtn.addEventListener("click", shareExperience);
 
     window.addEventListener("beforeunload", () => {
       stopCamera();
@@ -1791,6 +2184,6 @@
 
     setScreenStatus("Offline", false);
   })();
-</script>
+  </script>
 </body>
 </html>
