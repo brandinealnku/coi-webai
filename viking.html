@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NKU College of Informatics | Explore Your Future in Tech</title>
+  <title>NKU College of Informatics | Try AI + Explore Your Future</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta
     name="description"
-    content="Try a live AI experience and explore majors, interests, and future opportunities with the NKU College of Informatics."
+    content="Scan, try a live AI experience, and explore tech, AI, apps, cybersecurity, media, and more with NKU College of Informatics."
   />
   <meta name="theme-color" content="#111111" />
 
@@ -19,10 +19,11 @@
       --nku-gold: #f7b718;
       --nku-black: #111111;
       --nku-purple: #4f2d7f;
-      --text: #1f2937;
+      --text: #18212f;
       --muted: #64748b;
+      --bg: #f6f8fc;
       --soft-bg: #f8fafc;
-      --card-bg: rgba(255, 255, 255, 0.96);
+      --card: rgba(255,255,255,0.96);
       --border: #e5e7eb;
       --shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
       --radius: 24px;
@@ -54,10 +55,22 @@
       text-decoration: none;
     }
 
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
     .page-shell {
-      max-width: 1220px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 14px 14px 110px;
+      padding: 12px 12px 118px;
     }
 
     .topbar {
@@ -70,7 +83,7 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       box-shadow: var(--shadow);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
       backdrop-filter: blur(12px);
     }
@@ -99,9 +112,9 @@
     }
 
     .brand-sub {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .topbar-actions {
@@ -118,7 +131,7 @@
       padding: 10px 14px;
       border-radius: 999px;
       font-weight: 800;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       border: 1px solid var(--border);
       background: #fff;
     }
@@ -132,10 +145,10 @@
     .hero-card {
       background: linear-gradient(135deg, rgba(17,17,17,0.99), rgba(53,40,88,0.97));
       color: white;
-      border-radius: 30px;
-      padding: 24px;
+      border-radius: 28px;
+      padding: 20px;
       box-shadow: var(--shadow);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       overflow: hidden;
       position: relative;
     }
@@ -143,52 +156,51 @@
     .hero-card::before {
       content: "";
       position: absolute;
-      width: 340px;
-      height: 340px;
+      width: 320px;
+      height: 320px;
       right: -90px;
       top: -90px;
-      background: radial-gradient(circle, rgba(247,183,24,0.32), transparent 68%);
+      background: radial-gradient(circle, rgba(247,183,24,0.30), transparent 68%);
       pointer-events: none;
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
+      grid-template-columns: 1fr;
+      gap: 14px;
       position: relative;
       z-index: 1;
-      align-items: start;
     }
 
     .eyebrow {
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       font-weight: 900;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       opacity: 0.84;
-      margin-bottom: 10px;
+      margin: 0 0 10px 0;
     }
 
     h1 {
-      font-size: clamp(2.05rem, 5vw, 3.7rem);
-      line-height: 1.0;
+      font-size: clamp(2rem, 7vw, 3.3rem);
+      line-height: 0.98;
       margin: 0 0 12px 0;
       letter-spacing: -0.03em;
     }
 
     .hero-lead {
-      font-size: 1.02rem;
-      line-height: 1.72;
+      font-size: 1rem;
+      line-height: 1.7;
       color: rgba(255,255,255,0.92);
-      max-width: 60ch;
-      margin-bottom: 16px;
+      margin: 0 0 14px 0;
+      max-width: 34rem;
     }
 
     .hero-badges {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .hero-badge {
@@ -197,16 +209,15 @@
       color: white;
       border-radius: 999px;
       padding: 8px 12px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 800;
       backdrop-filter: blur(8px);
     }
 
     .hero-cta-row {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 10px;
-      align-items: center;
     }
 
     .hero-cta {
@@ -218,6 +229,7 @@
       border-radius: 999px;
       font-weight: 900;
       border: 1px solid transparent;
+      text-align: center;
     }
 
     .hero-cta.primary {
@@ -233,7 +245,7 @@
 
     .hero-side {
       display: grid;
-      gap: 12px;
+      gap: 10px;
       align-content: start;
     }
 
@@ -246,7 +258,7 @@
     }
 
     .mini-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.12em;
@@ -258,12 +270,12 @@
       margin: 0;
       line-height: 1.55;
       color: rgba(255,255,255,0.94);
-      font-size: 0.95rem;
+      font-size: 0.93rem;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
@@ -272,11 +284,10 @@
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 16px;
       padding: 12px;
-      text-align: left;
     }
 
     .stat-num {
-      font-size: 1.4rem;
+      font-size: 1.25rem;
       font-weight: 900;
       line-height: 1;
       margin-bottom: 4px;
@@ -284,14 +295,14 @@
     }
 
     .stat-label {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: rgba(255,255,255,0.88);
       line-height: 1.35;
       font-weight: 700;
     }
 
     .main-card {
-      background: var(--card-bg);
+      background: var(--card);
       border: 1px solid rgba(255,255,255,0.55);
       border-radius: 28px;
       box-shadow: var(--shadow);
@@ -301,13 +312,13 @@
 
     .content-wrap {
       display: grid;
-      grid-template-columns: 0.92fr 1.08fr;
-      gap: 18px;
-      padding: 18px;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 14px;
     }
 
     .section-title {
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 900;
       color: var(--muted);
       text-transform: uppercase;
@@ -316,7 +327,7 @@
     }
 
     .section-heading {
-      font-size: 1.65rem;
+      font-size: 1.55rem;
       font-weight: 900;
       line-height: 1.08;
       margin: 0 0 10px 0;
@@ -324,10 +335,10 @@
     }
 
     .lead {
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       color: #4b5563;
       line-height: 1.72;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .steps {
@@ -347,7 +358,7 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       color: #374151;
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       line-height: 1.55;
     }
 
@@ -380,7 +391,7 @@
     }
 
     .value-card h3 {
-      font-size: 1rem;
+      font-size: 0.98rem;
       margin: 0 0 6px 0;
       font-weight: 900;
     }
@@ -388,8 +399,54 @@
     .value-card p {
       margin: 0;
       color: #4b5563;
-      line-height: 1.65;
-      font-size: 0.93rem;
+      line-height: 1.62;
+      font-size: 0.92rem;
+    }
+
+    .link-card {
+      background: linear-gradient(135deg, #fff8df 0%, #ffffff 100%);
+      border: 1px solid #f4df8b;
+      border-radius: 20px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+
+    .link-card h3 {
+      margin: 0 0 6px 0;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .link-card p {
+      margin: 0 0 12px 0;
+      color: #4b5563;
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    .quick-links-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #d1d5db;
+      font-weight: 800;
+      font-size: 0.86rem;
+    }
+
+    .quick-link.primary {
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      border-color: transparent;
     }
 
     .interest-card {
@@ -402,15 +459,26 @@
 
     .interest-card h3 {
       margin: 0 0 6px 0;
-      font-size: 1.06rem;
+      font-size: 1.04rem;
       font-weight: 900;
     }
 
     .interest-card p {
       margin: 0 0 14px 0;
       color: #4b5563;
-      line-height: 1.65;
-      font-size: 0.93rem;
+      line-height: 1.62;
+      font-size: 0.92rem;
+    }
+
+    .note-callout {
+      padding: 14px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      color: #475569;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-top: 12px;
     }
 
     .form-grid {
@@ -420,7 +488,7 @@
 
     .form-row-2 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 10px;
     }
 
@@ -446,7 +514,7 @@
     }
 
     .textarea-field {
-      min-height: 96px;
+      min-height: 92px;
       resize: vertical;
     }
 
@@ -497,64 +565,18 @@
       display: none;
     }
 
-    .quick-links-card {
-      background: linear-gradient(135deg, #fff8df 0%, #ffffff 100%);
-      border: 1px solid #f4df8b;
-      border-radius: 20px;
-      padding: 16px;
-      margin-top: 18px;
-    }
-
-    .quick-links-card h3 {
-      margin: 0 0 6px 0;
-      font-size: 1.02rem;
-      font-weight: 900;
-    }
-
-    .quick-links-card p {
-      margin: 0 0 12px 0;
-      color: #4b5563;
-      line-height: 1.65;
-      font-size: 0.92rem;
-    }
-
-    .quick-links-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .quick-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 40px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid #d1d5db;
-      font-weight: 800;
-      font-size: 0.86rem;
-    }
-
-    .quick-link.primary {
-      background: var(--nku-gold);
-      color: var(--nku-black);
-      border-color: transparent;
-    }
-
     .demo-panel {
       background: var(--soft-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 14px;
+      padding: 12px;
     }
 
     #videoContainer {
       position: relative;
       width: 100%;
-      height: clamp(420px, 66vh, 760px);
-      min-height: 420px;
+      height: min(72svh, 620px);
+      min-height: 340px;
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid #d1d5db;
@@ -625,7 +647,7 @@
       border-radius: 999px;
       background: rgba(17,17,17,0.48);
       color: #fff;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.14);
@@ -673,7 +695,7 @@
     }
 
     .screen-kicker {
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       text-transform: uppercase;
       letter-spacing: 0.14em;
       font-weight: 800;
@@ -682,17 +704,20 @@
     }
 
     .screen-title {
-      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      font-size: clamp(1.05rem, 4vw, 1.35rem);
       line-height: 1.05;
       font-weight: 900;
       margin: 0;
       letter-spacing: -0.02em;
+      max-width: 17ch;
     }
 
     .screen-sub {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       opacity: 0.92;
       margin-top: 4px;
+      max-width: 28ch;
+      line-height: 1.45;
     }
 
     .status-row {
@@ -731,7 +756,7 @@
     }
 
     .status-text {
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       font-weight: 700;
       color: #374151;
       line-height: 1.4;
@@ -745,7 +770,7 @@
 
     .filter-group {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: 8px;
       margin-bottom: 12px;
     }
@@ -863,10 +888,10 @@
     }
 
     .footer-note {
-      padding: 0 18px 18px;
-      font-size: 0.88rem;
+      padding: 0 14px 18px;
+      font-size: 0.86rem;
       color: var(--muted);
-      line-height: 1.65;
+      line-height: 1.6;
     }
 
     .footer-note strong {
@@ -879,7 +904,7 @@
       right: 12px;
       bottom: max(12px, env(safe-area-inset-bottom));
       z-index: 30;
-      display: none;
+      display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       padding: 10px;
@@ -913,86 +938,40 @@
       color: var(--nku-black);
     }
 
-    @media (max-width: 991.98px) {
+    @media (min-width: 768px) {
+      .page-shell {
+        padding: 16px 16px 118px;
+      }
+
       .hero-grid,
       .content-wrap {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 767.98px) {
-      .page-shell {
-        padding: 12px 12px 118px;
+        grid-template-columns: 1fr 1fr;
       }
 
-      .topbar {
-        border-radius: 18px;
-        padding: 12px;
-      }
-
-      .hero-card {
-        padding: 18px;
-        border-radius: 22px;
-      }
-
-      .brand-sub {
-        font-size: 0.8rem;
-      }
-
-      .content-wrap {
-        padding: 14px;
-        gap: 14px;
-      }
-
-      .demo-panel {
-        padding: 10px;
-      }
-
-      #videoContainer {
-        height: min(72svh, 620px);
-        min-height: 360px;
-      }
-
-      .screen-pill,
-      .screen-status,
-      .screen-credit {
-        font-size: 0.62rem;
-        padding: 6px 9px;
-      }
-
-      .screen-footer {
-        left: 12px;
-        right: 12px;
-        bottom: 42px;
-      }
-
-      .screen-sub {
-        font-size: 0.7rem;
-      }
-
-      .form-row-2,
+      .hero-cta-row,
       .filter-group,
-      .stats-grid {
-        grid-template-columns: 1fr;
+      .form-row-2 {
+        grid-template-columns: 1fr 1fr;
       }
 
-      .sticky-mobile-cta {
+      .filter-group {
         display: grid;
       }
     }
 
-    @media (max-width: 480px) {
-      #videoContainer {
-        height: min(74svh, 560px);
-        min-height: 340px;
+    @media (min-width: 992px) {
+      .hero-grid {
+        grid-template-columns: 1.06fr 0.94fr;
       }
 
-      .screen-pill {
-        max-width: calc(100% - 120px);
+      .content-wrap {
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 18px;
+        padding: 18px;
       }
 
-      .screen-credit {
-        max-width: calc(100% - 24px);
+      .filter-group {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -1005,65 +984,78 @@
 
 <body>
   <div class="page-shell">
+    <header class="topbar" aria-label="NKU College of Informatics recruiting header">
+      <div class="brand">
+        <div class="brand-pill">NKU · College of Informatics</div>
+        <span class="brand-sub">Scan. Try it. See your future.</span>
+      </div>
+
+      <div class="topbar-actions">
+        <a class="topbar-link" href="#why-nku">Why NKU?</a>
+        <a class="topbar-link" href="#demo-area">Try the AI</a>
+        <a class="topbar-link primary" href="#learn-more">Learn More</a>
+      </div>
+    </header>
+
     <section class="hero-card" aria-labelledby="hero-title">
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Prospective students · hands-on technology · mobile-first experience</p>
-          <h1 id="hero-title">You could build things like this at NKU.</h1>
+          <p class="eyebrow">Built for curious students in grades 7–12</p>
+          <h1 id="hero-title">Like tech, games, AI, apps, or design?</h1>
 
           <p class="hero-lead">
-            If you are interested in AI, apps, cybersecurity, media, websites, design, business, or data,
-            the NKU College of Informatics is a place where technology and creativity come together.
-            Try the live AI experience below, picture yourself building projects like this, and take the next step.
+            Start here. Try a live AI experience, see what you could build, and explore how your interests
+            could connect to the NKU College of Informatics.
           </p>
 
           <div class="hero-badges">
-            <span class="hero-badge">Artificial Intelligence</span>
-            <span class="hero-badge">Web & App Development</span>
+            <span class="hero-badge">AI</span>
+            <span class="hero-badge">Apps</span>
             <span class="hero-badge">Cybersecurity</span>
-            <span class="hero-badge">Data & Analytics</span>
-            <span class="hero-badge">Digital Media</span>
+            <span class="hero-badge">Data</span>
+            <span class="hero-badge">Media</span>
+            <span class="hero-badge">Web Design</span>
           </div>
 
           <div class="hero-cta-row">
             <a class="hero-cta primary" href="#demo-area">Try the Live AI Mirror</a>
-            <a class="hero-cta secondary" href="#interest-form">I Want More Info</a>
+            <a class="hero-cta secondary" href="#learn-more">Explore NKU</a>
           </div>
         </div>
 
         <div class="hero-side">
           <div class="mini-card">
-            <div class="mini-label">Why stop here?</div>
+            <div class="mini-label">What makes this fun?</div>
             <p>
-              This is more than a flyer. It is a live example of the kind of interactive, creative, future-focused work
-              students can explore in the College of Informatics.
+              This is not just a page to read. It is something you can try. The camera experience below shows
+              the kind of creative tech students can build.
             </p>
           </div>
 
           <div class="stats-grid">
             <div class="stat-box">
-              <div class="stat-num">Create</div>
-              <div class="stat-label">Build digital experiences people remember</div>
+              <div class="stat-num">Try</div>
+              <div class="stat-label">Use AI right in your browser</div>
             </div>
             <div class="stat-box">
-              <div class="stat-num">Code</div>
-              <div class="stat-label">Learn how technology actually works</div>
+              <div class="stat-num">Build</div>
+              <div class="stat-label">Create things people remember</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">Learn</div>
+              <div class="stat-label">Turn interests into skills</div>
             </div>
             <div class="stat-box">
               <div class="stat-num">Explore</div>
-              <div class="stat-label">Find majors tied to real careers</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-num">Launch</div>
-              <div class="stat-label">Turn curiosity into opportunity</div>
+              <div class="stat-label">Find what fits you best</div>
             </div>
           </div>
 
           <div class="mini-card">
-            <div class="mini-label">A strong fit if you like…</div>
+            <div class="mini-label">You might fit here if you like…</div>
             <p>
-              technology, gaming, websites, apps, storytelling, cybersecurity, media, business, creativity,
-              computers, or solving problems.
+              technology, solving problems, video games, websites, art, media, coding, storytelling,
+              business, security, or figuring out how things work.
             </p>
           </div>
         </div>
@@ -1072,63 +1064,77 @@
 
     <main class="main-card" aria-labelledby="page-title">
       <div class="content-wrap">
-        <section id="student-info" aria-label="Prospective student information">
-          <p class="section-title">Start here</p>
-          <h2 id="page-title" class="section-heading">See how your interests could connect to NKU College of Informatics.</h2>
+        <section id="why-nku" aria-label="Student-facing overview">
+          <p class="section-title">Why this page?</p>
+          <h2 id="page-title" class="section-heading">Because college should feel possible, exciting, and real.</h2>
 
           <p class="lead">
-            You do not have to already know exactly what you want to major in. The College of Informatics is a place
-            to explore technology, creativity, communication, design, systems, AI, cybersecurity, and data in ways that feel real.
+            The NKU College of Informatics is for students who want to do cool things with technology.
+            You do not need to have your whole future figured out yet. You just need curiosity and an interest in learning.
           </p>
 
-          <h3 class="section-title">Your quick event path</h3>
+          <h3 class="section-title">What to do here</h3>
           <ol class="steps">
             <li>
               <span class="step-num">1</span>
-              <span><strong>Try the live AI experience</strong> and see what modern web technology can do in real time.</span>
+              <span><strong>Try the AI.</strong> Turn on the camera and see a live interactive experience.</span>
             </li>
             <li>
               <span class="step-num">2</span>
-              <span><strong>Think about your fit</strong>—AI, software, cybersecurity, media, design, business tech, or data.</span>
+              <span><strong>Picture yourself building it.</strong> Apps, websites, AI tools, media, and more all start with ideas.</span>
             </li>
             <li>
               <span class="step-num">3</span>
-              <span><strong>Take the next step</strong> by leaving your info or visiting the NKU links below.</span>
+              <span><strong>Take the next step.</strong> Use the links below to learn more about NKU and the College of Informatics.</span>
             </li>
           </ol>
 
           <div class="value-grid">
             <div class="value-card">
-              <h3>Technology you can actually experience</h3>
+              <h3>If you like AI and new technology</h3>
               <p>
-                This page lets you interact with live browser-based AI so you can imagine what it feels like
-                to build modern digital experiences.
+                You can explore how computers can recognize faces, power tools, solve problems, and create new experiences.
               </p>
             </div>
 
             <div class="value-card">
-              <h3>Pathways for different kinds of students</h3>
+              <h3>If you like design, content, or creativity</h3>
               <p>
-                You do not have to be “the coding kid” to belong here. Students interested in art, business,
-                storytelling, security, media, AI, and problem-solving can all find a path.
+                Tech needs creative people too. Websites, digital media, branding, and user experience all matter.
               </p>
             </div>
 
             <div class="value-card">
-              <h3>Projects that feel real</h3>
+              <h3>If you like logic, systems, or security</h3>
               <p>
-                Informatics is about creating, testing, designing, presenting, solving, and building
-                things that connect to the real world.
+                Cybersecurity, apps, analytics, and information systems all connect technology to real careers.
               </p>
             </div>
           </div>
 
-          <section id="interest-form" class="interest-card" aria-labelledby="interest-title">
-            <h3 id="interest-title">Want NKU to follow up with you?</h3>
+          <div class="link-card" id="learn-more">
+            <h3>Want to keep exploring?</h3>
             <p>
-              This demo version stores information on the device only. Later, you can connect it to Google Forms,
-              Apps Script, Airtable, Firebase, or your admissions workflow.
+              These buttons should take students, families, and educators to official NKU pages after the STEM fair.
             </p>
+            <div class="quick-links-row">
+              <a class="quick-link primary" href="https://www.nku.edu/admissions.html" target="_blank" rel="noopener">Admissions</a>
+              <a class="quick-link" href="https://www.nku.edu/academics/informatics.html" target="_blank" rel="noopener">College of Informatics</a>
+              <a class="quick-link" href="https://www.nku.edu/" target="_blank" rel="noopener">Visit NKU</a>
+            </div>
+          </div>
+
+          <section class="interest-card" aria-labelledby="interest-title">
+            <h3 id="interest-title">Optional follow-up section</h3>
+            <p>
+              If NKU wants this page to be information-only for the event, replace this section with a button that links
+              to an official NKU inquiry form instead of collecting data here.
+            </p>
+
+            <div class="note-callout">
+              Suggested student-facing wording:
+              <strong>“Want to learn more about NKU College of Informatics? Tap below to connect through NKU’s official admissions page.”</strong>
+            </div>
 
             <form id="studentInterestForm" class="form-grid">
               <div class="form-row-2">
@@ -1142,7 +1148,7 @@
               </div>
 
               <select class="select-field" id="interestArea" name="interestArea">
-                <option value="">What sounds most interesting right now?</option>
+                <option value="">What sounds coolest to you right now?</option>
                 <option>Artificial Intelligence</option>
                 <option>Software / App Development</option>
                 <option>Cybersecurity</option>
@@ -1157,41 +1163,29 @@
                 class="textarea-field"
                 id="studentMessage"
                 name="studentMessage"
-                placeholder="What kinds of projects, majors, careers, or college opportunities are you curious about?"
+                placeholder="What are you curious about? Majors, projects, careers, college life, or technology?"
               ></textarea>
 
               <label class="checkbox-row">
                 <input type="checkbox" id="contactPermission" />
-                <span>I’d like NKU to follow up with me about College of Informatics opportunities.</span>
+                <span>I’d like more information. For real use at an event, connect this to an official NKU form if approved.</span>
               </label>
 
               <div class="funnel-actions">
-                <button type="submit" class="funnel-btn primary">Save My Interest</button>
+                <button type="submit" class="funnel-btn primary">Save My Info</button>
                 <button type="button" id="downloadLeadBtn" class="funnel-btn secondary">Download My Info</button>
               </div>
 
               <div id="formMessage" class="form-message">
-                Your interest has been saved on this device for the demo.
+                Your information was saved on this device for demo purposes.
               </div>
             </form>
           </section>
-
-          <div class="quick-links-card">
-            <h3>Helpful next steps</h3>
-            <p>
-              Replace these with your real event links, landing pages, and admissions flow before the event.
-            </p>
-            <div class="quick-links-row">
-              <a class="quick-link primary" href="https://www.nku.edu/admissions.html" target="_blank" rel="noopener">Admissions</a>
-              <a class="quick-link" href="https://www.nku.edu/academics/informatics.html" target="_blank" rel="noopener">Explore Programs</a>
-              <a class="quick-link" href="https://www.nku.edu/" target="_blank" rel="noopener">Visit NKU</a>
-            </div>
-          </div>
         </section>
 
-        <section id="demo-area" aria-label="Live AI recruiting experience">
+        <section id="demo-area" aria-label="Live AI experience">
           <div class="demo-panel">
-            <div id="videoContainer" aria-label="Live AI mirror recruiting experience">
+            <div id="videoContainer" aria-label="Live AI mirror">
               <div class="video-skeleton" id="videoSkeleton" aria-hidden="true"></div>
 
               <video
@@ -1212,7 +1206,7 @@
                 <div class="screen-gradient-top"></div>
                 <div class="screen-gradient-bottom"></div>
 
-                <div class="screen-pill">NKU Future Tech Experience</div>
+                <div class="screen-pill">NKU AI Experience</div>
 
                 <div class="screen-status">
                   <span id="screenStatusDot" class="screen-status-dot"></span>
@@ -1220,9 +1214,9 @@
                 </div>
 
                 <div class="screen-footer">
-                  <div class="screen-kicker">Interactive recruiting experience</div>
-                  <h2 class="screen-title">Imagine what you could build at NKU.</h2>
-                  <div class="screen-sub">AI · Web Development · Creative Technology · College of Informatics</div>
+                  <div class="screen-kicker">Try it for yourself</div>
+                  <h2 class="screen-title">See what you could build with tech.</h2>
+                  <div class="screen-sub">AI · Apps · Design · Creative Technology · NKU</div>
                 </div>
 
                 <div class="screen-credit">Experience built by Dr. Brandi Neal</div>
@@ -1235,7 +1229,7 @@
                 <span id="statusText" class="status-text">Tap “Start Camera &amp; AI” to begin.</span>
               </div>
               <div class="status-hint">
-                Best results: use Chrome or Edge over HTTPS with good lighting. On phones, this works especially well from a QR code.
+                Best results: good lighting, front-facing camera, and Chrome or Edge when possible.
               </div>
             </div>
 
@@ -1326,14 +1320,15 @@
       </div>
 
       <div class="footer-note">
-        <strong>Privacy-first design:</strong> this experience is intended to process effects on the device in the browser, with no upload workflow built into this page.
+        <strong>Privacy note:</strong> this demo is designed to process effects in the browser on the device. For an actual recruiting event,
+        consider linking to NKU’s official inquiry page instead of collecting data here unless that workflow is approved. :contentReference[oaicite:0]{index=0}
       </div>
     </main>
   </div>
 
   <div class="sticky-mobile-cta" aria-label="Sticky mobile actions">
-    <a class="mobile-cta-btn primary" href="#interest-form">Get NKU Info</a>
-    <a class="mobile-cta-btn secondary" href="#demo-area">Try the AI</a>
+    <a class="mobile-cta-btn primary" href="#demo-area">Try the AI</a>
+    <a class="mobile-cta-btn secondary" href="#learn-more">Explore NKU</a>
   </div>
 
   <script>
@@ -1897,7 +1892,7 @@
       targetCtx.save();
       targetCtx.fillStyle = "rgba(17,17,17,0.58)";
       targetCtx.beginPath();
-      targetCtx.roundRect(pad, outputH - boxH - pad, Math.min(outputW * 0.72, 430), boxH, 14);
+      targetCtx.roundRect(pad, outputH - boxH - pad, Math.min(outputW * 0.74, 430), boxH, 14);
       targetCtx.fill();
 
       targetCtx.fillStyle = "#ffffff";
@@ -2012,7 +2007,7 @@
 
     async function shareExperience() {
       const shareURL = window.location.href;
-      const shareTitle = "NKU College of Informatics | Explore Your Future in Tech";
+      const shareTitle = "NKU College of Informatics | Try AI + Explore Your Future";
       const pageShareText = "Check out this interactive NKU College of Informatics experience.";
       const snapshotShareText = "Check out my snapshot from this NKU College of Informatics AI experience.";
 
@@ -2191,7 +2186,7 @@
         saveLeadLocally(payload);
 
         formMessage.style.display = "block";
-        formMessage.textContent = "Your info was saved on this device for the demo.";
+        formMessage.textContent = "Your information was saved on this device for the demo.";
 
         setTimeout(() => {
           formMessage.style.display = "none";
