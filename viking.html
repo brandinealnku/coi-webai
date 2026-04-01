@@ -1289,8 +1289,8 @@
                 aria-pressed="false"
                 aria-checked="false"
               >
-                <img src="beard.png" alt="Preview of Viking mode" class="filter-thumb" loading="lazy" />
-                <span>Viking Mode</span>
+                <img src="beard.png" alt="Preview of beard mode" class="filter-thumb" loading="lazy" />
+                <span>Viking Beard</span>
               </button>
 
               <button
@@ -1740,8 +1740,7 @@
       );
     }
 
-    function drawVikingOnFace(topLeft, bottomRight, landmarks = null) {
-      drawHelmetOnFace(topLeft, bottomRight, landmarks);
+    function drawVikingOnFace(topLeft, bottomRight) {
       drawBeardOnFace(topLeft, bottomRight);
     }
 
@@ -1848,11 +1847,60 @@
         }
 
         ctx.putImageData(frameImageData, 0, 0);
-      } else if (activeFilter === "griffin" && bgReady) {
-        drawBackgroundCover(bgImage, ctx, logicalW, logicalH);
-      } else {
-        ctx.drawImage(video, 0, 0, logicalW, logicalH);
+        return;
       }
+
+      if (activeFilter === "griffin" && bgReady) {
+        drawBackgroundCover(bgImage, ctx, logicalW, logicalH);
+        return;
+      }
+
+      if (bodyPixModel && lastSegmentation) {
+        bgCtx.clearRect(0, 0, logicalW, logicalH);
+        bgCtx.save();
+        bgCtx.filter = isMobileUA ? "blur(10px)" : "blur(14px)";
+        bgCtx.drawImage(video, 0, 0, logicalW, logicalH);
+        bgCtx.restore();
+
+        bgCtx.save();
+        bgCtx.fillStyle = "rgba(17,17,17,0.18)";
+        bgCtx.fillRect(0, 0, logicalW, logicalH);
+        bgCtx.restore();
+
+        const blurredImageData = bgCtx.getImageData(0, 0, logicalW, logicalH);
+
+        tempCtx.clearRect(0, 0, logicalW, logicalH);
+        tempCtx.drawImage(video, 0, 0, logicalW, logicalH);
+        const sharpImageData = tempCtx.getImageData(0, 0, logicalW, logicalH);
+
+        const outputPixels = blurredImageData.data;
+        const sharpPixels = sharpImageData.data;
+        const mask = lastSegmentation.data;
+        const len = Math.min(mask.length, sharpPixels.length / 4);
+
+        for (let i = 0; i < len; i++) {
+          if (mask[i] === 1) {
+            const offset = i * 4;
+            outputPixels[offset] = sharpPixels[offset];
+            outputPixels[offset + 1] = sharpPixels[offset + 1];
+            outputPixels[offset + 2] = sharpPixels[offset + 2];
+            outputPixels[offset + 3] = sharpPixels[offset + 3];
+          }
+        }
+
+        ctx.putImageData(blurredImageData, 0, 0);
+        return;
+      }
+
+      ctx.save();
+      ctx.filter = isMobileUA ? "blur(10px)" : "blur(14px)";
+      ctx.drawImage(video, 0, 0, logicalW, logicalH);
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = "rgba(17,17,17,0.18)";
+      ctx.fillRect(0, 0, logicalW, logicalH);
+      ctx.restore();
     }
 
     function addWatermarkToSnapshot(targetCtx, outputW, outputH) {
@@ -1906,8 +1954,8 @@
           drawHelmetOnFace(topLeft, bottomRight, landmarksToUse);
           setStatus("Viking Helmet mode is active.", "active");
         } else if (activeFilter === "combo") {
-          drawVikingOnFace(topLeft, bottomRight, landmarksToUse);
-          setStatus("Viking Mode is active.", "active");
+          drawVikingOnFace(topLeft, bottomRight);
+          setStatus("Viking Beard mode is active.", "active");
         } else {
           setStatus("Campus Scene mode is active.", "active");
         }
@@ -2142,7 +2190,7 @@
         } else if (activeFilter === "helmet") {
           setStatus("Viking Helmet mode selected.", aiRunning ? "active" : "idle");
         } else if (activeFilter === "combo") {
-          setStatus("Viking Mode selected.", aiRunning ? "active" : "idle");
+          setStatus("Viking Beard mode selected.", aiRunning ? "active" : "idle");
         } else {
           setStatus("Campus Scene mode selected.", aiRunning ? "active" : "idle");
         }
