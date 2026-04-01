@@ -51,15 +51,6 @@
       padding:0 14px;
     }
 
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      background:rgba(5,5,5,.78);
-      backdrop-filter:blur(14px);
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-
     .topbar-inner{
       min-height:80px;
       display:flex;
@@ -271,6 +262,8 @@
       backdrop-filter:blur(12px);
       z-index:6;
       padding:16px;
+    
+      overflow-y:auto; /* ✅ FIX */
     }
 
     .path-overlay.hidden{
@@ -922,7 +915,6 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <div class="brand">
-        <div class="brand-mark">AI</div>
         <div class="brand-copy">
           <div class="brand-kicker">Northern Kentucky University</div>
           <div class="brand-title">INF 125: AI Literacy • Open to All Majors</div>
