@@ -577,6 +577,79 @@
       box-shadow: 0 0 0 4px rgba(34,197,94,0.14);
     }
 
+    .camera-instruction {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+      width: min(88%, 360px);
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(17,17,17,0.68);
+      color: #fff;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.22);
+      pointer-events: auto;
+    }
+
+    .camera-instruction-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .camera-instruction-text {
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .camera-overlay-btn {
+      min-height: 50px;
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 16px;
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      font-size: 0.98rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+      transition: transform 0.12s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    .camera-overlay-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .camera-overlay-btn:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+
+    .camera-overlay-btn:disabled {
+      opacity: 0.75;
+      cursor: wait;
+    }
+
+    .camera-instruction.hidden {
+      display: none;
+    }
+
     .screen-footer {
       position: absolute;
       left: 14px;
@@ -723,12 +796,6 @@
       cursor: pointer;
     }
 
-    .btn-start {
-      background: #fff;
-      border-color: #d1d5db;
-      color: #111827;
-    }
-
     .btn-capture {
       background: var(--nku-gold);
       color: var(--nku-black);
@@ -827,6 +894,17 @@
     .mobile-cta-btn.secondary {
       background: var(--nku-gold);
       color: var(--nku-black);
+    }
+
+    @media (max-width: 767px) {
+      .camera-instruction {
+        width: min(90%, 320px);
+        padding: 14px 16px;
+      }
+
+      .camera-instruction-text {
+        font-size: 0.94rem;
+      }
     }
 
     @media (min-width: 768px) {
@@ -1010,6 +1088,14 @@
                   <span id="screenStatusText">Offline</span>
                 </div>
 
+                <div id="cameraInstruction" class="camera-instruction">
+                  <div class="camera-instruction-badge">Start here</div>
+                  <div class="camera-instruction-text">Launch the live AI experience.</div>
+                  <button id="cameraStartOverlayBtn" type="button" class="camera-overlay-btn">
+                    🚀 Start Camera &amp; AI
+                  </button>
+                </div>
+
                 <div class="screen-footer">
                   <div class="screen-kicker">Try it for yourself</div>
                   <h2 class="screen-title">See what you could build with tech.</h2>
@@ -1023,7 +1109,7 @@
             <div class="status-row" aria-live="polite">
               <div class="status-main">
                 <span id="statusDot" class="status-dot" aria-hidden="true"></span>
-                <span id="statusText" class="status-text">Tap “Start Camera &amp; AI” to begin.</span>
+                <span id="statusText" class="status-text">Click the button in the camera window to begin.</span>
               </div>
               <div class="status-hint">
                 Best results: good lighting, front-facing camera, and Chrome or Edge when possible.
@@ -1085,9 +1171,6 @@
             </div>
 
             <div class="action-row">
-              <button id="startBtn" type="button" class="app-btn btn-start">
-                🚀 Start Camera &amp; AI
-              </button>
               <button id="captureBtn" type="button" class="app-btn btn-capture" disabled>
                 📸 Capture Snapshot
               </button>
@@ -1135,12 +1218,13 @@
 
     const statusText = document.getElementById("statusText");
     const statusDot = document.getElementById("statusDot");
-    const startBtn = document.getElementById("startBtn");
+    const cameraStartOverlayBtn = document.getElementById("cameraStartOverlayBtn");
     const captureBtn = document.getElementById("captureBtn");
     const stopBtn = document.getElementById("stopBtn");
     const shareBtn = document.getElementById("shareBtn");
     const videoSkeleton = document.getElementById("videoSkeleton");
     const filterButtons = document.querySelectorAll(".filter-btn");
+    const cameraInstruction = document.getElementById("cameraInstruction");
 
     const screenStatusDot = document.getElementById("screenStatusDot");
     const screenStatusText = document.getElementById("screenStatusText");
@@ -1362,13 +1446,14 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       videoSkeleton.style.display = "block";
-      startBtn.disabled = false;
       captureBtn.disabled = true;
       stopBtn.disabled = true;
+      cameraInstruction?.classList.remove("hidden");
+      if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = false;
 
       updateShareButtonLabel();
       setScreenStatus("Offline", false);
-      setStatus("Camera turned off. Tap Start Camera & AI to begin again.", "idle");
+      setStatus("Click the button on the camera screen to begin again.", "idle");
     }
 
     function isValidPoint(pt) {
@@ -1789,66 +1874,72 @@
       document.body.removeChild(a);
 
       updateShareButtonLabel();
-      setStatus("Snapshot saved to your device and ready to share.", "active");
+      setStatus("Snapshot saved.", "active");
     }
 
     async function shareExperience() {
       const shareURL = window.location.href;
-      const shareTitle = "NKU College of Informatics | Try AI + Explore Your Future";
-      const pageShareText = "Check out this interactive NKU College of Informatics experience.";
-      const snapshotShareText = "Check out my snapshot from this NKU College of Informatics AI experience.";
 
-      try {
-        if (lastSnapshotFile && navigator.share && navigator.canShare) {
-          const imageShareData = {
-            title: shareTitle,
-            text: snapshotShareText,
+      if (lastSnapshotFile && navigator.share) {
+        try {
+          await navigator.share({
+            title: "NKU College of Informatics AI Experience",
+            text: "I tried this interactive NKU AI experience.",
             files: [lastSnapshotFile]
-          };
-
-          if (navigator.canShare(imageShareData)) {
-            await navigator.share(imageShareData);
-            setStatus("Snapshot share sheet opened.", "active");
+          });
+          setStatus("Snapshot shared.", "active");
+          return;
+        } catch (error) {
+          if (error && error.name === "AbortError") {
+            setStatus("Share canceled.", "idle");
             return;
           }
+          console.warn("Snapshot share failed:", error);
         }
+      }
 
-        if (navigator.share) {
+      if (navigator.share) {
+        try {
           await navigator.share({
-            title: shareTitle,
-            text: pageShareText,
+            title: "NKU College of Informatics AI Experience",
+            text: "Try this interactive NKU AI experience.",
             url: shareURL
           });
-          setStatus("Share sheet opened.", "active");
+          setStatus("Experience shared.", "active");
           return;
-        }
-
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(shareURL);
-          setStatus("Page link copied to clipboard.", "active");
-          return;
-        }
-
-        setStatus("Sharing is not supported on this device. Please copy the page URL manually.", "error");
-      } catch (error) {
-        if (error && error.name === "AbortError") {
-          setStatus("Share canceled.", "idle");
-          return;
-        }
-
-        console.warn("Share failed:", error);
-
-        try {
-          if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(shareURL);
-            setStatus("Share was unavailable, so the page URL was copied instead.", "active");
+        } catch (error) {
+          if (error && error.name === "AbortError") {
+            setStatus("Share canceled.", "idle");
             return;
           }
-        } catch (clipboardError) {
-          console.warn("Clipboard fallback failed:", clipboardError);
-        }
 
-        setStatus("Could not share on this device. Please copy the URL manually.", "error");
+          console.warn("Share failed:", error);
+
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(shareURL);
+              setStatus("Share was unavailable, so the page URL was copied instead.", "active");
+              return;
+            }
+          } catch (clipboardError) {
+            console.warn("Clipboard fallback failed:", clipboardError);
+          }
+
+          setStatus("Could not share on this device. Please copy the URL manually.", "error");
+          return;
+        }
+      }
+
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(shareURL);
+          setStatus("Page URL copied.", "active");
+        } else {
+          setStatus("Sharing is not supported on this device. Please copy the page URL manually.", "error");
+        }
+      } catch (error) {
+        console.warn("Clipboard copy failed:", error);
+        setStatus("Could not copy the URL automatically. Please copy it manually.", "error");
       }
     }
 
@@ -1856,7 +1947,7 @@
       try {
         if (aiRunning) return;
 
-        startBtn.disabled = true;
+        if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = true;
         captureBtn.disabled = true;
         stopBtn.disabled = true;
 
@@ -1885,6 +1976,8 @@
         aiRunning = true;
         captureBtn.disabled = false;
         stopBtn.disabled = false;
+        cameraInstruction?.classList.add("hidden");
+        if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = false;
 
         faceDetectTimer = setInterval(detectFaceStep, FACE_DETECT_MS);
         segmentTimer = setInterval(segmentStep, SEGMENT_MS);
@@ -1896,9 +1989,10 @@
         renderRaf = requestAnimationFrame(renderFrame);
       } catch (error) {
         console.error("Init error:", error);
-        startBtn.disabled = false;
+        if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = false;
         captureBtn.disabled = true;
         stopBtn.disabled = true;
+        cameraInstruction?.classList.remove("hidden");
         setScreenStatus("Offline", false);
         setStatus(
           "This device or browser may not fully support the demo. Try Chrome, Edge, Firefox, or Safari over HTTPS.",
@@ -1935,7 +2029,7 @@
 
     updateShareButtonLabel();
 
-    startBtn.addEventListener("click", startExperience);
+    cameraStartOverlayBtn.addEventListener("click", startExperience);
     captureBtn.addEventListener("click", captureSnapshot);
     stopBtn.addEventListener("click", stopCamera);
     shareBtn.addEventListener("click", shareExperience);
