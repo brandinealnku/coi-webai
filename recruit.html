@@ -592,6 +592,7 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.18);
       box-shadow: 0 14px 38px rgba(0,0,0,0.22);
+      pointer-events: auto;
     }
 
     .camera-instruction-badge {
@@ -613,6 +614,36 @@
       font-size: 1rem;
       line-height: 1.45;
       font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .camera-overlay-btn {
+      min-height: 50px;
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 16px;
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      font-size: 0.98rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+      transition: transform 0.12s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    .camera-overlay-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .camera-overlay-btn:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+
+    .camera-overlay-btn:disabled {
+      opacity: 0.75;
+      cursor: wait;
     }
 
     .camera-instruction.hidden {
@@ -763,12 +794,6 @@
       border: 1px solid transparent;
       font-size: 0.98rem;
       cursor: pointer;
-    }
-
-    .btn-start {
-      background: #fff;
-      border-color: #d1d5db;
-      color: #111827;
     }
 
     .btn-capture {
@@ -1024,7 +1049,7 @@
                 Use these links to learn more about NKU and the College of Informatics.
               </p>
               <div class="quick-links-row">
-                <a class="quick-link primary" href="https://start.nku.edu/register/?id=3b55254a-d5e9-4ab7-a0d8-27224d16cf2a&utm_source=nku_ai_demo&utm_medium=web" target="_blank" rel="noopener">Get Connected with NKU</a>
+                <a class="quick-link primary" href="https://start.nku.edu/register/?id=3b55254a-d5e9-4ab7-a0d8-27224d16cf2a" target="_blank" rel="noopener">Get Connected with NKU</a>
                 <a class="quick-link" href="https://www.nku.edu/academics/informatics.html" target="_blank" rel="noopener">College of Informatics</a>
                 <a class="quick-link" href="https://www.nku.edu/academics/artsci/about/centers/cinsam.html" target="_blank" rel="noopener">STEM Opportunities with CINSAM</a>
                 <a class="quick-link" href="https://start.nku.edu/portal/campus_visit" target="_blank" rel="noopener">Visit NKU</a>
@@ -1064,7 +1089,11 @@
                 </div>
 
                 <div id="cameraInstruction" class="camera-instruction">
-                  <div class="camera-instruction-text">Click <strong>Start Camera &amp; AI</strong> to begin.</div>
+                  <div class="camera-instruction-badge">Start here</div>
+                  <div class="camera-instruction-text">Launch the live AI experience.</div>
+                  <button id="cameraStartOverlayBtn" type="button" class="camera-overlay-btn">
+                    🚀 Start Camera &amp; AI
+                  </button>
                 </div>
 
                 <div class="screen-footer">
@@ -1080,7 +1109,7 @@
             <div class="status-row" aria-live="polite">
               <div class="status-main">
                 <span id="statusDot" class="status-dot" aria-hidden="true"></span>
-                <span id="statusText" class="status-text">Click or tap “Start Camera &amp; AI” to begin.</span>
+                <span id="statusText" class="status-text">Click the button in the camera window to begin.</span>
               </div>
               <div class="status-hint">
                 Best results: good lighting, front-facing camera, and Chrome or Edge when possible.
@@ -1142,9 +1171,6 @@
             </div>
 
             <div class="action-row">
-              <button id="startBtn" type="button" class="app-btn btn-start">
-                🚀 Start Camera &amp; AI
-              </button>
               <button id="captureBtn" type="button" class="app-btn btn-capture" disabled>
                 📸 Capture Snapshot
               </button>
@@ -1192,7 +1218,7 @@
 
     const statusText = document.getElementById("statusText");
     const statusDot = document.getElementById("statusDot");
-    const startBtn = document.getElementById("startBtn");
+    const cameraStartOverlayBtn = document.getElementById("cameraStartOverlayBtn");
     const captureBtn = document.getElementById("captureBtn");
     const stopBtn = document.getElementById("stopBtn");
     const shareBtn = document.getElementById("shareBtn");
@@ -1420,15 +1446,14 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       videoSkeleton.style.display = "block";
-      startBtn.disabled = false;
       captureBtn.disabled = true;
       stopBtn.disabled = true;
-
       cameraInstruction?.classList.remove("hidden");
+      if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = false;
 
       updateShareButtonLabel();
       setScreenStatus("Offline", false);
-      setStatus("Camera turned off. Click or tap Start Camera & AI to begin again.", "idle");
+      setStatus("Click the button on the camera screen to begin again.", "idle");
     }
 
     function isValidPoint(pt) {
@@ -1922,7 +1947,7 @@
       try {
         if (aiRunning) return;
 
-        startBtn.disabled = true;
+        if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = true;
         captureBtn.disabled = true;
         stopBtn.disabled = true;
 
@@ -1952,6 +1977,7 @@
         captureBtn.disabled = false;
         stopBtn.disabled = false;
         cameraInstruction?.classList.add("hidden");
+        if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = false;
 
         faceDetectTimer = setInterval(detectFaceStep, FACE_DETECT_MS);
         segmentTimer = setInterval(segmentStep, SEGMENT_MS);
@@ -1963,7 +1989,7 @@
         renderRaf = requestAnimationFrame(renderFrame);
       } catch (error) {
         console.error("Init error:", error);
-        startBtn.disabled = false;
+        if (cameraStartOverlayBtn) cameraStartOverlayBtn.disabled = false;
         captureBtn.disabled = true;
         stopBtn.disabled = true;
         cameraInstruction?.classList.remove("hidden");
@@ -2003,7 +2029,7 @@
 
     updateShareButtonLabel();
 
-    startBtn.addEventListener("click", startExperience);
+    cameraStartOverlayBtn.addEventListener("click", startExperience);
     captureBtn.addEventListener("click", captureSnapshot);
     stopBtn.addEventListener("click", stopCamera);
     shareBtn.addEventListener("click", shareExperience);
