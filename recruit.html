@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NKU College of Informatics | Explore Your Future</title>
+  <title>NKU College of Informatics | Try AI + Explore Your Future</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta
     name="description"
-    content="Explore AI, apps, cybersecurity, media, and more at NKU College of Informatics through a mobile-friendly interactive recruiting experience."
+    content="Try a live AI experience, and explore tech, AI, apps, cybersecurity, media, and more with NKU College of Informatics."
   />
   <meta name="theme-color" content="#111111" />
 
@@ -19,40 +19,35 @@
       --nku-gold: #f7b718;
       --nku-black: #111111;
       --nku-purple: #4f2d7f;
-      --bg: #f5f7fb;
-      --bg-soft: #eef2f7;
       --text: #18212f;
       --muted: #64748b;
+      --bg: #f6f8fc;
+      --soft-bg: #f8fafc;
       --card: rgba(255,255,255,0.96);
-      --border: #e2e8f0;
-      --shadow: 0 18px 50px rgba(15, 23, 42, 0.12);
+      --border: #e5e7eb;
+      --shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
       --radius: 24px;
       --success: #16a34a;
-      --danger: #dc2626;
+      --danger: #ef4444;
     }
 
     * { box-sizing: border-box; }
 
-    html {
+    html, body {
+      margin: 0;
+      min-height: 100%;
       scroll-behavior: smooth;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(247,183,24,0.16), transparent 22%),
-        radial-gradient(circle at top right, rgba(79,45,127,0.12), transparent 26%),
-        linear-gradient(180deg, #f8fbff 0%, #eef2f7 100%);
+        radial-gradient(circle at top left, rgba(247, 183, 24, 0.14), transparent 24%),
+        radial-gradient(circle at top right, rgba(79, 45, 127, 0.10), transparent 28%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      color: var(--text);
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
     }
 
     a {
@@ -60,33 +55,38 @@
       text-decoration: none;
     }
 
-    button, input, select, textarea {
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button {
       font: inherit;
     }
 
     .page-shell {
-      width: min(1180px, 100%);
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 12px 12px 110px;
+      padding: 12px 12px 118px;
     }
 
     .topbar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
-      flex-wrap: wrap;
       padding: 12px 14px;
-      margin-bottom: 14px;
+      background: rgba(255,255,255,0.92);
       border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(10px);
       box-shadow: var(--shadow);
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      backdrop-filter: blur(12px);
     }
 
     .brand {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
       min-width: 0;
@@ -96,356 +96,382 @@
     .brand-pill {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
       padding: 8px 12px;
       border-radius: 999px;
       background: var(--nku-gold);
       color: var(--nku-black);
-      font-weight: 900;
       font-size: 0.72rem;
+      font-weight: 900;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       white-space: nowrap;
     }
 
     .brand-sub {
-      color: var(--muted);
       font-size: 0.9rem;
+      color: var(--muted);
       font-weight: 800;
     }
 
-    .top-actions {
+    .topbar-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
     }
 
-    .chip-link {
-      min-height: 42px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid var(--border);
-      font-size: 0.9rem;
-      font-weight: 800;
+    .topbar-link {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      background: #fff;
     }
 
-    .chip-link.primary {
+    .topbar-link.primary {
       background: var(--nku-black);
       color: #fff;
       border-color: var(--nku-black);
     }
 
-    .hero {
-      position: relative;
-      overflow: hidden;
-      border-radius: 30px;
-      padding: 22px;
-      margin-bottom: 14px;
-      color: #fff;
-      background:
-        radial-gradient(circle at top right, rgba(247,183,24,0.28), transparent 28%),
-        linear-gradient(135deg, rgba(17,17,17,1), rgba(46,28,74,0.98));
+    .hero-card {
+      background: linear-gradient(135deg, rgba(17,17,17,0.99), rgba(53,40,88,0.97));
+      color: white;
+      border-radius: 28px;
+      padding: 20px;
       box-shadow: var(--shadow);
+      margin-bottom: 14px;
+      overflow: hidden;
+      position: relative;
     }
 
-    .hero::after {
+    .hero-card::before {
       content: "";
       position: absolute;
       width: 320px;
       height: 320px;
-      left: -100px;
-      bottom: -120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 68%);
+      right: -90px;
+      top: -90px;
+      background: radial-gradient(circle, rgba(247,183,24,0.30), transparent 68%);
       pointer-events: none;
     }
 
     .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
       position: relative;
       z-index: 1;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
-      align-items: stretch;
     }
 
     .eyebrow {
-      margin: 0 0 10px;
       font-size: 0.72rem;
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      opacity: 0.85;
+      opacity: 0.84;
+      margin: 0 0 10px 0;
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2rem, 5.5vw, 4rem);
+      font-size: clamp(2rem, 7vw, 3.3rem);
       line-height: 0.98;
-      letter-spacing: -0.04em;
+      margin: 0 0 12px 0;
+      letter-spacing: -0.03em;
     }
 
     .hero-lead {
-      margin: 0 0 16px;
-      max-width: 60ch;
       font-size: 1rem;
       line-height: 1.7;
       color: rgba(255,255,255,0.92);
+      margin: 0 0 14px 0;
+      max-width: 34rem;
     }
 
     .hero-badges {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .hero-badge {
-      padding: 8px 12px;
-      border-radius: 999px;
       background: rgba(255,255,255,0.08);
-      color: #fff;
       border: 1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(8px);
-      font-size: 0.8rem;
+      color: white;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
       font-weight: 800;
+      backdrop-filter: blur(8px);
     }
 
     .hero-cta-row {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 10px;
     }
 
-    .hero-btn {
-      min-height: 52px;
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-weight: 900;
+    .hero-cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      min-height: 50px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 900;
       border: 1px solid transparent;
+      text-align: center;
     }
 
-    .hero-btn.primary {
+    .hero-cta.primary {
       background: var(--nku-gold);
       color: var(--nku-black);
     }
 
-    .hero-btn.secondary {
-      color: #fff;
+    .hero-cta.secondary {
       background: rgba(255,255,255,0.08);
+      color: white;
       border-color: rgba(255,255,255,0.16);
     }
 
     .hero-side {
       display: grid;
       gap: 10px;
+      align-content: start;
     }
 
-    .glass-card {
-      padding: 14px;
-      border-radius: 20px;
+    .mini-card {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(10px);
-    }
-
-    .glass-card h2,
-    .glass-card h3 {
-      margin: 0 0 6px;
-      font-size: 1rem;
-      font-weight: 900;
-    }
-
-    .glass-card p {
-      margin: 0;
-      color: rgba(255,255,255,0.9);
-      line-height: 1.6;
-      font-size: 0.92rem;
-    }
-
-    .quick-stats {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .quick-stat {
-      padding: 14px;
       border-radius: 18px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .quick-stat strong {
-      display: block;
-      color: var(--nku-gold);
-      font-size: 1.1rem;
-      line-height: 1;
-      margin-bottom: 6px;
-      font-weight: 900;
-    }
-
-    .quick-stat span {
-      display: block;
-      font-size: 0.84rem;
-      line-height: 1.45;
-      color: rgba(255,255,255,0.9);
-      font-weight: 700;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 14px;
-    }
-
-    .panel {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.65);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
+      padding: 14px;
       backdrop-filter: blur(10px);
-      overflow: hidden;
     }
 
-    .panel-body {
-      padding: 18px;
-    }
-
-    .section-kicker {
-      margin: 0 0 8px;
-      font-size: 0.75rem;
+    .mini-label {
+      font-size: 0.7rem;
       font-weight: 900;
-      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--muted);
+      letter-spacing: 0.12em;
+      opacity: 0.82;
+      margin-bottom: 6px;
     }
 
-    .section-title {
-      margin: 0 0 10px;
-      font-size: 1.7rem;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      font-weight: 900;
-    }
-
-    .section-lead {
-      margin: 0 0 16px;
-      color: #475569;
-      line-height: 1.75;
-      font-size: 0.98rem;
-    }
-
-    .fit-grid {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .fit-card {
-      padding: 14px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-    }
-
-    .fit-card h3 {
-      margin: 0 0 6px;
-      font-size: 1rem;
-      font-weight: 900;
-    }
-
-    .fit-card p {
+    .mini-card p {
       margin: 0;
-      color: #475569;
-      line-height: 1.65;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.94);
       font-size: 0.93rem;
     }
 
-    .path-grid {
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .stat-num {
+      font-size: 1.25rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 4px;
+      color: var(--nku-gold);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .main-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .content-wrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 14px;
+    }
+
+    .why-section {
+      width: 100%;
+    }
+
+    .why-section-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 0.76rem;
+      font-weight: 900;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin: 18px 0 10px;
+    }
+
+    .section-heading {
+      font-size: 1.55rem;
+      font-weight: 900;
+      line-height: 1.08;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      font-size: 0.96rem;
+      color: #4b5563;
+      line-height: 1.72;
+      margin-bottom: 14px;
+      max-width: 850px;
+    }
+
+    .steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
       display: grid;
       gap: 10px;
     }
 
-    .path-row {
+    .steps li {
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      padding: 14px;
-      border-radius: 18px;
+      padding: 12px 14px;
       background: #f8fafc;
       border: 1px solid var(--border);
+      border-radius: 16px;
+      color: #374151;
+      font-size: 0.93rem;
+      line-height: 1.55;
     }
 
-    .path-num {
-      width: 30px;
-      height: 30px;
+    .step-num {
+      color: var(--nku-black);
+      background: var(--nku-gold);
+      width: 28px;
+      height: 28px;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      font-weight: 900;
       flex: 0 0 auto;
+      font-size: 0.83rem;
+      margin-top: 1px;
+    }
+
+    .value-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .value-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .value-card h3 {
+      font-size: 0.98rem;
+      margin: 0 0 6px 0;
+      font-weight: 900;
+    }
+
+    .value-card p {
+      margin: 0;
+      color: #4b5563;
+      line-height: 1.62;
+      font-size: 0.92rem;
+    }
+
+    .link-card {
+      background: linear-gradient(135deg, #fff8df 0%, #ffffff 100%);
+      border: 1px solid #f4df8b;
+      border-radius: 20px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+
+    .link-card h3 {
+      margin: 0 0 6px 0;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .link-card p {
+      margin: 0 0 12px 0;
+      color: #4b5563;
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    .quick-links-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #d1d5db;
+      font-weight: 800;
+      font-size: 0.86rem;
+    }
+
+    .quick-link.primary {
       background: var(--nku-gold);
       color: var(--nku-black);
-      font-size: 0.85rem;
-      font-weight: 900;
-      margin-top: 2px;
+      border-color: transparent;
     }
 
-    .path-copy strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.96rem;
-    }
-
-    .path-copy span {
-      color: #475569;
-      font-size: 0.92rem;
-      line-height: 1.6;
-    }
-
-    .interest-box {
-      margin-top: 16px;
-      padding: 16px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #fff8df 0%, #ffffff 100%);
-      border: 1px solid #f5df82;
-    }
-
-    .interest-box h3 {
-      margin: 0 0 8px;
-      font-size: 1.02rem;
-      font-weight: 900;
-    }
-
-    .interest-box p {
-      margin: 0;
-      line-height: 1.65;
-      color: #475569;
-      font-size: 0.93rem;
-    }
-
-    .demo-wrap {
-      display: grid;
-      gap: 12px;
+    .demo-panel {
+      background: var(--soft-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
     }
 
     #videoContainer {
       position: relative;
       width: 100%;
-      height: min(72svh, 700px);
-      min-height: 360px;
-      border-radius: 22px;
+      height: min(72svh, 620px);
+      min-height: 340px;
+      border-radius: 18px;
       overflow: hidden;
-      border: 1px solid #d5dce6;
-      background: radial-gradient(circle, #f1f5f9 0%, #dfe6ef 78%);
+      border: 1px solid #d1d5db;
+      background: radial-gradient(circle, #f3f4f6 0%, #e5e7eb 70%);
     }
 
     #video {
@@ -453,7 +479,8 @@
       pointer-events: none;
     }
 
-    video, canvas {
+    video,
+    canvas {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -468,9 +495,9 @@
     .video-skeleton {
       position: absolute;
       inset: 0;
-      background: linear-gradient(120deg, #edf2f7 0%, #dde5ee 50%, #edf2f7 100%);
+      background: linear-gradient(120deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
       background-size: 200% 100%;
-      animation: shimmer 1.25s infinite linear;
+      animation: shimmer 1.2s infinite;
       z-index: 0;
     }
 
@@ -489,15 +516,15 @@
     .screen-gradient-top {
       position: absolute;
       inset: 0 0 auto 0;
-      height: 26%;
-      background: linear-gradient(180deg, rgba(17,17,17,0.5), rgba(17,17,17,0));
+      height: 28%;
+      background: linear-gradient(180deg, rgba(17,17,17,0.48), rgba(17,17,17,0));
     }
 
     .screen-gradient-bottom {
       position: absolute;
       inset: auto 0 0 0;
-      height: 36%;
-      background: linear-gradient(0deg, rgba(17,17,17,0.68), rgba(17,17,17,0));
+      height: 34%;
+      background: linear-gradient(0deg, rgba(17,17,17,0.64), rgba(17,17,17,0));
     }
 
     .screen-pill,
@@ -509,12 +536,12 @@
       gap: 6px;
       padding: 7px 11px;
       border-radius: 999px;
-      background: rgba(17,17,17,0.46);
+      background: rgba(17,17,17,0.48);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.14);
-      backdrop-filter: blur(8px);
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.14);
     }
 
     .screen-pill {
@@ -529,6 +556,15 @@
       right: 12px;
     }
 
+    .screen-credit {
+      left: 12px;
+      bottom: 12px;
+      max-width: calc(100% - 24px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .screen-status-dot {
       width: 8px;
       height: 8px;
@@ -541,50 +577,87 @@
       box-shadow: 0 0 0 4px rgba(34,197,94,0.14);
     }
 
-    .screen-copy {
+    .camera-instruction {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+      width: min(88%, 360px);
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(17,17,17,0.68);
+      color: #fff;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.22);
+    }
+
+    .camera-instruction-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--nku-gold);
+      color: var(--nku-black);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .camera-instruction-text {
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .camera-instruction.hidden {
+      display: none;
+    }
+
+    .screen-footer {
       position: absolute;
       left: 14px;
       right: 14px;
-      bottom: 48px;
+      bottom: 46px;
       color: #fff;
     }
 
     .screen-kicker {
-      margin-bottom: 4px;
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       text-transform: uppercase;
       letter-spacing: 0.14em;
-      font-weight: 900;
-      opacity: 0.92;
+      font-weight: 800;
+      opacity: 0.9;
+      margin-bottom: 4px;
     }
 
     .screen-title {
-      margin: 0;
-      font-size: clamp(1.08rem, 2vw, 1.4rem);
+      font-size: clamp(1.05rem, 4vw, 1.35rem);
       line-height: 1.05;
       font-weight: 900;
+      margin: 0;
       letter-spacing: -0.02em;
+      max-width: 17ch;
     }
 
     .screen-sub {
-      margin-top: 4px;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       opacity: 0.92;
+      margin-top: 4px;
+      max-width: 28ch;
       line-height: 1.45;
     }
 
-    .screen-credit {
-      left: 12px;
-      bottom: 12px;
-      max-width: calc(100% - 24px);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
     .status-row {
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 8px;
+      margin: 14px 0;
     }
 
     .status-main {
@@ -598,328 +671,164 @@
       width: 10px;
       height: 10px;
       border-radius: 999px;
-      background: #cbd5e1;
+      background: #d1d5db;
       flex: 0 0 auto;
+      transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
 
     .status-dot.active {
       background: var(--success);
-      box-shadow: 0 0 0 4px rgba(22,163,74,0.15);
+      box-shadow: 0 0 0 4px rgba(22,163,74,0.14);
+      transform: scale(1.05);
     }
 
     .status-dot.error {
       background: var(--danger);
-      box-shadow: 0 0 0 4px rgba(220,38,38,0.14);
+      box-shadow: 0 0 0 4px rgba(239,68,68,0.14);
+      transform: scale(1.05);
     }
 
     .status-text {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #334155;
-      line-height: 1.45;
+      font-size: 0.93rem;
+      font-weight: 700;
+      color: #374151;
+      line-height: 1.4;
     }
 
     .status-hint {
+      font-size: 0.82rem;
       color: var(--muted);
-      line-height: 1.55;
-      font-size: 0.83rem;
+      line-height: 1.5;
     }
 
-    .filter-grid {
+    .filter-group {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: 8px;
+      margin-bottom: 12px;
     }
 
     .filter-btn {
-      min-height: 66px;
-      padding: 10px 12px;
-      border-radius: 16px;
       border: 1px solid var(--border);
       background: #fff;
+      color: #374151;
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-height: 62px;
       display: flex;
       align-items: center;
       gap: 10px;
-      text-align: left;
-      font-weight: 800;
-      color: #334155;
       cursor: pointer;
       transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      text-align: left;
+      font-weight: 800;
     }
 
     .filter-btn:hover {
       transform: translateY(-1px);
     }
 
+    .filter-btn:focus-visible {
+      outline: 2px solid var(--nku-gold);
+      outline-offset: 2px;
+    }
+
     .filter-btn.active {
       border-color: var(--nku-gold);
-      box-shadow: 0 0 0 3px rgba(247,183,24,0.18);
+      box-shadow: 0 0 0 3px rgba(247, 183, 24, 0.18);
+      font-weight: 900;
     }
 
     .filter-thumb {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      object-fit: cover;
-      flex: 0 0 auto;
-      border: 1px solid var(--border);
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 8px;
       background: #fff;
+      border: 1px solid var(--border);
+      flex: 0 0 auto;
     }
 
-    .action-stack {
+    .action-row {
       display: grid;
+      grid-template-columns: 1fr;
       gap: 8px;
     }
 
-    .action-btn {
+    .app-btn {
       width: 100%;
       min-height: 52px;
-      padding: 12px 16px;
       border-radius: 999px;
+      font-weight: 900;
       border: 1px solid transparent;
       font-size: 0.98rem;
-      font-weight: 900;
       cursor: pointer;
-    }
-
-    .action-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
     }
 
     .btn-start {
       background: #fff;
-      color: #111827;
       border-color: #d1d5db;
+      color: #111827;
     }
 
     .btn-capture {
       background: var(--nku-gold);
       color: var(--nku-black);
-    }
-
-    .btn-share {
-      background: var(--nku-black);
-      color: #fff;
+      border: none;
     }
 
     .btn-stop {
       background: #fff;
-      color: #b91c1c;
       border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .btn-share {
+      background: var(--nku-black);
+      color: white;
+      border: none;
+    }
+
+    .app-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .preview-section {
+      margin-top: 14px;
       display: none;
-      margin-top: 6px;
     }
 
-    .preview-title {
-      margin: 0 0 8px;
-      font-size: 0.75rem;
-      font-weight: 900;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .preview-card {
+    .preview-image-wrapper {
+      width: 100%;
       max-width: 420px;
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
       border: 1px solid var(--border);
       background: #fff;
     }
 
-    .preview-card img {
+    #snapshotPreview {
       width: 100%;
       display: block;
     }
 
     .small-note {
-      margin: 8px 0 0;
+      font-size: 0.8rem;
       color: var(--muted);
-      font-size: 0.82rem;
+      margin: 8px 0 0;
       line-height: 1.5;
     }
 
-    .cta-strip {
-      margin-top: 14px;
-      display: grid;
-      gap: 12px;
+    .footer-note {
+      padding: 0 14px 18px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
-    .cta-card {
-      padding: 16px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #f9fbff 0%, #ffffff 100%);
-      border: 1px solid #dbe4f0;
-    }
-
-    .cta-card h3 {
-      margin: 0 0 8px;
-      font-size: 1rem;
-      font-weight: 900;
-    }
-
-    .cta-card p {
-      margin: 0 0 12px;
-      color: #475569;
-      line-height: 1.65;
-      font-size: 0.93rem;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .pill-btn {
-      min-height: 42px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      background: #fff;
-      font-size: 0.88rem;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .pill-btn.primary {
-      background: var(--nku-gold);
-      border-color: transparent;
-      color: var(--nku-black);
-    }
-
-    .interest-panel {
-      margin-top: 14px;
-      padding: 16px;
-      border-radius: 24px;
-      background: #fff;
-      border: 1px solid var(--border);
-    }
-
-    .interest-panel h3 {
-      margin: 0 0 8px;
-      font-size: 1.1rem;
-      font-weight: 900;
-    }
-
-    .interest-panel p {
-      margin: 0 0 14px;
-      color: #475569;
-      line-height: 1.65;
-      font-size: 0.94rem;
-    }
-
-    .form-grid {
-      display: grid;
-      gap: 10px;
-    }
-
-    .split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .field,
-    .select-field,
-    .textarea-field {
-      width: 100%;
-      min-height: 50px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid #d1d5db;
-      background: #fff;
-      color: #111827;
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .textarea-field {
-      min-height: 96px;
-      resize: vertical;
-    }
-
-    .field:focus,
-    .select-field:focus,
-    .textarea-field:focus {
-      border-color: var(--nku-gold);
-      box-shadow: 0 0 0 4px rgba(247,183,24,0.18);
-    }
-
-    .checkbox-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      color: #334155;
-      font-size: 0.9rem;
-      line-height: 1.55;
-    }
-
-    .form-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .form-btn {
-      min-height: 48px;
-      padding: 12px 16px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .form-btn.primary {
-      background: var(--nku-black);
-      color: #fff;
-    }
-
-    .form-btn.secondary {
-      background: #fff;
-      color: #111827;
-      border-color: #d1d5db;
-    }
-
-    .form-message {
-      display: none;
-      color: var(--success);
-      font-size: 0.9rem;
-      font-weight: 800;
-      margin-top: 4px;
-    }
-
-    .footer-grid {
-      margin-top: 14px;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .footer-card {
-      padding: 16px;
-      border-radius: 22px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-    }
-
-    .footer-card h3 {
-      margin: 0 0 8px;
-      font-size: 1rem;
-      font-weight: 900;
-    }
-
-    .footer-card p {
-      margin: 0;
-      color: #475569;
-      line-height: 1.65;
-      font-size: 0.92rem;
+    .footer-note strong {
+      color: #374151;
     }
 
     .sticky-mobile-cta {
@@ -928,7 +837,7 @@
       right: 12px;
       bottom: max(12px, env(safe-area-inset-bottom));
       z-index: 30;
-      display: none;
+      display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       padding: 10px;
@@ -962,356 +871,207 @@
       color: var(--nku-black);
     }
 
-    @media (max-width: 991.98px) {
-      .hero-grid,
-      .main-grid,
-      .footer-grid {
-        grid-template-columns: 1fr;
+    @media (max-width: 767px) {
+      .camera-instruction {
+        width: min(90%, 320px);
+        padding: 14px 16px;
+      }
+
+      .camera-instruction-text {
+        font-size: 0.94rem;
       }
     }
 
-    @media (max-width: 767.98px) {
+    @media (min-width: 768px) {
       .page-shell {
-        padding: 10px 10px 118px;
+        padding: 16px 16px 118px;
       }
 
-      .topbar {
-        border-radius: 18px;
-        padding: 12px;
+      .hero-grid {
+        grid-template-columns: 1fr 1fr;
       }
 
-      .brand-sub {
-        font-size: 0.82rem;
+      .hero-cta-row,
+      .filter-group {
+        grid-template-columns: 1fr 1fr;
       }
 
-      .top-actions {
-        width: 100%;
-      }
-
-      .top-actions .chip-link {
-        flex: 1 1 calc(50% - 6px);
-      }
-
-      .hero {
-        padding: 18px;
-        border-radius: 24px;
-      }
-
-      .hero-lead {
-        font-size: 0.96rem;
-      }
-
-      .panel-body {
-        padding: 14px;
-      }
-
-      #videoContainer {
-        height: min(72svh, 600px);
-        min-height: 320px;
-      }
-
-      .screen-pill,
-      .screen-status,
-      .screen-credit {
-        font-size: 0.62rem;
-        padding: 6px 9px;
-      }
-
-      .screen-copy {
-        left: 12px;
-        right: 12px;
-        bottom: 42px;
-      }
-
-      .screen-sub {
-        font-size: 0.69rem;
-      }
-
-      .split,
-      .filter-grid,
-      .quick-stats {
-        grid-template-columns: 1fr;
-      }
-
-      .sticky-mobile-cta {
-        display: grid;
+      .value-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    @media (max-width: 480px) {
-      .top-actions .chip-link {
-        flex: 1 1 100%;
+    @media (min-width: 992px) {
+      .hero-grid {
+        grid-template-columns: 1.06fr 0.94fr;
       }
 
-      #videoContainer {
-        height: min(74svh, 520px);
+      .content-wrap {
+        padding: 18px;
+      }
+
+      .value-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .filter-group {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .video-skeleton {
-        animation: none;
-      }
-
-      * {
-        scroll-behavior: auto;
-      }
+      .video-skeleton { animation: none; }
+      html, body { scroll-behavior: auto; }
     }
   </style>
 </head>
+
 <body>
   <div class="page-shell">
-    <header class="topbar" aria-label="NKU recruiting header">
+    <header class="topbar" aria-label="NKU College of Informatics recruiting header">
       <div class="brand">
         <div class="brand-pill">NKU · College of Informatics</div>
-        <div class="brand-sub">Explore your future in tech</div>
-      </div>
-
-      <div class="top-actions">
-        <a class="chip-link" href="#future-fit">Find Your Fit</a>
-        <a class="chip-link" href="#demo-area">Try the AI</a>
-        <a class="chip-link primary" href="#interest-form">Get NKU Info</a>
+        <span class="brand-sub">Try it. See your future.</span>
       </div>
     </header>
 
-    <section class="hero" aria-labelledby="hero-title">
+    <section class="hero-card" aria-labelledby="hero-title">
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Student-facing · mobile-friendly · built for QR scans</p>
-          <h1 id="hero-title">You could build things like this in college.</h1>
+          <p class="eyebrow">Built for curious students</p>
+          <h1 id="hero-title">Like tech, games, AI, apps, or design?</h1>
 
           <p class="hero-lead">
-            If you are into AI, apps, design, websites, media, cybersecurity, data, or just want to do
-            cool things with technology, the NKU College of Informatics is a place to explore that future.
-            Try the live experience below, see what interests you, and take the next step.
+            Start here. Try a live AI experience, see what you could build, and explore how your interests
+            could connect to the NKU College of Informatics.
           </p>
 
-          <div class="hero-badges">
-            <span class="hero-badge">AI</span>
-            <span class="hero-badge">Web & App Development</span>
-            <span class="hero-badge">Cybersecurity</span>
-            <span class="hero-badge">Data</span>
-            <span class="hero-badge">Digital Media</span>
-            <span class="hero-badge">Creative Tech</span>
-          </div>
-
           <div class="hero-cta-row">
-            <a class="hero-btn primary" href="#demo-area">Try the Live AI Mirror</a>
-            <a class="hero-btn secondary" href="#interest-form">Send Me NKU Info</a>
+            <a class="hero-cta primary" href="#demo-area">Try the Live AI Mirror</a>
+            <a class="hero-cta secondary" href="#learn-more">Explore NKU</a>
           </div>
         </div>
 
         <div class="hero-side">
-          <div class="glass-card">
-            <h2>Why this page exists</h2>
+          <div class="mini-card">
+            <div class="mini-label">What makes this fun?</div>
             <p>
-              This is not just a flyer. It is a quick example of the kind of interactive technology
-              students can explore, design, and build.
+              This is not just a page to read. It is something you can try. The camera experience below shows
+              the kind of creative tech students can build.
             </p>
           </div>
 
-          <div class="quick-stats">
-            <div class="quick-stat">
-              <strong>Create</strong>
-              <span>Build digital experiences people actually use.</span>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-num">Try</div>
+              <div class="stat-label">Use AI right in your browser</div>
             </div>
-            <div class="quick-stat">
-              <strong>Discover</strong>
-              <span>Find a path that fits your interests.</span>
+            <div class="stat-box">
+              <div class="stat-num">Build</div>
+              <div class="stat-label">Create things people remember</div>
             </div>
-            <div class="quick-stat">
-              <strong>Launch</strong>
-              <span>Connect school to real careers and projects.</span>
+            <div class="stat-box">
+              <div class="stat-num">Learn</div>
+              <div class="stat-label">Turn interests into skills</div>
             </div>
-            <div class="quick-stat">
-              <strong>Belong</strong>
-              <span>You do not have to have it all figured out yet.</span>
+            <div class="stat-box">
+              <div class="stat-num">Explore</div>
+              <div class="stat-label">Find what fits you best</div>
             </div>
           </div>
 
-          <div class="glass-card">
-            <h3>A good fit if you like…</h3>
+          <div class="mini-card">
+            <div class="mini-label">You might fit here if you like…</div>
             <p>
-              technology, gaming, design, storytelling, business, computers, data, problem-solving,
-              building websites, apps, or figuring out how things work.
+              technology, solving problems, video games, websites, art, media, coding, storytelling,
+              business, security, or figuring out how things work.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="main-grid">
-      <section class="panel" id="future-fit" aria-labelledby="future-fit-title">
-        <div class="panel-body">
-          <p class="section-kicker">Start here</p>
-          <h2 class="section-title" id="future-fit-title">Not sure where you fit yet? That is okay.</h2>
-          <p class="section-lead">
-            The College of Informatics brings together technology, creativity, communication, design,
-            cybersecurity, AI, media, and data. You do not have to already know your exact major to know
-            you want to build your future with technology.
-          </p>
+    <main class="main-card" aria-labelledby="page-title">
+      <div class="content-wrap">
+        <section id="why-nku" class="why-section" aria-label="Student-facing overview">
+          <div class="why-section-inner">
+            <h2 id="page-title" class="section-heading">Because college should feel possible, exciting, and real.</h2>
 
-          <div class="fit-grid">
-            <div class="fit-card">
-              <h3>If you like AI and innovation</h3>
-              <p>
-                You might love exploring how technology can solve problems, automate work, power new ideas,
-                and create smart digital experiences.
-              </p>
-            </div>
-
-            <div class="fit-card">
-              <h3>If you like design, content, or storytelling</h3>
-              <p>
-                Technology needs creative people too. Digital media, web experiences, branding, and user
-                experience all matter.
-              </p>
-            </div>
-
-            <div class="fit-card">
-              <h3>If you like logic, systems, or security</h3>
-              <p>
-                Cybersecurity, software, information systems, analytics, and infrastructure all open doors
-                to real careers and real impact.
-              </p>
-            </div>
-          </div>
-
-          <div class="path-grid">
-            <div class="path-row">
-              <div class="path-num">1</div>
-              <div class="path-copy">
-                <strong>Try something interactive.</strong>
-                <span>See a live browser-based AI experience below.</span>
-              </div>
-            </div>
-
-            <div class="path-row">
-              <div class="path-num">2</div>
-              <div class="path-copy">
-                <strong>Picture yourself building it.</strong>
-                <span>Ask yourself which part sounds exciting: AI, apps, design, cyber, media, or data.</span>
-              </div>
-            </div>
-
-            <div class="path-row">
-              <div class="path-num">3</div>
-              <div class="path-copy">
-                <strong>Take the next step.</strong>
-                <span>Leave your info or jump to your admissions and program links.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="interest-box">
-            <h3>Big takeaway</h3>
-            <p>
-              You do not have to be “the coding kid” to belong in tech. If you are curious, creative,
-              motivated, and interested in where technology is going, there is a path for you here.
+            <p class="lead">
+              The NKU College of Informatics is for students who want to do cool things with technology.
+              You do not need to have your whole future figured out yet. You just need curiosity and an interest in learning.
             </p>
-          </div>
 
-          <div class="cta-strip">
-            <div class="cta-card">
-              <h3>Quick next steps</h3>
+            <h3 class="section-title">What to do here</h3>
+            <ol class="steps">
+              <li>
+                <span class="step-num">1</span>
+                <span><strong>Try the AI.</strong> Turn on the camera and see a live interactive experience.</span>
+              </li>
+              <li>
+                <span class="step-num">2</span>
+                <span><strong>Picture yourself learning to build it.</strong> Apps, websites, AI tools, media, and more all start with ideas.</span>
+              </li>
+              <li>
+                <span class="step-num">3</span>
+                <span><strong>Take the next step.</strong> Use the links below to learn more about NKU and the College of Informatics.</span>
+              </li>
+            </ol>
+
+            <div class="link-card" id="learn-more">
+              <h3>Want to keep exploring?</h3>
               <p>
-                Replace these buttons with your real NKU links before the event so students can move from
-                curiosity to action in one tap.
+                Use these links to learn more about NKU and the College of Informatics.
               </p>
-              <div class="button-row">
-                <a class="pill-btn primary" href="https://www.nku.edu/admissions.html" target="_blank" rel="noopener">Admissions</a>
-                <a class="pill-btn" href="https://www.nku.edu/academics/informatics.html" target="_blank" rel="noopener">Programs</a>
-                <a class="pill-btn" href="#interest-form">Get Info</a>
+              <div class="quick-links-row">
+                <a class="quick-link primary" href="https://start.nku.edu/register/?id=3b55254a-d5e9-4ab7-a0d8-27224d16cf2a" target="_blank" rel="noopener">Get Connected with NKU</a>
+                <a class="quick-link" href="https://www.nku.edu/academics/informatics.html" target="_blank" rel="noopener">College of Informatics</a>
+                <a class="quick-link" href="https://www.nku.edu/academics/artsci/about/centers/cinsam.html" target="_blank" rel="noopener">STEM Opportunities with CINSAM</a>
+                <a class="quick-link" href="https://start.nku.edu/portal/campus_visit" target="_blank" rel="noopener">Visit NKU</a>
               </div>
             </div>
-
-            <div class="interest-panel" id="interest-form">
-              <h3>Want NKU to follow up with you?</h3>
-              <p>
-                Fill this out and save it on your device for the demo. Later, you can connect this to
-                Google Forms, Apps Script, Firebase, Airtable, or your admissions workflow.
-              </p>
-
-              <form id="studentInterestForm" class="form-grid">
-                <div class="split">
-                  <input class="field" type="text" id="studentName" name="studentName" placeholder="Your name" />
-                  <input class="field" type="email" id="studentEmail" name="studentEmail" placeholder="Your email" />
-                </div>
-
-                <div class="split">
-                  <input class="field" type="text" id="highSchool" name="highSchool" placeholder="School name" />
-                  <input class="field" type="text" id="graduationYear" name="graduationYear" placeholder="Graduation year" />
-                </div>
-
-                <select class="select-field" id="interestArea" name="interestArea">
-                  <option value="">What sounds most interesting right now?</option>
-                  <option>Artificial Intelligence</option>
-                  <option>Software / App Development</option>
-                  <option>Cybersecurity</option>
-                  <option>Data / Analytics</option>
-                  <option>Web Design / Development</option>
-                  <option>Digital Media / Storytelling</option>
-                  <option>Business + Technology</option>
-                  <option>I’m still exploring</option>
-                </select>
-
-                <textarea
-                  class="textarea-field"
-                  id="studentMessage"
-                  name="studentMessage"
-                  placeholder="What kind of projects, majors, careers, or experiences are you curious about?"
-                ></textarea>
-
-                <label class="checkbox-row">
-                  <input type="checkbox" id="contactPermission" />
-                  <span>I’d like NKU to follow up with me about programs, opportunities, or next steps.</span>
-                </label>
-
-                <div class="form-actions">
-                  <button type="submit" class="form-btn primary">Save My Interest</button>
-                  <button type="button" id="downloadLeadBtn" class="form-btn secondary">Download My Info</button>
-                </div>
-
-                <div id="formMessage" class="form-message">
-                  Saved on this device for the demo.
-                </div>
-              </form>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="panel" id="demo-area" aria-labelledby="demo-title">
-        <div class="panel-body">
-          <p class="section-kicker">Interactive experience</p>
-          <h2 class="section-title" id="demo-title">Try the live AI mirror</h2>
-          <p class="section-lead">
-            Turn on your camera, pick a mode, and see a fun example of browser-based AI in action.
-            This is the kind of creative tech experience students can imagine building.
-          </p>
-
-          <div class="demo-wrap">
-            <div id="videoContainer" aria-label="Live AI student experience">
+        <section id="demo-area" aria-label="Live AI experience">
+          <div class="demo-panel">
+            <div id="videoContainer" aria-label="Live AI mirror">
               <div class="video-skeleton" id="videoSkeleton" aria-hidden="true"></div>
 
-              <video id="video" autoplay playsinline muted aria-hidden="true"></video>
-              <canvas id="overlay" role="img" aria-label="Live AI-enhanced camera view"></canvas>
+              <video
+                id="video"
+                autoplay
+                playsinline
+                muted
+                aria-hidden="true"
+              ></video>
+
+              <canvas
+                id="overlay"
+                role="img"
+                aria-label="Live AI-enhanced camera view"
+              ></canvas>
 
               <div class="screen-ui" aria-hidden="true">
                 <div class="screen-gradient-top"></div>
                 <div class="screen-gradient-bottom"></div>
 
-                <div class="screen-pill">NKU Future Tech Experience</div>
+                <div class="screen-pill">NKU AI Experience</div>
 
                 <div class="screen-status">
                   <span id="screenStatusDot" class="screen-status-dot"></span>
                   <span id="screenStatusText">Offline</span>
                 </div>
 
-                <div class="screen-copy">
-                  <div class="screen-kicker">Try it. Explore it. Imagine building it.</div>
-                  <h3 class="screen-title">Your future in tech could start with projects like this.</h3>
-                  <div class="screen-sub">AI · Creative Technology · Web Development · College of Informatics</div>
+                <div id="cameraInstruction" class="camera-instruction">
+                  <div class="camera-instruction-badge">Start here</div>
+                  <div class="camera-instruction-text">Click <strong>Start Camera &amp; AI</strong> to begin.</div>
+                </div>
+
+                <div class="screen-footer">
+                  <div class="screen-kicker">Try it for yourself</div>
+                  <h2 class="screen-title">See what you could build with tech.</h2>
+                  <div class="screen-sub">AI · Apps · Design · Creative Technology · NKU</div>
                 </div>
 
                 <div class="screen-credit">Experience built by Dr. Brandi Neal</div>
@@ -1321,687 +1081,940 @@
             <div class="status-row" aria-live="polite">
               <div class="status-main">
                 <span id="statusDot" class="status-dot" aria-hidden="true"></span>
-                <span id="statusText" class="status-text">Tap “Start Camera &amp; AI” to begin.</span>
+                <span id="statusText" class="status-text">Click or tap “Start Camera &amp; AI” to begin.</span>
               </div>
               <div class="status-hint">
-                Best results: good lighting, Chrome or Edge when possible, and front-facing camera access.
+                Best results: good lighting, front-facing camera, and Chrome or Edge when possible.
               </div>
             </div>
 
-            <div class="filter-grid" role="radiogroup" aria-label="Choose an AI mode">
-              <button class="filter-btn active" data-filter="glasses" type="button" role="radio" aria-checked="true">
-                <img src="glasses.png" alt="Tech Glasses preview" class="filter-thumb" loading="lazy" />
+            <div
+              class="filter-group"
+              role="radiogroup"
+              aria-label="Choose AI mode"
+            >
+              <button
+                class="filter-btn active"
+                data-filter="glasses"
+                type="button"
+                role="radio"
+                aria-pressed="true"
+                aria-checked="true"
+              >
+                <img src="glasses.png" alt="Preview of glasses mode" class="filter-thumb" loading="lazy" />
                 <span>Tech Glasses</span>
               </button>
 
-              <button class="filter-btn" data-filter="helmet" type="button" role="radio" aria-checked="false">
-                <img src="helmet.png" alt="Viking Helmet preview" class="filter-thumb" loading="lazy" />
+              <button
+                class="filter-btn"
+                data-filter="helmet"
+                type="button"
+                role="radio"
+                aria-pressed="false"
+                aria-checked="false"
+              >
+                <img src="helmet.png" alt="Preview of helmet mode" class="filter-thumb" loading="lazy" />
                 <span>Viking Helmet</span>
               </button>
 
-              <button class="filter-btn" data-filter="combo" type="button" role="radio" aria-checked="false">
-                <img src="beard.png" alt="Viking Mode preview" class="filter-thumb" loading="lazy" />
-                <span>Viking Mode</span>
+              <button
+                class="filter-btn"
+                data-filter="combo"
+                type="button"
+                role="radio"
+                aria-pressed="false"
+                aria-checked="false"
+              >
+                <img src="beard.png" alt="Preview of beard mode" class="filter-thumb" loading="lazy" />
+                <span>Viking Beard</span>
               </button>
 
-              <button class="filter-btn" data-filter="griffin" type="button" role="radio" aria-checked="false">
-                <img src="griffin-hall.jpg" alt="Campus background preview" class="filter-thumb" loading="lazy" />
+              <button
+                class="filter-btn"
+                data-filter="griffin"
+                type="button"
+                role="radio"
+                aria-pressed="false"
+                aria-checked="false"
+              >
+                <img src="griffin-hall.jpg" alt="Preview of campus mode" class="filter-thumb" loading="lazy" />
                 <span>Campus Scene</span>
               </button>
             </div>
 
-            <div class="action-stack">
-              <button id="startBtn" type="button" class="action-btn btn-start">🚀 Start Camera &amp; AI</button>
-              <button id="captureBtn" type="button" class="action-btn btn-capture" disabled>📸 Save Snapshot</button>
-              <button id="shareBtn" type="button" class="action-btn btn-share">📲 Share Experience</button>
-              <button id="stopBtn" type="button" class="action-btn btn-stop" disabled>⏹️ Turn Camera Off</button>
+            <div class="action-row">
+              <button id="startBtn" type="button" class="app-btn btn-start">
+                🚀 Start Camera &amp; AI
+              </button>
+              <button id="captureBtn" type="button" class="app-btn btn-capture" disabled>
+                📸 Capture Snapshot
+              </button>
+              <button id="shareBtn" type="button" class="app-btn btn-share">
+                📲 Share Experience
+              </button>
+              <button id="stopBtn" type="button" class="app-btn btn-stop" disabled>
+                ⏹️ Turn Camera Off
+              </button>
             </div>
 
             <section id="previewSection" class="preview-section" aria-live="polite">
-              <h3 class="preview-title">Saved snapshot</h3>
-              <div class="preview-card">
-                <img id="snapshotPreview" alt="Saved AI experience snapshot preview" loading="lazy" />
+              <h3 class="section-title" style="margin-top: 16px;">Saved snapshot</h3>
+              <div class="preview-image-wrapper">
+                <img
+                  id="snapshotPreview"
+                  alt="Saved AI experience snapshot preview"
+                  loading="lazy"
+                />
               </div>
-              <p class="small-note">Saved locally as a PNG image.</p>
+              <p class="small-note">
+                Saved locally as a PNG image.
+              </p>
             </section>
           </div>
-        </div>
-      </section>
-    </div>
-
-    <section class="footer-grid" aria-label="Helpful follow-up sections">
-      <div class="footer-card">
-        <h3>For students</h3>
-        <p>
-          Use this page to quickly explore whether AI, media, apps, cyber, or design might be part of your future.
-        </p>
+        </section>
       </div>
 
-      <div class="footer-card">
-        <h3>For families</h3>
-        <p>
-          Replace this with scholarships, campus visit info, support resources, or your preferred family-facing message.
-        </p>
+      <div class="footer-note">
+        <strong>Privacy note:</strong> this demo is designed to process effects in the browser on the device. Data is not being collected.
       </div>
-
-      <div class="footer-card">
-        <h3>For event setup</h3>
-        <p>
-          Replace placeholder links and images with your real COI landing page, admissions flow, inquiry form, and QR code.
-        </p>
-      </div>
-    </section>
-  </div>
-
-  <div class="sticky-mobile-cta" aria-label="Sticky mobile actions">
-    <a class="mobile-cta-btn primary" href="#interest-form">Get NKU Info</a>
-    <a class="mobile-cta-btn secondary" href="#demo-area">Try the AI</a>
+    </main>
   </div>
 
   <script>
-    (function () {
-      "use strict";
+  (function () {
+    "use strict";
 
-      const video = document.getElementById("video");
-      const canvas = document.getElementById("overlay");
-      const ctx = canvas.getContext("2d");
+    const TARGET_FOLDER_LABEL = "NKU_COI_Student_Recruiting_Experience";
+    const CREATOR_CREDIT_TEXT = "Experience built by Dr. Brandi Neal";
 
-      const statusText = document.getElementById("statusText");
-      const statusDot = document.getElementById("statusDot");
-      const startBtn = document.getElementById("startBtn");
-      const captureBtn = document.getElementById("captureBtn");
-      const stopBtn = document.getElementById("stopBtn");
-      const shareBtn = document.getElementById("shareBtn");
-      const videoSkeleton = document.getElementById("videoSkeleton");
-      const filterButtons = document.querySelectorAll(".filter-btn");
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("overlay");
+    const ctx = canvas.getContext("2d");
 
-      const screenStatusDot = document.getElementById("screenStatusDot");
-      const screenStatusText = document.getElementById("screenStatusText");
+    const statusText = document.getElementById("statusText");
+    const statusDot = document.getElementById("statusDot");
+    const startBtn = document.getElementById("startBtn");
+    const captureBtn = document.getElementById("captureBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const shareBtn = document.getElementById("shareBtn");
+    const videoSkeleton = document.getElementById("videoSkeleton");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const cameraInstruction = document.getElementById("cameraInstruction");
 
-      const previewSection = document.getElementById("previewSection");
-      const snapshotPreview = document.getElementById("snapshotPreview");
+    const screenStatusDot = document.getElementById("screenStatusDot");
+    const screenStatusText = document.getElementById("screenStatusText");
 
-      const studentInterestForm = document.getElementById("studentInterestForm");
-      const formMessage = document.getElementById("formMessage");
-      const downloadLeadBtn = document.getElementById("downloadLeadBtn");
+    const previewSection = document.getElementById("previewSection");
+    const snapshotPreview = document.getElementById("snapshotPreview");
 
-      let faceModel = null;
-      let bodyPixModel = null;
-      let mediaStream = null;
-      let videoReady = false;
-      let aiRunning = false;
-      let activeFilter = "glasses";
-      let renderRaf = null;
-      let faceDetectTimer = null;
-      let segmentTimer = null;
+    let faceModel = null;
+    let bodyPixModel = null;
+    let videoReady = false;
+    let glassesImgReady = false;
+    let helmetImgReady = false;
+    let beardImgReady = false;
+    let bgReady = false;
+    let aiRunning = false;
+    let mediaStream = null;
 
-      let latestFaceBox = null;
-      let latestLandmarks = null;
-      let smoothedFaceBox = null;
-      let smoothedLandmarks = null;
-      let lastFaceTime = 0;
-      let lastSegmentation = null;
+    let activeFilter = "glasses";
+    let lastSnapshotDataURL = null;
+    let lastSnapshotFile = null;
 
-      let lastSnapshotDataURL = null;
-      let lastSnapshotFile = null;
-      let lastStatusMsg = "";
-      let lastStatusMode = "";
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d", { willReadFrequently: true });
 
-      const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-      const FACE_HOLD_MS = 380;
-      const SMOOTH_ALPHA = isMobileUA ? 0.22 : 0.16;
-      const LANDMARK_SMOOTH_ALPHA = isMobileUA ? 0.28 : 0.22;
-      const FACE_DETECT_MS = isMobileUA ? 120 : 90;
-      const SEGMENT_MS = isMobileUA ? 240 : 180;
+    const bgCanvas = document.createElement("canvas");
+    const bgCtx = bgCanvas.getContext("2d", { willReadFrequently: true });
 
-      const tempCanvas = document.createElement("canvas");
-      const tempCtx = tempCanvas.getContext("2d", { willReadFrequently: true });
+    let latestFaceBox = null;
+    let latestLandmarks = null;
+    let smoothedFaceBox = null;
+    let smoothedLandmarks = null;
+    let lastFaceTime = 0;
+    let lastSegmentation = null;
 
-      const bgCanvas = document.createElement("canvas");
-      const bgCtx = bgCanvas.getContext("2d", { willReadFrequently: true });
+    let renderRaf = null;
+    let faceDetectTimer = null;
+    let segmentTimer = null;
+    let lastStatusMsg = "";
+    let lastStatusMode = "";
 
-      const glassesImg = new Image();
-      const helmetImg = new Image();
-      const beardImg = new Image();
-      const bgImage = new Image();
+    const isSmallScreen = () => window.matchMedia("(max-width: 767.98px)").matches;
+    const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
-      let glassesReady = false;
-      let helmetReady = false;
-      let beardReady = false;
-      let bgReady = false;
+    const FACE_HOLD_MS = 380;
+    const SMOOTH_ALPHA = isMobileUA ? 0.22 : 0.16;
+    const LANDMARK_SMOOTH_ALPHA = isMobileUA ? 0.28 : 0.22;
+    const FACE_DETECT_MS = isMobileUA ? 120 : 90;
+    const SEGMENT_MS = isMobileUA ? 240 : 180;
 
-      glassesImg.src = "glasses.png";
-      glassesImg.onload = () => { glassesReady = true; };
+    const bgImage = new Image();
+    bgImage.src = "griffin-hall.jpg";
+    bgImage.onload = () => { bgReady = true; };
+    bgImage.onerror = () => {
+      bgReady = false;
+      console.warn("Could not load griffin-hall.jpg.");
+    };
 
-      helmetImg.src = "helmet.png";
-      helmetImg.onload = () => { helmetReady = true; };
+    const glassesImg = new Image();
+    glassesImg.src = "glasses.png";
+    glassesImg.onload = () => { glassesImgReady = true; };
+    glassesImg.onerror = () => console.warn("Could not load glasses.png");
 
-      beardImg.src = "beard.png";
-      beardImg.onload = () => { beardReady = true; };
+    const helmetImg = new Image();
+    helmetImg.src = "helmet.png";
+    helmetImg.onload = () => { helmetImgReady = true; };
+    helmetImg.onerror = () => console.warn("Could not load helmet.png");
 
-      bgImage.src = "griffin-hall.jpg";
-      bgImage.onload = () => { bgReady = true; };
+    const beardImg = new Image();
+    beardImg.src = "beard.png";
+    beardImg.onload = () => { beardImgReady = true; };
+    beardImg.onerror = () => console.warn("Could not load beard.png");
 
-      function setStatus(message, mode = "idle") {
-        if (message === lastStatusMsg && mode === lastStatusMode) return;
-        lastStatusMsg = message;
-        lastStatusMode = mode;
+    function setStatus(message, mode = "idle") {
+      if (message === lastStatusMsg && mode === lastStatusMode) return;
 
-        statusText.textContent = message;
-        statusDot.classList.remove("active", "error");
+      lastStatusMsg = message;
+      lastStatusMode = mode;
 
-        if (mode === "active") statusDot.classList.add("active");
-        if (mode === "error") statusDot.classList.add("error");
+      statusText.textContent = message;
+      statusDot.classList.remove("active", "error");
+
+      if (mode === "active") {
+        statusDot.classList.add("active");
+      } else if (mode === "error") {
+        statusDot.classList.add("error");
+      }
+    }
+
+    function setScreenStatus(text, locked) {
+      screenStatusText.textContent = text;
+      screenStatusDot.classList.toggle("active", !!locked);
+    }
+
+    function updateShareButtonLabel() {
+      if (lastSnapshotFile) {
+        shareBtn.innerHTML = "🖼️ Share Snapshot";
+        return;
       }
 
-      function setScreenStatus(text, active) {
-        screenStatusText.textContent = text;
-        screenStatusDot.classList.toggle("active", !!active);
+      if (navigator.share) {
+        shareBtn.innerHTML = "📲 Share Experience";
+      } else {
+        shareBtn.innerHTML = "🔗 Copy Page URL";
       }
+    }
 
-      function updateShareButtonLabel() {
-        if (lastSnapshotFile) {
-          shareBtn.innerHTML = "🖼️ Share Snapshot";
-          return;
-        }
+    async function getBestBackend() {
+      if (!window.tf) return;
 
-        if (navigator.share) {
-          shareBtn.innerHTML = "📲 Share Experience";
-        } else {
-          shareBtn.innerHTML = "🔗 Copy Page URL";
-        }
-      }
-
-      async function getBestBackend() {
-        if (!window.tf) return;
-        const backends = ["webgl", "wasm", "cpu"];
-        for (const backend of backends) {
-          try {
-            const ok = await tf.setBackend(backend);
-            if (ok) {
-              await tf.ready();
-              return;
-            }
-          } catch (err) {
-            console.warn("Backend unavailable:", backend, err);
+      const backendsToTry = ["webgl", "wasm", "cpu"];
+      for (const backendName of backendsToTry) {
+        try {
+          const ok = await tf.setBackend(backendName);
+          if (ok) {
+            await tf.ready();
+            return;
           }
+        } catch (error) {
+          console.warn("Backend not available:", backendName, error);
         }
       }
+    }
 
-      function updateCanvasBufferSize() {
-        if (!video.videoWidth || !video.videoHeight) return;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        tempCanvas.width = video.videoWidth;
-        tempCanvas.height = video.videoHeight;
-        bgCanvas.width = video.videoWidth;
-        bgCanvas.height = video.videoHeight;
+    function updateCanvasBufferSize() {
+      if (!video.videoWidth || !video.videoHeight) return;
+
+      const renderWidth = video.videoWidth;
+      const renderHeight = video.videoHeight;
+
+      canvas.width = renderWidth;
+      canvas.height = renderHeight;
+      tempCanvas.width = renderWidth;
+      tempCanvas.height = renderHeight;
+      bgCanvas.width = renderWidth;
+      bgCanvas.height = renderHeight;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    async function setupCamera() {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setStatus(
+          "This browser does not support camera access. Try Chrome, Edge, Firefox, or Safari.",
+          "error"
+        );
+        throw new Error("getUserMedia not supported");
       }
 
-      async function setupCamera() {
-        if (!navigator.mediaDevices?.getUserMedia) {
-          setStatus("This browser does not support camera access.", "error");
-          throw new Error("getUserMedia not supported");
-        }
+      const mobileLike = isSmallScreen() || isMobileUA;
 
-        const constraints = {
-          audio: false,
-          video: {
-            facingMode: { ideal: "user" },
-            width: { ideal: 960, max: 1280 },
-            height: { ideal: 1280, max: 1280 }
-          }
+      const constraints = {
+        audio: false,
+        video: {
+          facingMode: { ideal: "user" },
+          width: mobileLike ? { ideal: 720, max: 1280 } : { ideal: 960, max: 1280 },
+          height: mobileLike ? { ideal: 960, max: 1280 } : { ideal: 720, max: 960 }
+        }
+      };
+
+      mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = mediaStream;
+
+      await new Promise((resolve) => {
+        video.onloadedmetadata = async () => {
+          await video.play();
+          updateCanvasBufferSize();
+          videoReady = true;
+          videoSkeleton.style.display = "none";
+          resolve();
         };
+      });
 
-        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = mediaStream;
+      window.addEventListener("resize", handleWindowResize, { passive: true });
+      window.addEventListener("orientationchange", handleWindowResize, { passive: true });
+    }
 
-        await new Promise((resolve) => {
-          video.onloadedmetadata = async () => {
-            await video.play();
-            updateCanvasBufferSize();
-            videoReady = true;
-            videoSkeleton.style.display = "none";
-            resolve();
-          };
+    function handleWindowResize() {
+      if (!videoReady) return;
+      setTimeout(() => {
+        updateCanvasBufferSize();
+      }, 120);
+    }
+
+    function stopLoops() {
+      if (renderRaf) cancelAnimationFrame(renderRaf);
+      renderRaf = null;
+
+      if (faceDetectTimer) clearInterval(faceDetectTimer);
+      faceDetectTimer = null;
+
+      if (segmentTimer) clearInterval(segmentTimer);
+      segmentTimer = null;
+    }
+
+    function stopCamera() {
+      stopLoops();
+
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+        mediaStream = null;
+      }
+
+      if (video.srcObject) {
+        video.srcObject = null;
+      }
+
+      videoReady = false;
+      aiRunning = false;
+      latestFaceBox = null;
+      latestLandmarks = null;
+      smoothedFaceBox = null;
+      smoothedLandmarks = null;
+      lastFaceTime = 0;
+      lastSegmentation = null;
+      lastSnapshotDataURL = null;
+      lastSnapshotFile = null;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      videoSkeleton.style.display = "block";
+      startBtn.disabled = false;
+      captureBtn.disabled = true;
+      stopBtn.disabled = true;
+
+      cameraInstruction?.classList.remove("hidden");
+
+      updateShareButtonLabel();
+      setScreenStatus("Offline", false);
+      setStatus("Camera turned off. Click or tap Start Camera & AI to begin again.", "idle");
+    }
+
+    function isValidPoint(pt) {
+      return (
+        Array.isArray(pt) &&
+        pt.length >= 2 &&
+        typeof pt[0] === "number" &&
+        typeof pt[1] === "number" &&
+        Number.isFinite(pt[0]) &&
+        Number.isFinite(pt[1])
+      );
+    }
+
+    function isValidBox(topLeft, bottomRight) {
+      if (!isValidPoint(topLeft) || !isValidPoint(bottomRight)) return false;
+      const [x1, y1] = topLeft;
+      const [x2, y2] = bottomRight;
+      return x2 - x1 > 0 && y2 - y1 > 0;
+    }
+
+    function smoothBox(oldBox, newBox, alpha) {
+      if (!oldBox) return newBox;
+
+      const [ox1, oy1] = oldBox.topLeft;
+      const [ox2, oy2] = oldBox.bottomRight;
+      const [nx1, ny1] = newBox.topLeft;
+      const [nx2, ny2] = newBox.bottomRight;
+
+      return {
+        topLeft: [
+          ox1 + alpha * (nx1 - ox1),
+          oy1 + alpha * (ny1 - oy1)
+        ],
+        bottomRight: [
+          ox2 + alpha * (nx2 - ox2),
+          oy2 + alpha * (ny2 - oy2)
+        ]
+      };
+    }
+
+    function smoothLandmarks(oldLandmarks, newLandmarks, alpha) {
+      if (!Array.isArray(newLandmarks) || newLandmarks.length === 0) return null;
+      if (!Array.isArray(oldLandmarks) || oldLandmarks.length !== newLandmarks.length) {
+        return newLandmarks.map((pt) => [pt[0], pt[1]]);
+      }
+
+      return newLandmarks.map((pt, index) => {
+        const oldPt = oldLandmarks[index];
+        if (!isValidPoint(oldPt) || !isValidPoint(pt)) return [pt[0], pt[1]];
+        return [
+          oldPt[0] + alpha * (pt[0] - oldPt[0]),
+          oldPt[1] + alpha * (pt[1] - oldPt[1])
+        ];
+      });
+    }
+
+    function getFaceMetrics(topLeft, bottomRight) {
+      const [x1, y1] = topLeft;
+      const [x2, y2] = bottomRight;
+      const faceWidth = x2 - x1;
+      const faceHeight = y2 - y1;
+      const centerX = x1 + faceWidth / 2;
+      const centerY = y1 + faceHeight / 2;
+
+      return { x1, y1, x2, y2, faceWidth, faceHeight, centerX, centerY };
+    }
+
+    function drawGlassesOnFace(topLeft, bottomRight, landmarks = null) {
+      if (!glassesImgReady || !isValidBox(topLeft, bottomRight)) return;
+
+      const { x1, y1, faceWidth, faceHeight, centerX } = getFaceMetrics(topLeft, bottomRight);
+
+      const overlayWidth = faceWidth * 1.12;
+      const aspect = glassesImg.naturalHeight / glassesImg.naturalWidth;
+      const overlayHeight = overlayWidth * aspect;
+
+      let eyeLineY = y1 + faceHeight * 0.43;
+
+      if (Array.isArray(landmarks) && landmarks.length >= 2) {
+        const leftEye = landmarks[0];
+        const rightEye = landmarks[1];
+        if (isValidPoint(leftEye) && isValidPoint(rightEye)) {
+          eyeLineY = (leftEye[1] + rightEye[1]) / 2;
+        }
+      }
+
+      ctx.drawImage(
+        glassesImg,
+        centerX - overlayWidth / 2,
+        eyeLineY - overlayHeight / 2,
+        overlayWidth,
+        overlayHeight
+      );
+    }
+
+    function drawHelmetOnFace(topLeft, bottomRight, landmarks = null) {
+      if (!helmetImgReady || !isValidBox(topLeft, bottomRight)) return;
+
+      const { y1, faceWidth, faceHeight, centerX } = getFaceMetrics(topLeft, bottomRight);
+
+      const overlayWidth = faceWidth * 1.55;
+      const aspect = helmetImg.naturalHeight / helmetImg.naturalWidth;
+      const overlayHeight = overlayWidth * aspect;
+
+      let eyeLineY = y1 + faceHeight * 0.38;
+
+      if (Array.isArray(landmarks) && landmarks.length >= 2) {
+        const leftEye = landmarks[0];
+        const rightEye = landmarks[1];
+
+        if (isValidPoint(leftEye) && isValidPoint(rightEye)) {
+          eyeLineY = (leftEye[1] + rightEye[1]) / 2;
+        }
+      }
+
+      const drawX = centerX - overlayWidth / 2;
+      const drawY = eyeLineY - overlayHeight * 0.50;
+
+      ctx.drawImage(helmetImg, drawX, drawY, overlayWidth, overlayHeight);
+    }
+
+    function drawBeardOnFace(topLeft, bottomRight) {
+      if (!beardImgReady || !isValidBox(topLeft, bottomRight)) return;
+
+      const { faceWidth, faceHeight, centerX, centerY } = getFaceMetrics(topLeft, bottomRight);
+
+      const overlayWidth = faceWidth * 1.42;
+      const aspect = beardImg.naturalHeight / beardImg.naturalWidth;
+      const overlayHeight = overlayWidth * aspect;
+      const overlayCenterY = centerY - faceHeight * 0.02;
+
+      ctx.drawImage(
+        beardImg,
+        centerX - overlayWidth / 2,
+        overlayCenterY - overlayHeight / 2,
+        overlayWidth,
+        overlayHeight
+      );
+    }
+
+    function drawVikingOnFace(topLeft, bottomRight) {
+      drawBeardOnFace(topLeft, bottomRight);
+    }
+
+    async function detectFaceStep() {
+      if (!aiRunning || !videoReady || !faceModel) return;
+
+      try {
+        const predictions = await faceModel.estimateFaces(video, false);
+
+        if (Array.isArray(predictions) && predictions.length > 0) {
+          const face = predictions[0];
+
+          if (isValidBox(face.topLeft, face.bottomRight)) {
+            latestFaceBox = {
+              topLeft: face.topLeft,
+              bottomRight: face.bottomRight
+            };
+
+            latestLandmarks = Array.isArray(face.landmarks)
+              ? face.landmarks.map((pt) => [pt[0], pt[1]])
+              : null;
+
+            lastFaceTime = performance.now();
+          }
+        } else if (performance.now() - lastFaceTime > FACE_HOLD_MS) {
+          latestFaceBox = null;
+          latestLandmarks = null;
+        }
+      } catch (error) {
+        console.error("Error running BlazeFace:", error);
+      }
+    }
+
+    async function segmentStep() {
+      if (!aiRunning || !videoReady || !bodyPixModel) return;
+
+      try {
+        lastSegmentation = await bodyPixModel.segmentPerson(video, {
+          internalResolution: isMobileUA ? "low" : "medium",
+          segmentationThreshold: 0.7,
+          maxDetections: 1
         });
+      } catch (error) {
+        console.error("BodyPix error:", error);
+        lastSegmentation = null;
+      }
+    }
+
+    function drawBackgroundCover(img, targetCtx, targetW, targetH) {
+      if (!img || !img.naturalWidth || !img.naturalHeight) return;
+
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const targetRatio = targetW / targetH;
+
+      let drawW, drawH, drawX, drawY;
+
+      if (imgRatio > targetRatio) {
+        drawH = targetH;
+        drawW = drawH * imgRatio;
+        drawX = (targetW - drawW) / 2;
+        drawY = 0;
+      } else {
+        drawW = targetW;
+        drawH = drawW / imgRatio;
+        drawX = 0;
+        drawY = (targetH - drawH) / 2;
       }
 
-      function stopLoops() {
-        if (renderRaf) cancelAnimationFrame(renderRaf);
-        if (faceDetectTimer) clearInterval(faceDetectTimer);
-        if (segmentTimer) clearInterval(segmentTimer);
-        renderRaf = null;
-        faceDetectTimer = null;
-        segmentTimer = null;
+      targetCtx.drawImage(img, drawX, drawY, drawW, drawH);
+    }
+
+    function drawBaseComposite() {
+      const logicalW = canvas.width;
+      const logicalH = canvas.height;
+
+      if (!logicalW || !logicalH) return;
+
+      ctx.clearRect(0, 0, logicalW, logicalH);
+
+      if (activeFilter === "griffin" && bgReady && bodyPixModel && lastSegmentation) {
+        tempCtx.clearRect(0, 0, logicalW, logicalH);
+        tempCtx.drawImage(video, 0, 0, logicalW, logicalH);
+
+        const mask = lastSegmentation.data;
+        const frameImageData = tempCtx.getImageData(0, 0, logicalW, logicalH);
+        const framePixels = frameImageData.data;
+
+        bgCtx.clearRect(0, 0, logicalW, logicalH);
+        drawBackgroundCover(bgImage, bgCtx, logicalW, logicalH);
+
+        const bgImageData = bgCtx.getImageData(0, 0, logicalW, logicalH);
+        const bgPixels = bgImageData.data;
+
+        const len = Math.min(mask.length, framePixels.length / 4);
+
+        for (let i = 0; i < len; i++) {
+          const offset = i * 4;
+          if (mask[i] === 0) {
+            framePixels[offset] = bgPixels[offset];
+            framePixels[offset + 1] = bgPixels[offset + 1];
+            framePixels[offset + 2] = bgPixels[offset + 2];
+            framePixels[offset + 3] = bgPixels[offset + 3];
+          }
+        }
+
+        ctx.putImageData(frameImageData, 0, 0);
+        return;
       }
 
-      function stopCamera() {
-        stopLoops();
+      if (activeFilter === "griffin" && bgReady) {
+        drawBackgroundCover(bgImage, ctx, logicalW, logicalH);
+        return;
+      }
 
-        if (mediaStream) {
-          mediaStream.getTracks().forEach((track) => track.stop());
-          mediaStream = null;
+      if (bodyPixModel && lastSegmentation) {
+        bgCtx.clearRect(0, 0, logicalW, logicalH);
+        bgCtx.save();
+        bgCtx.filter = isMobileUA ? "blur(10px)" : "blur(14px)";
+        bgCtx.drawImage(video, 0, 0, logicalW, logicalH);
+        bgCtx.restore();
+
+        bgCtx.save();
+        bgCtx.fillStyle = "rgba(17,17,17,0.18)";
+        bgCtx.fillRect(0, 0, logicalW, logicalH);
+        bgCtx.restore();
+
+        const blurredImageData = bgCtx.getImageData(0, 0, logicalW, logicalH);
+
+        tempCtx.clearRect(0, 0, logicalW, logicalH);
+        tempCtx.drawImage(video, 0, 0, logicalW, logicalH);
+        const sharpImageData = tempCtx.getImageData(0, 0, logicalW, logicalH);
+
+        const outputPixels = blurredImageData.data;
+        const sharpPixels = sharpImageData.data;
+        const mask = lastSegmentation.data;
+        const len = Math.min(mask.length, sharpPixels.length / 4);
+
+        for (let i = 0; i < len; i++) {
+          if (mask[i] === 1) {
+            const offset = i * 4;
+            outputPixels[offset] = sharpPixels[offset];
+            outputPixels[offset + 1] = sharpPixels[offset + 1];
+            outputPixels[offset + 2] = sharpPixels[offset + 2];
+            outputPixels[offset + 3] = sharpPixels[offset + 3];
+          }
         }
 
-        if (video.srcObject) {
-          video.srcObject = null;
-        }
+        ctx.putImageData(blurredImageData, 0, 0);
+        return;
+      }
 
-        videoReady = false;
-        aiRunning = false;
-        latestFaceBox = null;
-        latestLandmarks = null;
+      ctx.save();
+      ctx.filter = isMobileUA ? "blur(10px)" : "blur(14px)";
+      ctx.drawImage(video, 0, 0, logicalW, logicalH);
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = "rgba(17,17,17,0.18)";
+      ctx.fillRect(0, 0, logicalW, logicalH);
+      ctx.restore();
+    }
+
+    function addWatermarkToSnapshot(targetCtx, outputW, outputH) {
+      const pad = Math.max(16, Math.round(outputW * 0.018));
+      const boxH = Math.max(42, Math.round(outputH * 0.072));
+
+      targetCtx.save();
+      targetCtx.fillStyle = "rgba(17,17,17,0.58)";
+      targetCtx.beginPath();
+      targetCtx.roundRect(pad, outputH - boxH - pad, Math.min(outputW * 0.74, 430), boxH, 14);
+      targetCtx.fill();
+
+      targetCtx.fillStyle = "#ffffff";
+      targetCtx.font = `700 ${Math.max(14, Math.round(outputW * 0.018))}px system-ui, sans-serif`;
+      targetCtx.fillText("NKU College of Informatics", pad + 14, outputH - pad - boxH / 2 + 2);
+
+      targetCtx.font = `500 ${Math.max(12, Math.round(outputW * 0.014))}px system-ui, sans-serif`;
+      targetCtx.fillText(CREATOR_CREDIT_TEXT, pad + 14, outputH - pad - 12);
+      targetCtx.restore();
+    }
+
+    function renderFrame() {
+      if (!aiRunning || !videoReady) return;
+
+      drawBaseComposite();
+
+      let boxToUse = null;
+      let landmarksToUse = null;
+      const now = performance.now();
+
+      if (latestFaceBox) {
+        smoothedFaceBox = smoothBox(smoothedFaceBox, latestFaceBox, SMOOTH_ALPHA);
+        smoothedLandmarks = smoothLandmarks(smoothedLandmarks, latestLandmarks, LANDMARK_SMOOTH_ALPHA);
+        boxToUse = smoothedFaceBox;
+        landmarksToUse = smoothedLandmarks;
+      } else if (smoothedFaceBox && now - lastFaceTime < FACE_HOLD_MS) {
+        boxToUse = smoothedFaceBox;
+        landmarksToUse = smoothedLandmarks;
+      } else {
         smoothedFaceBox = null;
         smoothedLandmarks = null;
-        lastFaceTime = 0;
-        lastSegmentation = null;
-        lastSnapshotDataURL = null;
-        lastSnapshotFile = null;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        videoSkeleton.style.display = "block";
-        startBtn.disabled = false;
-        captureBtn.disabled = true;
-        stopBtn.disabled = true;
-
-        setScreenStatus("Offline", false);
-        setStatus("Camera turned off. Tap Start Camera & AI to begin again.", "idle");
-        updateShareButtonLabel();
       }
 
-      function isValidPoint(pt) {
-        return Array.isArray(pt)
-          && pt.length >= 2
-          && Number.isFinite(pt[0])
-          && Number.isFinite(pt[1]);
-      }
-
-      function isValidBox(topLeft, bottomRight) {
-        if (!isValidPoint(topLeft) || !isValidPoint(bottomRight)) return false;
-        const [x1, y1] = topLeft;
-        const [x2, y2] = bottomRight;
-        return x2 - x1 > 0 && y2 - y1 > 0;
-      }
-
-      function smoothBox(oldBox, newBox, alpha) {
-        if (!oldBox) return newBox;
-
-        const [ox1, oy1] = oldBox.topLeft;
-        const [ox2, oy2] = oldBox.bottomRight;
-        const [nx1, ny1] = newBox.topLeft;
-        const [nx2, ny2] = newBox.bottomRight;
-
-        return {
-          topLeft: [
-            ox1 + alpha * (nx1 - ox1),
-            oy1 + alpha * (ny1 - oy1)
-          ],
-          bottomRight: [
-            ox2 + alpha * (nx2 - ox2),
-            oy2 + alpha * (ny2 - oy2)
-          ]
-        };
-      }
-
-      function smoothLandmarks(oldPoints, newPoints, alpha) {
-        if (!oldPoints || !newPoints || oldPoints.length !== newPoints.length) return newPoints;
-        return newPoints.map((pt, i) => [
-          oldPoints[i][0] + alpha * (pt[0] - oldPoints[i][0]),
-          oldPoints[i][1] + alpha * (pt[1] - oldPoints[i][1])
-        ]);
-      }
-
-      function getCurrentFace() {
-        if (latestFaceBox && performance.now() - lastFaceTime < FACE_HOLD_MS) {
-          smoothedFaceBox = smoothBox(smoothedFaceBox, latestFaceBox, SMOOTH_ALPHA);
-          smoothedLandmarks = smoothLandmarks(smoothedLandmarks, latestLandmarks, LANDMARK_SMOOTH_ALPHA);
-          return {
-            box: smoothedFaceBox,
-            landmarks: smoothedLandmarks
-          };
-        }
-        return null;
-      }
-
-      async function detectFace() {
-        if (!faceModel || !videoReady || !aiRunning) return;
-        try {
-          const predictions = await faceModel.estimateFaces(video, false);
-          if (predictions && predictions.length > 0) {
-            const face = predictions[0];
-            if (isValidBox(face.topLeft, face.bottomRight)) {
-              latestFaceBox = {
-                topLeft: [...face.topLeft],
-                bottomRight: [...face.bottomRight]
-              };
-              latestLandmarks = Array.isArray(face.landmarks)
-                ? face.landmarks.map((pt) => [pt[0], pt[1]])
-                : null;
-              lastFaceTime = performance.now();
-            }
-          }
-        } catch (err) {
-          console.warn("Face detection issue:", err);
-        }
-      }
-
-      async function detectSegmentation() {
-        if (!bodyPixModel || !videoReady || !aiRunning || activeFilter !== "griffin") return;
-        try {
-          lastSegmentation = await bodyPixModel.segmentPerson(video, {
-            internalResolution: "medium",
-            segmentationThreshold: 0.7,
-            maxDetections: 1
-          });
-        } catch (err) {
-          console.warn("Segmentation issue:", err);
-        }
-      }
-
-      function drawBackgroundMode() {
-        if (!bgReady || !lastSegmentation) {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          return;
-        }
-
-        bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);
-
-        tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-        tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-
-        const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        const bgFrame = bgCtx.getImageData(0, 0, bgCanvas.width, bgCanvas.height);
-        const data = frame.data;
-        const bgData = bgFrame.data;
-        const mask = lastSegmentation.data;
-
-        for (let i = 0; i < mask.length; i++) {
-          if (mask[i] === 0) {
-            const px = i * 4;
-            data[px] = bgData[px];
-            data[px + 1] = bgData[px + 1];
-            data[px + 2] = bgData[px + 2];
-            data[px + 3] = 255;
-          }
-        }
-
-        ctx.putImageData(frame, 0, 0);
-      }
-
-      function drawGlasses(face) {
-        if (!glassesReady || !face || !face.landmarks || face.landmarks.length < 2) return;
-        const leftEye = face.landmarks[0];
-        const rightEye = face.landmarks[1];
-
-        const dx = rightEye[0] - leftEye[0];
-        const dy = rightEye[1] - leftEye[1];
-        const angle = Math.atan2(dy, dx);
-        const eyeDistance = Math.hypot(dx, dy);
-
-        const width = eyeDistance * 2.1;
-        const height = width * 0.52;
-        const centerX = (leftEye[0] + rightEye[0]) / 2;
-        const centerY = (leftEye[1] + rightEye[1]) / 2;
-
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(angle);
-        ctx.drawImage(glassesImg, -width / 2, -height / 2, width, height);
-        ctx.restore();
-      }
-
-      function drawHelmet(face) {
-        if (!helmetReady || !face || !face.box) return;
-        const [x1, y1] = face.box.topLeft;
-        const [x2, y2] = face.box.bottomRight;
-        const faceWidth = x2 - x1;
-        const faceHeight = y2 - y1;
-
-        const width = faceWidth * 1.55;
-        const height = faceHeight * 1.22;
-        const x = x1 - (width - faceWidth) / 2;
-        const y = y1 - faceHeight * 0.75;
-
-        ctx.drawImage(helmetImg, x, y, width, height);
-      }
-
-      function drawBeard(face) {
-        if (!beardReady || !face || !face.box) return;
-        const [x1, y1] = face.box.topLeft;
-        const [x2, y2] = face.box.bottomRight;
-        const faceWidth = x2 - x1;
-        const faceHeight = y2 - y1;
-
-        const width = faceWidth * 0.95;
-        const height = faceHeight * 0.85;
-        const x = x1 + faceWidth * 0.025;
-        const y = y1 + faceHeight * 0.55;
-
-        ctx.drawImage(beardImg, x, y, width, height);
-      }
-
-      function renderFrame() {
-        if (!videoReady || !aiRunning) return;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (activeFilter === "griffin") {
-          drawBackgroundMode();
-        } else {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        }
-
-        const face = getCurrentFace();
+      if (boxToUse && isValidBox(boxToUse.topLeft, boxToUse.bottomRight)) {
+        const { topLeft, bottomRight } = boxToUse;
 
         if (activeFilter === "glasses") {
-          drawGlasses(face);
+          drawGlassesOnFace(topLeft, bottomRight, landmarksToUse);
+          setStatus("Tech Glasses mode is active.", "active");
         } else if (activeFilter === "helmet") {
-          drawHelmet(face);
+          drawHelmetOnFace(topLeft, bottomRight, landmarksToUse);
+          setStatus("Viking Helmet mode is active.", "active");
         } else if (activeFilter === "combo") {
-          drawHelmet(face);
-          drawBeard(face);
+          drawVikingOnFace(topLeft, bottomRight);
+          setStatus("Viking Beard mode is active.", "active");
+        } else {
+          setStatus("Campus Scene mode is active.", "active");
         }
 
-        renderRaf = requestAnimationFrame(renderFrame);
+        setScreenStatus("Face Locked", true);
+      } else {
+        if (activeFilter === "griffin") {
+          setStatus("AI is running. Move into view to activate the experience.", "active");
+        } else {
+          setStatus("AI is running. Move into view to activate overlays.", "active");
+        }
+        setScreenStatus("Searching…", false);
       }
 
-      async function loadModels() {
-        if (!window.tf || !window.blazeface || !window.bodyPix) {
-          throw new Error("AI libraries not available.");
+      renderRaf = requestAnimationFrame(renderFrame);
+    }
+
+    async function captureSnapshot() {
+      if (!videoReady) return;
+
+      const outputW = canvas.width;
+      const outputH = canvas.height;
+      if (!outputW || !outputH) return;
+
+      const snapCanvas = document.createElement("canvas");
+      snapCanvas.width = outputW;
+      snapCanvas.height = outputH;
+
+      const sctx = snapCanvas.getContext("2d");
+      sctx.drawImage(canvas, 0, 0, outputW, outputH);
+      addWatermarkToSnapshot(sctx, outputW, outputH);
+
+      const dataURL = snapCanvas.toDataURL("image/png");
+      snapshotPreview.src = dataURL;
+      previewSection.style.display = "block";
+
+      lastSnapshotDataURL = dataURL;
+
+      const timestampText = new Date().toISOString().replace(/[:.]/g, "-");
+      const filename = `${TARGET_FOLDER_LABEL}-snapshot-${timestampText}.png`;
+
+      try {
+        const blob = await new Promise((resolve) => {
+          snapCanvas.toBlob(resolve, "image/png");
+        });
+
+        if (blob) {
+          lastSnapshotFile = new File([blob], filename, { type: "image/png" });
+        } else {
+          lastSnapshotFile = null;
         }
+      } catch (error) {
+        console.warn("Could not prepare snapshot file for sharing:", error);
+        lastSnapshotFile = null;
+      }
 
-        await getBestBackend();
+      const a = document.createElement("a");
+      a.href = dataURL;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
-        if (!faceModel) {
-          faceModel = await blazeface.load();
-        }
+      updateShareButtonLabel();
+      setStatus("Snapshot saved.", "active");
+    }
 
-        if (!bodyPixModel) {
-          bodyPixModel = await bodyPix.load({
-            architecture: "MobileNetV1",
-            outputStride: 16,
-            multiplier: 0.5,
-            quantBytes: 2
+    async function shareExperience() {
+      const shareURL = window.location.href;
+
+      if (lastSnapshotFile && navigator.share) {
+        try {
+          await navigator.share({
+            title: "NKU College of Informatics AI Experience",
+            text: "I tried this interactive NKU AI experience.",
+            files: [lastSnapshotFile]
           });
+          setStatus("Snapshot shared.", "active");
+          return;
+        } catch (error) {
+          if (error && error.name === "AbortError") {
+            setStatus("Share canceled.", "idle");
+            return;
+          }
+          console.warn("Snapshot share failed:", error);
         }
       }
 
-      async function startExperience() {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "NKU College of Informatics AI Experience",
+            text: "Try this interactive NKU AI experience.",
+            url: shareURL
+          });
+          setStatus("Experience shared.", "active");
+          return;
+        } catch (error) {
+          if (error && error.name === "AbortError") {
+            setStatus("Share canceled.", "idle");
+            return;
+          }
+
+          console.warn("Share failed:", error);
+
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(shareURL);
+              setStatus("Share was unavailable, so the page URL was copied instead.", "active");
+              return;
+            }
+          } catch (clipboardError) {
+            console.warn("Clipboard fallback failed:", clipboardError);
+          }
+
+          setStatus("Could not share on this device. Please copy the URL manually.", "error");
+          return;
+        }
+      }
+
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(shareURL);
+          setStatus("Page URL copied.", "active");
+        } else {
+          setStatus("Sharing is not supported on this device. Please copy the page URL manually.", "error");
+        }
+      } catch (error) {
+        console.warn("Clipboard copy failed:", error);
+        setStatus("Could not copy the URL automatically. Please copy it manually.", "error");
+      }
+    }
+
+    async function startExperience() {
+      try {
         if (aiRunning) return;
 
         startBtn.disabled = true;
-        setStatus("Starting camera and loading AI…", "active");
+        captureBtn.disabled = true;
+        stopBtn.disabled = true;
+
+        setStatus("Requesting camera access…", "idle");
+        setScreenStatus("Loading…", false);
+
+        await setupCamera();
+
+        setStatus("Loading AI models…", "idle");
+        await getBestBackend();
+
+        faceModel = await blazeface.load();
 
         try {
-          await setupCamera();
-          await loadModels();
-
-          aiRunning = true;
-          captureBtn.disabled = false;
-          stopBtn.disabled = false;
-
-          faceDetectTimer = setInterval(detectFace, FACE_DETECT_MS);
-          segmentTimer = setInterval(detectSegmentation, SEGMENT_MS);
-          renderFrame();
-
-          setScreenStatus("Live", true);
-          setStatus("AI experience is live. Try a mode or save a snapshot.", "active");
-        } catch (err) {
-          console.error(err);
-          startBtn.disabled = false;
-          setScreenStatus("Offline", false);
-          setStatus("Could not start the camera or AI on this device.", "error");
-        }
-      }
-
-      function captureSnapshot() {
-        if (!videoReady || !aiRunning) return;
-
-        const dataURL = canvas.toDataURL("image/png");
-        lastSnapshotDataURL = dataURL;
-        snapshotPreview.src = dataURL;
-        previewSection.style.display = "block";
-
-        const fileName = `nku-ai-experience-${Date.now()}.png`;
-        const arr = dataURL.split(",");
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-
-        while (n--) {
-          u8arr[n] = bstr.charCodeAt(n);
-        }
-
-        lastSnapshotFile = new File([u8arr], fileName, { type: mime });
-        updateShareButtonLabel();
-        setStatus("Snapshot saved. You can share it now.", "active");
-      }
-
-      async function shareDemo() {
-        try {
-          if (lastSnapshotFile && navigator.share && navigator.canShare?.({ files: [lastSnapshotFile] })) {
-            await navigator.share({
-              title: "NKU College of Informatics",
-              text: "Check out this AI experience from NKU College of Informatics.",
-              files: [lastSnapshotFile]
-            });
-            return;
-          }
-
-          if (navigator.share) {
-            await navigator.share({
-              title: "NKU College of Informatics",
-              text: "Explore this student-friendly NKU College of Informatics experience.",
-              url: window.location.href
-            });
-            return;
-          }
-
-          await navigator.clipboard.writeText(window.location.href);
-          setStatus("Page link copied to clipboard.", "active");
-        } catch (err) {
-          console.warn("Share cancelled or unavailable:", err);
-        }
-      }
-
-      filterButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          activeFilter = btn.dataset.filter;
-
-          filterButtons.forEach((b) => {
-            b.classList.remove("active");
-            b.setAttribute("aria-checked", "false");
+          bodyPixModel = await bodyPix.load({
+            architecture: "MobileNetV1",
+            outputStride: 16,
+            multiplier: isMobileUA ? 0.5 : 0.75,
+            quantBytes: 2
           });
+        } catch (error) {
+          console.warn("BodyPix failed to load.", error);
+          bodyPixModel = null;
+        }
 
-          btn.classList.add("active");
-          btn.setAttribute("aria-checked", "true");
+        aiRunning = true;
+        captureBtn.disabled = false;
+        stopBtn.disabled = false;
+        cameraInstruction?.classList.add("hidden");
 
-          if (activeFilter === "glasses") {
-            setStatus("Tech Glasses mode selected.", aiRunning ? "active" : "idle");
-          } else if (activeFilter === "helmet") {
-            setStatus("Viking Helmet mode selected.", aiRunning ? "active" : "idle");
-          } else if (activeFilter === "combo") {
-            setStatus("Viking Mode selected.", aiRunning ? "active" : "idle");
-          } else {
-            setStatus("Campus Scene mode selected.", aiRunning ? "active" : "idle");
-          }
+        faceDetectTimer = setInterval(detectFaceStep, FACE_DETECT_MS);
+        segmentTimer = setInterval(segmentStep, SEGMENT_MS);
+
+        await detectFaceStep();
+        await segmentStep();
+
+        setStatus("Camera and AI are ready.", "active");
+        renderRaf = requestAnimationFrame(renderFrame);
+      } catch (error) {
+        console.error("Init error:", error);
+        startBtn.disabled = false;
+        captureBtn.disabled = true;
+        stopBtn.disabled = true;
+        cameraInstruction?.classList.remove("hidden");
+        setScreenStatus("Offline", false);
+        setStatus(
+          "This device or browser may not fully support the demo. Try Chrome, Edge, Firefox, or Safari over HTTPS.",
+          "error"
+        );
+      }
+    }
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.getAttribute("data-filter") || "glasses";
+
+        filterButtons.forEach((b) => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+          b.setAttribute("aria-checked", "false");
         });
+
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        btn.setAttribute("aria-checked", "true");
+
+        if (activeFilter === "glasses") {
+          setStatus("Tech Glasses mode selected.", aiRunning ? "active" : "idle");
+        } else if (activeFilter === "helmet") {
+          setStatus("Viking Helmet mode selected.", aiRunning ? "active" : "idle");
+        } else if (activeFilter === "combo") {
+          setStatus("Viking Beard mode selected.", aiRunning ? "active" : "idle");
+        } else {
+          setStatus("Campus Scene mode selected.", aiRunning ? "active" : "idle");
+        }
       });
+    });
 
-      function getLeadPayload() {
-        return {
-          studentName: document.getElementById("studentName").value.trim(),
-          studentEmail: document.getElementById("studentEmail").value.trim(),
-          highSchool: document.getElementById("highSchool").value.trim(),
-          graduationYear: document.getElementById("graduationYear").value.trim(),
-          interestArea: document.getElementById("interestArea").value,
-          studentMessage: document.getElementById("studentMessage").value.trim(),
-          contactPermission: document.getElementById("contactPermission").checked,
-          submittedAt: new Date().toISOString(),
-          source: "NKU Student Recruiting Experience"
-        };
-      }
+    updateShareButtonLabel();
 
-      function saveLeadLocally(payload) {
-        const key = "nkuStudentRecruitingLeads";
-        const existing = JSON.parse(localStorage.getItem(key) || "[]");
-        existing.push(payload);
-        localStorage.setItem(key, JSON.stringify(existing));
-      }
+    startBtn.addEventListener("click", startExperience);
+    captureBtn.addEventListener("click", captureSnapshot);
+    stopBtn.addEventListener("click", stopCamera);
+    shareBtn.addEventListener("click", shareExperience);
 
-      function downloadLeadAsJson(payload) {
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `nku-interest-${Date.now()}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }
+    window.addEventListener("beforeunload", () => {
+      stopCamera();
+    });
 
-      if (studentInterestForm) {
-        studentInterestForm.addEventListener("submit", function (event) {
-          event.preventDefault();
-          const payload = getLeadPayload();
-          saveLeadLocally(payload);
-
-          formMessage.style.display = "block";
-          formMessage.textContent = "Saved on this device for the demo.";
-
-          setTimeout(() => {
-            formMessage.style.display = "none";
-          }, 4000);
-        });
-      }
-
-      if (downloadLeadBtn) {
-        downloadLeadBtn.addEventListener("click", function () {
-          const payload = getLeadPayload();
-          downloadLeadAsJson(payload);
-        });
-      }
-
-      startBtn.addEventListener("click", startExperience);
-      captureBtn.addEventListener("click", captureSnapshot);
-      stopBtn.addEventListener("click", stopCamera);
-      shareBtn.addEventListener("click", shareDemo);
-
-      window.addEventListener("resize", updateCanvasBufferSize, { passive: true });
-      window.addEventListener("orientationchange", () => {
-        setTimeout(updateCanvasBufferSize, 120);
-      }, { passive: true });
-
-      window.addEventListener("beforeunload", stopCamera);
-
-      setScreenStatus("Offline", false);
-      updateShareButtonLabel();
-    })();
+    setScreenStatus("Offline", false);
+  })();
   </script>
 </body>
 </html>
