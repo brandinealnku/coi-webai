@@ -118,6 +118,10 @@
       padding:13px 16px;
       font-weight:850;
       transition:transform .15s ease, opacity .15s ease, background .15s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
     }
 
     .btn:hover{transform:translateY(-1px)}
@@ -215,7 +219,7 @@
 
     .stage{
       position:relative;
-      min-height:520px;
+      min-height:560px;
       border-radius:20px;
       overflow:hidden;
       background:
@@ -238,7 +242,7 @@
       display:grid;
       place-items:center;
       text-align:center;
-      padding:20px;
+      padding:24px;
       background:
         radial-gradient(circle at 50% 20%, rgba(255,199,44,.14), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
@@ -255,214 +259,18 @@
     }
 
     .fallback-stage p{
-      margin:0;
+      margin:0 auto;
       color:var(--muted);
-      max-width:28ch;
+      max-width:30ch;
       line-height:1.45;
     }
 
-    .path-overlay{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.6));
-      backdrop-filter:blur(14px);
-      z-index:6;
-      padding:18px;
-      overflow-y:auto;
-      opacity:1;
-      transition:opacity .28s ease;
-    }
-
-    .path-overlay.hidden{
-      display:none;
-    }
-
-    .path-overlay.is-visible{
-      display:flex;
-    }
-
-    .path-overlay.is-fading{
-      opacity:0;
-    }
-
-    .path-overlay-content{
-      width:100%;
-      max-width:520px;
-      text-align:center;
-      max-height:100%;
-      overflow-y:auto;
-      padding:24px 20px 22px;
-      border-radius:24px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)),
-        rgba(10,10,10,.9);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 24px 60px rgba(0,0,0,.45);
-      scrollbar-width:none;
-    }
-
-    .path-overlay-content::-webkit-scrollbar{
-      display:none;
-    }
-
-    .funnel-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:7px 12px;
-      border-radius:999px;
-      background:rgba(255,199,44,.14);
-      border:1px solid rgba(255,199,44,.32);
-      color:var(--gold);
-      font-size:.72rem;
-      font-weight:900;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      margin-bottom:14px;
-    }
-
-    .overlay-title{
-      font-size:clamp(1.5rem, 4vw, 2.2rem);
-      font-weight:900;
-      margin-bottom:8px;
-      letter-spacing:-.04em;
-      line-height:.95;
-      text-transform:uppercase;
-    }
-
-    .overlay-sub{
-      color:var(--muted);
-      font-size:.98rem;
-      margin:0 auto 14px;
-      line-height:1.5;
-      max-width:34ch;
-    }
-
-    .overlay-sub strong{
-      color:#fff;
-    }
-
-    .funnel-value-props{
+    .fallback-buttons{
+      margin-top:16px;
       display:flex;
       flex-wrap:wrap;
       justify-content:center;
-      gap:8px;
-      margin-bottom:16px;
-    }
-
-    .value-pill{
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.1);
-      color:#fff;
-      font-size:.78rem;
-      font-weight:800;
-    }
-
-    .scan-demo{
-      margin:0 auto 14px;
-      width:min(100%, 320px);
-      height:92px;
-      border-radius:18px;
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)),
-        radial-gradient(circle at 50% 10%, rgba(255,199,44,.12), transparent 40%);
-      display:grid;
-      place-items:center;
-    }
-
-    .scan-demo-sign{
-      width:72%;
-      max-width:220px;
-      padding:12px 14px;
-      border-radius:14px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.16);
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#fff;
-      position:relative;
-      z-index:2;
-    }
-
-    .scan-demo-line{
-      position:absolute;
-      left:18px;
-      right:18px;
-      top:16px;
-      height:2px;
-      background:linear-gradient(90deg, transparent, var(--gold), transparent);
-      filter:drop-shadow(0 0 8px rgba(255,199,44,.8));
-      animation:demoSweep 2.1s ease-in-out infinite;
-      z-index:3;
-    }
-
-    .scan-demo-frame{
-      position:absolute;
-      inset:14px;
-      border:2px solid rgba(255,255,255,.26);
-      border-radius:16px;
-      z-index:1;
-    }
-
-    @keyframes demoSweep{
-      0%{transform:translateY(0);opacity:.25}
-      50%{transform:translateY(44px);opacity:1}
-      100%{transform:translateY(0);opacity:.25}
-    }
-
-    .funnel-microcopy{
-      margin:2px 0 10px;
-      color:var(--gold);
-      font-size:.76rem;
-      font-weight:900;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-    }
-
-    .path-grid-overlay{
-      display:grid;
-      grid-template-columns:1fr 1fr;
       gap:10px;
-      margin-top:2px;
-    }
-
-    .path-card{
-      padding:15px 12px;
-      border-radius:16px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.12);
-      color:#fff;
-      font-weight:850;
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
-      min-height:58px;
-    }
-
-    .path-card:hover,
-    .path-card.active{
-      background:rgba(255,199,44,.18);
-      border-color:rgba(255,199,44,.55);
-      transform:translateY(-1px);
-      box-shadow:0 10px 24px rgba(255,199,44,.12);
-    }
-
-    .skip-overlay-btn{
-      margin-top:12px;
-      background:none;
-      border:none;
-      color:rgba(255,255,255,.72);
-      font-size:.88rem;
-      font-weight:700;
-      cursor:pointer;
     }
 
     .stage-top{
@@ -710,6 +518,33 @@
       gap:14px;
     }
 
+    .path-buttons{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+    }
+
+    .path-card{
+      padding:15px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:850;
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+      min-height:58px;
+    }
+
+    .path-card:hover,
+    .path-card.active{
+      background:rgba(255,199,44,.18);
+      border-color:rgba(255,199,44,.55);
+      transform:translateY(-1px);
+      box-shadow:0 10px 24px rgba(255,199,44,.12);
+    }
+
     .persona-panel{
       margin-top:12px;
       padding:14px;
@@ -782,31 +617,6 @@
       flex-wrap:wrap;
       gap:8px;
       margin-top:12px;
-    }
-
-    .cta-stack-funnel{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:16px;
-    }
-
-    .funnel-primary{
-      min-height:54px;
-      font-size:1rem;
-      font-weight:900;
-      box-shadow:0 14px 28px rgba(255,199,44,.22);
-    }
-
-    .funnel-secondary{
-      min-height:50px;
-    }
-
-    .funnel-reassurance{
-      margin-top:12px;
-      color:var(--soft);
-      font-size:.84rem;
-      line-height:1.45;
     }
 
     .small-note{
@@ -932,87 +742,14 @@
       100%{transform:translate3d(var(--x),100vh,0) rotate(540deg);opacity:0}
     }
 
-    .final-screen{
-      position:fixed;
-      inset:0;
-      z-index:70;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-      padding:22px 16px calc(22px + env(safe-area-inset-bottom));
-      background:
-        radial-gradient(circle at 50% 24%, rgba(255,199,44,.2), transparent 24%),
-        linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%),
-        linear-gradient(180deg,#0b0b0b 0%, #020202 100%);
-      opacity:0;
-      pointer-events:none;
-      transform:scale(1.03);
-      transition:.4s ease;
-    }
-
-    .final-screen.active{
-      opacity:1;
-      pointer-events:auto;
-      transform:scale(1);
-    }
-
-    .final-kicker{
-      color:var(--gold);
-      font-size:.76rem;
-      text-transform:uppercase;
-      letter-spacing:.18em;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    .final-title{
-      margin:0;
-      font-size:clamp(2rem, 8vw, 4.1rem);
-      line-height:.92;
-      letter-spacing:-.05em;
-      text-transform:uppercase;
-    }
-
-    .final-title .gold{color:var(--gold)}
-
-    .final-copy{
-      margin:14px auto 0;
-      max-width:38rem;
-      color:var(--muted);
-      line-height:1.5;
-      white-space:pre-line;
-      font-size:.96rem;
-    }
-
-    .final-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:16px;
-      width:min(100%, 620px);
-    }
-
     @media (min-width:860px){
       .hero-grid{grid-template-columns:1.02fr .98fr}
       .funnel-grid{grid-template-columns:1fr 1fr}
     }
 
     @media (max-width:640px){
-      .path-overlay{
-        align-items:flex-start;
-        padding:12px;
-      }
-
-      .path-overlay-content{
-        margin:auto 0;
-        padding:20px 16px 18px;
-        border-radius:20px;
-      }
-
-      .path-grid-overlay,
-      .action-grid{
+      .action-grid,
+      .path-buttons{
         grid-template-columns:1fr;
       }
 
@@ -1021,15 +758,7 @@
       }
 
       .stage{
-        min-height:600px;
-      }
-
-      .overlay-title{
-        font-size:1.55rem;
-      }
-
-      .overlay-sub{
-        font-size:.93rem;
+        min-height:620px;
       }
 
       .dates-section{
@@ -1099,60 +828,13 @@
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>Explore the course at your own pace and see how AI connects to your future.</p>
-              </div>
-            </div>
-
-            <div class="path-overlay hidden" id="pathOverlay" aria-hidden="true">
-              <div class="path-overlay-content">
-                <div class="funnel-badge">Optional experience</div>
-
-                <div class="overlay-title">See how AI fits your future</div>
-
-                <div class="overlay-sub">
-                  Want to explore how AI connects to your future? Pick the path that feels most like you, then unlock a personalized INF 125 reveal.
+                <p>
+                  Explore the course below, or start the optional camera experience to unlock the in-place reveal.
+                </p>
+                <div class="fallback-buttons">
+                  <button class="btn btn-primary" id="enableCameraBtn" type="button">Start Camera Experience</button>
+                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">Show Reveal Now</button>
                 </div>
-
-                <div class="funnel-value-props">
-                  <div class="value-pill">Beginner friendly</div>
-                  <div class="value-pill">Open to all majors</div>
-                  <div class="value-pill">Career relevant</div>
-                </div>
-
-                <div class="scan-demo" aria-hidden="true">
-                  <div class="scan-demo-frame"></div>
-                  <div class="scan-demo-line"></div>
-                  <div class="scan-demo-sign">GH 160</div>
-                </div>
-
-                <div class="funnel-microcopy">Take a quick look or jump straight to the course details below</div>
-
-                <div class="path-grid-overlay">
-                  <button class="path-card active" data-path="business" type="button">Business</button>
-                  <button class="path-card" data-path="health" type="button">Health</button>
-                  <button class="path-card" data-path="creative" type="button">Creative</button>
-                  <button class="path-card" data-path="education" type="button">Education</button>
-                  <button class="path-card" data-path="tech" type="button">Tech</button>
-                  <button class="path-card" data-path="undecided" type="button">Explore</button>
-                </div>
-
-                <div class="cta-stack-funnel">
-                  <button class="btn btn-primary funnel-primary" id="enableCameraBtn" type="button">
-                    Start My AI Experience
-                  </button>
-
-                  <button class="btn btn-secondary funnel-secondary" id="skipRevealBtn" type="button">
-                    Just Show Me the Course
-                  </button>
-                </div>
-
-                <div class="funnel-reassurance">
-                  No technical background required. You’re in control — explore at your own pace.
-                </div>
-
-                <button class="skip-overlay-btn" id="hideOverlayBtn" type="button">
-                  I’ll explore on my own
-                </button>
               </div>
             </div>
 
@@ -1201,7 +883,7 @@
 
               <div class="debug-card">
                 <div class="debug-label">Live preview</div>
-                <div class="debug-text" id="ocrOutput">Choose a path, then unlock your personalized INF 125 reveal.</div>
+                <div class="debug-text" id="ocrOutput">Choose a path below, then start the camera experience or show the reveal now.</div>
               </div>
             </div>
           </div>
@@ -1220,8 +902,17 @@
           <div class="section-label">Personalized focus</div>
           <h2 class="section-title">Why this course fits</h2>
           <p class="section-copy">
-            The message below updates based on the path you choose.
+            Pick the path that feels most like you. The message below updates instantly, with no popup required.
           </p>
+
+          <div class="path-buttons">
+            <button class="path-card active" data-path="business" type="button">Business</button>
+            <button class="path-card" data-path="health" type="button">Health</button>
+            <button class="path-card" data-path="creative" type="button">Creative</button>
+            <button class="path-card" data-path="education" type="button">Education</button>
+            <button class="path-card" data-path="tech" type="button">Tech</button>
+            <button class="path-card" data-path="undecided" type="button">Explore</button>
+          </div>
 
           <div class="persona-panel" id="personaPanel">
             <h3>AI literacy for business-minded students</h3>
@@ -1301,31 +992,6 @@
     <button class="btn btn-secondary" id="stickyShareBtn" type="button">Share</button>
   </div>
 
-  <section class="final-screen" id="finalScreen" aria-hidden="true">
-    <div class="final-kicker">Northern Kentucky University</div>
-    <h2 class="final-title"><span class="gold">AI Literacy</span><br />For Every Major</h2>
-    <div class="final-copy">
-INF 125: AI Literacy
-
-A welcoming course for students from all majors.
-Explore how AI connects to careers, creativity, communication, ethics, and everyday life.
-
-Tuesdays & Thursdays • 10:50 AM – 12:05 PM
-Griffin Hall 160
-    </div>
-    <div class="final-actions">
-      <a
-        class="btn btn-primary"
-        href="https://one.nku.edu/task/all/registerforclass"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Register for INF 125
-      </a>
-      <button class="btn btn-secondary" id="replayBtn" type="button">Replay</button>
-    </div>
-  </section>
-
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     const CONFIG = {
@@ -1334,8 +1000,6 @@ Griffin Hall 160
       startDateISO: "2026-08-24T10:50:00-04:00",
       scanIntervalMs: 3000,
       ocrScale: 1,
-      autoShowFinalMs: 12000,
-      overlayDelayMs: 9000,
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1441,8 +1105,6 @@ Griffin Hall 160
 
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
-    const pathOverlay = document.getElementById("pathOverlay");
-    const hideOverlayBtn = document.getElementById("hideOverlayBtn");
     const enableCameraBtn = document.getElementById("enableCameraBtn");
     const skipRevealBtn = document.getElementById("skipRevealBtn");
     const pathCards = document.querySelectorAll(".path-card");
@@ -1456,7 +1118,6 @@ Griffin Hall 160
     const majorText = document.getElementById("majorText");
     const datesList = document.getElementById("datesList");
     const confettiLayer = document.getElementById("confettiLayer");
-    const finalScreen = document.getElementById("finalScreen");
     const shareFeedback = document.getElementById("shareFeedback");
 
     const daysEl = document.getElementById("days");
@@ -1465,7 +1126,6 @@ Griffin Hall 160
     const secondsEl = document.getElementById("seconds");
 
     const voiceBtn = document.getElementById("voiceBtn");
-    const replayBtn = document.getElementById("replayBtn");
     const sharePageBtn = document.getElementById("sharePageBtn");
     const stickyShareBtn = document.getElementById("stickyShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
@@ -1483,23 +1143,19 @@ Griffin Hall 160
     let ocrBusy = false;
     let scanTimer = null;
     let countdownTimer = null;
-    let finalTimer = null;
     let majorRotationTimer = null;
-    let overlayAutoTimer = null;
     let majorIndex = 0;
     let fallbackMode = true;
     let selectedPath = "business";
     let voiceEnabled = false;
     let voicesReady = false;
     let speechCancelled = false;
-    let overlayHasBeenDismissed = false;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
     updatePersona("business");
     startMajorRotation();
     startCountdown();
-    scheduleOverlayIntro();
     updateStickyVisibility();
 
     if ("speechSynthesis" in window) {
@@ -1601,38 +1257,12 @@ Griffin Hall 160
       countdownTimer = setInterval(updateCountdown, 1000);
     }
 
-    function showOverlay() {
-      if (overlayHasBeenDismissed || found) return;
-      pathOverlay.classList.remove("hidden", "is-fading");
-      pathOverlay.classList.add("is-visible");
-      pathOverlay.setAttribute("aria-hidden", "false");
-    }
-
-    function hideOverlay() {
-      pathOverlay.classList.add("is-fading");
-      pathOverlay.setAttribute("aria-hidden", "true");
-
-      setTimeout(() => {
-        pathOverlay.classList.remove("is-visible", "is-fading");
-        pathOverlay.classList.add("hidden");
-      }, 600);
-    }
-
-    function scheduleOverlayIntro() {
-      clearTimeout(overlayAutoTimer);
-      overlayAutoTimer = setTimeout(() => {
-        if (!overlayHasBeenDismissed && !found && fallbackMode) {
-          showOverlay();
-        }
-      }, CONFIG.overlayDelayMs);
-    }
-
     function updateStickyVisibility() {
       if (!stickyCta || !datesSection) return;
       const rect = datesSection.getBoundingClientRect();
       const datesAreVisible = rect.top < window.innerHeight - 120 && rect.bottom > 120;
 
-      if (datesAreVisible || finalScreen.classList.contains("active")) {
+      if (datesAreVisible) {
         stickyCta.classList.add("is-hidden");
       } else {
         stickyCta.classList.remove("is-hidden");
@@ -1650,8 +1280,6 @@ Griffin Hall 160
       scanRing.classList.remove("found");
       scanRing.classList.add("active");
       fallbackStage.style.display = "none";
-      hideOverlay();
-      overlayHasBeenDismissed = true;
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -1670,9 +1298,10 @@ Griffin Hall 160
       } catch (err) {
         console.error(err);
         cameraStatus.textContent = "Camera unavailable";
-        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still jump straight to the course details.";
+        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Show Reveal Now.";
         fallbackMode = true;
         scanRing.classList.remove("active");
+        fallbackStage.style.display = "grid";
       }
     }
 
@@ -1686,12 +1315,9 @@ Griffin Hall 160
 
     function startFallbackReveal() {
       fallbackMode = true;
-      found = false;
       stopScanning();
       stopCamera();
-      hideOverlay();
-      overlayHasBeenDismissed = true;
-      fallbackStage.style.display = "grid";
+      fallbackStage.style.display = "none";
       scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
       ocrOutput.textContent = "Launching your personalized reveal without camera access.";
@@ -1728,7 +1354,7 @@ Griffin Hall 160
         }
       } catch (err) {
         console.error(err);
-        ocrOutput.textContent = "Scan error. Replay and try again, or skip straight to the reveal.";
+        ocrOutput.textContent = "Scan error. Try again, or use Show Reveal Now.";
       } finally {
         ocrBusy = false;
       }
@@ -1808,13 +1434,7 @@ Griffin Hall 160
         utterance.onend = () => {
           if (speechCancelled) return;
           index += 1;
-          setTimeout(nextLine, 120);
-        };
-
-        utterance.onerror = () => {
-          if (speechCancelled) return;
-          index += 1;
-          setTimeout(nextLine, 120);
+          setTimeout(nextLine, 180);
         };
 
         window.speechSynthesis.speak(utterance);
@@ -1825,32 +1445,38 @@ Griffin Hall 160
 
     function triggerConfetti() {
       confettiLayer.innerHTML = "";
-      const count = 36;
-      for (let i = 0; i < count; i++) {
-        const piece = document.createElement("span");
+
+      for (let i = 0; i < 26; i++) {
+        const piece = document.createElement("div");
         piece.className = "confetti-piece";
         piece.style.left = `${Math.random() * 100}%`;
-        piece.style.top = `${Math.random() * 10}%`;
-        piece.style.background = Math.random() > 0.5 ? "var(--gold)" : "#fff";
-        piece.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
-        piece.style.animationDelay = `${Math.random() * 180}ms`;
+        piece.style.top = `${-10 - Math.random() * 20}px`;
+        piece.style.setProperty("--x", `${(Math.random() - 0.5) * 180}px`);
+        piece.style.background = i % 2 === 0 ? "var(--gold)" : "#fff";
+        piece.style.animationDelay = `${Math.random() * 140}ms`;
         confettiLayer.appendChild(piece);
       }
+
       setTimeout(() => {
         confettiLayer.innerHTML = "";
       }, 1800);
     }
 
-    function onTargetFound(matchText) {
+    function onTargetFound(sourceText = "") {
       if (found) return;
-
       found = true;
       stopScanning();
-      revealCard.classList.add("active");
+      stopCamera();
+
       scanRing.classList.add("found");
-      ocrOutput.textContent = fallbackMode
-        ? "DIRECT LAUNCH MODE:\nShowing your personalized reveal without camera access."
-        : `MATCH FOUND:\n${matchText}`;
+      scanRing.classList.remove("active");
+      revealCard.classList.add("active");
+      fallbackStage.style.display = "none";
+      cameraStatus.textContent = sourceText === "camera skipped" ? "Reveal shown" : "Target found";
+      ocrOutput.textContent =
+        sourceText === "camera skipped"
+          ? "Personalized reveal shown without camera."
+          : `Match found: ${sourceText}`;
 
       triggerConfetti();
 
@@ -1860,21 +1486,6 @@ Griffin Hall 160
       if (navigator.vibrate) {
         navigator.vibrate([140, 70, 170]);
       }
-
-      if (finalTimer) clearTimeout(finalTimer);
-      finalTimer = setTimeout(showFinalScreen, CONFIG.autoShowFinalMs);
-    }
-
-    function showFinalScreen() {
-      finalScreen.classList.add("active");
-      finalScreen.setAttribute("aria-hidden", "false");
-      updateStickyVisibility();
-    }
-
-    function hideFinalScreen() {
-      finalScreen.classList.remove("active");
-      finalScreen.setAttribute("aria-hidden", "true");
-      updateStickyVisibility();
     }
 
     function resetExperience() {
@@ -1885,18 +1496,9 @@ Griffin Hall 160
       stopSpeech();
       scanRing.classList.remove("found", "active");
       revealCard.classList.remove("active");
-      cameraStatus.textContent = "Camera optional";
-      ocrOutput.textContent = "Choose a path, then unlock your personalized INF 125 reveal.";
       fallbackStage.style.display = "grid";
-      hideFinalScreen();
-
-      overlayHasBeenDismissed = false;
-      pathOverlay.classList.remove("is-visible", "is-fading");
-      pathOverlay.classList.add("hidden");
-      pathOverlay.setAttribute("aria-hidden", "true");
-
-      scheduleOverlayIntro();
-      updateStickyVisibility();
+      cameraStatus.textContent = "Camera optional";
+      ocrOutput.textContent = "Choose a path below, then start the camera experience or show the reveal now.";
     }
 
     async function sharePage() {
@@ -1926,37 +1528,27 @@ Griffin Hall 160
         pathCards.forEach(c => c.classList.remove("active"));
         card.classList.add("active");
         updatePersona(card.dataset.path);
-        ocrOutput.textContent = "Path selected. Start the AI experience or jump straight to the course details.";
+
+        if (!found) {
+          ocrOutput.textContent = "Path selected. Start the camera experience or show the reveal now.";
+        }
       });
     });
 
-    enableCameraBtn.addEventListener("click", () => {
-      overlayHasBeenDismissed = true;
-      hideOverlay();
-      startCameraExperience();
-    });
-
-    skipRevealBtn.addEventListener("click", () => {
-      overlayHasBeenDismissed = true;
-      hideOverlay();
-      startFallbackReveal();
-    });
-
-    hideOverlayBtn.addEventListener("click", () => {
-      overlayHasBeenDismissed = true;
-      hideOverlay();
-      ocrOutput.textContent = "You can explore the course details below whenever you're ready.";
-    });
+    enableCameraBtn.addEventListener("click", startCameraExperience);
+    skipRevealBtn.addEventListener("click", startFallbackReveal);
 
     voiceBtn.addEventListener("click", () => {
       voiceEnabled = !voiceEnabled;
       voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
       voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
 
-      if (voiceEnabled && found) {
-        const persona = CONFIG.personaContent[selectedPath];
-        speakLines(persona.voiceLines);
-      } else if (!voiceEnabled) {
+      if (voiceEnabled && "speechSynthesis" in window && !voicesReady) {
+        window.speechSynthesis.getVoices();
+        voicesReady = true;
+      }
+
+      if (!voiceEnabled) {
         stopSpeech();
       }
     });
@@ -1965,8 +1557,14 @@ Griffin Hall 160
     stickyShareBtn.addEventListener("click", sharePage);
     stickyShareMirrorBtn.addEventListener("click", sharePage);
 
-    replayBtn.addEventListener("click", () => {
-      resetExperience();
+    window.addEventListener("dblclick", resetExperience);
+
+    window.addEventListener("beforeunload", () => {
+      stopScanning();
+      stopCamera();
+      stopSpeech();
+      if (countdownTimer) clearInterval(countdownTimer);
+      if (majorRotationTimer) clearInterval(majorRotationTimer);
     });
   </script>
 </body>
