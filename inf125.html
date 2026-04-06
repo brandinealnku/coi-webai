@@ -1332,10 +1332,10 @@ Griffin Hall 160
       targetRoomText: "griffin hall 160",
       alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
       startDateISO: "2026-08-24T10:50:00-04:00",
-      scanIntervalMs: 2600,
+      scanIntervalMs: 3000,
       ocrScale: 1,
-      autoShowFinalMs: 4500,
-      overlayDelayMs: 3500,
+      autoShowFinalMs: 12000,
+      overlayDelayMs: 9000,
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1615,7 +1615,7 @@ Griffin Hall 160
       setTimeout(() => {
         pathOverlay.classList.remove("is-visible", "is-fading");
         pathOverlay.classList.add("hidden");
-      }, 220);
+      }, 600);
     }
 
     function scheduleOverlayIntro() {
