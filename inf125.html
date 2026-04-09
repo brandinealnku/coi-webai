@@ -138,12 +138,6 @@
       border:1px solid var(--border);
     }
 
-    .btn-ghost{
-      background:rgba(255,255,255,.04);
-      color:#fff;
-      border:1px dashed rgba(255,255,255,.18);
-    }
-
     .hero{
       padding:18px 0 14px;
     }
@@ -637,7 +631,7 @@
     .action-grid{
       margin-top:10px;
       display:grid;
-      grid-template-columns:1fr 1fr 1fr;
+      grid-template-columns:1fr;
       gap:8px;
     }
 
@@ -1009,7 +1003,7 @@
                 </div>
 
                 <div class="small-note">
-                  Scan mode waits for your camera. It will not auto-jump unless you choose Record Demo.
+                  Voice will turn on automatically once you interact.
                 </div>
               </div>
             </div>
@@ -1073,9 +1067,7 @@
           </div>
 
           <div class="action-grid" id="actionGrid">
-            <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
-            <button class="btn btn-secondary" id="sharePageBtn" type="button">Share Page</button>
-            <button class="btn btn-ghost" id="recordDemoBtn" type="button">Record Demo</button>
+            <button class="btn btn-secondary" id="voiceBtn" type="button">Voice Off</button>
           </div>
         </div>
       </div>
@@ -1188,7 +1180,6 @@ Griffin Hall 160
       ocrScale: 1,
       autoShowFinalMs: 9000,
       cinematicRevealMs: 2200,
-      recordDemoDurationMs: 2800,
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1301,7 +1292,6 @@ Griffin Hall 160
     const pathOverlay = document.getElementById("pathOverlay");
     const enableCameraBtn = document.getElementById("enableCameraBtn");
     const skipRevealBtn = document.getElementById("skipRevealBtn");
-    const recordDemoBtn = document.getElementById("recordDemoBtn");
     const pathCards = document.querySelectorAll(".path-card");
     const scanRing = document.getElementById("scanRing");
     const cameraStatus = document.getElementById("cameraStatus");
@@ -1323,7 +1313,6 @@ Griffin Hall 160
 
     const voiceBtn = document.getElementById("voiceBtn");
     const replayBtn = document.getElementById("replayBtn");
-    const sharePageBtn = document.getElementById("sharePageBtn");
     const headerShareBtn = document.getElementById("headerShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
 
@@ -1350,7 +1339,6 @@ Griffin Hall 160
     let voiceEnabled = false;
     let speechCancelled = false;
     let speechUnlocked = false;
-    let isRecordDemoRunning = false;
     let overlayPulseFrame = null;
     let overlayCurrentBox = null;
     let overlayCurrentText = null;
@@ -1599,10 +1587,28 @@ Griffin Hall 160
       return mapOcrBoxToVideoOverlay(candidate, cropMeta);
     }
 
+    function unlockSpeech() {
+      speechUnlocked = true;
+    }
+
+    function updateVoiceUI() {
+      voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
+      if (voiceBtn) {
+        voiceBtn.textContent = voiceEnabled ? "Voice On" : "Voice Off";
+      }
+    }
+
+    function autoEnableVoice() {
+      unlockSpeech();
+      if (!voiceEnabled) {
+        voiceEnabled = true;
+        updateVoiceUI();
+      }
+    }
+
     async function startCameraExperience() {
       if (scanning || found) return;
 
-      isRecordDemoRunning = false;
       stopCamera();
       stopScanning();
       found = false;
@@ -1639,7 +1645,7 @@ Griffin Hall 160
       } catch (err) {
         console.error(err);
         cameraStatus.textContent = "Camera unavailable";
-        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Skip to Reveal or Record Demo.";
+        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Skip to Reveal.";
         fallbackMode = true;
         scanRing.classList.remove("active");
       }
@@ -1655,7 +1661,6 @@ Griffin Hall 160
     }
 
     function startFallbackReveal() {
-      isRecordDemoRunning = false;
       fallbackMode = true;
       found = false;
       stopScanning();
@@ -1669,7 +1674,7 @@ Griffin Hall 160
     }
 
     async function runOCRScan() {
-      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode || isRecordDemoRunning) return;
+      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
 
       ocrBusy = true;
 
@@ -1773,10 +1778,6 @@ Griffin Hall 160
       }
     }
 
-    function unlockSpeech() {
-      speechUnlocked = true;
-    }
-
     function stopSpeech() {
       speechCancelled = true;
       if ("speechSynthesis" in window) {
@@ -1865,7 +1866,6 @@ Griffin Hall 160
     function resetExperience() {
       found = false;
       fallbackMode = true;
-      isRecordDemoRunning = false;
       stopScanning();
       stopCamera();
       stopSpeech();
@@ -1877,28 +1877,6 @@ Griffin Hall 160
       pathOverlay.classList.remove("hidden");
       cameraStatus.textContent = "Camera optional";
       ocrOutput.textContent = "Choose a path, then tap Scan GH 160. The camera will stay live until it sees the room number.";
-    }
-
-    async function runRecordDemo() {
-      isRecordDemoRunning = true;
-      unlockSpeech();
-      pathOverlay.classList.add("hidden");
-      fallbackStage.style.display = "none";
-      hideFinalScreen();
-      revealCard.classList.remove("active");
-      scanRing.classList.add("active");
-      scanRing.classList.remove("found");
-      cameraStatus.textContent = "Demo mode";
-      ocrOutput.textContent = "Running demo mode. Simulating a successful GH 160 scan.";
-
-      clearOverlay();
-      drawTraceOverlay("160", null, true);
-
-      await new Promise(resolve => setTimeout(resolve, CONFIG.recordDemoDurationMs));
-
-      if (!isRecordDemoRunning) return;
-      showRevealSequence("demo 160");
-      isRecordDemoRunning = false;
     }
 
     async function sharePage() {
@@ -1925,7 +1903,7 @@ Griffin Hall 160
 
     pathCards.forEach(card => {
       card.addEventListener("click", () => {
-        unlockSpeech();
+        autoEnableVoice();
         pathCards.forEach(c => c.classList.remove("active"));
         card.classList.add("active");
         updatePersona(card.dataset.path);
@@ -1934,30 +1912,24 @@ Griffin Hall 160
 
     if (enableCameraBtn) {
       enableCameraBtn.addEventListener("click", () => {
-        unlockSpeech();
+        autoEnableVoice();
         startCameraExperience();
       });
     }
 
     if (skipRevealBtn) {
       skipRevealBtn.addEventListener("click", () => {
-        unlockSpeech();
+        autoEnableVoice();
         startFallbackReveal();
       });
     }
 
-    if (recordDemoBtn) {
-      recordDemoBtn.addEventListener("click", () => {
-        runRecordDemo();
-      });
-    }
-
     if (voiceBtn) {
+      updateVoiceUI();
       voiceBtn.addEventListener("click", () => {
         unlockSpeech();
         voiceEnabled = !voiceEnabled;
-        voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
-        voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
+        updateVoiceUI();
 
         if (!voiceEnabled) {
           stopSpeech();
@@ -1969,10 +1941,6 @@ Griffin Hall 160
       replayBtn.addEventListener("click", () => {
         resetExperience();
       });
-    }
-
-    if (sharePageBtn) {
-      sharePageBtn.addEventListener("click", sharePage);
     }
 
     if (headerShareBtn) {
