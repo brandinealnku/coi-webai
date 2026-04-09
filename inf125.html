@@ -23,11 +23,9 @@
       --gold:#FFC72C;
       --gold-2:#ffe59c;
       --success:#66f2ad;
-      --danger:#ff8d8d;
       --shadow:0 20px 50px rgba(0,0,0,.35);
       --radius:22px;
       --max:1080px;
-      --topbar-height:90px;
     }
 
     *{box-sizing:border-box}
@@ -42,7 +40,6 @@
         radial-gradient(circle at 100% 15%, rgba(255,255,255,.05), transparent 18%),
         linear-gradient(180deg,#111 0%,#080808 40%,#050505 100%);
       overflow-x:hidden;
-      padding-top:var(--topbar-height);
     }
 
     a{color:inherit;text-decoration:none}
@@ -55,24 +52,16 @@
     }
 
     .topbar{
-      position:fixed;
+      position:sticky;
       top:0;
-      left:0;
-      width:100%;
-      height:var(--topbar-height);
-      z-index:100;
-      background:rgba(5,5,5,.9);
+      z-index:50;
+      background:rgba(5,5,5,.78);
       backdrop-filter:blur(14px);
       border-bottom:1px solid rgba(255,255,255,.08);
     }
 
-    .topbar.scrolled{
-      background:rgba(5,5,5,.98);
-      box-shadow:0 10px 30px rgba(0,0,0,.4);
-    }
-
     .topbar-inner{
-      height:100%;
+      min-height:64px;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -84,13 +73,22 @@
       align-items:center;
       gap:10px;
       min-width:0;
-      overflow:visible;
     }
 
-    .brand-copy{
-      min-width:0;
-      overflow:visible;
+    .brand-mark{
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--gold-2),var(--gold));
+      color:#111;
+      font-weight:900;
+      flex-shrink:0;
+      box-shadow:var(--shadow);
     }
+
+    .brand-copy{min-width:0}
 
     .brand-kicker{
       font-size:.66rem;
@@ -119,19 +117,10 @@
       padding:13px 16px;
       font-weight:850;
       transition:transform .15s ease, opacity .15s ease, background .15s ease;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
     }
 
     .btn:hover{transform:translateY(-1px)}
     .btn:active{transform:translateY(0)}
-    .btn:disabled{
-      opacity:.65;
-      cursor:not-allowed;
-      transform:none;
-    }
 
     .btn-primary{
       background:linear-gradient(135deg,var(--gold-2),var(--gold));
@@ -143,6 +132,12 @@
       background:rgba(255,255,255,.06);
       color:#fff;
       border:1px solid var(--border);
+    }
+
+    .btn-ghost{
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      border:1px dashed rgba(255,255,255,.18);
     }
 
     .hero{
@@ -169,7 +164,7 @@
 
     .eyebrow{
       color:var(--gold);
-      font-size:.7rem;
+      font-size:.72rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -178,11 +173,11 @@
 
     h1{
       margin:0;
-      font-size:clamp(2rem, 8vw, 4.6rem);
-      line-height:.92;
+      font-size:clamp(2.2rem, 8.5vw, 5rem);
+      line-height:.9;
       letter-spacing:-.05em;
       text-transform:uppercase;
-      max-width:9ch;
+      max-width:10ch;
     }
 
     .gradient-text{
@@ -225,13 +220,14 @@
 
     .stage{
       position:relative;
-      min-height:560px;
-      border-radius:20px;
+      min-height:660px;
+      border-radius:22px;
       overflow:hidden;
       background:
         radial-gradient(circle at 30% 20%, rgba(255,199,44,.16), transparent 26%),
         linear-gradient(180deg,#181818 0%,#090909 100%);
       border:1px solid rgba(255,255,255,.08);
+      isolation:isolate;
     }
 
     video{
@@ -240,6 +236,40 @@
       object-fit:cover;
       display:block;
       background:#000;
+    }
+
+    #overlayCanvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:5;
+    }
+
+    .detect-badge{
+      position:absolute;
+      left:50%;
+      top:18%;
+      transform:translateX(-50%);
+      z-index:6;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(0,0,0,.68);
+      border:1px solid rgba(102,242,173,.55);
+      color:#66f2ad;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:.82rem;
+      backdrop-filter:blur(10px);
+      opacity:0;
+      transition:.25s ease;
+      box-shadow:0 0 18px rgba(102,242,173,.18);
+    }
+
+    .detect-badge.active{
+      opacity:1;
     }
 
     .fallback-stage{
@@ -253,13 +283,13 @@
         radial-gradient(circle at 50% 20%, rgba(255,199,44,.14), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
         linear-gradient(180deg, #191919 0%, #080808 100%);
-      z-index:2;
+      z-index:1;
     }
 
     .fallback-stage h2{
       margin:0 0 8px;
-      font-size:clamp(1.7rem, 6vw, 2.8rem);
-      line-height:.95;
+      font-size:clamp(2rem, 7vw, 3.2rem);
+      line-height:.92;
       letter-spacing:-.04em;
       text-transform:uppercase;
     }
@@ -269,32 +299,87 @@
       color:var(--muted);
       max-width:30ch;
       line-height:1.45;
+      font-size:1rem;
     }
 
-    .fallback-buttons{
-      margin-top:16px;
+    .path-overlay{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.56);
+      backdrop-filter:blur(12px);
+      z-index:8;
+      padding:16px;
+    }
+
+    .path-overlay.hidden{
+      display:none;
+    }
+
+    .path-overlay-content{
+      width:100%;
+      max-width:480px;
+      text-align:center;
+    }
+
+    .overlay-title{
+      font-size:1.25rem;
+      font-weight:900;
+      margin-bottom:6px;
+      letter-spacing:-.02em;
+      text-transform:uppercase;
+    }
+
+    .overlay-sub{
+      color:var(--muted);
+      font-size:.95rem;
+      margin-bottom:12px;
+      line-height:1.45;
+    }
+
+    .overlay-sub strong{color:#fff}
+
+    .path-grid-overlay{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .path-card{
+      padding:14px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:850;
+      cursor:pointer;
+      transition:.15s ease;
+      min-height:58px;
+    }
+
+    .path-card:hover,
+    .path-card.active{
+      background:rgba(255,199,44,.2);
+      border-color:rgba(255,199,44,.5);
+      transform:translateY(-1px);
+    }
+
+    .cta-stack{
       display:flex;
       flex-wrap:wrap;
+      gap:8px;
       justify-content:center;
-      gap:10px;
+      margin-top:10px;
     }
 
-    .camera-inline-hint{
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.1);
-      color:var(--muted);
-      font-size:.9rem;
+    .small-note{
+      margin-top:8px;
+      color:var(--soft);
+      font-size:.82rem;
       line-height:1.4;
-      max-width:34ch;
-      margin-left:auto;
-      margin-right:auto;
-    }
-
-    .camera-inline-hint strong{
-      color:#fff;
     }
 
     .stage-top{
@@ -314,7 +399,7 @@
       background:rgba(0,0,0,.58);
       border:1px solid rgba(255,255,255,.12);
       backdrop-filter:blur(10px);
-      font-size:.78rem;
+      font-size:.8rem;
       font-weight:750;
     }
 
@@ -323,9 +408,9 @@
     .scan-ring{
       position:absolute;
       left:50%;
-      top:50%;
-      width:78%;
-      height:26%;
+      top:48%;
+      width:80%;
+      height:28%;
       transform:translate(-50%,-50%);
       border:2px solid rgba(255,255,255,.85);
       border-radius:22px;
@@ -349,7 +434,7 @@
       height:2px;
       background:linear-gradient(90deg, transparent, var(--gold), transparent);
       filter:drop-shadow(0 0 7px rgba(255,199,44,.85));
-      animation:sweep 2.4s linear infinite;
+      animation:sweep 2.5s linear infinite;
     }
 
     .scan-ring.found{
@@ -359,8 +444,57 @@
 
     @keyframes sweep{
       0%{transform:translateY(0);opacity:.25}
-      50%{transform:translateY(40px);opacity:1}
-      100%{transform:translateY(82px);opacity:.25}
+      50%{transform:translateY(44px);opacity:1}
+      100%{transform:translateY(88px);opacity:.25}
+    }
+
+    .cinematic-overlay{
+      position:absolute;
+      inset:0;
+      z-index:7;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:24px;
+      background:rgba(0,0,0,.56);
+      backdrop-filter:blur(8px);
+      opacity:0;
+      pointer-events:none;
+      transition:.35s ease;
+    }
+
+    .cinematic-overlay.active{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .cinematic-kicker{
+      color:var(--gold);
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+
+    .cinematic-title{
+      font-size:clamp(2rem, 10vw, 4.2rem);
+      line-height:.9;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+      font-weight:900;
+      margin:0;
+      max-width:10ch;
+    }
+
+    .cinematic-sub{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:1rem;
+      line-height:1.45;
+      max-width:28ch;
     }
 
     .stage-bottom{
@@ -375,9 +509,9 @@
 
     .reveal-card{
       display:none;
-      padding:14px;
+      padding:16px;
       border-radius:18px;
-      background:rgba(0,0,0,.68);
+      background:rgba(0,0,0,.72);
       border:1px solid rgba(255,255,255,.1);
       backdrop-filter:blur(10px);
     }
@@ -394,7 +528,7 @@
 
     .reveal-kicker{
       color:var(--gold);
-      font-size:.68rem;
+      font-size:.72rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -403,8 +537,8 @@
 
     .reveal-card h3{
       margin:0;
-      font-size:1.18rem;
-      line-height:1.06;
+      font-size:1.3rem;
+      line-height:1.02;
       letter-spacing:-.03em;
       text-transform:uppercase;
     }
@@ -413,12 +547,12 @@
       margin:8px 0 0;
       color:var(--muted);
       line-height:1.45;
-      font-size:.93rem;
+      font-size:.96rem;
     }
 
     .major-rotator{
-      margin-top:10px;
-      padding:10px 12px;
+      margin-top:12px;
+      padding:12px 14px;
       border-radius:14px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
@@ -426,7 +560,7 @@
 
     .major-label{
       color:var(--gold);
-      font-size:.65rem;
+      font-size:.68rem;
       text-transform:uppercase;
       letter-spacing:.14em;
       font-weight:900;
@@ -434,38 +568,38 @@
     }
 
     .major-text{
-      font-size:.95rem;
+      font-size:1rem;
       font-weight:800;
       line-height:1.32;
-      min-height:2.4em;
+      min-height:2.6em;
     }
 
     .count-grid{
-      margin-top:10px;
+      margin-top:12px;
       display:grid;
       grid-template-columns:repeat(4,1fr);
-      gap:6px;
+      gap:8px;
     }
 
     .count{
       border-radius:14px;
-      padding:10px 6px;
+      padding:12px 8px;
       text-align:center;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
     }
 
     .count-num{
-      font-size:1.15rem;
+      font-size:1.3rem;
       font-weight:900;
       line-height:1;
       color:var(--gold);
     }
 
     .count-label{
-      margin-top:5px;
+      margin-top:6px;
       color:var(--soft);
-      font-size:.63rem;
+      font-size:.64rem;
       text-transform:uppercase;
       letter-spacing:.12em;
       font-weight:800;
@@ -489,21 +623,17 @@
 
     .debug-text{
       color:var(--soft);
-      font-size:.8rem;
-      line-height:1.35;
+      font-size:.82rem;
+      line-height:1.38;
       white-space:pre-wrap;
-      max-height:100px;
+      max-height:96px;
       overflow:auto;
-    }
-
-    .debug-text.error{
-      color:var(--danger);
     }
 
     .action-grid{
       margin-top:10px;
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr 1fr 1fr;
       gap:8px;
     }
 
@@ -544,33 +674,6 @@
       display:grid;
       grid-template-columns:1fr;
       gap:14px;
-    }
-
-    .path-buttons{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-    }
-
-    .path-card{
-      padding:15px 12px;
-      border-radius:16px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.12);
-      color:#fff;
-      font-weight:850;
-      cursor:pointer;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
-      min-height:58px;
-    }
-
-    .path-card:hover,
-    .path-card.active{
-      background:rgba(255,199,44,.18);
-      border-color:rgba(255,199,44,.55);
-      transform:translateY(-1px);
-      box-shadow:0 10px 24px rgba(255,199,44,.12);
     }
 
     .persona-panel{
@@ -640,20 +743,6 @@
       margin-bottom:4px;
     }
 
-    .cta-stack{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
-    }
-
-    .small-note{
-      margin-top:8px;
-      color:var(--soft);
-      font-size:.8rem;
-      line-height:1.4;
-    }
-
     details.dates-accordion{
       margin-top:12px;
       border-radius:18px;
@@ -716,10 +805,6 @@
       line-height:1.35;
     }
 
-    .dates-section{
-      padding-bottom:140px;
-    }
-
     .sticky-cta{
       position:fixed;
       left:10px;
@@ -734,13 +819,6 @@
       border:1px solid rgba(255,255,255,.1);
       backdrop-filter:blur(14px);
       box-shadow:var(--shadow);
-      transition:opacity .22s ease, transform .22s ease;
-    }
-
-    .sticky-cta.is-hidden{
-      opacity:0;
-      pointer-events:none;
-      transform:translateY(18px);
     }
 
     .sticky-cta .btn{
@@ -770,14 +848,77 @@
       100%{transform:translate3d(var(--x),100vh,0) rotate(540deg);opacity:0}
     }
 
+    .final-screen{
+      position:fixed;
+      inset:0;
+      z-index:70;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:22px 16px calc(22px + env(safe-area-inset-bottom));
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255,199,44,.2), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%),
+        linear-gradient(180deg,#0b0b0b 0%, #020202 100%);
+      opacity:0;
+      pointer-events:none;
+      transform:scale(1.03);
+      transition:.4s ease;
+    }
+
+    .final-screen.active{
+      opacity:1;
+      pointer-events:auto;
+      transform:scale(1);
+    }
+
+    .final-kicker{
+      color:var(--gold);
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .final-title{
+      margin:0;
+      font-size:clamp(2.2rem, 9vw, 4.4rem);
+      line-height:.92;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+    }
+
+    .final-title .gold{color:var(--gold)}
+
+    .final-copy{
+      margin:14px auto 0;
+      max-width:38rem;
+      color:var(--muted);
+      line-height:1.5;
+      white-space:pre-line;
+      font-size:1rem;
+    }
+
+    .final-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:16px;
+      width:min(100%, 620px);
+      justify-content:center;
+    }
+
     @media (min-width:860px){
       .hero-grid{grid-template-columns:1.02fr .98fr}
       .funnel-grid{grid-template-columns:1fr 1fr}
     }
 
     @media (max-width:640px){
-      .action-grid,
-      .path-buttons{
+      .path-grid-overlay,
+      .action-grid{
         grid-template-columns:1fr;
       }
 
@@ -786,11 +927,11 @@
       }
 
       .stage{
-        min-height:620px;
+        min-height:720px;
       }
 
-      .dates-section{
-        padding-bottom:150px;
+      .sticky-cta{
+        padding-bottom:calc(9px + env(safe-area-inset-bottom));
       }
     }
 
@@ -803,14 +944,6 @@
       }
     }
   </style>
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KWNBQ28FLV"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag("js", new Date());
-    gtag("config", "G-KWNBQ28FLV", { debug_mode: true });
-  </script>
 </head>
 <body>
   <div class="confetti" id="confettiLayer"></div>
@@ -818,6 +951,7 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <div class="brand">
+        <div class="brand-mark">AI</div>
         <div class="brand-copy">
           <div class="brand-kicker">Northern Kentucky University</div>
           <div class="brand-title">INF 125: AI Literacy • Open to All Majors</div>
@@ -828,7 +962,6 @@
         href="https://one.nku.edu/task/all/registerforclass"
         target="_blank"
         rel="noopener noreferrer"
-        onclick="trackEvent('register_clicked', { location: 'topbar', selected_path: selectedPath })"
       >
         Register
       </a>
@@ -843,7 +976,7 @@
           <h1>AI sees <span class="gradient-text">your future.</span></h1>
           <p class="hero-copy">
             A welcoming AI course for students from <strong>every major</strong>.
-            Explore how INF 125 connects to careers, creativity, communication, and everyday life.
+            Choose a path, then scan <strong>GH 160</strong> with your camera to unlock the personalized reveal.
           </p>
 
           <div class="hero-mini">
@@ -859,30 +992,47 @@
         </div>
 
         <div class="panel stage-panel">
-          <div class="stage">
-            <video
-              id="video"
-              playsinline
-              webkit-playsinline
-              muted
-              autoplay
-              disablepictureinpicture
-            ></video>
+          <div class="stage" id="stage">
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="overlayCanvas" aria-hidden="true"></canvas>
+            <div class="detect-badge" id="detectBadge">Detected: 160</div>
 
             <div class="fallback-stage" id="fallbackStage">
               <div>
                 <h2>Your major is next.</h2>
-                <p>
-                  Explore the course below, or start the optional camera experience to unlock the in-place reveal.
-                </p>
+                <p>Choose a path first, then scan GH 160 with your camera or skip straight to the reveal.</p>
+              </div>
+            </div>
 
-                <div class="fallback-buttons">
-                  <button class="btn btn-primary" id="enableCameraBtn" type="button">Start Camera Experience</button>
-                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">Show Reveal Now</button>
+            <div class="path-overlay" id="pathOverlay">
+              <div class="path-overlay-content">
+                <div class="overlay-title">Choose your path</div>
+                <div class="overlay-sub">
+                  This personalizes the message first.
+                  <br />
+                  <strong>Then tap Scan GH 160 and point your camera at the room sign.</strong>
                 </div>
 
-                <div class="camera-inline-hint">
-                  <strong>On mobile:</strong> tap <strong>Start Camera Experience</strong>, allow camera access, and point your phone toward <strong>GH 160</strong>.
+                <div class="path-grid-overlay">
+                  <button class="path-card active" data-path="business" type="button">Business</button>
+                  <button class="path-card" data-path="health" type="button">Health</button>
+                  <button class="path-card" data-path="creative" type="button">Creative</button>
+                  <button class="path-card" data-path="education" type="button">Education</button>
+                  <button class="path-card" data-path="tech" type="button">Tech</button>
+                  <button class="path-card" data-path="undecided" type="button">Explore</button>
+                </div>
+
+                <div class="cta-stack">
+                  <button class="btn btn-primary" id="enableCameraBtn" type="button">
+                    📷 Scan GH 160
+                  </button>
+                  <button class="btn btn-secondary" id="skipRevealBtn" type="button">
+                    Skip to Reveal
+                  </button>
+                </div>
+
+                <div class="small-note">
+                  Scan mode waits for your camera. It will not auto-jump unless you choose Record Demo.
                 </div>
               </div>
             </div>
@@ -894,6 +1044,14 @@
             </div>
 
             <div class="scan-ring" id="scanRing"></div>
+
+            <div class="cinematic-overlay" id="cinematicOverlay">
+              <div class="cinematic-kicker" id="cinematicKicker">NKU AI Literacy</div>
+              <h2 class="cinematic-title" id="cinematicTitle">Match Found</h2>
+              <div class="cinematic-sub" id="cinematicSub">
+                Launching your personalized reveal.
+              </div>
+            </div>
 
             <div class="stage-bottom">
               <div class="reveal-card" id="revealCard">
@@ -932,14 +1090,15 @@
 
               <div class="debug-card">
                 <div class="debug-label">Live preview</div>
-                <div class="debug-text" id="ocrOutput">Choose a path below, then start the camera experience or show the reveal now.</div>
+                <div class="debug-text" id="ocrOutput">Choose a path, then tap Scan GH 160. The camera will stay live until it sees the room number.</div>
               </div>
             </div>
           </div>
 
-          <div class="action-grid">
+          <div class="action-grid" id="actionGrid">
             <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
             <button class="btn btn-secondary" id="sharePageBtn" type="button">Share Page</button>
+            <button class="btn btn-ghost" id="recordDemoBtn" type="button">Record Demo</button>
           </div>
         </div>
       </div>
@@ -951,17 +1110,8 @@
           <div class="section-label">Personalized focus</div>
           <h2 class="section-title">Why this course fits</h2>
           <p class="section-copy">
-            Pick the path that feels most like you. The message below updates instantly, with no popup required.
+            The message below updates based on the path you choose.
           </p>
-
-          <div class="path-buttons">
-            <button class="path-card active" data-path="business" type="button">Business</button>
-            <button class="path-card" data-path="health" type="button">Health</button>
-            <button class="path-card" data-path="creative" type="button">Creative</button>
-            <button class="path-card" data-path="education" type="button">Education</button>
-            <button class="path-card" data-path="tech" type="button">Tech</button>
-            <button class="path-card" data-path="undecided" type="button">Explore</button>
-          </div>
 
           <div class="persona-panel" id="personaPanel">
             <h3>AI literacy for business-minded students</h3>
@@ -998,7 +1148,6 @@
               href="https://one.nku.edu/task/all/registerforclass"
               target="_blank"
               rel="noopener noreferrer"
-              onclick="trackEvent('register_clicked', { location: 'main_cta', selected_path: selectedPath })"
             >
               Register at NKU
             </a>
@@ -1014,49 +1163,67 @@
       </div>
     </section>
 
-    <section class="section dates-section" id="datesSection">
+    <section class="section">
       <div class="shell panel section-card">
         <div class="section-label">Important Fall 2026 dates</div>
         <h2 class="section-title">Planning timeline</h2>
-        <p class="section-copy">
-          Planning your semester? These are the key dates you’ll want to know.
-        </p>
 
         <details class="dates-accordion">
-          <summary>📅 View important Fall 2026 dates</summary>
+          <summary>Show important dates</summary>
           <div class="dates-list" id="datesList"></div>
         </details>
       </div>
     </section>
   </main>
 
-  <div class="sticky-cta" id="stickyCta">
+  <div class="sticky-cta">
     <a
       class="btn btn-primary"
       href="https://one.nku.edu/task/all/registerforclass"
       target="_blank"
       rel="noopener noreferrer"
-      onclick="trackEvent('register_clicked', { location: 'sticky_cta', selected_path: selectedPath })"
     >
       Register
     </a>
     <button class="btn btn-secondary" id="stickyShareBtn" type="button">Share</button>
   </div>
 
-  <script>
-    function trackEvent(name, params = {}) {
-      if (typeof gtag === "function") {
-        gtag("event", name, params);
-      }
-    }
+  <section class="final-screen" id="finalScreen" aria-hidden="true">
+    <div class="final-kicker">Northern Kentucky University</div>
+    <h2 class="final-title"><span class="gold">AI Literacy</span><br />For Every Major</h2>
+    <div class="final-copy">
+INF 125: AI Literacy
 
+A welcoming course for students from all majors.
+Explore how AI connects to careers, creativity, communication, ethics, and everyday life.
+
+Tuesdays & Thursdays • 10:50 AM – 12:05 PM
+Griffin Hall 160
+    </div>
+    <div class="final-actions">
+      <a
+        class="btn btn-primary"
+        href="https://one.nku.edu/task/all/registerforclass"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Register for INF 125
+      </a>
+      <button class="btn btn-secondary" id="replayBtn" type="button">Replay</button>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script>
     const CONFIG = {
       targetRoomText: "griffin hall 160",
       alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
       startDateISO: "2026-08-24T10:50:00-04:00",
-      scanIntervalMs: 4000,
+      scanIntervalMs: 2200,
       ocrScale: 1,
-      tesseractSrc: "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js",
+      autoShowFinalMs: 9000,
+      cinematicRevealMs: 2200,
+      recordDemoDurationMs: 2800,
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1074,7 +1241,7 @@
           revealTitle: "Business students: AI is changing how decisions get made",
           revealText: "INF 125 helps you explore strategy, automation, entrepreneurship, and the role AI will play in leadership and business careers.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For business students, this is where AI connects to leadership, strategy, and real decisions.",
             "If that sounds like your future, go register."
           ]
@@ -1086,7 +1253,7 @@
           revealTitle: "Health students: AI is changing care and decision-making",
           revealText: "INF 125 helps you explore the real-world role of AI in care, support systems, ethics, and human-centered problem-solving.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For students in health and helping fields, this course connects AI to care, ethics, and real human impact.",
             "If that feels relevant, go register."
           ]
@@ -1098,7 +1265,7 @@
           revealTitle: "Creative students: AI is reshaping media and expression",
           revealText: "INF 125 helps you explore how AI intersects with design, storytelling, content, communication, and creative work.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For creators and communicators, this course explores how AI is reshaping media, storytelling, and expression.",
             "If that sounds like you, go register."
           ]
@@ -1110,7 +1277,7 @@
           revealTitle: "Education students: AI is reshaping how people learn",
           revealText: "INF 125 helps you explore how AI affects learning, teaching, access, support, and human development across contexts.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For future educators and changemakers, this course explores how AI is reshaping learning, access, and support.",
             "If that matters to you, go register."
           ]
@@ -1122,7 +1289,7 @@
           revealTitle: "Tech-curious students: AI literacy matters beyond the code",
           revealText: "INF 125 helps you understand real-world AI systems, responsible use, adoption, and how AI shapes products and people.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "For tech curious students, this course goes beyond the hype and shows how AI works in real systems and real decisions.",
             "If you want that foundation, go register."
           ]
@@ -1134,7 +1301,7 @@
           revealTitle: "Undecided? That’s exactly why this course fits",
           revealText: "INF 125 helps you explore one of the biggest forces shaping careers and everyday life — without needing to already know your path.",
           voiceLines: [
-            "Nice. You found INF one twenty five.",
+            "You found INF one twenty five.",
             "If you are still figuring things out, this course is built for that too.",
             "It gives you a strong start in understanding how AI is shaping every field.",
             "If that feels useful, go register."
@@ -1160,10 +1327,16 @@
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
+    const overlayCanvas = document.getElementById("overlayCanvas");
+    const overlayCtx = overlayCanvas.getContext("2d");
+    const detectBadge = document.getElementById("detectBadge");
+
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
+    const pathOverlay = document.getElementById("pathOverlay");
     const enableCameraBtn = document.getElementById("enableCameraBtn");
     const skipRevealBtn = document.getElementById("skipRevealBtn");
+    const recordDemoBtn = document.getElementById("recordDemoBtn");
     const pathCards = document.querySelectorAll(".path-card");
     const scanRing = document.getElementById("scanRing");
     const cameraStatus = document.getElementById("cameraStatus");
@@ -1175,6 +1348,8 @@
     const majorText = document.getElementById("majorText");
     const datesList = document.getElementById("datesList");
     const confettiLayer = document.getElementById("confettiLayer");
+    const finalScreen = document.getElementById("finalScreen");
+    const shareFeedback = document.getElementById("shareFeedback");
 
     const daysEl = document.getElementById("days");
     const hoursEl = document.getElementById("hours");
@@ -1182,17 +1357,19 @@
     const secondsEl = document.getElementById("seconds");
 
     const voiceBtn = document.getElementById("voiceBtn");
+    const replayBtn = document.getElementById("replayBtn");
     const sharePageBtn = document.getElementById("sharePageBtn");
     const stickyShareBtn = document.getElementById("stickyShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
-    const shareFeedback = document.getElementById("shareFeedback");
+
+    const cinematicOverlay = document.getElementById("cinematicOverlay");
+    const cinematicKicker = document.getElementById("cinematicKicker");
+    const cinematicTitle = document.getElementById("cinematicTitle");
+    const cinematicSub = document.getElementById("cinematicSub");
 
     const personaPanel = document.getElementById("personaPanel");
     const personaCopy = document.getElementById("personaCopy");
     const personaTags = document.getElementById("personaTags");
-    const topbar = document.querySelector(".topbar");
-    const stickyCta = document.getElementById("stickyCta");
-    const datesSection = document.getElementById("datesSection");
 
     let stream = null;
     let scanning = false;
@@ -1200,40 +1377,25 @@
     let ocrBusy = false;
     let scanTimer = null;
     let countdownTimer = null;
+    let finalTimer = null;
     let majorRotationTimer = null;
     let majorIndex = 0;
     let fallbackMode = true;
     let selectedPath = "business";
     let voiceEnabled = false;
-    let voicesReady = false;
     let speechCancelled = false;
-    let tesseractReady = false;
-    let tesseractLoadingPromise = null;
+    let speechUnlocked = false;
+    let isRecordDemoRunning = false;
+    let overlayPulseFrame = null;
+    let overlayCurrentBox = null;
+    let overlayCurrentText = null;
+    let overlayPulse = 0;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
     updatePersona("business");
     startMajorRotation();
     startCountdown();
-    updateStickyVisibility();
-
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        voicesReady = true;
-      };
-    }
-
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 10) {
-        topbar.classList.add("scrolled");
-      } else {
-        topbar.classList.remove("scrolled");
-      }
-      updateStickyVisibility();
-    });
-
-    window.addEventListener("resize", updateStickyVisibility);
 
     function renderDates() {
       datesList.innerHTML = "";
@@ -1265,11 +1427,6 @@
       const cleaned = normalizeText(text);
       const candidates = [CONFIG.targetRoomText, ...CONFIG.alternateMatches].map(normalizeText);
       return candidates.some(candidate => cleaned.includes(candidate));
-    }
-
-    function setDebugMessage(message, isError = false) {
-      ocrOutput.textContent = message;
-      ocrOutput.classList.toggle("error", isError);
     }
 
     function updatePersona(pathKey) {
@@ -1321,198 +1478,208 @@
       countdownTimer = setInterval(updateCountdown, 1000);
     }
 
-    function updateStickyVisibility() {
-      if (!stickyCta || !datesSection) return;
-      const rect = datesSection.getBoundingClientRect();
-      const datesAreVisible = rect.top < window.innerHeight - 120 && rect.bottom > 120;
+    function resizeOverlayCanvas() {
+      const rect = video.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      overlayCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      overlayCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      overlayCanvas.style.width = rect.width + "px";
+      overlayCanvas.style.height = rect.height + "px";
+      overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      if (datesAreVisible) {
-        stickyCta.classList.add("is-hidden");
-      } else {
-        stickyCta.classList.remove("is-hidden");
+      if (overlayCurrentText) {
+        drawTraceOverlay(overlayCurrentText, overlayCurrentBox, false);
       }
     }
 
-    function isSecureEnoughForCamera() {
-      return window.isSecureContext || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+    function clearOverlay() {
+      const rect = video.getBoundingClientRect();
+      overlayCtx.clearRect(0, 0, rect.width, rect.height);
+      detectBadge.classList.remove("active");
+      overlayCurrentBox = null;
+      overlayCurrentText = null;
+      if (overlayPulseFrame) {
+        cancelAnimationFrame(overlayPulseFrame);
+        overlayPulseFrame = null;
+      }
     }
 
-    async function ensureTesseractLoaded() {
-      if (window.Tesseract) {
-        tesseractReady = true;
-        return;
+    function drawRoundedRect(ctxRef, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctxRef.beginPath();
+      ctxRef.moveTo(x + radius, y);
+      ctxRef.arcTo(x + w, y, x + w, y + h, radius);
+      ctxRef.arcTo(x + w, y + h, x, y + h, radius);
+      ctxRef.arcTo(x, y + h, x, y, radius);
+      ctxRef.arcTo(x, y, x + w, y, radius);
+      ctxRef.closePath();
+    }
+
+    function drawLockCorners(box, pulseBoost = 0) {
+      const { x, y, w, h } = box;
+      const extra = 8 + pulseBoost;
+      const corner = Math.max(14, Math.min(28, w * 0.18));
+
+      overlayCtx.save();
+      overlayCtx.strokeStyle = "rgba(102,242,173,0.95)";
+      overlayCtx.lineWidth = 3;
+      overlayCtx.shadowColor = "rgba(102,242,173,0.9)";
+      overlayCtx.shadowBlur = 14;
+
+      overlayCtx.beginPath();
+
+      overlayCtx.moveTo(x - extra, y - extra + corner);
+      overlayCtx.lineTo(x - extra, y - extra);
+      overlayCtx.lineTo(x - extra + corner, y - extra);
+
+      overlayCtx.moveTo(x + w + extra - corner, y - extra);
+      overlayCtx.lineTo(x + w + extra, y - extra);
+      overlayCtx.lineTo(x + w + extra, y - extra + corner);
+
+      overlayCtx.moveTo(x - extra, y + h + extra - corner);
+      overlayCtx.lineTo(x - extra, y + h + extra);
+      overlayCtx.lineTo(x - extra + corner, y + h + extra);
+
+      overlayCtx.moveTo(x + w + extra - corner, y + h + extra);
+      overlayCtx.lineTo(x + w + extra, y + h + extra);
+      overlayCtx.lineTo(x + w + extra, y + h + extra - corner);
+
+      overlayCtx.stroke();
+      overlayCtx.restore();
+    }
+
+    function drawTraceOverlay(text = "160", box = null, animate = true) {
+      overlayCurrentText = text;
+      overlayCurrentBox = box;
+
+      const rect = video.getBoundingClientRect();
+      const localPulse = Math.sin(overlayPulse) * 4 + 4;
+
+      overlayCtx.clearRect(0, 0, rect.width, rect.height);
+
+      let x = rect.width * 0.5;
+      let y = rect.height * 0.48;
+      let fontSize = Math.min(rect.width * 0.22, 120);
+
+      if (box) {
+        x = box.x + (box.w / 2);
+        y = box.y + (box.h / 2) + 8;
+        fontSize = Math.max(52, Math.min(box.w * 1.18, 138));
       }
 
-      if (tesseractLoadingPromise) {
-        return tesseractLoadingPromise;
+      overlayCtx.save();
+      overlayCtx.textAlign = "center";
+      overlayCtx.textBaseline = "middle";
+      overlayCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
+
+      overlayCtx.lineWidth = 6;
+      overlayCtx.strokeStyle = "rgba(102,242,173,0.98)";
+      overlayCtx.shadowColor = "rgba(102,242,173,0.95)";
+      overlayCtx.shadowBlur = 20 + localPulse;
+      overlayCtx.strokeText(text, x, y);
+
+      overlayCtx.lineWidth = 2;
+      overlayCtx.strokeStyle = "rgba(255,255,255,0.98)";
+      overlayCtx.shadowBlur = 8;
+      overlayCtx.strokeText(text, x, y);
+
+      overlayCtx.fillStyle = "rgba(102,242,173,0.14)";
+      overlayCtx.fillText(text, x, y);
+
+      if (box) {
+        drawRoundedRect(overlayCtx, box.x - 8, box.y - 8, box.w + 16, box.h + 16, 16);
+        overlayCtx.strokeStyle = "rgba(102,242,173,0.9)";
+        overlayCtx.lineWidth = 2;
+        overlayCtx.shadowColor = "rgba(102,242,173,0.85)";
+        overlayCtx.shadowBlur = 14;
+        overlayCtx.stroke();
+
+        drawLockCorners(box, localPulse * 0.5);
       }
 
-      tesseractLoadingPromise = new Promise((resolve, reject) => {
-        const existing = document.querySelector('script[data-tesseract="true"]');
-        if (existing) {
-          existing.addEventListener("load", () => {
-            tesseractReady = true;
-            resolve();
-          });
-          existing.addEventListener("error", reject);
-          return;
-        }
+      overlayCtx.restore();
+      detectBadge.classList.add("active");
 
-        const script = document.createElement("script");
-        script.src = CONFIG.tesseractSrc;
-        script.async = true;
-        script.dataset.tesseract = "true";
-
-        script.onload = () => {
-          tesseractReady = true;
-          resolve();
+      if (animate) {
+        if (overlayPulseFrame) cancelAnimationFrame(overlayPulseFrame);
+        const tick = () => {
+          if (!overlayCurrentText) return;
+          overlayPulse += 0.12;
+          drawTraceOverlay(overlayCurrentText, overlayCurrentBox, false);
+          overlayPulseFrame = requestAnimationFrame(tick);
         };
+        overlayPulseFrame = requestAnimationFrame(tick);
+      }
+    }
 
-        script.onerror = () => {
-          reject(new Error("Could not load OCR library."));
-        };
+    function mapOcrBoxToVideoOverlay(wordBox, cropMeta) {
+      const rect = video.getBoundingClientRect();
+      const scaleX = rect.width / video.videoWidth;
+      const scaleY = rect.height / video.videoHeight;
 
-        document.body.appendChild(script);
+      return {
+        x: (cropMeta.cropX + wordBox.x0) * scaleX,
+        y: (cropMeta.cropY + wordBox.y0) * scaleY,
+        w: Math.max(20, (wordBox.x1 - wordBox.x0) * scaleX),
+        h: Math.max(20, (wordBox.y1 - wordBox.y0) * scaleY)
+      };
+    }
+
+    function find160WordBox(words, cropMeta) {
+      if (!Array.isArray(words)) return null;
+
+      const candidate = words.find(word => {
+        const txt = normalizeText(word.text || "");
+        return txt === "160" || txt.endsWith("160") || txt.includes("160");
       });
 
-      return tesseractLoadingPromise;
+      if (!candidate || typeof candidate.x0 !== "number") return null;
+      return mapOcrBoxToVideoOverlay(candidate, cropMeta);
     }
 
-    async function waitForVideoReady(videoEl) {
-      return new Promise((resolve, reject) => {
-        let resolved = false;
+    async function startCameraExperience() {
+      if (scanning || found) return;
 
-        const timeout = setTimeout(() => {
-          if (!resolved) reject(new Error("Video readiness timeout"));
-        }, 5000);
+      isRecordDemoRunning = false;
+      stopCamera();
+      stopScanning();
+      found = false;
+      fallbackMode = false;
 
-        function finish() {
-          if (resolved) return;
-          if (videoEl.videoWidth > 0 && videoEl.videoHeight > 0) {
-            resolved = true;
-            clearTimeout(timeout);
-            resolve();
-          }
-        }
+      revealCard.classList.remove("active");
+      scanRing.classList.remove("found");
+      scanRing.classList.add("active");
+      fallbackStage.style.display = "none";
+      pathOverlay.classList.add("hidden");
+      hideCinematic();
+      hideFinalScreen();
+      clearOverlay();
 
-        videoEl.onloadedmetadata = async () => {
-          try {
-            await videoEl.play();
-          } catch (err) {
-            console.warn("video.play warning:", err);
-          }
-          finish();
-        };
-
-        videoEl.oncanplay = finish;
-
-        if (videoEl.readyState >= 2) {
-          finish();
-        }
-      });
-    }
-
-    async function getCameraStream() {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("Camera API not supported");
-      }
-
-      const attempts = [
-        {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" },
             width: { ideal: 1280 },
             height: { ideal: 720 }
           },
           audio: false
-        },
-        {
-          video: {
-            facingMode: "environment"
-          },
-          audio: false
-        },
-        {
-          video: true,
-          audio: false
-        }
-      ];
+        });
 
-      let lastError = null;
-
-      for (const constraints of attempts) {
-        try {
-          return await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (err) {
-          lastError = err;
-          console.warn("Camera attempt failed:", constraints, err);
-        }
-      }
-
-      throw lastError || new Error("Unable to access camera.");
-    }
-
-    async function startCameraExperience() {
-      if (scanning || found) return;
-
-      stopScanning();
-      stopCamera();
-
-      found = false;
-      fallbackMode = false;
-      ocrBusy = false;
-
-      revealCard.classList.remove("active");
-      scanRing.classList.remove("found", "active");
-
-      cameraStatus.textContent = "Starting camera...";
-      setDebugMessage("Requesting camera access...");
-      enableCameraBtn.disabled = true;
-      enableCameraBtn.textContent = "Starting...";
-
-      try {
-        if (!isSecureEnoughForCamera()) {
-          throw new Error("Camera requires HTTPS on mobile devices.");
-        }
-
-        stream = await getCameraStream();
         video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          resizeOverlayCanvas();
+          clearOverlay();
+        };
 
-        await waitForVideoReady(video);
-
-        fallbackStage.style.display = "none";
-        scanRing.classList.add("active");
         cameraStatus.textContent = "Camera live";
-        setDebugMessage("Camera enabled. Loading scanner...");
-
-        await ensureTesseractLoaded();
-
-        setDebugMessage("Camera enabled. Point it at GH 160 to unlock your personalized INF 125 reveal.");
+        ocrOutput.textContent = "Camera enabled. Point it at GH 160. The page will wait here until the room sign is detected.";
         startScanning();
       } catch (err) {
-        console.error("Camera start failed:", err);
-
-        fallbackMode = true;
-        stopScanning();
-        stopCamera();
-        fallbackStage.style.display = "grid";
-        scanRing.classList.remove("active");
+        console.error(err);
         cameraStatus.textContent = "Camera unavailable";
-
-        let message = "Camera permission was denied or unavailable. You can still use Show Reveal Now.";
-
-        if (!isSecureEnoughForCamera()) {
-          message = "Camera needs HTTPS to work on phones. Open the secure version of this page, or use Show Reveal Now.";
-        } else if (/denied|permission/i.test(err.message || "")) {
-          message = "Camera access was blocked. Please allow camera access in your browser and try again.";
-        } else if (/not supported/i.test(err.message || "")) {
-          message = "This browser does not support camera access for this page. Try Safari or Chrome directly.";
-        }
-
-        setDebugMessage(message, true);
-      } finally {
-        enableCameraBtn.disabled = false;
-        enableCameraBtn.textContent = "Start Camera Experience";
+        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Skip to Reveal or Record Demo.";
+        fallbackMode = true;
+        scanRing.classList.remove("active");
       }
     }
 
@@ -1521,25 +1688,26 @@
         stream.getTracks().forEach(track => track.stop());
         stream = null;
       }
-      try {
-        video.pause();
-      } catch (err) {}
       video.srcObject = null;
+      clearOverlay();
     }
 
     function startFallbackReveal() {
+      isRecordDemoRunning = false;
       fallbackMode = true;
+      found = false;
       stopScanning();
       stopCamera();
+      pathOverlay.classList.add("hidden");
       fallbackStage.style.display = "none";
       scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
-      setDebugMessage("Launching your personalized reveal without camera access.");
-      onTargetFound("camera skipped");
+      ocrOutput.textContent = "Launching your personalized reveal without camera scanning.";
+      showRevealSequence("camera skipped");
     }
 
     async function runOCRScan() {
-      if (!window.Tesseract || !video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
+      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode || isRecordDemoRunning) return;
 
       ocrBusy = true;
 
@@ -1557,18 +1725,35 @@
 
         ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
 
-        const result = await window.Tesseract.recognize(canvas, "eng", { logger: () => {} });
-        const text = result?.data?.text || "";
+        const result = await Tesseract.recognize(canvas, "eng", { logger: () => {} });
+        const text = result.data.text || "";
         const cleaned = normalizeText(text);
 
-        setDebugMessage(cleaned || "Scanning... no readable room sign found yet.");
+        ocrOutput.textContent = cleaned
+          ? `Scanning...\n${cleaned}`
+          : "Scanning... point your camera more directly at GH 160.";
+
+        const cropMeta = { cropX, cropY, cropW, cropH };
+        const box160 = find160WordBox(result.data.words || [], cropMeta);
+
+        if (cleaned.includes("160")) {
+          drawTraceOverlay("160", box160, true);
+        } else {
+          clearOverlay();
+        }
 
         if (matchesTarget(cleaned)) {
+          if (box160) {
+            drawTraceOverlay("160", box160, true);
+          } else {
+            drawTraceOverlay("160", null, true);
+          }
           onTargetFound(cleaned);
         }
       } catch (err) {
-        console.error("OCR scan failed:", err);
-        setDebugMessage("Scan error. Try again, or use Show Reveal Now.", true);
+        console.error(err);
+        ocrOutput.textContent = "Scan error. Try steadier framing, brighter light, or use Skip to Reveal.";
+        clearOverlay();
       } finally {
         ocrBusy = false;
       }
@@ -1589,34 +1774,31 @@
       }
     }
 
-    function getBestVoice() {
-      if (!("speechSynthesis" in window)) return null;
+    async function unlockSpeech() {
+      if (!("speechSynthesis" in window)) return false;
 
-      const voices = window.speechSynthesis.getVoices() || [];
-      if (!voices.length) return null;
+      try {
+        window.speechSynthesis.cancel();
 
-      const preferredPatterns = [
-        /Google US English/i,
-        /Samantha/i,
-        /Eddy/i,
-        /Karen/i,
-        /Moira/i,
-        /Daniel/i,
-        /Natural/i,
-        /Enhanced/i
-      ];
+        const utterance = new SpeechSynthesisUtterance(" ");
+        utterance.volume = 0;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.lang = "en-US";
 
-      for (const pattern of preferredPatterns) {
-        const match = voices.find(v => pattern.test(v.name));
-        if (match) return match;
+        await new Promise((resolve) => {
+          utterance.onend = resolve;
+          utterance.onerror = resolve;
+          window.speechSynthesis.speak(utterance);
+          setTimeout(resolve, 150);
+        });
+
+        speechUnlocked = true;
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
       }
-
-      return (
-        voices.find(v => v.lang === "en-US") ||
-        voices.find(v => /^en/i.test(v.lang)) ||
-        voices[0] ||
-        null
-      );
     }
 
     function stopSpeech() {
@@ -1626,8 +1808,21 @@
       }
     }
 
+    function getBestVoice() {
+      if (!("speechSynthesis" in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      return (
+        voices.find(v => v.lang === "en-US") ||
+        voices.find(v => /^en/i.test(v.lang)) ||
+        voices[0] ||
+        null
+      );
+    }
+
     function speakLines(lines) {
-      if (!voiceEnabled || !("speechSynthesis" in window) || !Array.isArray(lines) || !lines.length) return;
+      if (!voiceEnabled || !speechUnlocked || !("speechSynthesis" in window) || !Array.isArray(lines) || !lines.length) {
+        return;
+      }
 
       stopSpeech();
       speechCancelled = false;
@@ -1641,11 +1836,17 @@
         const utterance = new SpeechSynthesisUtterance(lines[index]);
         utterance.lang = "en-US";
         utterance.voice = voice;
-        utterance.rate = 1.02;
+        utterance.rate = 1.0;
         utterance.pitch = 1.0;
         utterance.volume = 1;
 
         utterance.onend = () => {
+          if (speechCancelled) return;
+          index += 1;
+          setTimeout(nextLine, 180);
+        };
+
+        utterance.onerror = () => {
           if (speechCancelled) return;
           index += 1;
           setTimeout(nextLine, 180);
@@ -1659,46 +1860,56 @@
 
     function triggerConfetti() {
       confettiLayer.innerHTML = "";
-
-      for (let i = 0; i < 26; i++) {
-        const piece = document.createElement("div");
+      const count = 36;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement("span");
         piece.className = "confetti-piece";
         piece.style.left = `${Math.random() * 100}%`;
-        piece.style.top = `${-10 - Math.random() * 20}px`;
-        piece.style.setProperty("--x", `${(Math.random() - 0.5) * 180}px`);
-        piece.style.background = i % 2 === 0 ? "var(--gold)" : "#fff";
-        piece.style.animationDelay = `${Math.random() * 140}ms`;
+        piece.style.top = `${Math.random() * 10}%`;
+        piece.style.background = Math.random() > 0.5 ? "var(--gold)" : "#fff";
+        piece.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
+        piece.style.animationDelay = `${Math.random() * 180}ms`;
         confettiLayer.appendChild(piece);
       }
-
       setTimeout(() => {
         confettiLayer.innerHTML = "";
       }, 1800);
     }
 
-    function onTargetFound(sourceText = "") {
-      if (found) return;
+    function showCinematic(kicker, title, sub) {
+      cinematicKicker.textContent = kicker;
+      cinematicTitle.textContent = title;
+      cinematicSub.textContent = sub;
+      cinematicOverlay.classList.add("active");
+    }
 
-      trackEvent("reveal_triggered", {
-        method: sourceText === "camera skipped" ? "manual" : "camera",
-        selected_path: selectedPath
-      });
+    function hideCinematic() {
+      cinematicOverlay.classList.remove("active");
+    }
+
+    function showRevealSequence(matchText) {
+      showCinematic(
+        "NKU AI Literacy",
+        "Match Found",
+        "Launching your personalized reveal."
+      );
+
+      setTimeout(() => {
+        hideCinematic();
+        finishReveal(matchText);
+      }, CONFIG.cinematicRevealMs);
+    }
+
+    function finishReveal(matchText) {
+      if (found) return;
 
       found = true;
       stopScanning();
-      stopCamera();
-
-      scanRing.classList.add("found");
-      scanRing.classList.remove("active");
       revealCard.classList.add("active");
+      scanRing.classList.add("found");
       fallbackStage.style.display = "none";
-      cameraStatus.textContent = sourceText === "camera skipped" ? "Reveal shown" : "Target found";
 
-      setDebugMessage(
-        sourceText === "camera skipped"
-          ? "Personalized reveal shown without camera."
-          : `Match found: ${sourceText}`
-      );
+      ocrOutput.textContent = `MATCH FOUND:\n${matchText}`;
 
       triggerConfetti();
 
@@ -1708,26 +1919,45 @@
       if (navigator.vibrate) {
         navigator.vibrate([140, 70, 170]);
       }
+
+      if (finalTimer) clearTimeout(finalTimer);
+      finalTimer = setTimeout(showFinalScreen, CONFIG.autoShowFinalMs);
+    }
+
+    function onTargetFound(matchText) {
+      if (found) return;
+      showRevealSequence(matchText);
+    }
+
+    function showFinalScreen() {
+      finalScreen.classList.add("active");
+      finalScreen.setAttribute("aria-hidden", "false");
+    }
+
+    function hideFinalScreen() {
+      finalScreen.classList.remove("active");
+      finalScreen.setAttribute("aria-hidden", "true");
     }
 
     function resetExperience() {
       found = false;
       fallbackMode = true;
+      isRecordDemoRunning = false;
       stopScanning();
       stopCamera();
       stopSpeech();
       scanRing.classList.remove("found", "active");
       revealCard.classList.remove("active");
-      fallbackStage.style.display = "grid";
       cameraStatus.textContent = "Camera optional";
-      setDebugMessage("Choose a path below, then start the camera experience or show the reveal now.");
+      ocrOutput.textContent = "Choose a path, then tap Scan GH 160. The camera will stay live until it sees the room number.";
+      fallbackStage.style.display = "grid";
+      pathOverlay.classList.remove("hidden");
+      hideFinalScreen();
+      hideCinematic();
+      clearOverlay();
     }
 
     async function sharePage() {
-      trackEvent("share_clicked", {
-        selected_path: selectedPath
-      });
-
       const shareData = {
         title: "NKU INF 125: AI Literacy",
         text: "Check out this interactive NKU INF 125: AI Literacy experience.",
@@ -1749,79 +1979,94 @@
       }
     }
 
+    function startRecordDemo() {
+      resetExperience();
+      isRecordDemoRunning = true;
+      found = false;
+      pathOverlay.classList.add("hidden");
+      fallbackStage.style.display = "none";
+      cameraStatus.textContent = "Record demo";
+      scanRing.classList.add("active");
+      ocrOutput.textContent = "Recording demo mode. This auto-plays for screen capture.";
+
+      showCinematic(
+        "NKU AI Literacy",
+        "Scanning GH 160",
+        "Demo mode is creating a cleaner screen-recorded reveal."
+      );
+
+      setTimeout(() => {
+        cinematicTitle.textContent = "Match Found";
+        cinematicSub.textContent = "Launching your personalized reveal.";
+        drawTraceOverlay("160", null, true);
+      }, 1400);
+
+      setTimeout(() => {
+        hideCinematic();
+        finishReveal("demo mode");
+        isRecordDemoRunning = false;
+      }, CONFIG.recordDemoDurationMs);
+    }
+
     pathCards.forEach(card => {
       card.addEventListener("click", () => {
-        trackEvent("path_selected", {
-          path: card.dataset.path
-        });
-
         pathCards.forEach(c => c.classList.remove("active"));
         card.classList.add("active");
         updatePersona(card.dataset.path);
-
-        if (!found) {
-          setDebugMessage("Path selected. Start the camera experience or show the reveal now.");
-        }
+        ocrOutput.textContent = "Path selected. Tap Scan GH 160 when you're ready to use the live camera.";
       });
     });
 
-    enableCameraBtn.addEventListener("click", async () => {
-      trackEvent("camera_started", {
-        selected_path: selectedPath
-      });
-      await startCameraExperience();
-    });
+    enableCameraBtn.addEventListener("click", startCameraExperience);
+    skipRevealBtn.addEventListener("click", startFallbackReveal);
+    recordDemoBtn.addEventListener("click", startRecordDemo);
 
-    skipRevealBtn.addEventListener("click", () => {
-      trackEvent("reveal_skipped_to_manual", {
-        selected_path: selectedPath
-      });
-      startFallbackReveal();
-    });
-
-    voiceBtn.addEventListener("click", () => {
-      trackEvent("voice_toggled", {
-        enabled: !voiceEnabled,
-        selected_path: selectedPath
-      });
-
-      voiceEnabled = !voiceEnabled;
-      voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
-      voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
-
-      if (voiceEnabled && "speechSynthesis" in window && !voicesReady) {
-        window.speechSynthesis.getVoices();
-        voicesReady = true;
+    voiceBtn.addEventListener("click", async () => {
+      if (!("speechSynthesis" in window)) {
+        voiceStatus.textContent = "Voice unsupported";
+        voiceBtn.textContent = "Voice Unsupported";
+        ocrOutput.textContent = "Speech synthesis is not supported on this browser/device.";
+        return;
       }
 
       if (!voiceEnabled) {
+        voiceEnabled = true;
+        voiceStatus.textContent = "Voice on";
+        voiceBtn.textContent = "Disable Voice";
+
+        const unlocked = await unlockSpeech();
+
+        if (unlocked) {
+          ocrOutput.textContent = "Voice enabled. When the reveal triggers, spoken lines should play.";
+        } else {
+          speechUnlocked = false;
+          ocrOutput.textContent = "Voice was turned on, but this device/browser blocked speech unlock. Try tapping Enable Voice again.";
+        }
+      } else {
+        voiceEnabled = false;
+        speechUnlocked = false;
+        voiceStatus.textContent = "Voice off";
+        voiceBtn.textContent = "Enable Voice";
         stopSpeech();
+        ocrOutput.textContent = "Voice disabled.";
       }
     });
 
+    replayBtn.addEventListener("click", resetExperience);
     sharePageBtn.addEventListener("click", sharePage);
     stickyShareBtn.addEventListener("click", sharePage);
     stickyShareMirrorBtn.addEventListener("click", sharePage);
 
-    window.addEventListener("dblclick", resetExperience);
-
-    const datesAccordion = document.querySelector(".dates-accordion");
-    if (datesAccordion) {
-      datesAccordion.addEventListener("toggle", () => {
-        if (datesAccordion.open) {
-          trackEvent("dates_opened", {
-            selected_path: selectedPath
-          });
-        }
-      });
-    }
+    window.addEventListener("resize", resizeOverlayCanvas);
 
     window.addEventListener("beforeunload", () => {
       stopScanning();
       stopCamera();
       stopSpeech();
+      clearOverlay();
       if (countdownTimer) clearInterval(countdownTimer);
       if (majorRotationTimer) clearInterval(majorRotationTimer);
+      if (finalTimer) clearTimeout(finalTimer);
     });
   </script>
 </body>
