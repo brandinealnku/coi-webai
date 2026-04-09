@@ -12,6 +12,16 @@
     name="description"
     content="Interactive NKU INF 125: AI Literacy experience for students from every major."
   />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ER0QX27ES1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-ER0QX27ES1');
+  </script>
+  
   <style>
     :root{
       --bg:#050505;
@@ -107,6 +117,13 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
     }
 
     .btn{
@@ -805,28 +822,6 @@
       line-height:1.35;
     }
 
-    .sticky-cta{
-      position:fixed;
-      left:10px;
-      right:10px;
-      bottom:10px;
-      z-index:60;
-      display:flex;
-      gap:8px;
-      padding:9px;
-      border-radius:20px;
-      background:rgba(5,5,5,.84);
-      border:1px solid rgba(255,255,255,.1);
-      backdrop-filter:blur(14px);
-      box-shadow:var(--shadow);
-    }
-
-    .sticky-cta .btn{
-      flex:1;
-      min-height:48px;
-      padding:12px 14px;
-    }
-
     .confetti{
       position:fixed;
       inset:0;
@@ -922,25 +917,17 @@
         grid-template-columns:1fr;
       }
 
-      .topbar-inner .top-action{
-        display:none;
+      .top-actions{
+        gap:8px;
+      }
+
+      .top-actions .btn{
+        padding:10px 12px;
+        font-size:.88rem;
       }
 
       .stage{
         min-height:720px;
-      }
-
-      .sticky-cta{
-        padding-bottom:calc(9px + env(safe-area-inset-bottom));
-      }
-    }
-
-    @media (min-width:900px){
-      .sticky-cta{
-        left:auto;
-        right:18px;
-        bottom:18px;
-        width:340px;
       }
     }
   </style>
@@ -957,14 +944,18 @@
           <div class="brand-title">INF 125: AI Literacy • Open to All Majors</div>
         </div>
       </div>
-      <a
-        class="btn btn-primary top-action"
-        href="https://one.nku.edu/task/all/registerforclass"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Register
-      </a>
+
+      <div class="top-actions">
+        <button class="btn btn-secondary" id="headerShareBtn" type="button">Share</button>
+        <a
+          class="btn btn-primary top-action"
+          href="https://one.nku.edu/task/all/registerforclass"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Register
+        </a>
+      </div>
     </div>
   </header>
 
@@ -1176,18 +1167,6 @@
     </section>
   </main>
 
-  <div class="sticky-cta">
-    <a
-      class="btn btn-primary"
-      href="https://one.nku.edu/task/all/registerforclass"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Register
-    </a>
-    <button class="btn btn-secondary" id="stickyShareBtn" type="button">Share</button>
-  </div>
-
   <section class="final-screen" id="finalScreen" aria-hidden="true">
     <div class="final-kicker">Northern Kentucky University</div>
     <h2 class="final-title"><span class="gold">AI Literacy</span><br />For Every Major</h2>
@@ -1329,8 +1308,8 @@ Griffin Hall 160
 
     const overlayCanvas = document.getElementById("overlayCanvas");
     const overlayCtx = overlayCanvas.getContext("2d");
-    const detectBadge = document.getElementById("detectBadge");
 
+    const detectBadge = document.getElementById("detectBadge");
     const targetRoomPill = document.getElementById("targetRoomPill");
     const fallbackStage = document.getElementById("fallbackStage");
     const pathOverlay = document.getElementById("pathOverlay");
@@ -1359,7 +1338,7 @@ Griffin Hall 160
     const voiceBtn = document.getElementById("voiceBtn");
     const replayBtn = document.getElementById("replayBtn");
     const sharePageBtn = document.getElementById("sharePageBtn");
-    const stickyShareBtn = document.getElementById("stickyShareBtn");
+    const headerShareBtn = document.getElementById("headerShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
 
     const cinematicOverlay = document.getElementById("cinematicOverlay");
@@ -1736,24 +1715,18 @@ Griffin Hall 160
         const cropMeta = { cropX, cropY, cropW, cropH };
         const box160 = find160WordBox(result.data.words || [], cropMeta);
 
-        if (cleaned.includes("160")) {
-          drawTraceOverlay("160", box160, true);
+        if (cleaned && cleaned.includes("160")) {
+          drawTraceOverlay("160", box160 || null, true);
         } else {
           clearOverlay();
         }
 
         if (matchesTarget(cleaned)) {
-          if (box160) {
-            drawTraceOverlay("160", box160, true);
-          } else {
-            drawTraceOverlay("160", null, true);
-          }
-          onTargetFound(cleaned);
+          showRevealSequence(cleaned);
         }
       } catch (err) {
         console.error(err);
-        ocrOutput.textContent = "Scan error. Try steadier framing, brighter light, or use Skip to Reveal.";
-        clearOverlay();
+        ocrOutput.textContent = "Scan error. Try again, or use Skip to Reveal.";
       } finally {
         ocrBusy = false;
       }
@@ -1774,31 +1747,52 @@ Griffin Hall 160
       }
     }
 
-    async function unlockSpeech() {
-      if (!("speechSynthesis" in window)) return false;
+    function triggerConfetti() {
+      confettiLayer.innerHTML = "";
 
-      try {
-        window.speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(" ");
-        utterance.volume = 0;
-        utterance.rate = 1;
-        utterance.pitch = 1;
-        utterance.lang = "en-US";
-
-        await new Promise((resolve) => {
-          utterance.onend = resolve;
-          utterance.onerror = resolve;
-          window.speechSynthesis.speak(utterance);
-          setTimeout(resolve, 150);
-        });
-
-        speechUnlocked = true;
-        return true;
-      } catch (e) {
-        console.error(e);
-        return false;
+      for (let i = 0; i < 26; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.top = `${-10 - Math.random() * 20}px`;
+        piece.style.setProperty("--x", `${(Math.random() - 0.5) * 180}px`);
+        piece.style.background = i % 2 === 0 ? "var(--gold)" : "#fff";
+        piece.style.animationDelay = `${Math.random() * 140}ms`;
+        confettiLayer.appendChild(piece);
       }
+
+      setTimeout(() => {
+        confettiLayer.innerHTML = "";
+      }, 1800);
+    }
+
+    function showCinematic(title, sub, kicker = "NKU AI Literacy") {
+      cinematicKicker.textContent = kicker;
+      cinematicTitle.textContent = title;
+      cinematicSub.textContent = sub;
+      cinematicOverlay.classList.add("active");
+    }
+
+    function hideCinematic() {
+      cinematicOverlay.classList.remove("active");
+    }
+
+    function showFinalScreen() {
+      finalScreen.classList.add("active");
+      finalScreen.setAttribute("aria-hidden", "false");
+    }
+
+    function hideFinalScreen() {
+      finalScreen.classList.remove("active");
+      finalScreen.setAttribute("aria-hidden", "true");
+      if (finalTimer) {
+        clearTimeout(finalTimer);
+        finalTimer = null;
+      }
+    }
+
+    function unlockSpeech() {
+      speechUnlocked = true;
     }
 
     function stopSpeech() {
@@ -1820,9 +1814,7 @@ Griffin Hall 160
     }
 
     function speakLines(lines) {
-      if (!voiceEnabled || !speechUnlocked || !("speechSynthesis" in window) || !Array.isArray(lines) || !lines.length) {
-        return;
-      }
+      if (!voiceEnabled || !speechUnlocked || !("speechSynthesis" in window) || !Array.isArray(lines) || !lines.length) return;
 
       stopSpeech();
       speechCancelled = false;
@@ -1836,17 +1828,11 @@ Griffin Hall 160
         const utterance = new SpeechSynthesisUtterance(lines[index]);
         utterance.lang = "en-US";
         utterance.voice = voice;
-        utterance.rate = 1.0;
+        utterance.rate = 1.02;
         utterance.pitch = 1.0;
         utterance.volume = 1;
 
         utterance.onend = () => {
-          if (speechCancelled) return;
-          index += 1;
-          setTimeout(nextLine, 180);
-        };
-
-        utterance.onerror = () => {
           if (speechCancelled) return;
           index += 1;
           setTimeout(nextLine, 180);
@@ -1858,85 +1844,40 @@ Griffin Hall 160
       nextLine();
     }
 
-    function triggerConfetti() {
-      confettiLayer.innerHTML = "";
-      const count = 36;
-      for (let i = 0; i < count; i++) {
-        const piece = document.createElement("span");
-        piece.className = "confetti-piece";
-        piece.style.left = `${Math.random() * 100}%`;
-        piece.style.top = `${Math.random() * 10}%`;
-        piece.style.background = Math.random() > 0.5 ? "var(--gold)" : "#fff";
-        piece.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
-        piece.style.animationDelay = `${Math.random() * 180}ms`;
-        confettiLayer.appendChild(piece);
-      }
-      setTimeout(() => {
-        confettiLayer.innerHTML = "";
-      }, 1800);
-    }
-
-    function showCinematic(kicker, title, sub) {
-      cinematicKicker.textContent = kicker;
-      cinematicTitle.textContent = title;
-      cinematicSub.textContent = sub;
-      cinematicOverlay.classList.add("active");
-    }
-
-    function hideCinematic() {
-      cinematicOverlay.classList.remove("active");
-    }
-
-    function showRevealSequence(matchText) {
-      showCinematic(
-        "NKU AI Literacy",
-        "Match Found",
-        "Launching your personalized reveal."
-      );
-
-      setTimeout(() => {
-        hideCinematic();
-        finishReveal(matchText);
-      }, CONFIG.cinematicRevealMs);
-    }
-
-    function finishReveal(matchText) {
+    function showRevealSequence(sourceText = "") {
       if (found) return;
 
       found = true;
       stopScanning();
-      revealCard.classList.add("active");
+      stopCamera();
       scanRing.classList.add("found");
+      scanRing.classList.remove("active");
       fallbackStage.style.display = "none";
-
-      ocrOutput.textContent = `MATCH FOUND:\n${matchText}`;
-
-      triggerConfetti();
+      pathOverlay.classList.add("hidden");
 
       const persona = CONFIG.personaContent[selectedPath];
-      speakLines(persona.voiceLines);
+      showCinematic("Match Found", "Launching your personalized reveal.");
 
-      if (navigator.vibrate) {
-        navigator.vibrate([140, 70, 170]);
-      }
+      setTimeout(() => {
+        hideCinematic();
+        revealCard.classList.add("active");
+        cameraStatus.textContent = sourceText === "camera skipped" ? "Reveal shown" : "Target found";
+        ocrOutput.textContent =
+          sourceText === "camera skipped"
+            ? "Personalized reveal shown without camera scanning."
+            : `Match found: ${sourceText}`;
 
-      if (finalTimer) clearTimeout(finalTimer);
-      finalTimer = setTimeout(showFinalScreen, CONFIG.autoShowFinalMs);
-    }
+        triggerConfetti();
+        speakLines(persona.voiceLines);
 
-    function onTargetFound(matchText) {
-      if (found) return;
-      showRevealSequence(matchText);
-    }
+        if (navigator.vibrate) {
+          navigator.vibrate([140, 70, 170]);
+        }
 
-    function showFinalScreen() {
-      finalScreen.classList.add("active");
-      finalScreen.setAttribute("aria-hidden", "false");
-    }
-
-    function hideFinalScreen() {
-      finalScreen.classList.remove("active");
-      finalScreen.setAttribute("aria-hidden", "true");
+        finalTimer = setTimeout(() => {
+          showFinalScreen();
+        }, CONFIG.autoShowFinalMs);
+      }, CONFIG.cinematicRevealMs);
     }
 
     function resetExperience() {
@@ -1946,15 +1887,36 @@ Griffin Hall 160
       stopScanning();
       stopCamera();
       stopSpeech();
+      hideCinematic();
+      hideFinalScreen();
       scanRing.classList.remove("found", "active");
       revealCard.classList.remove("active");
-      cameraStatus.textContent = "Camera optional";
-      ocrOutput.textContent = "Choose a path, then tap Scan GH 160. The camera will stay live until it sees the room number.";
       fallbackStage.style.display = "grid";
       pathOverlay.classList.remove("hidden");
+      cameraStatus.textContent = "Camera optional";
+      ocrOutput.textContent = "Choose a path, then tap Scan GH 160. The camera will stay live until it sees the room number.";
+    }
+
+    async function runRecordDemo() {
+      isRecordDemoRunning = true;
+      unlockSpeech();
+      pathOverlay.classList.add("hidden");
+      fallbackStage.style.display = "none";
       hideFinalScreen();
-      hideCinematic();
+      revealCard.classList.remove("active");
+      scanRing.classList.add("active");
+      scanRing.classList.remove("found");
+      cameraStatus.textContent = "Demo mode";
+      ocrOutput.textContent = "Running demo mode. Simulating a successful GH 160 scan.";
+
       clearOverlay();
+      drawTraceOverlay("160", null, true);
+
+      await new Promise(resolve => setTimeout(resolve, CONFIG.recordDemoDurationMs));
+
+      if (!isRecordDemoRunning) return;
+      showRevealSequence("demo 160");
+      isRecordDemoRunning = false;
     }
 
     async function sharePage() {
@@ -1979,82 +1941,46 @@ Griffin Hall 160
       }
     }
 
-    function startRecordDemo() {
-      resetExperience();
-      isRecordDemoRunning = true;
-      found = false;
-      pathOverlay.classList.add("hidden");
-      fallbackStage.style.display = "none";
-      cameraStatus.textContent = "Record demo";
-      scanRing.classList.add("active");
-      ocrOutput.textContent = "Recording demo mode. This auto-plays for screen capture.";
-
-      showCinematic(
-        "NKU AI Literacy",
-        "Scanning GH 160",
-        "Demo mode is creating a cleaner screen-recorded reveal."
-      );
-
-      setTimeout(() => {
-        cinematicTitle.textContent = "Match Found";
-        cinematicSub.textContent = "Launching your personalized reveal.";
-        drawTraceOverlay("160", null, true);
-      }, 1400);
-
-      setTimeout(() => {
-        hideCinematic();
-        finishReveal("demo mode");
-        isRecordDemoRunning = false;
-      }, CONFIG.recordDemoDurationMs);
-    }
-
     pathCards.forEach(card => {
       card.addEventListener("click", () => {
+        unlockSpeech();
         pathCards.forEach(c => c.classList.remove("active"));
         card.classList.add("active");
         updatePersona(card.dataset.path);
-        ocrOutput.textContent = "Path selected. Tap Scan GH 160 when you're ready to use the live camera.";
       });
     });
 
-    enableCameraBtn.addEventListener("click", startCameraExperience);
-    skipRevealBtn.addEventListener("click", startFallbackReveal);
-    recordDemoBtn.addEventListener("click", startRecordDemo);
+    enableCameraBtn.addEventListener("click", () => {
+      unlockSpeech();
+      startCameraExperience();
+    });
 
-    voiceBtn.addEventListener("click", async () => {
-      if (!("speechSynthesis" in window)) {
-        voiceStatus.textContent = "Voice unsupported";
-        voiceBtn.textContent = "Voice Unsupported";
-        ocrOutput.textContent = "Speech synthesis is not supported on this browser/device.";
-        return;
-      }
+    skipRevealBtn.addEventListener("click", () => {
+      unlockSpeech();
+      startFallbackReveal();
+    });
+
+    recordDemoBtn.addEventListener("click", () => {
+      runRecordDemo();
+    });
+
+    voiceBtn.addEventListener("click", () => {
+      unlockSpeech();
+      voiceEnabled = !voiceEnabled;
+      voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
+      voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
 
       if (!voiceEnabled) {
-        voiceEnabled = true;
-        voiceStatus.textContent = "Voice on";
-        voiceBtn.textContent = "Disable Voice";
-
-        const unlocked = await unlockSpeech();
-
-        if (unlocked) {
-          ocrOutput.textContent = "Voice enabled. When the reveal triggers, spoken lines should play.";
-        } else {
-          speechUnlocked = false;
-          ocrOutput.textContent = "Voice was turned on, but this device/browser blocked speech unlock. Try tapping Enable Voice again.";
-        }
-      } else {
-        voiceEnabled = false;
-        speechUnlocked = false;
-        voiceStatus.textContent = "Voice off";
-        voiceBtn.textContent = "Enable Voice";
         stopSpeech();
-        ocrOutput.textContent = "Voice disabled.";
       }
     });
 
-    replayBtn.addEventListener("click", resetExperience);
+    replayBtn.addEventListener("click", () => {
+      resetExperience();
+    });
+
     sharePageBtn.addEventListener("click", sharePage);
-    stickyShareBtn.addEventListener("click", sharePage);
+    headerShareBtn.addEventListener("click", sharePage);
     stickyShareMirrorBtn.addEventListener("click", sharePage);
 
     window.addEventListener("resize", resizeOverlayCanvas);
@@ -2063,7 +1989,6 @@ Griffin Hall 160
       stopScanning();
       stopCamera();
       stopSpeech();
-      clearOverlay();
       if (countdownTimer) clearInterval(countdownTimer);
       if (majorRotationTimer) clearInterval(majorRotationTimer);
       if (finalTimer) clearTimeout(finalTimer);
