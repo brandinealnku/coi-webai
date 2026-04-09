@@ -23,6 +23,7 @@
       --gold:#FFC72C;
       --gold-2:#ffe59c;
       --success:#66f2ad;
+      --danger:#ff8d8d;
       --shadow:0 20px 50px rgba(0,0,0,.35);
       --radius:22px;
       --max:1080px;
@@ -126,6 +127,11 @@
 
     .btn:hover{transform:translateY(-1px)}
     .btn:active{transform:translateY(0)}
+    .btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+      transform:none;
+    }
 
     .btn-primary{
       background:linear-gradient(135deg,var(--gold-2),var(--gold));
@@ -247,7 +253,7 @@
         radial-gradient(circle at 50% 20%, rgba(255,199,44,.14), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%),
         linear-gradient(180deg, #191919 0%, #080808 100%);
-      z-index:1;
+      z-index:2;
     }
 
     .fallback-stage h2{
@@ -271,6 +277,24 @@
       flex-wrap:wrap;
       justify-content:center;
       gap:10px;
+    }
+
+    .camera-inline-hint{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.4;
+      max-width:34ch;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .camera-inline-hint strong{
+      color:#fff;
     }
 
     .stage-top{
@@ -470,6 +494,10 @@
       white-space:pre-wrap;
       max-height:100px;
       overflow:auto;
+    }
+
+    .debug-text.error{
+      color:var(--danger);
     }
 
     .action-grid{
@@ -776,15 +804,13 @@
     }
   </style>
 
-  <!-- Google Analytics (replace G-XXXXXXXXXX with your real GA4 Measurement ID) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-KWNBQ28FLV"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-KWNBQ28FLV', { 'debug_mode': true });
+    gtag("js", new Date());
+    gtag("config", "G-KWNBQ28FLV", { debug_mode: true });
   </script>
-
 </head>
 <body>
   <div class="confetti" id="confettiLayer"></div>
@@ -834,7 +860,14 @@
 
         <div class="panel stage-panel">
           <div class="stage">
-            <video id="video" autoplay playsinline muted></video>
+            <video
+              id="video"
+              playsinline
+              webkit-playsinline
+              muted
+              autoplay
+              disablepictureinpicture
+            ></video>
 
             <div class="fallback-stage" id="fallbackStage">
               <div>
@@ -842,9 +875,14 @@
                 <p>
                   Explore the course below, or start the optional camera experience to unlock the in-place reveal.
                 </p>
+
                 <div class="fallback-buttons">
                   <button class="btn btn-primary" id="enableCameraBtn" type="button">Start Camera Experience</button>
                   <button class="btn btn-secondary" id="skipRevealBtn" type="button">Show Reveal Now</button>
+                </div>
+
+                <div class="camera-inline-hint">
+                  <strong>On mobile:</strong> tap <strong>Start Camera Experience</strong>, allow camera access, and point your phone toward <strong>GH 160</strong>.
                 </div>
               </div>
             </div>
@@ -1005,7 +1043,6 @@
     <button class="btn btn-secondary" id="stickyShareBtn" type="button">Share</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     function trackEvent(name, params = {}) {
       if (typeof gtag === "function") {
@@ -1017,8 +1054,9 @@
       targetRoomText: "griffin hall 160",
       alternateMatches: ["griffin 160", "gh 160", "room 160", "160"],
       startDateISO: "2026-08-24T10:50:00-04:00",
-      scanIntervalMs: 3000,
+      scanIntervalMs: 4000,
       ocrScale: 1,
+      tesseractSrc: "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js",
       majorMessages: [
         "Future teacher? AI will shape your classroom too.",
         "Future entrepreneur? AI will reshape how ideas become businesses.",
@@ -1137,7 +1175,6 @@
     const majorText = document.getElementById("majorText");
     const datesList = document.getElementById("datesList");
     const confettiLayer = document.getElementById("confettiLayer");
-    const shareFeedback = document.getElementById("shareFeedback");
 
     const daysEl = document.getElementById("days");
     const hoursEl = document.getElementById("hours");
@@ -1148,6 +1185,7 @@
     const sharePageBtn = document.getElementById("sharePageBtn");
     const stickyShareBtn = document.getElementById("stickyShareBtn");
     const stickyShareMirrorBtn = document.getElementById("stickyShareMirrorBtn");
+    const shareFeedback = document.getElementById("shareFeedback");
 
     const personaPanel = document.getElementById("personaPanel");
     const personaCopy = document.getElementById("personaCopy");
@@ -1169,6 +1207,8 @@
     let voiceEnabled = false;
     let voicesReady = false;
     let speechCancelled = false;
+    let tesseractReady = false;
+    let tesseractLoadingPromise = null;
 
     targetRoomPill.textContent = toTitleCase(CONFIG.targetRoomText);
     renderDates();
@@ -1225,6 +1265,11 @@
       const cleaned = normalizeText(text);
       const candidates = [CONFIG.targetRoomText, ...CONFIG.alternateMatches].map(normalizeText);
       return candidates.some(candidate => cleaned.includes(candidate));
+    }
+
+    function setDebugMessage(message, isError = false) {
+      ocrOutput.textContent = message;
+      ocrOutput.classList.toggle("error", isError);
     }
 
     function updatePersona(pathKey) {
@@ -1288,39 +1333,186 @@
       }
     }
 
-    async function startCameraExperience() {
-      if (scanning || found) return;
+    function isSecureEnoughForCamera() {
+      return window.isSecureContext || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+    }
 
-      stopCamera();
-      stopScanning();
-      found = false;
-      fallbackMode = false;
-      revealCard.classList.remove("active");
-      scanRing.classList.remove("found");
-      scanRing.classList.add("active");
-      fallbackStage.style.display = "none";
+    async function ensureTesseractLoaded() {
+      if (window.Tesseract) {
+        tesseractReady = true;
+        return;
+      }
 
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
+      if (tesseractLoadingPromise) {
+        return tesseractLoadingPromise;
+      }
+
+      tesseractLoadingPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-tesseract="true"]');
+        if (existing) {
+          existing.addEventListener("load", () => {
+            tesseractReady = true;
+            resolve();
+          });
+          existing.addEventListener("error", reject);
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = CONFIG.tesseractSrc;
+        script.async = true;
+        script.dataset.tesseract = "true";
+
+        script.onload = () => {
+          tesseractReady = true;
+          resolve();
+        };
+
+        script.onerror = () => {
+          reject(new Error("Could not load OCR library."));
+        };
+
+        document.body.appendChild(script);
+      });
+
+      return tesseractLoadingPromise;
+    }
+
+    async function waitForVideoReady(videoEl) {
+      return new Promise((resolve, reject) => {
+        let resolved = false;
+
+        const timeout = setTimeout(() => {
+          if (!resolved) reject(new Error("Video readiness timeout"));
+        }, 5000);
+
+        function finish() {
+          if (resolved) return;
+          if (videoEl.videoWidth > 0 && videoEl.videoHeight > 0) {
+            resolved = true;
+            clearTimeout(timeout);
+            resolve();
+          }
+        }
+
+        videoEl.onloadedmetadata = async () => {
+          try {
+            await videoEl.play();
+          } catch (err) {
+            console.warn("video.play warning:", err);
+          }
+          finish();
+        };
+
+        videoEl.oncanplay = finish;
+
+        if (videoEl.readyState >= 2) {
+          finish();
+        }
+      });
+    }
+
+    async function getCameraStream() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Camera API not supported");
+      }
+
+      const attempts = [
+        {
           video: {
             facingMode: { ideal: "environment" },
             width: { ideal: 1280 },
             height: { ideal: 720 }
           },
           audio: false
-        });
+        },
+        {
+          video: {
+            facingMode: "environment"
+          },
+          audio: false
+        },
+        {
+          video: true,
+          audio: false
+        }
+      ];
 
+      let lastError = null;
+
+      for (const constraints of attempts) {
+        try {
+          return await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (err) {
+          lastError = err;
+          console.warn("Camera attempt failed:", constraints, err);
+        }
+      }
+
+      throw lastError || new Error("Unable to access camera.");
+    }
+
+    async function startCameraExperience() {
+      if (scanning || found) return;
+
+      stopScanning();
+      stopCamera();
+
+      found = false;
+      fallbackMode = false;
+      ocrBusy = false;
+
+      revealCard.classList.remove("active");
+      scanRing.classList.remove("found", "active");
+
+      cameraStatus.textContent = "Starting camera...";
+      setDebugMessage("Requesting camera access...");
+      enableCameraBtn.disabled = true;
+      enableCameraBtn.textContent = "Starting...";
+
+      try {
+        if (!isSecureEnoughForCamera()) {
+          throw new Error("Camera requires HTTPS on mobile devices.");
+        }
+
+        stream = await getCameraStream();
         video.srcObject = stream;
+
+        await waitForVideoReady(video);
+
+        fallbackStage.style.display = "none";
+        scanRing.classList.add("active");
         cameraStatus.textContent = "Camera live";
-        ocrOutput.textContent = "Camera enabled. Point it at GH 160 to unlock your personalized INF 125 reveal.";
+        setDebugMessage("Camera enabled. Loading scanner...");
+
+        await ensureTesseractLoaded();
+
+        setDebugMessage("Camera enabled. Point it at GH 160 to unlock your personalized INF 125 reveal.");
         startScanning();
       } catch (err) {
-        console.error(err);
-        cameraStatus.textContent = "Camera unavailable";
-        ocrOutput.textContent = "Camera permission was denied or unavailable. You can still use Show Reveal Now.";
+        console.error("Camera start failed:", err);
+
         fallbackMode = true;
-        scanRing.classList.remove("active");
+        stopScanning();
+        stopCamera();
         fallbackStage.style.display = "grid";
+        scanRing.classList.remove("active");
+        cameraStatus.textContent = "Camera unavailable";
+
+        let message = "Camera permission was denied or unavailable. You can still use Show Reveal Now.";
+
+        if (!isSecureEnoughForCamera()) {
+          message = "Camera needs HTTPS to work on phones. Open the secure version of this page, or use Show Reveal Now.";
+        } else if (/denied|permission/i.test(err.message || "")) {
+          message = "Camera access was blocked. Please allow camera access in your browser and try again.";
+        } else if (/not supported/i.test(err.message || "")) {
+          message = "This browser does not support camera access for this page. Try Safari or Chrome directly.";
+        }
+
+        setDebugMessage(message, true);
+      } finally {
+        enableCameraBtn.disabled = false;
+        enableCameraBtn.textContent = "Start Camera Experience";
       }
     }
 
@@ -1329,6 +1521,9 @@
         stream.getTracks().forEach(track => track.stop());
         stream = null;
       }
+      try {
+        video.pause();
+      } catch (err) {}
       video.srcObject = null;
     }
 
@@ -1339,12 +1534,12 @@
       fallbackStage.style.display = "none";
       scanRing.classList.remove("active");
       cameraStatus.textContent = "Camera skipped";
-      ocrOutput.textContent = "Launching your personalized reveal without camera access.";
+      setDebugMessage("Launching your personalized reveal without camera access.");
       onTargetFound("camera skipped");
     }
 
     async function runOCRScan() {
-      if (!video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
+      if (!window.Tesseract || !video.videoWidth || !video.videoHeight || ocrBusy || found || fallbackMode) return;
 
       ocrBusy = true;
 
@@ -1362,18 +1557,18 @@
 
         ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
 
-        const result = await Tesseract.recognize(canvas, "eng", { logger: () => {} });
-        const text = result.data.text || "";
+        const result = await window.Tesseract.recognize(canvas, "eng", { logger: () => {} });
+        const text = result?.data?.text || "";
         const cleaned = normalizeText(text);
 
-        ocrOutput.textContent = cleaned || "Scanning... no readable room sign found yet.";
+        setDebugMessage(cleaned || "Scanning... no readable room sign found yet.");
 
         if (matchesTarget(cleaned)) {
           onTargetFound(cleaned);
         }
       } catch (err) {
-        console.error(err);
-        ocrOutput.textContent = "Scan error. Try again, or use Show Reveal Now.";
+        console.error("OCR scan failed:", err);
+        setDebugMessage("Scan error. Try again, or use Show Reveal Now.", true);
       } finally {
         ocrBusy = false;
       }
@@ -1498,10 +1693,12 @@
       revealCard.classList.add("active");
       fallbackStage.style.display = "none";
       cameraStatus.textContent = sourceText === "camera skipped" ? "Reveal shown" : "Target found";
-      ocrOutput.textContent =
+
+      setDebugMessage(
         sourceText === "camera skipped"
           ? "Personalized reveal shown without camera."
-          : `Match found: ${sourceText}`;
+          : `Match found: ${sourceText}`
+      );
 
       triggerConfetti();
 
@@ -1523,7 +1720,7 @@
       revealCard.classList.remove("active");
       fallbackStage.style.display = "grid";
       cameraStatus.textContent = "Camera optional";
-      ocrOutput.textContent = "Choose a path below, then start the camera experience or show the reveal now.";
+      setDebugMessage("Choose a path below, then start the camera experience or show the reveal now.");
     }
 
     async function sharePage() {
@@ -1563,17 +1760,18 @@
         updatePersona(card.dataset.path);
 
         if (!found) {
-          ocrOutput.textContent = "Path selected. Start the camera experience or show the reveal now.";
+          setDebugMessage("Path selected. Start the camera experience or show the reveal now.");
         }
       });
     });
 
-    enableCameraBtn.addEventListener("click", () => {
+    enableCameraBtn.addEventListener("click", async () => {
       trackEvent("camera_started", {
         selected_path: selectedPath
       });
-      startCameraExperience();
+      await startCameraExperience();
     });
+
     skipRevealBtn.addEventListener("click", () => {
       trackEvent("reveal_skipped_to_manual", {
         selected_path: selectedPath
@@ -1606,7 +1804,6 @@
     stickyShareMirrorBtn.addEventListener("click", sharePage);
 
     window.addEventListener("dblclick", resetExperience);
-
 
     const datesAccordion = document.querySelector(".dates-accordion");
     if (datesAccordion) {
