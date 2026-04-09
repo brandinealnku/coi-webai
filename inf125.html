@@ -12,16 +12,16 @@
     name="description"
     content="Interactive NKU INF 125: AI Literacy experience for students from every major."
   />
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ER0QX27ES1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-  
     gtag('config', 'G-ER0QX27ES1');
   </script>
-  
+
   <style>
     :root{
       --bg:#050505;
@@ -83,19 +83,6 @@
       align-items:center;
       gap:10px;
       min-width:0;
-    }
-
-    .brand-mark{
-      width:38px;
-      height:38px;
-      display:grid;
-      place-items:center;
-      border-radius:12px;
-      background:linear-gradient(135deg,var(--gold-2),var(--gold));
-      color:#111;
-      font-weight:900;
-      flex-shrink:0;
-      box-shadow:var(--shadow);
     }
 
     .brand-copy{min-width:0}
@@ -978,9 +965,6 @@
               <strong>When + where:</strong>
               Tuesdays & Thursdays • 10:50 AM – 12:05 PM • Griffin Hall 160
             </div>
-             <div class="action-grid" id="actionGrid">
-              <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
-            </div>
           </div>
         </div>
 
@@ -1087,9 +1071,37 @@
               </div>
             </div>
           </div>
+
+          <div class="action-grid" id="actionGrid">
+            <button class="btn btn-secondary" id="voiceBtn" type="button">Enable Voice</button>
+            <button class="btn btn-secondary" id="sharePageBtn" type="button">Share Page</button>
+            <button class="btn btn-ghost" id="recordDemoBtn" type="button">Record Demo</button>
+          </div>
         </div>
       </div>
     </section>
+
+    <section class="section" id="funnel">
+      <div class="shell funnel-grid">
+        <div class="panel section-card">
+          <div class="section-label">Personalized focus</div>
+          <h2 class="section-title">Why this course fits</h2>
+          <p class="section-copy">
+            The message below updates based on the path you choose.
+          </p>
+
+          <div class="persona-panel" id="personaPanel">
+            <h3>AI literacy for business-minded students</h3>
+            <p id="personaCopy">
+              If you care about leadership, strategy, entrepreneurship, or decision-making, this course helps you understand how AI is changing work, value, and competitive advantage.
+            </p>
+            <div class="persona-tags" id="personaTags">
+              <span class="tag">Careers</span>
+              <span class="tag">Decision-making</span>
+              <span class="tag">Innovation</span>
+            </div>
+          </div>
+        </div>
 
         <div class="panel section-card">
           <div class="section-label">Register faster</div>
@@ -1546,7 +1558,6 @@ Griffin Hall 160
         overlayCtx.shadowColor = "rgba(102,242,173,0.85)";
         overlayCtx.shadowBlur = 14;
         overlayCtx.stroke();
-
         drawLockCorners(box, localPulse * 0.5);
       }
 
@@ -1580,12 +1591,10 @@ Griffin Hall 160
 
     function find160WordBox(words, cropMeta) {
       if (!Array.isArray(words)) return null;
-
       const candidate = words.find(word => {
         const txt = normalizeText(word.text || "");
         return txt === "160" || txt.endsWith("160") || txt.includes("160");
       });
-
       if (!candidate || typeof candidate.x0 !== "number") return null;
       return mapOcrBoxToVideoOverlay(candidate, cropMeta);
     }
@@ -1723,7 +1732,6 @@ Griffin Hall 160
 
     function triggerConfetti() {
       confettiLayer.innerHTML = "";
-
       for (let i = 0; i < 26; i++) {
         const piece = document.createElement("div");
         piece.className = "confetti-piece";
@@ -1924,38 +1932,56 @@ Griffin Hall 160
       });
     });
 
-    enableCameraBtn.addEventListener("click", () => {
-      unlockSpeech();
-      startCameraExperience();
-    });
+    if (enableCameraBtn) {
+      enableCameraBtn.addEventListener("click", () => {
+        unlockSpeech();
+        startCameraExperience();
+      });
+    }
 
-    skipRevealBtn.addEventListener("click", () => {
-      unlockSpeech();
-      startFallbackReveal();
-    });
+    if (skipRevealBtn) {
+      skipRevealBtn.addEventListener("click", () => {
+        unlockSpeech();
+        startFallbackReveal();
+      });
+    }
 
-    recordDemoBtn.addEventListener("click", () => {
-      runRecordDemo();
-    });
+    if (recordDemoBtn) {
+      recordDemoBtn.addEventListener("click", () => {
+        runRecordDemo();
+      });
+    }
 
-    voiceBtn.addEventListener("click", () => {
-      unlockSpeech();
-      voiceEnabled = !voiceEnabled;
-      voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
-      voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
+    if (voiceBtn) {
+      voiceBtn.addEventListener("click", () => {
+        unlockSpeech();
+        voiceEnabled = !voiceEnabled;
+        voiceStatus.textContent = voiceEnabled ? "Voice on" : "Voice off";
+        voiceBtn.textContent = voiceEnabled ? "Disable Voice" : "Enable Voice";
 
-      if (!voiceEnabled) {
-        stopSpeech();
-      }
-    });
+        if (!voiceEnabled) {
+          stopSpeech();
+        }
+      });
+    }
 
-    replayBtn.addEventListener("click", () => {
-      resetExperience();
-    });
+    if (replayBtn) {
+      replayBtn.addEventListener("click", () => {
+        resetExperience();
+      });
+    }
 
-    sharePageBtn.addEventListener("click", sharePage);
-    headerShareBtn.addEventListener("click", sharePage);
-    stickyShareMirrorBtn.addEventListener("click", sharePage);
+    if (sharePageBtn) {
+      sharePageBtn.addEventListener("click", sharePage);
+    }
+
+    if (headerShareBtn) {
+      headerShareBtn.addEventListener("click", sharePage);
+    }
+
+    if (stickyShareMirrorBtn) {
+      stickyShareMirrorBtn.addEventListener("click", sharePage);
+    }
 
     window.addEventListener("resize", resizeOverlayCanvas);
 
