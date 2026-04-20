@@ -331,7 +331,8 @@
 
     function applyPhaseEffects(phase){
       els.phaseBadge.textContent = String(phase || 'lobby').toUpperCase();
-      els.blackoutLayer.classList.toggle('active', phase === 'blackout' || sessionState?.blackout);
+      const shouldBlackout = !!participantState && !!participantState.ready && (phase === 'blackout' || sessionState?.blackout);
+      els.blackoutLayer.classList.toggle('active', shouldBlackout);
 
       if (phase === 'countdown') {
         safeVibrate(70);
@@ -380,7 +381,9 @@
         ? `${nickname}, you helped power the moment.`
         : `${nickname}, you are part of the room-wide reveal.`;
 
+      const revealMidSequence = (phase === 'blackout' || sessionState?.blackout) && !participantState.ready;
       els.miniCaption.textContent =
+        revealMidSequence ? 'The room is mid-sequence. Stay ready.' :
         phase === 'lobby' ? 'Hold your phone ready.' :
         phase === 'countdown' ? 'Countdown live. Phones up.' :
         phase === 'animate' ? 'Live animation in motion.' :
@@ -388,7 +391,12 @@
         phase === 'selfie' ? 'You may become the mosaic.' :
         (sessionState.finalSubhead || 'Premium interactive V3');
 
-      els.bigSlot.classList.toggle('pulsing', phase === 'lobby' || !!sessionState?.interaction?.hypePulse);
+      if (revealMidSequence) {
+        els.tileText.textContent = 'STAND BY';
+        els.roleText.textContent = 'Reveal in progress';
+      }
+
+      els.bigSlot.classList.toggle('pulsing', phase === 'lobby' || !!sessionState?.interaction?.hypePulse || revealMidSequence);
 
       const isMosaic = sessionState.assignmentMode === 'mosaic' && sessionState.mosaic?.artwork;
       if (isMosaic) {
