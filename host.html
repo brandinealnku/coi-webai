@@ -3,419 +3,548 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrowdCode V3 Host</title>
+  <title>CrowdCode V4 Host</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#090b12;
-      --panel:#10131d;
-      --panel-2:#151a27;
+      --bg:#080b12;
+      --bg-2:#0d1220;
+      --panel:#0f1420;
+      --panel-2:#12192a;
+      --panel-3:#171f33;
       --line:rgba(255,255,255,.08);
-      --soft:rgba(255,255,255,.05);
-      --text:#f3f6ff;
-      --muted:#a7b0c7;
+      --line-strong:rgba(255,255,255,.14);
+      --text:#f5f7ff;
+      --muted:#9ca6be;
       --gold:#f7b718;
       --pink:#ff66c4;
-      --blue:#67a8ff;
-      --green:#43d17c;
-      --danger:#ff6868;
-      --shadow:0 24px 60px rgba(0,0,0,.38);
+      --blue:#71a7ff;
+      --green:#39d98a;
+      --danger:#ff6f6f;
+      --shadow:0 20px 56px rgba(0,0,0,.34);
       --radius:22px;
+      --inspector-width:380px;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:
-      radial-gradient(circle at 15% 10%, rgba(247,183,24,.10), transparent 24%),
-      radial-gradient(circle at 85% 10%, rgba(103,168,255,.10), transparent 22%),
-      radial-gradient(circle at 70% 75%, rgba(255,102,196,.12), transparent 26%),
-      linear-gradient(180deg,#090b12,#0e1220 56%,#090b12);
-      color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100%}
-    body{padding:18px}
-    .shell{max-width:1560px;margin:0 auto;display:grid;grid-template-columns:420px minmax(0,1fr);gap:18px}
-    .panel{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
-    .sidebar,.main{padding:18px}
-    .brand{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-    .badge{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,var(--gold),#ffd870);color:#111}
-    h1,h2,h3,p{margin:0}
-    .brand p,.muted,.tiny{color:var(--muted)}
-    .status{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:var(--soft);margin-bottom:14px}
-    .statusleft{display:flex;align-items:center;gap:10px}
-    .dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 6px rgba(255,104,104,.16)}
-    .dot.live{background:var(--green);box-shadow:0 0 0 6px rgba(67,209,124,.15)}
-    .grid2,.grid3,.grid4{display:grid;gap:12px}
-    .grid2{grid-template-columns:1fr 1fr}
-    .grid3{grid-template-columns:repeat(3,1fr)}
-    .grid4{grid-template-columns:repeat(4,1fr)}
-    .field{margin-bottom:12px}
-    .field label{display:block;font-size:.82rem;font-weight:800;color:#d9e1f4;margin-bottom:8px;letter-spacing:.02em}
-    input,select,textarea{
-      width:100%;border-radius:16px;border:1px solid var(--line);background:#0d111a;color:var(--text);
-      padding:12px 14px;font:inherit;outline:none;
-    }
-    textarea{min-height:92px;resize:vertical}
-    .section{padding:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:20px;margin-bottom:14px}
-    .section h3{font-size:1rem;margin-bottom:10px}
-    .button-row{display:flex;gap:10px;flex-wrap:wrap}
-    button{
-      border:0;border-radius:16px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer;
-      transition:transform .18s ease,filter .18s ease,box-shadow .18s ease
-    }
-    button:hover{transform:translateY(-1px);filter:brightness(1.03)}
-    .primary{background:linear-gradient(135deg,var(--gold),#ffd973);color:#151515}
-    .secondary{background:#13192a;color:#eff5ff;border:1px solid var(--line)}
-    .accent{background:linear-gradient(135deg,#67a8ff,#9e8bff);color:#07121f}
-    .pink{background:linear-gradient(135deg,#ff66c4,#ff98d7);color:#1b0a19}
-    .danger{background:rgba(255,104,104,.12);border:1px solid rgba(255,104,104,.24);color:#ffd3d3}
-    .join-card{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;padding:14px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
-    #qrcode{width:150px;height:150px;background:#fff;border-radius:14px;display:grid;place-items:center;padding:10px}
-    code{display:block;padding:12px;border-radius:14px;background:#0d111a;border:1px solid var(--line);color:#fff1c2;word-break:break-all}
-    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
-    .stat{padding:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:18px;min-height:92px}
-    .stat .k{font-size:.8rem;color:var(--muted);margin-bottom:8px}
-    .stat .v{font-size:1.6rem;font-weight:900;letter-spacing:-.03em}
-    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-bottom:14px}
-    .stage-card,.right-col{display:grid;gap:14px}
-    .display-stage{
-      position:relative;min-height:560px;border-radius:28px;overflow:hidden;border:1px solid var(--line);
+    html,body{height:100%;margin:0}
+    body{
+      font-family:Inter,system-ui,sans-serif;
+      color:var(--text);
       background:
-        radial-gradient(circle at 20% 20%, rgba(247,183,24,.10), transparent 22%),
-        radial-gradient(circle at 80% 20%, rgba(103,168,255,.12), transparent 24%),
-        radial-gradient(circle at 80% 78%, rgba(255,102,196,.12), transparent 28%),
-        linear-gradient(180deg,#0b0f19,#101525);
+        radial-gradient(circle at 8% 8%, rgba(247,183,24,.12), transparent 20%),
+        radial-gradient(circle at 85% 12%, rgba(113,167,255,.12), transparent 20%),
+        radial-gradient(circle at 75% 78%, rgba(255,102,196,.12), transparent 24%),
+        linear-gradient(180deg,var(--bg),var(--bg-2));
+      overflow:hidden;
     }
-    .stage-topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:linear-gradient(180deg,rgba(0,0,0,.34),transparent)}
-    .stage-chip{padding:8px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);border-radius:999px;font-size:.82rem;font-weight:800}
-    .count-big{font-size:clamp(4rem,12vw,8rem);font-weight:900;letter-spacing:-.05em}
-    .stage-center{
-      position:absolute;inset:0;display:grid;place-items:center;padding:28px;text-align:center
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .app-shell{height:100%;display:grid;grid-template-columns:minmax(0,1fr) var(--inspector-width);gap:18px;padding:18px;transition:grid-template-columns .26s ease}
+    body.controls-collapsed .app-shell{grid-template-columns:minmax(0,1fr) 0px}
+    .panel{
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(16px);
+      min-height:0;
     }
-    .headline{font-size:clamp(2.4rem,5.4vw,5rem);font-weight:900;letter-spacing:-.05em;line-height:.95;max-width:14ch;text-wrap:balance}
-    .subline{font-size:1.05rem;color:#d6def1;max-width:60ch;line-height:1.45;margin-top:14px}
-    .mosaic-preview{
-      position:absolute;inset:0;display:grid;opacity:.9;
+    .main-shell{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:16px;min-height:0}
+    .topbar,.summarybar,.canvas-grid,.inspector{min-height:0}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px}
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
+    .logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-weight:900;color:#111;background:linear-gradient(135deg,var(--gold),#ffd86f)}
+    .brand-copy{min-width:0}
+    .eyebrow{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+    h1,h2,h3,p{margin:0}
+    .title{font-size:1.24rem;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .subtitle{font-size:.92rem;color:var(--muted)}
+    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .ghost,.secondary,.primary,.accent,.pink,.danger,.icon-btn,.chip-btn{
+      border-radius:16px;border:1px solid var(--line);padding:11px 14px;background:rgba(255,255,255,.04);color:var(--text);
+      transition:transform .18s ease,filter .18s ease,background .18s ease,border-color .18s ease;
     }
-    .mosaic-cell{border:1px solid rgba(255,255,255,.10);position:relative;overflow:hidden}
-    .mosaic-cell span{
-      position:absolute;left:8px;bottom:8px;font-size:.72rem;font-weight:800;background:rgba(0,0,0,.42);padding:4px 8px;border-radius:999px
+    .primary{background:linear-gradient(135deg,var(--gold),#ffd870);color:#101010;border:none;font-weight:800}
+    .accent{background:linear-gradient(135deg,var(--blue),#98b4ff);color:#09121d;border:none;font-weight:800}
+    .pink{background:linear-gradient(135deg,var(--pink),#ffa5dc);color:#200a1c;border:none;font-weight:800}
+    .danger{background:rgba(255,111,111,.12);border:1px solid rgba(255,111,111,.24);color:#ffd1d1}
+    .ghost:hover,.secondary:hover,.primary:hover,.accent:hover,.pink:hover,.danger:hover,.icon-btn:hover,.chip-btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
+    .icon-btn{padding:11px 12px;display:inline-flex;gap:10px;align-items:center;background:rgba(255,255,255,.04)}
+    .summarybar{padding:14px 16px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+    .metric{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:20px;padding:14px;min-width:0}
+    .metric-label{font-size:.77rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+    .metric-value{font-size:1.45rem;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .metric-sub{font-size:.84rem;color:var(--muted);margin-top:6px}
+    .canvas-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:16px;min-height:0}
+    .stage-panel,.side-stage{padding:16px;display:grid;gap:16px;min-height:0}
+    .hero-stage{padding:18px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+    .hero-stage h2{font-size:1.5rem;font-weight:900}
+    .hero-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .phase-chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-weight:700;font-size:.9rem}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .preview-card{padding:16px;border-radius:24px;background:rgba(255,255,255,.03);border:1px solid var(--line);display:grid;gap:14px;min-height:0}
+    .preview-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+    .preview-header .meta{color:var(--muted);font-size:.9rem}
+    .mosaic-preview{position:relative;aspect-ratio:10/16;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:#090d16;background-position:center;background-size:cover;background-repeat:no-repeat}
+    .mosaic-grid{position:absolute;inset:0;display:grid}
+    .mosaic-cell{border:1px solid rgba(255,255,255,.18);padding:8px;color:white;font-size:.76rem;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+    .split-stack{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:16px;min-height:0}
+    .join-card,.reaction-card,.phone-card{padding:16px;border-radius:24px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+    .join-card{display:grid;grid-template-columns:132px minmax(0,1fr);gap:14px;align-items:center}
+    #qrcode{width:132px;height:132px;background:#fff;border-radius:18px;display:grid;place-items:center;padding:10px}
+    .join-url{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .join-url code{display:block;min-width:0;word-break:break-all;background:#0a0f19;border:1px solid var(--line);padding:10px 12px;border-radius:14px;color:#fff3bf;flex:1}
+    .reaction-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+    .react-btn{border:none;border-radius:18px;padding:14px;font-weight:800}
+    .react-fire{background:linear-gradient(135deg,#ff8a00,#ff5e62);color:white}
+    .react-clap{background:linear-gradient(135deg,#7dd3fc,#60a5fa);color:#07121f}
+    .react-boost{background:linear-gradient(135deg,#7c3aed,#c084fc);color:white}
+    .react-confetti{background:linear-gradient(135deg,#f472b6,#fb7185);color:white}
+    .energy-wrap{margin-top:12px}
+    .meter{height:12px;border-radius:999px;background:#0b1120;border:1px solid var(--line);overflow:hidden}
+    .meter > span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--pink),var(--blue));transition:width .18s ease}
+    .phone-wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:14px;overflow:auto;padding-right:4px}
+    .phone{aspect-ratio:9/16;border-radius:28px;border:1px solid var(--line-strong);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));position:relative;overflow:hidden;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+    .phone::before{content:'';width:42%;height:18px;background:rgba(255,255,255,.12);border-radius:0 0 16px 16px;position:absolute;top:0;left:50%;transform:translateX(-50%)}
+    .phone-top,.phone-bottom{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:rgba(255,255,255,.8)}
+    .phone-top{margin-top:10px;gap:8px}
+    .phone-slot{flex:1;display:grid;place-items:center;text-align:center;padding:10px}
+    .mini-slice{width:100%;aspect-ratio:9/16;border-radius:18px;border:1px solid rgba(255,255,255,.14);background-position:center;background-size:cover;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+    .tile-big{font-size:clamp(1.6rem,3.5vw,3rem);font-weight:900;line-height:.94;letter-spacing:-.03em}
+    .tile-small{font-size:.88rem;color:rgba(255,255,255,.84);margin-top:8px;line-height:1.35}
+    .inspector{position:relative;overflow:hidden}
+    .inspector-shell{height:100%;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:14px;padding:16px}
+    .inspector-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .inspector-title{font-size:1rem;font-weight:850}
+    .status-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.9rem;font-weight:700}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 6px rgba(255,111,111,.14)}
+    .dot.live{background:var(--green);box-shadow:0 0 0 6px rgba(57,217,138,.14)}
+    .tabbar{display:flex;gap:8px;overflow:auto;padding-bottom:2px}
+    .tabbar button{white-space:nowrap;border-radius:14px;padding:10px 12px;border:1px solid var(--line);background:#0d1320;color:var(--muted);font-weight:800}
+    .tabbar button.active{background:rgba(255,255,255,.08);color:var(--text);border-color:var(--line-strong)}
+    .tab-panels{overflow:auto;padding-right:4px}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .control-block{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:22px;padding:14px;margin-bottom:14px}
+    .control-block h3{font-size:1rem;font-weight:850;margin-bottom:6px}
+    .hint{font-size:.86rem;color:var(--muted);line-height:1.45}
+    .field{margin-top:12px}
+    .field label{display:block;font-size:.8rem;font-weight:800;color:#d7def2;letter-spacing:.02em;margin-bottom:8px}
+    input,select,textarea{width:100%;border-radius:16px;border:1px solid var(--line);background:#0a0f19;color:var(--text);padding:12px 14px;outline:none}
+    textarea{min-height:92px;resize:vertical}
+    .grid2,.grid3{display:grid;gap:12px}
+    .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .button-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02);padding:0 0 10px 0;margin-top:12px}
+    summary{list-style:none;cursor:pointer;padding:14px 14px 10px 14px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    summary::-webkit-details-marker{display:none}
+    details > .details-body{padding:0 14px 0 14px}
+    .capture-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(220px,.85fr);gap:12px;align-items:start}
+    .camera-stage{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:rgba(0,0,0,.35);border:1px solid var(--line)}
+    .camera-stage video,.camera-stage img{width:100%;height:100%;object-fit:cover;display:block}
+    .camera-badge{position:absolute;top:10px;left:10px;padding:8px 10px;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);font-size:.8rem;font-weight:700}
+    .capture-preview{border-radius:18px;overflow:hidden;aspect-ratio:1/1;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+    .capture-preview img{width:100%;height:100%;object-fit:cover;display:block}
+    .audio-card{display:grid;gap:12px}
+    .reactive-meter{height:10px;border-radius:999px;background:#0b1120;border:1px solid var(--line);overflow:hidden;margin-top:8px}
+    .reactive-meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--pink),var(--gold));transition:width .12s ease}
+    .teams-list{display:flex;flex-wrap:wrap;gap:10px}
+    .team-pill{padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.85rem;font-weight:800}
+    .theme-switch{display:flex;align-items:center;gap:10px}
+    .theme-switch select{max-width:170px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    .blackout-layer{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .18s ease;z-index:60}
+    .blackout-layer.active{opacity:1;pointer-events:auto}
+    @media (max-width: 1320px){
+      .summarybar{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .canvas-grid{grid-template-columns:minmax(0,1fr)}
+      .split-stack{grid-template-columns:1fr;grid-template-rows:auto auto minmax(320px,1fr)}
     }
-    .blackout{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .24s}
-    .blackout.active{opacity:1}
-    .energy-wrap,.reaction-wrap,.phone-wall,.teams-grid{padding:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:22px}
-    .meter{height:14px;background:#0b1018;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-    .meter > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink),var(--blue))}
-    .reaction-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    .reaction-pill{padding:14px;border-radius:18px;background:#0d111a;border:1px solid var(--line)}
-    .reaction-pill .emoji{font-size:1.5rem}
-    .reaction-pill .num{font-size:1.4rem;font-weight:900}
-    .phone-wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-    .phone{
-      aspect-ratio:9/16;border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid var(--line);padding:12px;position:relative;overflow:hidden
+    @media (max-width: 1080px){
+      .app-shell{grid-template-columns:minmax(0,1fr)}
+      .inspector{position:fixed;inset:12px 12px 12px auto;width:min(92vw,420px);z-index:70;transform:translateX(0);transition:transform .26s ease,opacity .26s ease}
+      body.controls-collapsed .inspector{transform:translateX(calc(100% + 18px));opacity:0;pointer-events:none}
+      body:not(.controls-collapsed) .main-shell{filter:blur(0)}
     }
-    .phone:before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);width:42%;height:18px;background:rgba(255,255,255,.10);border-radius:0 0 12px 12px}
-    .phone .top{display:flex;justify-content:space-between;font-size:.74rem;color:#d1d8ea;margin-top:12px}
-    .phone .mid{height:74%;display:grid;place-items:center;text-align:center}
-    .phone .tile{font-size:1.8rem;font-weight:900;letter-spacing:-.04em}
-    .phone .small{font-size:.8rem;color:#bfc8de;margin-top:8px}
-    .phone .teamdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-    .slice{width:100%;aspect-ratio:9/16;border-radius:18px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.14)}
-    .side-card{padding:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:22px}
-    .preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .floating{position:fixed;right:22px;bottom:22px;display:flex;gap:10px;z-index:9}
-    .tiny{font-size:.8rem;line-height:1.45}
-    .capture-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
-    .cam-box{position:relative;aspect-ratio:16/10;border-radius:18px;overflow:hidden;background:#0a0d14;border:1px solid var(--line)}
-    .cam-box video,.cam-box img,.cam-box canvas{width:100%;height:100%;object-fit:cover;display:block}
-    .cam-status{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.48);padding:8px 10px;border-radius:999px;font-size:.75rem;font-weight:800}
-    .capture-preview{aspect-ratio:1/1;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0a0d14}
-    .capture-preview img{width:100%;height:100%;object-fit:cover}
-    .audio-meter{height:12px;background:#0a0d14;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-    .audio-meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,#67a8ff,#ff66c4,#f7b718)}
-    @media (max-width:1240px){.shell{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}
-    @media (max-width:760px){body{padding:10px}.grid2,.grid3,.grid4,.capture-grid,.join-card,.preset-grid,.reaction-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.floating{position:static;margin-top:12px}}
+    @media (max-width: 820px){
+      body{overflow:auto}
+      .app-shell{height:auto;min-height:100%;padding:12px}
+      .topbar,.summarybar,.stage-panel,.side-stage,.inspector-shell{padding:14px}
+      .summarybar{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .join-card,.capture-grid,.grid2,.grid3{grid-template-columns:1fr}
+      .toolbar,.hero-actions{justify-content:flex-start}
+      .title{white-space:normal}
+    }
   </style>
 </head>
-<body>
-  <div class="shell">
-    <aside class="panel sidebar">
-      <div class="brand">
-        <div class="badge">CC</div>
-        <div>
-          <h1>CrowdCode V3</h1>
-          <p class="muted">Premium interactive live activation control room</p>
+<body class="controls-open">
+  <div id="blackoutLayer" class="blackout-layer" aria-hidden="true"></div>
+  <div class="app-shell">
+    <main class="main-shell">
+      <section class="panel topbar">
+        <div class="brand">
+          <div class="logo">CC</div>
+          <div class="brand-copy">
+            <div class="eyebrow">Live activation control room</div>
+            <div class="title">CrowdCode premium host</div>
+            <div class="subtitle">Run the room, keep the stage visible, open controls only when you need them.</div>
+          </div>
         </div>
-      </div>
+        <div class="toolbar">
+          <button id="toggleControlsBtn" class="icon-btn" type="button">☰ Controls</button>
+          <button id="openLobbyBtnTop" class="secondary" type="button">Lobby</button>
+          <button id="startCountdownBtnTop" class="accent" type="button">Countdown</button>
+          <button id="revealBtnTop" class="primary" type="button">Reveal</button>
+        </div>
+      </section>
 
-      <div class="status">
-        <div class="statusleft"><span id="statusDot" class="dot"></span><strong id="statusText">Connecting…</strong></div>
-        <div class="tiny" id="sessionCodeLabel">Session: —</div>
-      </div>
+      <section class="panel summarybar">
+        <div class="metric">
+          <div class="metric-label">Phones</div>
+          <div class="metric-value" id="connectedCount">0</div>
+          <div class="metric-sub"><span id="readyCount">0</span> ready</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Slots</div>
+          <div class="metric-value" id="tileCount">0</div>
+          <div class="metric-sub">configured</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Phase</div>
+          <div class="metric-value" id="phaseText">LOBBY</div>
+          <div class="metric-sub" id="countdownDisplay">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Room energy</div>
+          <div class="metric-value" id="energyScore">0</div>
+          <div class="metric-sub"><div class="meter"><span id="energyMeterFill"></span></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Session</div>
+          <div class="metric-value" id="sessionCodeLabel">Session: —</div>
+          <div class="metric-sub" id="statusText">Connecting…</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Quick team view</div>
+          <div class="teams-list" id="teamsList"></div>
+        </div>
+      </section>
 
-      <div class="section">
-        <h3>Session identity</h3>
-        <div class="field"><label for="sessionName">Session title</label><input id="sessionName" value="INF 286 Demo Day" /></div>
-        <div class="grid2">
-          <div class="field"><label for="layoutType">Reveal type</label>
-            <select id="layoutType">
-              <option value="message" selected>Message reveal</option>
-              <option value="countdown">Countdown</option>
-              <option value="cta">CTA finish</option>
-            </select>
-          </div>
-          <div class="field"><label for="assignmentMode">Audience mode</label>
-            <select id="assignmentMode">
-              <option value="mosaic" selected>Mosaic slices</option>
-              <option value="repeat">Repeat tiles</option>
-              <option value="sections">Section blocks</option>
-              <option value="unique">Unique tiles</option>
-            </select>
-          </div>
-        </div>
-        <div class="field"><label for="tileInput">Tiles / phrase</label><textarea id="tileInput">INF 286 | INTRO TO WEB DEVELOPMENT | DEMO DAY</textarea></div>
-      </div>
-
-      <div class="section">
-        <h3>Premium event styling</h3>
-        <div class="grid3">
-          <div class="field"><label for="mosaicCols">Columns</label><input id="mosaicCols" type="number" min="2" max="12" value="4" /></div>
-          <div class="field"><label for="mosaicRows">Rows</label><input id="mosaicRows" type="number" min="2" max="20" value="6" /></div>
-          <div class="field"><label for="themeMode">Theme</label>
-            <select id="themeMode">
-              <option value="premium" selected>Premium arena</option>
-              <option value="nku">NKU gold + pink</option>
-              <option value="midnight">Midnight neon</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid2">
-          <div class="field"><label for="mosaicHeadline">Artwork headline</label><input id="mosaicHeadline" value="INF 286" /></div>
-          <div class="field"><label for="mosaicSubhead">Artwork subhead</label><input id="mosaicSubhead" value="Interactive Demo Day" /></div>
-        </div>
-        <div class="grid2">
-          <div class="field"><label for="mosaicArtworkSource">Artwork source</label>
-            <select id="mosaicArtworkSource">
-              <option value="generated" selected>Generated poster</option>
-              <option value="upload">Uploaded artwork / selfie</option>
-            </select>
-          </div>
-          <div class="field"><label for="mosaicImageFit">Image fit</label>
-            <select id="mosaicImageFit">
-              <option value="cover" selected>Cover</option>
-              <option value="contain">Contain</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label for="mosaicImageUpload">Custom upload</label>
-          <input id="mosaicImageUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
-          <div id="mosaicUploadStatus" class="tiny muted" style="margin-top:8px">No custom image loaded.</div>
-        </div>
-        <div class="button-row">
-          <button class="secondary" id="regenerateArtworkBtn" type="button">Regenerate preview</button>
-          <button class="secondary" id="clearUploadBtn" type="button">Clear uploaded image</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>Interaction + payoff</h3>
-        <div class="grid2">
-          <div class="field"><label for="finalHeadline">Final headline</label><input id="finalHeadline" value="You just powered the reveal." /></div>
-          <div class="field"><label for="finalSubhead">Final subhead</label><input id="finalSubhead" value="INF 286 — premium interactive V3" /></div>
-        </div>
-        <div class="field"><label for="ctaUrl">CTA link</label><input id="ctaUrl" value="https://www.nku.edu/" /></div>
-        <div class="grid3">
-          <div class="field"><label for="countdownSeconds">Countdown</label><input id="countdownSeconds" type="number" min="3" max="30" value="6" /></div>
-          <div class="field"><label for="animationSeconds">Animation</label><input id="animationSeconds" type="number" min="2" max="20" value="5" /></div>
-          <div class="field"><label for="autoStartReadyPct">Auto-start at ready %</label><input id="autoStartReadyPct" type="number" min="10" max="100" value="70" /></div>
-        </div>
-        <div class="grid3">
-          <div class="field"><label for="animationStyle">Animation style</label>
-            <select id="animationStyle">
-              <option value="pulse" selected>Pulse</option>
-              <option value="flash">Flash</option>
-              <option value="ripple">Ripple</option>
-              <option value="audio">Audio reactive</option>
-            </select>
-          </div>
-          <div class="field"><label for="audioFlashMode">Phone flash style</label>
-            <select id="audioFlashMode">
-              <option value="soft" selected>Soft pulse</option>
-              <option value="medium">Medium flash</option>
-              <option value="strobe">Strobe</option>
-              <option value="off">Off</option>
-            </select>
-          </div>
-          <div class="field"><label for="audioFlashHaptics">Haptics</label>
-            <select id="audioFlashHaptics">
-              <option value="vibrate" selected>Vibrate</option>
-              <option value="off">Off</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>Director mode</h3>
-        <div class="preset-grid">
-          <button class="secondary" id="presetHypeBtn" type="button">Hype Intro</button>
-          <button class="secondary" id="presetCountdownBtn" type="button">Countdown Hit</button>
-          <button class="secondary" id="presetAudioBtn" type="button">Audio Drop</button>
-          <button class="secondary" id="presetSelfieBtn" type="button">Selfie Finale</button>
-        </div>
-        <div class="button-row" style="margin-top:10px">
-          <button class="primary" id="saveBtn">Save setup</button>
-          <button class="secondary" id="rebalanceBtn">Rebalance</button>
-          <button class="secondary" id="openLobbyBtn">Open lobby</button>
-          <button class="accent" id="startCountdownBtn">Start countdown</button>
-          <button class="pink" id="blackoutBtn">Blackout snap</button>
-          <button class="secondary" id="revealBtn">Final reveal</button>
-          <button class="secondary" id="selfieBtn">Selfie moment</button>
-          <button class="danger" id="resetBtn">Reset</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>Audio-reactive</h3>
-        <div class="grid2">
-          <div class="field">
-            <label for="audioFile">Host MP3 upload</label>
-            <input id="audioFile" type="file" accept="audio/*" />
-            <div id="audioStatus" class="tiny muted" style="margin-top:8px">Upload a short track for reactive reveal.</div>
-          </div>
-          <div class="field">
-            <label for="audioBroadcastMode">Audience speaker mode</label>
-            <select id="audioBroadcastMode">
-              <option value="visual" selected>Visual only</option>
-              <option value="sync">Play on audience phones</option>
-            </select>
-            <audio id="audioPlayer" controls preload="metadata" style="width:100%;margin-top:10px"></audio>
-            <div class="audio-meter" style="margin-top:10px"><span id="reactiveMeterFill"></span></div>
-          </div>
-        </div>
-        <div class="button-row">
-          <button class="secondary" id="startAudioReactiveBtn" type="button">Start MP3 reveal</button>
-          <button class="secondary" id="stopAudioReactiveBtn" type="button">Stop MP3 reveal</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>Live photo / selfie mosaic</h3>
-        <div class="capture-grid">
-          <div>
-            <div class="cam-box">
-              <video id="captureVideo" playsinline muted></video>
-              <img id="captureFallbackImage" alt="capture preview" style="display:none" />
-              <div class="cam-status" id="captureStatusBadge">Camera idle</div>
+      <section class="canvas-grid">
+        <section class="panel stage-panel">
+          <div class="hero-stage">
+            <div>
+              <div class="eyebrow">On-screen presentation</div>
+              <h2 id="stageHeadline">Stage preview</h2>
+              <p class="subtitle" id="stageSubline">Everything important stays visible while controls live in a collapsible inspector.</p>
             </div>
-            <div class="button-row" style="margin-top:10px">
-              <button class="secondary" id="startCameraBtn" type="button">Start camera</button>
-              <button class="secondary" id="flipCameraBtn" type="button">Flip</button>
-              <button class="secondary" id="capturePhotoBtn" type="button">Capture</button>
-              <button class="secondary" id="useCapturedBtn" type="button">Use as mosaic</button>
-              <button class="secondary" id="stopCameraBtn" type="button">Stop</button>
+            <div class="hero-meta">
+              <div class="phase-chip" id="stagePhaseChip">Phase · LOBBY</div>
+              <div class="phase-chip" id="stageReadyChip">Ready · 0</div>
+              <div class="phase-chip" id="stageCountBig">0 connected</div>
+            </div>
+            <div class="hero-actions">
+              <button id="presetHypeBtn" class="secondary" type="button">Hype intro</button>
+              <button id="presetCountdownBtn" class="accent" type="button">Ready → countdown</button>
+              <button id="presetAudioBtn" class="pink" type="button">Music reveal</button>
+              <button id="presetSelfieBtn" class="secondary" type="button">Selfie finale</button>
             </div>
           </div>
-          <div>
-            <div class="capture-preview"><img id="capturedPhotoPreview" alt="captured photo preview" /></div>
-            <div id="captureHelp" class="tiny muted" style="margin-top:10px">Start the camera, capture the room, then apply it to the audience mosaic for the big finish.</div>
-          </div>
-        </div>
-        <canvas id="captureCanvas" width="1600" height="1000" style="display:none"></canvas>
-      </div>
 
-      <div class="join-card">
-        <div id="qrcode"></div>
-        <div>
-          <h3 style="margin-bottom:8px">Audience join link</h3>
-          <p class="muted" style="margin-bottom:10px">Students scan, enter a name, get a role, tap ready, react live, and help power the reveal.</p>
-          <code id="joinUrlText">Preparing link…</code>
-          <div class="button-row" style="margin-top:10px">
-            <button class="secondary" id="copyLinkBtn">Copy link</button>
+          <div class="preview-card">
+            <div class="preview-header">
+              <div>
+                <h3>Live mosaic preview</h3>
+                <div class="meta">Primary stage stays front and center. Controls can be hidden without losing status or actions.</div>
+              </div>
+              <div class="theme-switch">
+                <label class="sr-only" for="themeMode">Theme mode</label>
+                <select id="themeMode">
+                  <option value="dark" selected>Dark stage</option>
+                  <option value="contrast">High contrast</option>
+                </select>
+                <button id="copyLinkBtn" class="secondary" type="button">Copy join link</button>
+              </div>
+            </div>
+            <div id="mosaicPreview" class="mosaic-preview">
+              <div id="mosaicGrid" class="mosaic-grid"></div>
+            </div>
           </div>
+        </section>
+
+        <aside class="panel side-stage">
+          <div class="split-stack">
+            <section class="join-card">
+              <div id="qrcode"></div>
+              <div>
+                <div class="eyebrow">Audience entry</div>
+                <h3>Join link</h3>
+                <p class="subtitle">Keep scan + join visible from the operator view so late arrivals do not derail the demo.</p>
+                <div class="join-url">
+                  <code id="joinUrlText">Preparing link…</code>
+                </div>
+              </div>
+            </section>
+
+            <section class="reaction-card">
+              <div class="eyebrow">Room interaction</div>
+              <h3>Trigger audience reactions</h3>
+              <p class="subtitle">These controls stay visible outside the hidden inspector because they are high-frequency live actions.</p>
+              <div class="reaction-grid">
+                <button id="reactFire" class="react-btn react-fire" type="button">🔥 Hype</button>
+                <button id="reactClap" class="react-btn react-clap" type="button">👏 Clap</button>
+                <button id="reactBoost" class="react-btn react-boost" type="button">⚡ Boost</button>
+                <button id="reactConfetti" class="react-btn react-confetti" type="button">🎉 Confetti</button>
+              </div>
+              <div class="energy-wrap">
+                <div class="subtitle" style="margin-bottom:8px">Live energy meter</div>
+                <div class="meter"><span class="energy-visual-fill"></span></div>
+              </div>
+            </section>
+
+            <section class="phone-card" style="min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr)">
+              <div>
+                <div class="eyebrow">Audience wall</div>
+                <h3>Connected phones</h3>
+                <p class="subtitle">Compact preview of roles, readiness, and slices.</p>
+              </div>
+              <div id="phoneWall" class="phone-wall"></div>
+            </section>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <aside class="panel inspector" aria-label="Controls inspector">
+      <div class="inspector-shell">
+        <div class="inspector-top">
+          <div>
+            <div class="eyebrow">Inspector</div>
+            <div class="inspector-title">Show controls</div>
+          </div>
+          <div class="status-pill"><span id="statusDot" class="dot"></span><span>Live state</span></div>
+        </div>
+
+        <div class="tabbar" role="tablist" aria-label="Control groups">
+          <button class="active" data-tab="tab-show" type="button">Show</button>
+          <button data-tab="tab-content" type="button">Content</button>
+          <button data-tab="tab-effects" type="button">Effects</button>
+          <button data-tab="tab-media" type="button">Media</button>
+        </div>
+
+        <div class="tab-panels">
+          <section id="tab-show" class="tab-panel active">
+            <div class="control-block">
+              <div class="eyebrow">Session</div>
+              <h3>Live session settings</h3>
+              <p class="hint">Use progressive disclosure here: quick actions first, detailed setup after.</p>
+              <div class="field"><label for="sessionName">Session title</label><input id="sessionName" value="CrowdCode Live" /></div>
+              <div class="field"><label for="autoStartReadyPct">Auto-start when ready % reaches</label><input id="autoStartReadyPct" type="number" min="10" max="100" value="70" /></div>
+              <div class="button-row">
+                <button id="saveBtn" class="primary" type="button">Save setup</button>
+                <button id="rebalanceBtn" class="secondary" type="button">Rebalance</button>
+                <button id="resetBtn" class="danger" type="button">Reset session</button>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <div class="eyebrow">Go live</div>
+              <h3>Stage controls</h3>
+              <div class="button-row">
+                <button id="openLobbyBtn" class="secondary" type="button">Open lobby</button>
+                <button id="startCountdownBtn" class="accent" type="button">Start countdown</button>
+                <button id="blackoutBtn" class="secondary" type="button">Blackout snap</button>
+                <button id="revealBtn" class="primary" type="button">Final reveal</button>
+                <button id="selfieBtn" class="pink" type="button">Selfie moment</button>
+              </div>
+            </div>
+
+            <details open>
+              <summary>Reveal copy <span class="subtitle">What the room sees</span></summary>
+              <div class="details-body">
+                <div class="grid2">
+                  <div class="field"><label for="finalHeadline">Final headline</label><input id="finalHeadline" value="INF 286 Finale" /></div>
+                  <div class="field"><label for="finalSubhead">Final subhead</label><input id="finalSubhead" value="This class built the web." /></div>
+                </div>
+                <div class="field"><label for="ctaUrl">CTA URL</label><input id="ctaUrl" value="https://www.nku.edu/" /></div>
+              </div>
+            </details>
+          </section>
+
+          <section id="tab-content" class="tab-panel">
+            <div class="control-block">
+              <div class="eyebrow">Assignment</div>
+              <h3>Tile logic</h3>
+              <div class="grid2">
+                <div class="field">
+                  <label for="assignmentMode">Participant assignment</label>
+                  <select id="assignmentMode">
+                    <option value="repeat">Repeat tiles</option>
+                    <option value="sections">Section blocks</option>
+                    <option value="unique">Unique tiles</option>
+                    <option value="mosaic" selected>Mosaic slices</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="layoutType">Reveal type</label>
+                  <select id="layoutType">
+                    <option value="message" selected>Message / words</option>
+                    <option value="countdown">Numbers / countdown</option>
+                    <option value="cta">Call to action</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field"><label for="tileInput">Tiles or phrase</label><textarea id="tileInput">BUILD. SHARE. LAUNCH.</textarea></div>
+            </div>
+
+            <div class="control-block">
+              <div class="eyebrow">Artwork</div>
+              <h3>Mosaic builder</h3>
+              <div class="grid2">
+                <div class="field"><label for="mosaicHeadline">Artwork headline</label><input id="mosaicHeadline" value="INF 286" /></div>
+                <div class="field"><label for="mosaicSubhead">Artwork subhead</label><input id="mosaicSubhead" value="Demo Day" /></div>
+              </div>
+              <div class="grid3">
+                <div class="field"><label for="mosaicCols">Columns</label><input id="mosaicCols" type="number" min="2" max="12" value="4" /></div>
+                <div class="field"><label for="mosaicRows">Rows</label><input id="mosaicRows" type="number" min="2" max="20" value="6" /></div>
+                <div class="field">
+                  <label for="mosaicImageFit">Image fit</label>
+                  <select id="mosaicImageFit">
+                    <option value="cover" selected>Cover</option>
+                    <option value="contain">Contain</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid2">
+                <div class="field">
+                  <label for="mosaicArtworkSource">Artwork source</label>
+                  <select id="mosaicArtworkSource">
+                    <option value="generated" selected>Generated artwork</option>
+                    <option value="upload">Uploaded image</option>
+                  </select>
+                </div>
+                <div class="field"><label for="mosaicImageUpload">Custom artwork upload</label><input id="mosaicImageUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></div>
+              </div>
+              <div id="mosaicUploadStatus" class="hint">No custom image loaded yet.</div>
+              <div class="button-row">
+                <button id="regenerateArtworkBtn" class="secondary" type="button">Regenerate preview</button>
+                <button id="clearUploadBtn" class="secondary" type="button">Clear uploaded image</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="tab-effects" class="tab-panel">
+            <div class="control-block">
+              <div class="eyebrow">Countdown + reveal</div>
+              <h3>Choreography</h3>
+              <div class="grid3">
+                <div class="field"><label for="countdownSeconds">Countdown seconds</label><input id="countdownSeconds" type="number" min="3" max="30" value="8" /></div>
+                <div class="field"><label for="animationSeconds">Animation seconds</label><input id="animationSeconds" type="number" min="2" max="20" value="5" /></div>
+                <div class="field">
+                  <label for="animationStyle">Animation style</label>
+                  <select id="animationStyle">
+                    <option value="pulse" selected>Pulse</option>
+                    <option value="flash">Flash</option>
+                    <option value="ripple">Ripple</option>
+                    <option value="audio">Audio reactive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <div class="eyebrow">Audience effects</div>
+              <h3>Flash + speaker mode</h3>
+              <div class="grid3">
+                <div class="field">
+                  <label for="audioBroadcastMode">Audience speaker mode</label>
+                  <select id="audioBroadcastMode">
+                    <option value="visual" selected>Visual only</option>
+                    <option value="sync">Play uploaded MP3</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="audioFlashMode">Phone flash style</label>
+                  <select id="audioFlashMode">
+                    <option value="off">Off</option>
+                    <option value="soft" selected>Soft pulse</option>
+                    <option value="medium">Medium</option>
+                    <option value="strobe">Strobe</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="audioFlashHaptics">Extra effects</label>
+                  <select id="audioFlashHaptics">
+                    <option value="off" selected>Visual only</option>
+                    <option value="vibrate">Add vibration</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="audioFlashMode">Flash color</label>
+                <select id="audioFlashModeDummy" hidden></select>
+                <select id="audioFlashColor">
+                  <option value="white" selected>White</option>
+                  <option value="gold">Gold</option>
+                  <option value="pink">Pink</option>
+                  <option value="cycle">Color cycle</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section id="tab-media" class="tab-panel">
+            <div class="control-block">
+              <div class="eyebrow">Audio-reactive reveal</div>
+              <h3>Upload + trigger music</h3>
+              <div class="audio-card">
+                <div class="field"><label for="audioFile">MP3 upload</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/*" /></div>
+                <audio id="audioPlayer" controls preload="metadata"></audio>
+                <div id="audioStatus" class="hint">Upload a short MP3 clip, then trigger an audio-reactive reveal.</div>
+                <div class="reactive-meter"><span id="reactiveMeterFill"></span></div>
+                <div class="button-row">
+                  <button id="startAudioReactiveBtn" class="accent" type="button">Start MP3 reveal</button>
+                  <button id="stopAudioReactiveBtn" class="secondary" type="button">Stop MP3 reveal</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <div class="eyebrow">Selfie mosaic</div>
+              <h3>Camera capture</h3>
+              <div class="capture-grid">
+                <div>
+                  <div class="camera-stage">
+                    <video id="captureVideo" playsinline muted></video>
+                    <img id="captureFallbackImage" alt="Captured preview" style="display:none;" />
+                    <div class="camera-badge" id="captureStatusBadge">Camera idle</div>
+                  </div>
+                  <div class="button-row">
+                    <button id="startCameraBtn" class="secondary" type="button">Start camera</button>
+                    <button id="flipCameraBtn" class="secondary" type="button">Flip camera</button>
+                    <button id="capturePhotoBtn" class="accent" type="button">Capture photo</button>
+                    <button id="useCapturedBtn" class="primary" type="button">Use captured photo</button>
+                    <button id="stopCameraBtn" class="secondary" type="button">Stop camera</button>
+                  </div>
+                </div>
+                <div>
+                  <div class="capture-preview"><img id="capturedPhotoPreview" alt="Captured photo preview" /></div>
+                  <div id="captureHelp" class="hint" style="margin-top:10px;">Capture a fresh room photo, then push it into the mosaic.</div>
+                </div>
+              </div>
+              <canvas id="captureCanvas" width="1600" height="1000" style="display:none;"></canvas>
+            </div>
+          </section>
         </div>
       </div>
     </aside>
-
-    <main class="panel main">
-      <div class="stats">
-        <div class="stat"><div class="k">Connected</div><div class="v" id="connectedCount">0</div></div>
-        <div class="stat"><div class="k">Ready</div><div class="v" id="readyCount">0</div></div>
-        <div class="stat"><div class="k">Energy</div><div class="v" id="energyScore">0%</div></div>
-        <div class="stat"><div class="k">Current phase</div><div class="v" id="phaseText" style="font-size:1.1rem">LOBBY</div></div>
-        <div class="stat"><div class="k">Countdown / audio</div><div class="v" id="countdownDisplay">—</div></div>
-        <div class="stat"><div class="k">Tiles / slots</div><div class="v" id="tileCount">0</div></div>
-      </div>
-
-      <div class="hero">
-        <div class="stage-card">
-          <div class="display-stage" id="stage">
-            <div class="stage-topbar">
-              <div class="stage-chip" id="stagePhaseChip">PRE-SHOW</div>
-              <div class="stage-chip" id="stageReadyChip">0 ready</div>
-            </div>
-            <div class="mosaic-preview" id="mosaicGrid"></div>
-            <div class="stage-center">
-              <div>
-                <div class="count-big" id="stageCountBig">LIVE</div>
-                <div class="headline" id="stageHeadline">Premium interactive room reveal</div>
-                <div class="subline" id="stageSubline">Everyone joins, gets a role, charges the energy meter, and becomes part of the moment.</div>
-              </div>
-            </div>
-            <div class="blackout" id="blackoutLayer"></div>
-          </div>
-
-          <div class="energy-wrap">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-              <h3>Room energy</h3>
-              <div class="tiny muted">Built from motion boosts + reaction taps</div>
-            </div>
-            <div class="meter"><span id="energyMeterFill"></span></div>
-          </div>
-
-          <div class="phone-wall" id="phoneWall"></div>
-        </div>
-
-        <div class="right-col">
-          <div class="reaction-wrap">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-              <h3>Live reactions</h3>
-              <div class="tiny muted">Audience taps stream in here in real time</div>
-            </div>
-            <div class="reaction-grid">
-              <div class="reaction-pill"><div class="emoji">🔥</div><div class="num" id="reactFire">0</div><div class="tiny muted">Hype</div></div>
-              <div class="reaction-pill"><div class="emoji">👏</div><div class="num" id="reactClap">0</div><div class="tiny muted">Clap</div></div>
-              <div class="reaction-pill"><div class="emoji">⚡</div><div class="num" id="reactBoost">0</div><div class="tiny muted">Boost</div></div>
-              <div class="reaction-pill"><div class="emoji">🎉</div><div class="num" id="reactConfetti">0</div><div class="tiny muted">Confetti</div></div>
-            </div>
-          </div>
-
-          <div class="teams-grid side-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-              <h3>Teams / roles</h3>
-              <div class="tiny muted">Makes the room feel like a coordinated activation</div>
-            </div>
-            <div id="teamsList" class="tiny">Waiting for participants…</div>
-          </div>
-
-          <div class="side-card">
-            <h3 style="margin-bottom:10px">Recommended live flow</h3>
-            <div class="tiny">
-              1. Open lobby<br>
-              2. Let students join and tap ready<br>
-              3. Watch the meter climb<br>
-              4. Start countdown or use Hype Intro<br>
-              5. Trigger blackout snap<br>
-              6. Reveal or selfie mosaic finale
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
   </div>
 
   <canvas id="artCanvas" width="1080" height="1728" style="display:none"></canvas>
-
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
     import { getDatabase, ref, set, update, get, onValue, onDisconnect, serverTimestamp, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
@@ -1193,6 +1322,57 @@
     await renderQR();
     updateUploadStatus();
     renderStage();
+  </script>
+</body>
+</html>
+
+  <script>
+    (function(){
+      const body = document.body;
+      const toggleBtn = document.getElementById('toggleControlsBtn');
+      const inspector = document.querySelector('.inspector');
+      const tabButtons = [...document.querySelectorAll('.tabbar button')];
+      const tabPanels = [...document.querySelectorAll('.tab-panel')];
+      const openLobbyTop = document.getElementById('openLobbyBtnTop');
+      const startCountdownTop = document.getElementById('startCountdownBtnTop');
+      const revealTop = document.getElementById('revealBtnTop');
+      const themeMode = document.getElementById('themeMode');
+
+      function syncTopButtons(){
+        document.getElementById('openLobbyBtn')?.click();
+      }
+      toggleBtn?.addEventListener('click', ()=> body.classList.toggle('controls-collapsed'));
+      document.addEventListener('keydown', (e)=>{
+        if ((e.key === '\' || (e.key.toLowerCase() === 'i' && (e.metaKey || e.ctrlKey))) && window.innerWidth > 680) {
+          e.preventDefault();
+          body.classList.toggle('controls-collapsed');
+        }
+      });
+      tabButtons.forEach(btn => btn.addEventListener('click', ()=>{
+        tabButtons.forEach(b=>b.classList.toggle('active', b===btn));
+        tabPanels.forEach(panel=>panel.classList.toggle('active', panel.id===btn.dataset.tab));
+      }));
+      openLobbyTop?.addEventListener('click', ()=> document.getElementById('openLobbyBtn')?.click());
+      startCountdownTop?.addEventListener('click', ()=> document.getElementById('startCountdownBtn')?.click());
+      revealTop?.addEventListener('click', ()=> document.getElementById('revealBtn')?.click());
+      themeMode?.addEventListener('change', ()=> {
+        if (themeMode.value === 'contrast') {
+          document.documentElement.style.setProperty('--line', 'rgba(255,255,255,.16)');
+          document.documentElement.style.setProperty('--line-strong', 'rgba(255,255,255,.24)');
+        } else {
+          document.documentElement.style.setProperty('--line', 'rgba(255,255,255,.08)');
+          document.documentElement.style.setProperty('--line-strong', 'rgba(255,255,255,.14)');
+        }
+      });
+
+      const mirroredEnergy = document.querySelector('.energy-visual-fill');
+      setInterval(()=>{
+        const source = document.getElementById('energyMeterFill');
+        if (source && mirroredEnergy) mirroredEnergy.style.width = source.style.width || '0%';
+      }, 150);
+      if (window.innerWidth <= 1080) body.classList.add('controls-collapsed');
+      inspector?.addEventListener('click', (e)=> e.stopPropagation());
+    })();
   </script>
 </body>
 </html>
