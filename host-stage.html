@@ -1,1 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdCode Host Stage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1120;--bg2:#121b2d;--panel:rgba(16,24,40,.78);--line:rgba(255,255,255,.12);--text:#eef4ff;--muted:#9eb0cf;
+      --gold:#f6c238;--pink:#ff69ca;--green:#31d38b;--red:#ff6f7d;--radius:24px;--shadow:0 20px 70px rgba(0,0,0,.35);
+    }
+    body.light{--bg:#eef2f7;--bg2:#e4ebf5;--panel:rgba(255,255,255,.86);--line:rgba(16,24,40,.10);--text:#14233e;--muted:#5c708f;--shadow:0 20px 50px rgba(27,46,89,.15)}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%}
+    body{
+      font-family:Inter,system-ui,sans-serif;color:var(--text);
+      background:radial-gradient(circle at 10% 10%, rgba(246,194,56,.12), transparent 24%),radial-gradient(circle at 85% 14%, rgba(255,105,202,.11), transparent 22%),linear-gradient(180deg,var(--bg),var(--bg2));
+      padding:18px;
+    }
+    .shell{max-width:1600px;margin:0 auto;display:grid;gap:18px}
+    .topbar,.card{backdrop-filter:blur(18px);background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius)}
+    .topbar{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:16px;z-index:10;flex-wrap:wrap}
+    .brand{display:flex;gap:14px;align-items:center}
+    .badge{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#ffe68b);display:grid;place-items:center;color:#111;font-weight:900}
+    .eyebrow{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:800}
+    h1{font-size:1.15rem;margin:2px 0 0}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    button,.linkbtn{border:0;border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+    .soft{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)} body.light .soft{background:rgba(17,24,39,.04)}
+    .danger{background:rgba(255,111,125,.14);color:#ffd2d8;border:1px solid rgba(255,111,125,.25)} body.light .danger{color:#a12638}
+    .grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(320px,.9fr);gap:18px}
+    @media (max-width:1100px){.grid{grid-template-columns:1fr}}
+    .stage{padding:18px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+    @media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+    .stat{padding:14px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid var(--line)} body.light .stat{background:rgba(17,24,39,.035)}
+    .label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+    .value{font-size:1.4rem;font-weight:900;margin-top:6px}
+    .preview{aspect-ratio:10/16;border-radius:28px;overflow:hidden;background:#060b13;position:relative;border:1px solid var(--line)}
+    .preview-grid{position:absolute;inset:0;display:grid}
+    .preview-cell{border:1px solid rgba(255,255,255,.16);padding:8px;font-size:.74rem;font-weight:800;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+    .side{display:grid;gap:18px}.card{padding:18px}
+    .qrbox{display:grid;grid-template-columns:148px 1fr;gap:16px;align-items:center}@media (max-width:620px){.qrbox{grid-template-columns:1fr}}
+    #qrcode{width:148px;height:148px;border-radius:18px;background:#fff;display:grid;place-items:center;padding:10px}
+    code{display:block;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid var(--line);word-break:break-all;color:#fff4c2} body.light code{color:#243858;background:#f5f8fc}
+    .phonewall{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+    .phone{aspect-ratio:9/16;border-radius:28px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));padding:12px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden} body.light .phone{background:linear-gradient(180deg,rgba(17,24,39,.04),rgba(17,24,39,.02))}
+    .phone:before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:42%;height:16px;background:rgba(255,255,255,.12);border-radius:0 0 16px 16px}
+    .slot{display:grid;place-items:center;flex:1;text-align:center;padding:8px}.big{font-size:clamp(1.3rem,3vw,2.2rem);line-height:.96;font-weight:900}.small{font-size:.82rem;color:var(--muted)}
+    .slice{width:100%;aspect-ratio:9/16;border-radius:18px;border:1px solid var(--line);background-position:center;background-repeat:no-repeat;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+    .inline{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.spacer{flex:1}
+    .status-ok{color:var(--green)} .status-bad{color:var(--red)}
+    .notice{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:.9rem}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand">
+      <div class="badge">CC</div>
+      <div>
+        <div class="eyebrow">Live Stage</div>
+        <h1 id="sessionCodeLabel">Session: —</h1>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="soft" id="themeToggle" type="button">Light mode</button>
+      <a class="linkbtn soft" id="openConsoleLink" target="_blank" rel="noopener">Open control console</a>
+      <button class="soft" id="openLobbyBtn" type="button">Lobby</button>
+      <button class="soft" id="startCountdownBtn" type="button">Countdown</button>
+      <button class="soft" id="revealBtn" type="button">Reveal</button>
+      <button class="soft" id="selfieBtn" type="button">Selfie</button>
+      <button class="danger" id="resetBtn" type="button">Reset</button>
+    </div>
+  </div>
 
+  <div class="grid">
+    <section class="card stage">
+      <div class="stats">
+        <div class="stat"><div class="label">Connected phones</div><div class="value" id="connectedCount">0</div></div>
+        <div class="stat"><div class="label">Configured slots</div><div class="value" id="tileCount">0</div></div>
+        <div class="stat"><div class="label">Current phase</div><div class="value" id="phaseText">LOBBY</div></div>
+        <div class="stat"><div class="label">Countdown / animation</div><div class="value" id="countdownDisplay">—</div></div>
+      </div>
+      <div class="inline" style="margin-bottom:12px">
+        <div><div class="eyebrow">Room preview</div><div class="small">What the audience is building together</div></div>
+        <div class="spacer"></div>
+        <div class="small" id="statusText">Loading stage…</div>
+      </div>
+      <div id="mosaicPreview" class="preview"><div id="mosaicGrid" class="preview-grid"></div></div>
+    </section>
+
+    <aside class="side">
+      <section class="card">
+        <div class="qrbox">
+          <div id="qrcode"></div>
+          <div>
+            <div class="eyebrow">Audience join link</div>
+            <p class="small">Have guests scan the code or open this link to join the current session.</p>
+            <code id="joinUrlText">Preparing link…</code>
+            <div class="inline" style="margin-top:12px"><button class="soft" id="copyLinkBtn" type="button">Copy link</button></div>
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="eyebrow">Quick room status</div>
+        <div class="small" id="metaSummary">Waiting for participants…</div>
+        <div class="notice" id="debugNotice" style="margin-top:12px">If this page ever looks blank again, this notice should still render. That means the layout is alive and only the live data layer needs attention.</div>
+      </section>
+      <section class="card">
+        <div class="inline" style="margin-bottom:12px"><div><div class="eyebrow">Phone wall</div><div class="small">Joined devices and assigned slices</div></div></div>
+        <div class="phonewall" id="phoneWall"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+<canvas id="artCanvas" width="1080" height="1728" style="display:none"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+  import { getDatabase, ref, set, update, get, onValue, onDisconnect, serverTimestamp, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
+    authDomain: "crowdcode-713e4.firebaseapp.com",
+    databaseURL: "https://crowdcode-713e4-default-rtdb.firebaseio.com",
+    projectId: "crowdcode-713e4",
+    storageBucket: "crowdcode-713e4.firebasestorage.app",
+    messagingSenderId: "415062434213",
+    appId: "1:415062434213:web:0ac4da57c4ffe6a5e7884c",
+    measurementId: "G-E1CNDCQWC0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const url = new URL(window.location.href);
+  let sessionId = url.searchParams.get('session');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID().slice(0, 8).toUpperCase();
+    url.searchParams.set('session', sessionId);
+    history.replaceState({}, '', url);
+  }
+
+  const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
+  const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
+  const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
+  const state = { session: null, participants: {}, countdownTimer: null };
+
+  const els = {
+    sessionCodeLabel: document.getElementById('sessionCodeLabel'),
+    openConsoleLink: document.getElementById('openConsoleLink'),
+    themeToggle: document.getElementById('themeToggle'),
+    qrcode: document.getElementById('qrcode'),
+    joinUrlText: document.getElementById('joinUrlText'),
+    copyLinkBtn: document.getElementById('copyLinkBtn'),
+    connectedCount: document.getElementById('connectedCount'),
+    tileCount: document.getElementById('tileCount'),
+    phaseText: document.getElementById('phaseText'),
+    countdownDisplay: document.getElementById('countdownDisplay'),
+    mosaicPreview: document.getElementById('mosaicPreview'),
+    mosaicGrid: document.getElementById('mosaicGrid'),
+    phoneWall: document.getElementById('phoneWall'),
+    artCanvas: document.getElementById('artCanvas'),
+    statusText: document.getElementById('statusText'),
+    metaSummary: document.getElementById('metaSummary'),
+    openLobbyBtn: document.getElementById('openLobbyBtn'),
+    startCountdownBtn: document.getElementById('startCountdownBtn'),
+    revealBtn: document.getElementById('revealBtn'),
+    selfieBtn: document.getElementById('selfieBtn'),
+    resetBtn: document.getElementById('resetBtn')
+  };
+
+  function setStatus(text, ok = true) {
+    els.statusText.textContent = text;
+    els.statusText.classList.toggle('status-ok', ok);
+    els.statusText.classList.toggle('status-bad', !ok);
+  }
+
+  function escapeHtml(str = '') {
+    return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+  }
+
+  function getTheme(theme) {
+    const map = {
+      nku: { bg1:'#0f1021', bg2:'#1b1d3a', accent1:'#f7b718', accent2:'#ff66c4', text:'#ffffff' },
+      midnight: { bg1:'#09121f', bg2:'#1b2844', accent1:'#4cc9f0', accent2:'#b5179e', text:'#ffffff' },
+      sunrise: { bg1:'#2d112b', bg2:'#5f2c82', accent1:'#ffb347', accent2:'#ff5f6d', text:'#fffdf7' }
+    };
+    return map[theme] || map.nku;
+  }
+
+  function wrapText(ctx, text, x, startY, maxWidth, lineHeight) {
+    const words = String(text).split(/\s+/);
+    let line = '';
+    let y = startY;
+    for (let n = 0; n < words.length; n++) {
+      const test = line ? `${line} ${words[n]}` : words[n];
+      if (ctx.measureText(test).width > maxWidth && line) {
+        ctx.fillText(line, x, y);
+        line = words[n];
+        y += lineHeight;
+      } else {
+        line = test;
+      }
+    }
+    if (line) ctx.fillText(line, x, y);
+  }
+
+  function generateMosaicArtwork(canvas, headline = 'INF 125', subhead = 'AI Literacy', themeName = 'nku') {
+    const ctx = canvas.getContext('2d');
+    const theme = getTheme(themeName);
+    const w = canvas.width, h = canvas.height;
+    const bg = ctx.createLinearGradient(0, 0, w, h);
+    bg.addColorStop(0, theme.bg1); bg.addColorStop(1, theme.bg2);
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+    const orb1 = ctx.createRadialGradient(w*0.15, h*0.18, 10, w*0.15, h*0.18, w*0.35);
+    orb1.addColorStop(0, `${theme.accent1}cc`); orb1.addColorStop(1, `${theme.accent1}00`);
+    ctx.fillStyle = orb1; ctx.fillRect(0, 0, w, h);
+    const orb2 = ctx.createRadialGradient(w*0.82, h*0.74, 10, w*0.82, h*0.74, w*0.32);
+    orb2.addColorStop(0, `${theme.accent2}bb`); orb2.addColorStop(1, `${theme.accent2}00`);
+    ctx.fillStyle = orb2; ctx.fillRect(0, 0, w, h);
+    ctx.save(); ctx.globalAlpha = .12; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    for (let i = -h; i < w; i += 70) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + h, h); ctx.stroke(); }
+    ctx.restore();
+    ctx.fillStyle = theme.text; ctx.textAlign = 'center'; ctx.font = '900 170px Inter, sans-serif';
+    wrapText(ctx, String(headline).toUpperCase(), w/2, h*0.37, w*0.78, 170);
+    ctx.fillStyle = `${theme.text}dd`; ctx.font = '700 84px Inter, sans-serif';
+    wrapText(ctx, subhead, w/2, h*0.62, w*0.7, 92);
+    ctx.fillStyle = theme.accent1; ctx.font = '800 52px Inter, sans-serif';
+    ctx.fillText('CrowdCode Mosaic Reveal', w/2, h*0.88);
+    ctx.strokeStyle = `${theme.text}22`; ctx.lineWidth = 8; ctx.strokeRect(34, 34, w-68, h-68);
+    return canvas.toDataURL('image/jpeg', .86);
+  }
+
+  function defaultSessionPayload(overrides = {}) {
+    const artwork = generateMosaicArtwork(els.artCanvas, 'INF 125', 'AI Literacy', 'nku');
+    return {
+      sessionName: 'CrowdCode Session',
+      layoutType: 'message',
+      countdownSeconds: 8,
+      assignmentMode: 'mosaic',
+      tileSourceMode: 'manual',
+      tiles: Array.from({ length: 24 }, (_, i) => `SLICE ${i+1}`),
+      mosaic: {
+        enabled: true, cols: 4, rows: 6, headline: 'INF 125', subhead: 'AI Literacy', theme: 'nku', artworkType: 'generated', imageFit: 'cover', uploadedImageName: '', artwork
+      },
+      finalHeadline: 'INF 125: AI Literacy',
+      finalSubhead: 'Scan to explore. Register for Fall 2026.',
+      ctaUrl: 'https://www.nku.edu/',
+      phase: 'lobby', countdownStartAt: null, countdownTargetAt: null,
+      animationStartAt: null, animationTargetAt: null, animationSeconds: 5,
+      animationStyle: 'pulse', animationToPhase: 'reveal',
+      audioReactive: null, audioBroadcast: null,
+      flashConfig: { mode:'soft', color:'white', haptics:'off' },
+      updatedAt: Date.now(),
+      ...overrides
+    };
+  }
+
+  function buildJoinUrl() {
+    const audienceUrl = new URL('./audience-v3-theme-toggle.html', window.location.href);
+    audienceUrl.searchParams.set('session', sessionId);
+    return audienceUrl.toString();
+  }
+
+  function sortedParticipants() {
+    return Object.entries(state.participants || {}).sort((a, b) => (a[1]?.joinedAt || 0) - (b[1]?.joinedAt || 0));
+  }
+
+  async function ensureSession() {
+    const snap = await get(sessionRef);
+    if (!snap.exists()) await set(sessionRef, defaultSessionPayload());
+    await set(hostPresenceRef, { online: true, updatedAt: serverTimestamp() });
+    onDisconnect(hostPresenceRef).remove();
+  }
+
+  async function openLobby() {
+    await update(sessionRef, { phase:'lobby', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null, updatedAt:Date.now() });
+  }
+  async function startCountdown() {
+    const sec = Number(state.session?.countdownSeconds || 8);
+    const startAt = Date.now() + 1500;
+    await update(sessionRef, { phase:'countdown', countdownStartAt:startAt, countdownTargetAt:startAt + sec*1000, updatedAt:Date.now() });
+  }
+  async function finalReveal() {
+    await update(sessionRef, { phase:'reveal', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null, updatedAt:Date.now() });
+  }
+  async function selfieMoment() {
+    await update(sessionRef, { phase:'selfie', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, updatedAt:Date.now() });
+  }
+  async function resetSession() {
+    if (state.countdownTimer) clearInterval(state.countdownTimer);
+    await remove(participantsRef);
+    await set(sessionRef, defaultSessionPayload());
+  }
+
+  async function renderQR() {
+    const joinUrl = buildJoinUrl();
+    els.joinUrlText.textContent = joinUrl;
+    els.qrcode.innerHTML = '';
+    if (window.QRCode && QRCode.toCanvas) {
+      await QRCode.toCanvas(joinUrl, { width: 128, margin: 1 }, (err, canvas) => {
+        if (!err) els.qrcode.appendChild(canvas);
+      });
+    } else {
+      els.qrcode.textContent = 'QR unavailable';
+    }
+  }
+
+  function renderMosaicPreview() {
+    const s = state.session || defaultSessionPayload();
+    const artwork = s.mosaic?.artwork;
+    els.mosaicPreview.style.backgroundImage = artwork ? `url(${artwork})` : 'none';
+    els.mosaicPreview.style.backgroundSize = s.mosaic?.imageFit === 'contain' ? 'contain' : 'cover';
+    els.mosaicPreview.style.backgroundRepeat = 'no-repeat';
+    els.mosaicPreview.style.backgroundPosition = 'center';
+    const cols = Math.max(2, s.mosaic?.cols || 4), rows = Math.max(2, s.mosaic?.rows || 6);
+    els.mosaicGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    els.mosaicGrid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    const occ = new Map(sortedParticipants().map(([id,p]) => [p.mosaicIndex ?? p.tileIndex, p]));
+    const total = cols * rows;
+    els.mosaicGrid.innerHTML = Array.from({ length: total }, (_, idx) => `<div class="preview-cell">${occ.get(idx) ? escapeHtml(occ.get(idx).nickname || `Phone ${occ.get(idx).slotNumber || ''}`) : ''}</div>`).join('');
+  }
+
+  function renderPhoneWall() {
+    const participants = sortedParticipants();
+    const s = state.session || defaultSessionPayload();
+    els.connectedCount.textContent = participants.length;
+    els.tileCount.textContent = s.assignmentMode === 'mosaic' ? Math.max(1, (s.mosaic?.cols || 4) * (s.mosaic?.rows || 6)) : (s.tiles || []).length;
+    els.phaseText.textContent = String(s.phase || 'lobby').toUpperCase();
+    els.metaSummary.textContent = participants.length ? `${participants.length} devices connected · ${s.assignmentMode} mode · ${s.mosaic?.cols || 4}×${s.mosaic?.rows || 6} mosaic` : 'Waiting for participants…';
+    if (!participants.length) {
+      els.phoneWall.innerHTML = `<div class="phone" style="grid-column:1/-1"><div class="slot"><div><div class="big">Scan to join</div><div class="small">Audience phones will appear here.</div></div></div></div>`;
+      return;
+    }
+    const cols = Math.max(2, s.mosaic?.cols || 4), rows = Math.max(2, s.mosaic?.rows || 6);
+    els.phoneWall.innerHTML = participants.map(([id,p], idx) => {
+      let slotHtml = '';
+      if (s.assignmentMode === 'mosaic' && s.mosaic?.artwork) {
+        const sliceIndex = p.mosaicIndex ?? p.tileIndex ?? 0;
+        const col = sliceIndex % cols;
+        const row = Math.floor(sliceIndex / cols);
+        const bgX = cols > 1 ? (col / (cols - 1)) * 100 : 50;
+        const bgY = rows > 1 ? (row / (rows - 1)) * 100 : 50;
+        const fit = s.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
+        slotHtml = `<div class="slice" style="background-image:url('${s.mosaic.artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%;"></div><div class="small">Cell ${sliceIndex + 1}</div>`;
+      } else {
+        slotHtml = `<div><div class="big">${escapeHtml(p.tileText || 'JOIN')}</div><div class="small">${escapeHtml(s.sessionName || 'CrowdCode')}</div></div>`;
+      }
+      return `<div class="phone"><div class="small">${escapeHtml(p.nickname || `Phone ${idx + 1}`)}</div><div class="slot">${slotHtml}</div><div class="small">Slot ${p.slotNumber || idx + 1}</div></div>`;
+    }).join('');
+  }
+
+  function syncCountdownDisplay() {
+    if (state.countdownTimer) clearInterval(state.countdownTimer);
+    const phase = state.session?.phase;
+    if (phase === 'countdown' && state.session?.countdownTargetAt) {
+      const tick = () => {
+        const remaining = Math.max(0, Math.ceil((state.session.countdownTargetAt - Date.now()) / 1000));
+        els.countdownDisplay.textContent = remaining;
+        if (remaining <= 0) {
+          clearInterval(state.countdownTimer);
+          setTimeout(() => finalReveal().catch(console.error), 600);
+        }
+      };
+      tick();
+      state.countdownTimer = setInterval(tick, 250);
+      return;
+    }
+    if (phase === 'animate' && state.session?.animationTargetAt) {
+      const tick = () => {
+        const remaining = Math.max(0, Math.ceil((state.session.animationTargetAt - Date.now()) / 1000));
+        els.countdownDisplay.textContent = `${String(state.session?.animationStyle || 'pulse').toUpperCase()} ${remaining}`;
+      };
+      tick();
+      state.countdownTimer = setInterval(tick, 250);
+      return;
+    }
+    els.countdownDisplay.textContent = '—';
+  }
+
+  const themeKey = 'crowdcode-theme';
+  const savedTheme = localStorage.getItem(themeKey) || 'dark';
+  if (savedTheme === 'light') document.body.classList.add('light');
+  els.themeToggle.textContent = savedTheme === 'light' ? 'Dark mode' : 'Light mode';
+  els.themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    localStorage.setItem(themeKey, isLight ? 'light' : 'dark');
+    els.themeToggle.textContent = isLight ? 'Dark mode' : 'Light mode';
+  });
+
+  els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
+  els.openConsoleLink.href = `./host-console.html?session=${sessionId}`;
+
+  els.copyLinkBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(buildJoinUrl());
+      els.copyLinkBtn.textContent = 'Copied';
+      setTimeout(() => { els.copyLinkBtn.textContent = 'Copy link'; }, 1200);
+    } catch (error) {
+      console.error(error);
+      els.copyLinkBtn.textContent = 'Copy failed';
+      setTimeout(() => { els.copyLinkBtn.textContent = 'Copy link'; }, 1200);
+    }
+  });
+  els.openLobbyBtn.addEventListener('click', () => openLobby().catch(console.error));
+  els.startCountdownBtn.addEventListener('click', () => startCountdown().catch(console.error));
+  els.revealBtn.addEventListener('click', () => finalReveal().catch(console.error));
+  els.selfieBtn.addEventListener('click', () => selfieMoment().catch(console.error));
+  els.resetBtn.addEventListener('click', () => resetSession().catch(console.error));
+
+  try {
+    await ensureSession();
+    await renderQR();
+    renderMosaicPreview();
+    renderPhoneWall();
+    setStatus('Stage ready', true);
+  } catch (error) {
+    console.error(error);
+    setStatus('Failed to initialize live data', false);
+  }
+
+  onValue(sessionRef, snap => {
+    if (!snap.exists()) return;
+    state.session = snap.val();
+    setStatus('Live session connected', true);
+    renderMosaicPreview();
+    renderPhoneWall();
+    syncCountdownDisplay();
+  }, error => {
+    console.error(error);
+    setStatus('Connection problem', false);
+  });
+
+  onValue(participantsRef, snap => {
+    state.participants = snap.val() || {};
+    renderMosaicPreview();
+    renderPhoneWall();
+  });
+</script>
+</body>
+</html>
