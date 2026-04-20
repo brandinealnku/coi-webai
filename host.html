@@ -1,1414 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrowdCode V4 Host</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      color-scheme: dark;
-      --bg:#080b12;
-      --bg-2:#0d1220;
-      --panel:#0f1420;
-      --panel-2:#12192a;
-      --panel-3:#171f33;
-      --line:rgba(255,255,255,.08);
-      --line-strong:rgba(255,255,255,.14);
-      --text:#f5f7ff;
-      --muted:#9ca6be;
-      --gold:#f7b718;
-      --pink:#ff66c4;
-      --blue:#71a7ff;
-      --green:#39d98a;
-      --danger:#ff6f6f;
-      --shadow:0 20px 56px rgba(0,0,0,.34);
-      --radius:22px;
-      --inspector-width:380px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrowdCode Host V7</title>
 
-    :root[data-theme="light"]{
-      color-scheme: light;
-      --bg:#eef2f8;
-      --bg-2:#dde5f2;
-      --panel:rgba(255,255,255,.88);
-      --panel-2:#ffffff;
-      --panel-3:#f5f8fe;
-      --line:rgba(10,20,40,.08);
-      --line-strong:rgba(10,20,40,.16);
-      --text:#122033;
-      --muted:#5d6d86;
-      --shadow:0 20px 56px rgba(35,52,84,.12);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{
-      font-family:Inter,system-ui,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 8% 8%, rgba(247,183,24,.12), transparent 20%),
-        radial-gradient(circle at 85% 12%, rgba(113,167,255,.12), transparent 20%),
-        radial-gradient(circle at 75% 78%, rgba(255,102,196,.12), transparent 24%),
-        linear-gradient(180deg,var(--bg),var(--bg-2));
-      overflow:auto;
-      min-height:100vh;
-    }
-    button,input,select,textarea{font:inherit}
-    button{cursor:pointer}
-    .app-shell{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,var(--inspector-width));gap:18px;padding:18px;align-items:start;transition:grid-template-columns .26s ease}
-    body.controls-collapsed .app-shell{grid-template-columns:minmax(0,1fr) 0px}
-    .panel{
-      background:linear-gradient(180deg,var(--panel),var(--panel-2));
-      border:1px solid var(--line);
-      border-radius:28px;
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(16px);
-      min-height:0;
-    }
-    .main-shell{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:16px;min-height:calc(100vh - 36px)}
-    .topbar,.summarybar,.canvas-grid,.inspector{min-height:0}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px}
-    .brand{display:flex;align-items:center;gap:14px;min-width:0}
-    .logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-weight:900;color:#111;background:linear-gradient(135deg,var(--gold),#ffd86f)}
-    .brand-copy{min-width:0}
-    .eyebrow{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-    h1,h2,h3,p{margin:0}
-    .title{font-size:1.24rem;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .subtitle{font-size:.92rem;color:var(--muted)}
-    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .ghost,.secondary,.primary,.accent,.pink,.danger,.icon-btn,.chip-btn{
-      border-radius:16px;border:1px solid var(--line);padding:11px 14px;background:rgba(255,255,255,.04);color:var(--text);
-      transition:transform .18s ease,filter .18s ease,background .18s ease,border-color .18s ease;
-    }
-    .primary{background:linear-gradient(135deg,var(--gold),#ffd870);color:#101010;border:none;font-weight:800}
-    .accent{background:linear-gradient(135deg,var(--blue),#98b4ff);color:#09121d;border:none;font-weight:800}
-    .pink{background:linear-gradient(135deg,var(--pink),#ffa5dc);color:#200a1c;border:none;font-weight:800}
-    .danger{background:rgba(255,111,111,.12);border:1px solid rgba(255,111,111,.24);color:#ffd1d1}
-    .ghost:hover,.secondary:hover,.primary:hover,.accent:hover,.pink:hover,.danger:hover,.icon-btn:hover,.chip-btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
-    .icon-btn{padding:11px 12px;display:inline-flex;gap:10px;align-items:center;background:rgba(255,255,255,.04)}
-    .summarybar{padding:14px 16px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-    .metric{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:20px;padding:14px;min-width:0}
-    .metric-label{font-size:.77rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
-    .metric-value{font-size:1.45rem;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .metric-sub{font-size:.84rem;color:var(--muted);margin-top:6px}
-    .canvas-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:16px;min-height:0}
-    .stage-panel,.side-stage{padding:16px;display:grid;gap:16px;min-height:0}
-    .hero-stage{padding:18px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-    .hero-stage h2{font-size:1.5rem;font-weight:900}
-    .hero-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .phase-chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-weight:700;font-size:.9rem}
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .preview-card{padding:16px;border-radius:24px;background:rgba(255,255,255,.03);border:1px solid var(--line);display:grid;gap:14px;min-height:0}
-    .preview-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
-    .preview-header .meta{color:var(--muted);font-size:.9rem}
-    .mosaic-preview{position:relative;aspect-ratio:10/16;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:#090d16;background-position:center;background-size:cover;background-repeat:no-repeat}
-    .mosaic-grid{position:absolute;inset:0;display:grid}
-    .mosaic-cell{border:1px solid rgba(255,255,255,.18);padding:8px;color:white;font-size:.76rem;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.45)}
-    .split-stack{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:16px;min-height:0}
-    .join-card,.reaction-card,.phone-card{padding:16px;border-radius:24px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
-    .join-card{display:grid;grid-template-columns:132px minmax(0,1fr);gap:14px;align-items:center}
-    #qrcode{width:132px;height:132px;background:#fff;border-radius:18px;display:grid;place-items:center;padding:10px}
-    .join-url{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
-    .join-url code{display:block;min-width:0;word-break:break-all;background:#0a0f19;border:1px solid var(--line);padding:10px 12px;border-radius:14px;color:#fff3bf;flex:1}
-    .reaction-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
-    .react-btn{border:none;border-radius:18px;padding:14px;font-weight:800}
-    .react-fire{background:linear-gradient(135deg,#ff8a00,#ff5e62);color:white}
-    .react-clap{background:linear-gradient(135deg,#7dd3fc,#60a5fa);color:#07121f}
-    .react-boost{background:linear-gradient(135deg,#7c3aed,#c084fc);color:white}
-    .react-confetti{background:linear-gradient(135deg,#f472b6,#fb7185);color:white}
-    .energy-wrap{margin-top:12px}
-    .meter{height:12px;border-radius:999px;background:#0b1120;border:1px solid var(--line);overflow:hidden}
-    .meter > span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--pink),var(--blue));transition:width .18s ease}
-    .phone-wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:14px;overflow:auto;padding-right:4px}
-    .phone{aspect-ratio:9/16;border-radius:28px;border:1px solid var(--line-strong);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));position:relative;overflow:hidden;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
-    .phone::before{content:'';width:42%;height:18px;background:rgba(255,255,255,.12);border-radius:0 0 16px 16px;position:absolute;top:0;left:50%;transform:translateX(-50%)}
-    .phone-top,.phone-bottom{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:rgba(255,255,255,.8)}
-    .phone-top{margin-top:10px;gap:8px}
-    .phone-slot{flex:1;display:grid;place-items:center;text-align:center;padding:10px}
-    .mini-slice{width:100%;aspect-ratio:9/16;border-radius:18px;border:1px solid rgba(255,255,255,.14);background-position:center;background-size:cover;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
-    .tile-big{font-size:clamp(1.6rem,3.5vw,3rem);font-weight:900;line-height:.94;letter-spacing:-.03em}
-    .tile-small{font-size:.88rem;color:rgba(255,255,255,.84);margin-top:8px;line-height:1.35}
-    .inspector{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:hidden}
-    .inspector-shell{height:100%;max-height:calc(100vh - 36px);display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:14px;padding:16px;min-height:0}
-    .inspector-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .inspector-title{font-size:1rem;font-weight:850}
-    .status-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.9rem;font-weight:700}
-    .dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 6px rgba(255,111,111,.14)}
-    .dot.live{background:var(--green);box-shadow:0 0 0 6px rgba(57,217,138,.14)}
-    .tabbar{display:flex;gap:8px;overflow:auto;padding-bottom:2px;scrollbar-width:none}
-    .tabbar::-webkit-scrollbar{display:none}
-    .tabbar button{white-space:nowrap;border-radius:14px;padding:10px 12px;border:1px solid var(--line);background:#0d1320;color:var(--muted);font-weight:800}
-    .tabbar button.active{background:rgba(255,255,255,.08);color:var(--text);border-color:var(--line-strong)}
-    .tab-panels{min-height:0;overflow:auto;overscroll-behavior:contain;padding-right:6px;padding-bottom:28px;scrollbar-gutter:stable}
-    .tab-panel{display:none}
-    .tab-panel.active{display:block}
-    .control-block{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:22px;padding:14px;margin-bottom:14px}
-    .control-block h3{font-size:1rem;font-weight:850;margin-bottom:6px}
-    .hint{font-size:.86rem;color:var(--muted);line-height:1.45}
-    .field{margin-top:12px}
-    .field label{display:block;font-size:.8rem;font-weight:800;color:#d7def2;letter-spacing:.02em;margin-bottom:8px}
-    input,select,textarea{width:100%;border-radius:16px;border:1px solid var(--line);background:#0a0f19;color:var(--text);padding:12px 14px;outline:none}
-    textarea{min-height:92px;resize:vertical}
-    .grid2,.grid3{display:grid;gap:12px}
-    .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .button-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02);padding:0 0 10px 0;margin-top:12px}
-    summary{list-style:none;cursor:pointer;padding:14px 14px 10px 14px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    summary::-webkit-details-marker{display:none}
-    details > .details-body{padding:0 14px 0 14px}
-    .capture-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(220px,.85fr);gap:12px;align-items:start}
-    .camera-stage{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:rgba(0,0,0,.35);border:1px solid var(--line)}
-    .camera-stage video,.camera-stage img{width:100%;height:100%;object-fit:cover;display:block}
-    .camera-badge{position:absolute;top:10px;left:10px;padding:8px 10px;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);font-size:.8rem;font-weight:700}
-    .capture-preview{border-radius:18px;overflow:hidden;aspect-ratio:1/1;background:rgba(255,255,255,.04);border:1px solid var(--line)}
-    .capture-preview img{width:100%;height:100%;object-fit:cover;display:block}
-    .audio-card{display:grid;gap:12px}
-    .reactive-meter{height:10px;border-radius:999px;background:#0b1120;border:1px solid var(--line);overflow:hidden;margin-top:8px}
-    .reactive-meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--pink),var(--gold));transition:width .12s ease}
-    .teams-list{display:flex;flex-wrap:wrap;gap:10px}
-    .team-pill{padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.85rem;font-weight:800}
-    .theme-switch{display:flex;align-items:center;gap:10px}
-    .theme-switch select{max-width:170px}
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
-    .blackout-layer{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .18s ease;z-index:60}
-    .blackout-layer.active{opacity:1;pointer-events:auto}
-    @media (max-width: 1320px){
-      .summarybar{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .canvas-grid{grid-template-columns:minmax(0,1fr)}
-      .split-stack{grid-template-columns:1fr;grid-template-rows:auto auto minmax(320px,1fr)}
-    }
-    @media (max-width: 1080px){
-      .app-shell{grid-template-columns:minmax(0,1fr);padding-right:12px}
-      .main-shell{min-height:auto}
-      .inspector{position:fixed;top:12px;right:12px;bottom:12px;left:auto;width:min(94vw,460px);max-height:calc(100vh - 24px);z-index:70;transform:translateX(0);transition:transform .26s ease,opacity .26s ease}
-      .inspector-shell{max-height:calc(100vh - 24px)}
-      body.controls-collapsed .inspector{transform:translateX(calc(100% + 18px));opacity:0;pointer-events:none}
-      body:not(.controls-collapsed) .main-shell{filter:none}
-    }
-    @media (max-width: 820px){
-      .app-shell{min-height:100vh;padding:12px}
-      .topbar,.summarybar,.stage-panel,.side-stage,.inspector-shell{padding:14px}
-      .summarybar{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .join-card,.capture-grid,.grid2,.grid3{grid-template-columns:1fr}
-      .toolbar,.hero-actions{justify-content:flex-start}
-      .title{white-space:normal}
-    }
-  </style>
+<style>
+:root {
+  --bg: #f5f7fb;
+  --panel: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #6366f1;
+  --accent-soft: #e0e7ff;
+  --border: #e5e7eb;
+  --radius: 16px;
+}
+
+body.dark {
+  --bg: #0f172a;
+  --panel: #111827;
+  --text: #f9fafb;
+  --muted: #9ca3af;
+  --border: #1f2937;
+  --accent-soft: #1e293b;
+}
+
+body {
+  margin:0;
+  font-family: Inter, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  padding: 20px;
+}
+
+.panel {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 1px solid var(--border);
+}
+
+/* ---------- SEGMENTED CONTROL ---------- */
+.segmented {
+  display:flex;
+  background: var(--accent-soft);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.segmented button {
+  flex:1;
+  border:none;
+  background: transparent;
+  padding:10px;
+  border-radius: 10px;
+  cursor:pointer;
+}
+
+.segmented button.active {
+  background: white;
+  font-weight:600;
+}
+
+/* ---------- SWITCH ---------- */
+.switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  position:absolute;
+  cursor:pointer;
+  inset:0;
+  background:#ccc;
+  border-radius: 999px;
+}
+
+.slider:before {
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  left:3px;
+  top:3px;
+  background:white;
+  border-radius:50%;
+  transition:.2s;
+}
+
+input:checked + .slider {
+  background: var(--accent);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* ---------- BUTTON GROUP ---------- */
+.btn-group {
+  display:flex;
+  gap:8px;
+}
+
+.btn-group button {
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background: var(--panel);
+  cursor:pointer;
+}
+
+.btn-group button.active {
+  background: var(--accent);
+  color:white;
+}
+
+/* ---------- RANGE SLIDER ---------- */
+.range {
+  width:100%;
+}
+
+/* ---------- STEPPER ---------- */
+.stepper {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.stepper button {
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background: var(--panel);
+  cursor:pointer;
+}
+
+/* ---------- INPUT ---------- */
+input[type="text"] {
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+h3 {
+  margin:0 0 10px;
+}
+
+</style>
 </head>
-<body class="controls-open">
-  <div id="blackoutLayer" class="blackout-layer" aria-hidden="true"></div>
-  <div class="app-shell">
-    <main class="main-shell">
-      <section class="panel topbar">
-        <div class="brand">
-          <div class="logo">CC</div>
-          <div class="brand-copy">
-            <div class="eyebrow">Live activation control room</div>
-            <div class="title">CrowdCode premium host</div>
-            <div class="subtitle">Run the room, keep the stage visible, open controls only when you need them.</div>
-          </div>
-        </div>
-        <div class="toolbar">
-          <button id="toggleControlsBtn" class="icon-btn" type="button">☰ Controls</button>
-          <button id="openLobbyBtnTop" class="secondary" type="button">Lobby</button>
-          <button id="startCountdownBtnTop" class="accent" type="button">Countdown</button>
-          <button id="revealBtnTop" class="primary" type="button">Reveal</button>
-          <button id="themeToggleBtn" class="icon-btn" type="button" aria-pressed="false">☀︎ Light</button>
-        </div>
-      </section>
 
-      <section class="panel summarybar">
-        <div class="metric">
-          <div class="metric-label">Phones</div>
-          <div class="metric-value" id="connectedCount">0</div>
-          <div class="metric-sub"><span id="readyCount">0</span> ready</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Slots</div>
-          <div class="metric-value" id="tileCount">0</div>
-          <div class="metric-sub">configured</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Phase</div>
-          <div class="metric-value" id="phaseText">LOBBY</div>
-          <div class="metric-sub" id="countdownDisplay">—</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Room energy</div>
-          <div class="metric-value" id="energyScore">0</div>
-          <div class="metric-sub"><div class="meter"><span id="energyMeterFill"></span></div></div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Session</div>
-          <div class="metric-value" id="sessionCodeLabel">Session: —</div>
-          <div class="metric-sub" id="statusText">Connecting…</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Quick team view</div>
-          <div class="teams-list" id="teamsList"></div>
-        </div>
-      </section>
+<body>
 
-      <section class="canvas-grid">
-        <section class="panel stage-panel">
-          <div class="hero-stage">
-            <div>
-              <div class="eyebrow">On-screen presentation</div>
-              <h2 id="stageHeadline">Stage preview</h2>
-              <p class="subtitle" id="stageSubline">Everything important stays visible while controls live in a collapsible inspector.</p>
-            </div>
-            <div class="hero-meta">
-              <div class="phase-chip" id="stagePhaseChip">Phase · LOBBY</div>
-              <div class="phase-chip" id="stageReadyChip">Ready · 0</div>
-              <div class="phase-chip" id="stageCountBig">0 connected</div>
-            </div>
-            <div class="hero-actions">
-              <button id="presetHypeBtn" class="secondary" type="button">Hype intro</button>
-              <button id="presetCountdownBtn" class="accent" type="button">Ready → countdown</button>
-              <button id="presetAudioBtn" class="pink" type="button">Music reveal</button>
-              <button id="presetSelfieBtn" class="secondary" type="button">Selfie finale</button>
-            </div>
-          </div>
+<div class="container">
 
-          <div class="preview-card">
-            <div class="preview-header">
-              <div>
-                <h3>Live mosaic preview</h3>
-                <div class="meta">Primary stage stays front and center. Controls can be hidden without losing status or actions.</div>
-              </div>
-              <div class="theme-switch">
-                <label class="sr-only" for="themeMode">Theme mode</label>
-                <select id="themeMode">
-                  <option value="dark" selected>Dark stage</option>
-                  <option value="contrast">High contrast</option>
-                </select>
-                <button id="copyLinkBtn" class="secondary" type="button">Copy join link</button>
-              </div>
-            </div>
-            <div id="mosaicPreview" class="mosaic-preview">
-              <div id="mosaicGrid" class="mosaic-grid"></div>
-            </div>
-          </div>
-        </section>
+  <!-- MAIN STAGE -->
+  <div class="panel">
+    <h2>CrowdCode Live</h2>
+    <p>Stage preview stays here</p>
 
-        <aside class="panel side-stage">
-          <div class="split-stack">
-            <section class="join-card">
-              <div id="qrcode"></div>
-              <div>
-                <div class="eyebrow">Audience entry</div>
-                <h3>Join link</h3>
-                <p class="subtitle">Keep scan + join visible from the operator view so late arrivals do not derail the demo.</p>
-                <div class="join-url">
-                  <code id="joinUrlText">Preparing link…</code>
-                </div>
-              </div>
-            </section>
-
-            <section class="reaction-card">
-              <div class="eyebrow">Room interaction</div>
-              <h3>Trigger audience reactions</h3>
-              <p class="subtitle">These controls stay visible outside the hidden inspector because they are high-frequency live actions.</p>
-              <div class="reaction-grid">
-                <button id="reactFire" class="react-btn react-fire" type="button">🔥 Hype</button>
-                <button id="reactClap" class="react-btn react-clap" type="button">👏 Clap</button>
-                <button id="reactBoost" class="react-btn react-boost" type="button">⚡ Boost</button>
-                <button id="reactConfetti" class="react-btn react-confetti" type="button">🎉 Confetti</button>
-              </div>
-              <div class="energy-wrap">
-                <div class="subtitle" style="margin-bottom:8px">Live energy meter</div>
-                <div class="meter"><span class="energy-visual-fill"></span></div>
-              </div>
-            </section>
-
-            <section class="phone-card" style="min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr)">
-              <div>
-                <div class="eyebrow">Audience wall</div>
-                <h3>Connected phones</h3>
-                <p class="subtitle">Compact preview of roles, readiness, and slices.</p>
-              </div>
-              <div id="phoneWall" class="phone-wall"></div>
-            </section>
-          </div>
-        </aside>
-      </section>
-    </main>
-
-    <aside class="panel inspector" aria-label="Controls inspector">
-      <div class="inspector-shell">
-        <div class="inspector-top">
-          <div>
-            <div class="eyebrow">Inspector</div>
-            <div class="inspector-title">Show controls</div>
-          </div>
-          <div class="status-pill"><span id="statusDot" class="dot"></span><span>Live state</span></div>
-        </div>
-
-        <div class="tabbar" role="tablist" aria-label="Control groups">
-          <button class="active" data-tab="tab-show" type="button">Show</button>
-          <button data-tab="tab-content" type="button">Content</button>
-          <button data-tab="tab-effects" type="button">Effects</button>
-          <button data-tab="tab-media" type="button">Media</button>
-        </div>
-        <div class="hint">All controls stay reachable here. On smaller screens, open the inspector with the Controls button and scroll inside this panel.</div>
-
-        <div class="tab-panels">
-          <section id="tab-show" class="tab-panel active">
-            <div class="control-block">
-              <div class="eyebrow">Session</div>
-              <h3>Live session settings</h3>
-              <p class="hint">Use progressive disclosure here: quick actions first, detailed setup after.</p>
-              <div class="field"><label for="sessionName">Session title</label><input id="sessionName" value="CrowdCode Live" /></div>
-              <div class="field"><label for="autoStartReadyPct">Auto-start when ready % reaches</label><input id="autoStartReadyPct" type="number" min="10" max="100" value="70" /></div>
-              <div class="button-row">
-                <button id="saveBtn" class="primary" type="button">Save setup</button>
-                <button id="rebalanceBtn" class="secondary" type="button">Rebalance</button>
-                <button id="resetBtn" class="danger" type="button">Reset session</button>
-              </div>
-            </div>
-
-            <div class="control-block">
-              <div class="eyebrow">Go live</div>
-              <h3>Stage controls</h3>
-              <div class="button-row">
-                <button id="openLobbyBtn" class="secondary" type="button">Open lobby</button>
-                <button id="startCountdownBtn" class="accent" type="button">Start countdown</button>
-                <button id="blackoutBtn" class="secondary" type="button">Blackout snap</button>
-                <button id="revealBtn" class="primary" type="button">Final reveal</button>
-                <button id="selfieBtn" class="pink" type="button">Selfie moment</button>
-              </div>
-            </div>
-
-            <details open>
-              <summary>Reveal copy <span class="subtitle">What the room sees</span></summary>
-              <div class="details-body">
-                <div class="grid2">
-                  <div class="field"><label for="finalHeadline">Final headline</label><input id="finalHeadline" value="INF 286 Finale" /></div>
-                  <div class="field"><label for="finalSubhead">Final subhead</label><input id="finalSubhead" value="This class built the web." /></div>
-                </div>
-                <div class="field"><label for="ctaUrl">CTA URL</label><input id="ctaUrl" value="https://www.nku.edu/" /></div>
-              </div>
-            </details>
-          </section>
-
-          <section id="tab-content" class="tab-panel">
-            <div class="control-block">
-              <div class="eyebrow">Assignment</div>
-              <h3>Tile logic</h3>
-              <div class="grid2">
-                <div class="field">
-                  <label for="assignmentMode">Participant assignment</label>
-                  <select id="assignmentMode">
-                    <option value="repeat">Repeat tiles</option>
-                    <option value="sections">Section blocks</option>
-                    <option value="unique">Unique tiles</option>
-                    <option value="mosaic" selected>Mosaic slices</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="layoutType">Reveal type</label>
-                  <select id="layoutType">
-                    <option value="message" selected>Message / words</option>
-                    <option value="countdown">Numbers / countdown</option>
-                    <option value="cta">Call to action</option>
-                  </select>
-                </div>
-              </div>
-              <div class="field"><label for="tileInput">Tiles or phrase</label><textarea id="tileInput">BUILD. SHARE. LAUNCH.</textarea></div>
-            </div>
-
-            <div class="control-block">
-              <div class="eyebrow">Artwork</div>
-              <h3>Mosaic builder</h3>
-              <div class="grid2">
-                <div class="field"><label for="mosaicHeadline">Artwork headline</label><input id="mosaicHeadline" value="INF 286" /></div>
-                <div class="field"><label for="mosaicSubhead">Artwork subhead</label><input id="mosaicSubhead" value="Demo Day" /></div>
-              </div>
-              <div class="grid3">
-                <div class="field"><label for="mosaicCols">Columns</label><input id="mosaicCols" type="number" min="2" max="12" value="4" /></div>
-                <div class="field"><label for="mosaicRows">Rows</label><input id="mosaicRows" type="number" min="2" max="20" value="6" /></div>
-                <div class="field">
-                  <label for="mosaicImageFit">Image fit</label>
-                  <select id="mosaicImageFit">
-                    <option value="cover" selected>Cover</option>
-                    <option value="contain">Contain</option>
-                  </select>
-                </div>
-              </div>
-              <div class="grid2">
-                <div class="field">
-                  <label for="mosaicArtworkSource">Artwork source</label>
-                  <select id="mosaicArtworkSource">
-                    <option value="generated" selected>Generated artwork</option>
-                    <option value="upload">Uploaded image</option>
-                  </select>
-                </div>
-                <div class="field"><label for="mosaicImageUpload">Custom artwork upload</label><input id="mosaicImageUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></div>
-              </div>
-              <div id="mosaicUploadStatus" class="hint">No custom image loaded yet.</div>
-              <div class="button-row">
-                <button id="regenerateArtworkBtn" class="secondary" type="button">Regenerate preview</button>
-                <button id="clearUploadBtn" class="secondary" type="button">Clear uploaded image</button>
-              </div>
-            </div>
-          </section>
-
-          <section id="tab-effects" class="tab-panel">
-            <div class="control-block">
-              <div class="eyebrow">Countdown + reveal</div>
-              <h3>Choreography</h3>
-              <div class="grid3">
-                <div class="field"><label for="countdownSeconds">Countdown seconds</label><input id="countdownSeconds" type="number" min="3" max="30" value="8" /></div>
-                <div class="field"><label for="animationSeconds">Animation seconds</label><input id="animationSeconds" type="number" min="2" max="20" value="5" /></div>
-                <div class="field">
-                  <label for="animationStyle">Animation style</label>
-                  <select id="animationStyle">
-                    <option value="pulse" selected>Pulse</option>
-                    <option value="flash">Flash</option>
-                    <option value="ripple">Ripple</option>
-                    <option value="audio">Audio reactive</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="control-block">
-              <div class="eyebrow">Audience effects</div>
-              <h3>Flash + speaker mode</h3>
-              <div class="grid3">
-                <div class="field">
-                  <label for="audioBroadcastMode">Audience speaker mode</label>
-                  <select id="audioBroadcastMode">
-                    <option value="visual" selected>Visual only</option>
-                    <option value="sync">Play uploaded MP3</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="audioFlashMode">Phone flash style</label>
-                  <select id="audioFlashMode">
-                    <option value="off">Off</option>
-                    <option value="soft" selected>Soft pulse</option>
-                    <option value="medium">Medium</option>
-                    <option value="strobe">Strobe</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="audioFlashHaptics">Extra effects</label>
-                  <select id="audioFlashHaptics">
-                    <option value="off" selected>Visual only</option>
-                    <option value="vibrate">Add vibration</option>
-                  </select>
-                </div>
-              </div>
-              <div class="field">
-                <label for="audioFlashMode">Flash color</label>
-                <select id="audioFlashModeDummy" hidden></select>
-                <select id="audioFlashColor">
-                  <option value="white" selected>White</option>
-                  <option value="gold">Gold</option>
-                  <option value="pink">Pink</option>
-                  <option value="cycle">Color cycle</option>
-                </select>
-              </div>
-            </div>
-          </section>
-
-          <section id="tab-media" class="tab-panel">
-            <div class="control-block">
-              <div class="eyebrow">Audio-reactive reveal</div>
-              <h3>Upload + trigger music</h3>
-              <div class="audio-card">
-                <div class="field"><label for="audioFile">MP3 upload</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/*" /></div>
-                <audio id="audioPlayer" controls preload="metadata"></audio>
-                <div id="audioStatus" class="hint">Upload a short MP3 clip, then trigger an audio-reactive reveal.</div>
-                <div class="reactive-meter"><span id="reactiveMeterFill"></span></div>
-                <div class="button-row">
-                  <button id="startAudioReactiveBtn" class="accent" type="button">Start MP3 reveal</button>
-                  <button id="stopAudioReactiveBtn" class="secondary" type="button">Stop MP3 reveal</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="control-block">
-              <div class="eyebrow">Selfie mosaic</div>
-              <h3>Camera capture</h3>
-              <div class="capture-grid">
-                <div>
-                  <div class="camera-stage">
-                    <video id="captureVideo" playsinline muted></video>
-                    <img id="captureFallbackImage" alt="Captured preview" style="display:none;" />
-                    <div class="camera-badge" id="captureStatusBadge">Camera idle</div>
-                  </div>
-                  <div class="button-row">
-                    <button id="startCameraBtn" class="secondary" type="button">Start camera</button>
-                    <button id="flipCameraBtn" class="secondary" type="button">Flip camera</button>
-                    <button id="capturePhotoBtn" class="accent" type="button">Capture photo</button>
-                    <button id="useCapturedBtn" class="primary" type="button">Use captured photo</button>
-                    <button id="stopCameraBtn" class="secondary" type="button">Stop camera</button>
-                  </div>
-                </div>
-                <div>
-                  <div class="capture-preview"><img id="capturedPhotoPreview" alt="Captured photo preview" /></div>
-                  <div id="captureHelp" class="hint" style="margin-top:10px;">Capture a fresh room photo, then push it into the mosaic.</div>
-                </div>
-              </div>
-              <canvas id="captureCanvas" width="1600" height="1000" style="display:none;"></canvas>
-            </div>
-          </section>
-        </div>
-      </div>
-    </aside>
+    <div style="height:400px;border-radius:20px;background:#111;"></div>
   </div>
 
-  <canvas id="artCanvas" width="1080" height="1728" style="display:none"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getDatabase, ref, set, update, get, onValue, onDisconnect, serverTimestamp, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+  <!-- INSPECTOR -->
+  <div class="panel">
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
-      authDomain: "crowdcode-713e4.firebaseapp.com",
-      databaseURL: "https://crowdcode-713e4-default-rtdb.firebaseio.com",
-      projectId: "crowdcode-713e4",
-      storageBucket: "crowdcode-713e4.firebasestorage.app",
-      messagingSenderId: "415062434213",
-      appId: "1:415062434213:web:0ac4da57c4ffe6a5e7884c",
-      measurementId: "G-E1CNDCQWC0"
-    };
+    <div class="header">
+      <h3>Controls</h3>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+      <!-- DARK MODE -->
+      <label class="switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
 
-    const THEME_KEY = 'crowdcode-host-theme';
-    function applyTheme(theme){
-      const next = theme === 'light' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      if (els.themeToggleBtn){
-        const light = next === 'light';
-        els.themeToggleBtn.textContent = light ? '☾ Dark' : '☀︎ Light';
-        els.themeToggleBtn.setAttribute('aria-pressed', String(light));
-      }
-      try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-    }
-    function initTheme(){
-      let saved = null;
-      try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
-      const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-      applyTheme(saved || (prefersLight ? 'light' : 'dark'));
-    }
+    <!-- SESSION -->
+    <h3>Session</h3>
+    <input type="text" placeholder="Session name">
 
-    const els = Object.fromEntries([...document.querySelectorAll('[id]')].map(el => [el.id, el]));
-    initTheme();
-    const url = new URL(window.location.href);
-    let sessionId = url.searchParams.get('session');
-    if (!sessionId) {
-      sessionId = crypto.randomUUID().slice(0, 8).toUpperCase();
-      url.searchParams.set('session', sessionId);
-      history.replaceState({}, '', url);
-    }
+    <!-- MODE -->
+    <h3>Mode</h3>
+    <div class="segmented">
+      <button class="active">Mosaic</button>
+      <button>Repeat</button>
+      <button>Sections</button>
+    </div>
 
-    const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
-    const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
-    const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
+    <!-- COUNTDOWN -->
+    <h3>Countdown</h3>
+    <div class="stepper">
+      <button>-</button>
+      <span>8s</span>
+      <button>+</button>
+    </div>
 
-    const state = {
-      session: null,
-      participants: {},
-      countdownTimer: null,
-      uploadedArtworkDataUrl: '',
-      uploadedArtworkName: '',
-      cameraStream: null,
-      facingMode: 'environment',
-      capturedPhotoDataUrl: '',
-      audioObjectUrl: '',
-      audioFileName: '',
-      audioFileType: 'audio/mpeg',
-      audioDataUrl: '',
-      audioContext: null,
-      audioAnalyser: null,
-      audioSourceNode: null,
-      audioMonitorTimer: null,
-      autoStarted: false
-    };
+    <!-- AUTO START -->
+    <h3>Auto Start</h3>
+    <label class="switch">
+      <input type="checkbox" checked>
+      <span class="slider"></span>
+    </label>
 
-    const teams = [
-      { key:'gold', label:'Gold Team', color:'#f7b718' },
-      { key:'pink', label:'Pink Team', color:'#ff66c4' },
-      { key:'blue', label:'Blue Team', color:'#67a8ff' },
-      { key:'spotlight', label:'Spotlight Team', color:'#9ef7c4' }
-    ];
+    <!-- ENERGY -->
+    <h3>Room Energy Sensitivity</h3>
+    <input type="range" class="range" min="0" max="100">
 
-    const roles = ['Center Tile','Hype Lead','Flash Lead','Reveal Crew','Energy Builder','North Wing','South Wing','Finale Squad'];
+    <!-- ANIMATION STYLE -->
+    <h3>Animation Style</h3>
+    <div class="btn-group">
+      <button class="active">Pulse</button>
+      <button>Flash</button>
+      <button>Audio</button>
+    </div>
 
-    els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
+    <!-- FLASH SETTINGS -->
+    <h3>Flash Strength</h3>
+    <input type="range" class="range">
 
-    function escapeHtml(str=''){ return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
-    function parseTiles(raw = els.tileInput.value){
-      return raw.split('|').map(s => s.trim()).filter(Boolean);
-    }
-    function buildJoinUrl(){
-      const audienceUrl = new URL('./audience-v3.html', window.location.href);
-      audienceUrl.searchParams.set('session', sessionId);
-      return audienceUrl.toString();
-    }
-    async function renderQR(){
-      const joinUrl = buildJoinUrl();
-      els.joinUrlText.textContent = joinUrl;
-      els.qrcode.innerHTML = '';
-      await QRCode.toCanvas(joinUrl, { width:130, margin:1 }, (err, canvas) => { if (!err) els.qrcode.appendChild(canvas); });
-    }
-    function getTheme(theme){
-      const map = {
-        premium: {bg1:'#090b12', bg2:'#151a27', accent1:'#f7b718', accent2:'#67a8ff', accent3:'#ff66c4', text:'#ffffff'},
-        nku: {bg1:'#0f1021', bg2:'#1b1d3a', accent1:'#f7b718', accent2:'#ff66c4', accent3:'#67a8ff', text:'#ffffff'},
-        midnight: {bg1:'#07111c', bg2:'#101d31', accent1:'#67a8ff', accent2:'#9e8bff', accent3:'#ff66c4', text:'#ffffff'}
-      };
-      return map[theme] || map.premium;
-    }
+    <!-- AUDIO -->
+    <h3>Audio Mode</h3>
+    <div class="btn-group">
+      <button class="active">Visual</button>
+      <button>Sync</button>
+    </div>
 
-    function wrapText(ctx, text, x, startY, maxWidth, lineHeight){
-      const words = text.split(/\s+/);
-      let line = '';
-      let y = startY;
-      for (let n = 0; n < words.length; n++){
-        const test = line ? `${line} ${words[n]}` : words[n];
-        if (ctx.measureText(test).width > maxWidth && line){
-          ctx.fillText(line, x, y);
-          line = words[n];
-          y += lineHeight;
-        } else line = test;
-      }
-      if (line) ctx.fillText(line, x, y);
-    }
+    <!-- ACTIONS -->
+    <h3>Actions</h3>
+    <div class="btn-group">
+      <button>Lobby</button>
+      <button>Countdown</button>
+      <button>Reveal</button>
+    </div>
 
-    function generateMosaicArtwork(){
-      const canvas = els.artCanvas;
-      const ctx = canvas.getContext('2d');
-      const theme = getTheme(els.themeMode.value);
-      const w = canvas.width, h = canvas.height;
+  </div>
 
-      const bg = ctx.createLinearGradient(0, 0, w, h);
-      bg.addColorStop(0, theme.bg1);
-      bg.addColorStop(1, theme.bg2);
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, w, h);
+</div>
 
-      const orb1 = ctx.createRadialGradient(w*0.15, h*0.18, 10, w*0.15, h*0.18, w*0.35);
-      orb1.addColorStop(0, `${theme.accent1}cc`);
-      orb1.addColorStop(1, `${theme.accent1}00`);
-      ctx.fillStyle = orb1; ctx.fillRect(0, 0, w, h);
+<script>
+document.getElementById("themeToggle").addEventListener("change", e => {
+  document.body.classList.toggle("dark", e.target.checked);
+});
+</script>
 
-      const orb2 = ctx.createRadialGradient(w*0.82, h*0.72, 10, w*0.82, h*0.72, w*0.32);
-      orb2.addColorStop(0, `${theme.accent2}cc`);
-      orb2.addColorStop(1, `${theme.accent2}00`);
-      ctx.fillStyle = orb2; ctx.fillRect(0, 0, w, h);
-
-      const orb3 = ctx.createRadialGradient(w*0.5, h*0.35, 10, w*0.5, h*0.35, w*0.24);
-      orb3.addColorStop(0, `${theme.accent3}88`);
-      orb3.addColorStop(1, `${theme.accent3}00`);
-      ctx.fillStyle = orb3; ctx.fillRect(0, 0, w, h);
-
-      ctx.save();
-      ctx.globalAlpha = .14;
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      for (let i = -h; i < w; i += 74){
-        ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i + h, h);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      ctx.fillStyle = theme.text;
-      ctx.textAlign = 'center';
-      ctx.font = '900 172px Inter, sans-serif';
-      wrapText(ctx, (els.mosaicHeadline.value || 'INF 286').toUpperCase(), w/2, h*0.34, w*0.78, 170);
-      ctx.font = '700 80px Inter, sans-serif';
-      ctx.fillStyle = `${theme.text}dd`;
-      wrapText(ctx, els.mosaicSubhead.value || 'Interactive Demo Day', w/2, h*0.6, w*0.72, 92);
-
-      ctx.fillStyle = theme.accent1;
-      ctx.font = '800 52px Inter, sans-serif';
-      ctx.fillText('PREMIUM INTERACTIVE V3', w/2, h*0.88);
-
-      ctx.strokeStyle = `${theme.text}22`;
-      ctx.lineWidth = 8;
-      ctx.strokeRect(34, 34, w-68, h-68);
-      return canvas.toDataURL('image/jpeg', .88);
-    }
-
-    function getCurrentArtworkDataUrl(){
-      if (els.mosaicArtworkSource.value === 'upload' && state.uploadedArtworkDataUrl) return state.uploadedArtworkDataUrl;
-      if (els.mosaicArtworkSource.value === 'upload' && state.session?.mosaic?.artworkType === 'upload' && state.session?.mosaic?.artwork) return state.session.mosaic.artwork;
-      return generateMosaicArtwork();
-    }
-
-    function sessionPayload(overrides = {}){
-      const assignmentMode = els.assignmentMode.value;
-      const cols = Math.max(2, Number(els.mosaicCols.value) || 4);
-      const rows = Math.max(2, Number(els.mosaicRows.value) || 6);
-      const tiles = assignmentMode === 'mosaic'
-        ? Array.from({ length: cols * rows }, (_, i) => `SLICE ${i+1}`)
-        : parseTiles();
-
-      return {
-        sessionName: els.sessionName.value.trim() || 'CrowdCode V3',
-        layoutType: els.layoutType.value,
-        assignmentMode,
-        tiles,
-        countdownSeconds: Number(els.countdownSeconds.value) || 6,
-        animationSeconds: Number(els.animationSeconds.value) || 5,
-        autoStartReadyPct: Number(els.autoStartReadyPct.value) || 70,
-        finalHeadline: els.finalHeadline.value.trim() || 'You just powered the reveal.',
-        finalSubhead: els.finalSubhead.value.trim() || 'Premium interactive V3',
-        ctaUrl: els.ctaUrl.value.trim() || '',
-        phase: state.session?.phase || 'lobby',
-        blackout: false,
-        layoutMeta: {
-          themeMode: els.themeMode.value
-        },
-        reactions: state.session?.reactions || { fire:0, clap:0, boost:0, confetti:0 },
-        interaction: {
-          energyScore: state.session?.interaction?.energyScore || 0,
-          hypePulse: state.session?.interaction?.hypePulse || false
-        },
-        flashConfig: {
-          mode: els.audioFlashMode.value || 'soft',
-          haptics: els.audioFlashHaptics.value || 'vibrate'
-        },
-        audioReactive: state.session?.audioReactive || null,
-        audioBroadcast: state.session?.audioBroadcast || null,
-        countdownStartAt: state.session?.countdownStartAt || null,
-        countdownTargetAt: state.session?.countdownTargetAt || null,
-        animationStartAt: state.session?.animationStartAt || null,
-        animationTargetAt: state.session?.animationTargetAt || null,
-        animationStyle: els.animationStyle.value || 'pulse',
-        mosaic: {
-          enabled: assignmentMode === 'mosaic',
-          cols, rows,
-          headline: els.mosaicHeadline.value.trim() || 'INF 286',
-          subhead: els.mosaicSubhead.value.trim() || 'Interactive Demo Day',
-          artworkType: els.mosaicArtworkSource.value,
-          imageFit: els.mosaicImageFit.value,
-          uploadedImageName: state.uploadedArtworkName || state.session?.mosaic?.uploadedImageName || '',
-          artwork: getCurrentArtworkDataUrl()
-        },
-        updatedAt: Date.now(),
-        ...overrides
-      };
-    }
-
-    function sortedParticipants(){
-      return Object.entries(state.participants || {}).sort((a,b) => (a[1]?.joinedAt || 0) - (b[1]?.joinedAt || 0));
-    }
-
-    function teamForIndex(idx){ return teams[idx % teams.length]; }
-    function roleForIndex(idx){ return roles[idx % roles.length]; }
-
-    function computeAssignment(index, totalCount, session){
-      const tiles = session.tiles || [];
-      const mode = session.assignmentMode || 'mosaic';
-      const team = teamForIndex(index);
-      const role = roleForIndex(index);
-      if (mode === 'mosaic'){
-        const totalCells = Math.max(1, (session.mosaic?.cols || 4) * (session.mosaic?.rows || 6));
-        const sliceIndex = index % totalCells;
-        return {
-          tileIndex: sliceIndex,
-          tileText: `CELL ${sliceIndex + 1}`,
-          groupIndex: sliceIndex,
-          mosaicIndex: sliceIndex,
-          teamKey: team.key,
-          teamLabel: team.label,
-          teamColor: team.color,
-          roleLabel: role
-        };
-      }
-      if (!tiles.length) {
-        return { tileIndex:index, tileText:`#${index+1}`, groupIndex:index, teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
-      }
-      if (mode === 'unique') {
-        return { tileIndex:index, tileText:tiles[index] ?? `#${index+1}`, groupIndex:Math.min(index, tiles.length-1), teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
-      }
-      if (mode === 'sections'){
-        const sectionSize = Math.max(1, Math.ceil(totalCount / tiles.length));
-        const sectionIndex = Math.min(Math.floor(index / sectionSize), tiles.length-1);
-        return { tileIndex:sectionIndex, tileText:tiles[sectionIndex], groupIndex:sectionIndex, teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
-      }
-      const repeatedIndex = index % tiles.length;
-      return { tileIndex:repeatedIndex, tileText:tiles[repeatedIndex], groupIndex:repeatedIndex, teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
-    }
-
-    async function rebalanceParticipants(){
-      const participants = sortedParticipants();
-      if (!participants.length) return;
-      const session = state.session || sessionPayload();
-      const payload = {};
-      participants.forEach(([id,p], idx) => {
-        const assigned = computeAssignment(idx, participants.length, session);
-        payload[`${id}/tileIndex`] = assigned.tileIndex;
-        payload[`${id}/tileText`] = assigned.tileText;
-        payload[`${id}/groupIndex`] = assigned.groupIndex;
-        payload[`${id}/mosaicIndex`] = assigned.mosaicIndex ?? null;
-        payload[`${id}/slotNumber`] = idx + 1;
-        payload[`${id}/teamKey`] = assigned.teamKey;
-        payload[`${id}/teamLabel`] = assigned.teamLabel;
-        payload[`${id}/teamColor`] = assigned.teamColor;
-        payload[`${id}/roleLabel`] = assigned.roleLabel;
-        payload[`${id}/updatedAt`] = Date.now();
-      });
-      await update(participantsRef, payload);
-    }
-
-    async function ensureSession(){
-      const snap = await get(sessionRef);
-      if (!snap.exists()) await set(sessionRef, sessionPayload({ phase:'lobby' }));
-      await set(hostPresenceRef, { online:true, updatedAt:serverTimestamp() });
-      onDisconnect(hostPresenceRef).remove();
-    }
-
-    async function saveSetup(extra = {}){
-      await update(sessionRef, sessionPayload({ ...extra }));
-      await rebalanceParticipants();
-    }
-
-    function setAudioStatus(message){ els.audioStatus.textContent = message; }
-    function clearReactiveMeter(){ els.reactiveMeterFill.style.width = '0%'; }
-    function ensureAudioGraph(){
-      if (!els.audioPlayer.src) return false;
-      if (!state.audioContext) state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      if (!state.audioSourceNode){
-        state.audioSourceNode = state.audioContext.createMediaElementSource(els.audioPlayer);
-        state.audioAnalyser = state.audioContext.createAnalyser();
-        state.audioAnalyser.fftSize = 256;
-        state.audioSourceNode.connect(state.audioAnalyser);
-        state.audioAnalyser.connect(state.audioContext.destination);
-      }
-      return true;
-    }
-
-    async function openLobby(){ state.autoStarted = false; await saveSetup({ phase:'lobby', blackout:false, countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
-    async function startCountdown(){
-      const seconds = Number(els.countdownSeconds.value) || 6;
-      const startAt = Date.now() + 1200;
-      const targetAt = startAt + seconds * 1000;
-      await saveSetup({ phase:'countdown', blackout:false, countdownStartAt:startAt, countdownTargetAt:targetAt, animationStartAt:null, animationTargetAt:null });
-    }
-    async function animateReveal(style = null){
-      const seconds = Number(els.animationSeconds.value) || 5;
-      const startAt = Date.now() + 600;
-      const targetAt = startAt + seconds * 1000;
-      await saveSetup({
-        phase:'animate',
-        blackout:false,
-        countdownStartAt:null,
-        countdownTargetAt:null,
-        animationStartAt:startAt,
-        animationTargetAt:targetAt,
-        animationStyle: style || els.animationStyle.value || 'pulse'
-      });
-    }
-    async function triggerBlackoutSnap(){
-      await saveSetup({ phase:'blackout', blackout:true });
-      setTimeout(() => finalReveal().catch(console.error), 420);
-    }
-    async function finalReveal(){ await saveSetup({ phase:'reveal', blackout:false, countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
-    async function selfieMoment(){ await saveSetup({ phase:'selfie', blackout:false, countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
-    async function resetSession(){
-      state.autoStarted = false;
-      if (state.countdownTimer) clearInterval(state.countdownTimer);
-      await remove(participantsRef);
-      await set(sessionRef, sessionPayload({
-        phase:'lobby',
-        blackout:false,
-        reactions:{ fire:0, clap:0, boost:0, confetti:0 },
-        interaction:{ energyScore:0, hypePulse:false },
-        audioReactive:null,
-        audioBroadcast:null,
-        countdownStartAt:null,
-        countdownTargetAt:null,
-        animationStartAt:null,
-        animationTargetAt:null
-      }));
-    }
-
-    async function runHypeIntro(){
-      await saveSetup({ phase:'lobby', blackout:false, interaction:{ ...(state.session?.interaction||{}), hypePulse:true } });
-      setTimeout(() => saveSetup({ interaction:{ ...(state.session?.interaction||{}), hypePulse:false } }).catch(console.error), 2400);
-    }
-    async function runCountdownHit(){ await startCountdown(); }
-    async function runAudioDrop(){ await startAudioReactiveReveal(); }
-    async function runSelfieFinale(){
-      await selfieMoment();
-      if (state.capturedPhotoDataUrl) {
-        useCapturedPhoto();
-        setTimeout(() => finalReveal().catch(console.error), 900);
-      }
-    }
-
-    async function stopAudioReactive(transition=false){
-      if (state.audioMonitorTimer){ clearInterval(state.audioMonitorTimer); state.audioMonitorTimer = null; }
-      clearReactiveMeter();
-      try { els.audioPlayer.pause(); } catch(e) {}
-      await update(sessionRef, {
-        phase: transition ? 'reveal' : (state.session?.phase || 'lobby'),
-        audioReactive: null,
-        audioBroadcast: null,
-        updatedAt: Date.now()
-      });
-      setAudioStatus('Audio reactive reveal stopped.');
-    }
-
-    async function startAudioReactiveReveal(){
-      if (!els.audioPlayer.src){ setAudioStatus('Upload an MP3 first.'); return; }
-      if (!ensureAudioGraph()){ setAudioStatus('Unable to create audio analysis.'); return; }
-      const broadcastMode = els.audioBroadcastMode.value || 'visual';
-      if (broadcastMode === 'sync' && !state.audioDataUrl){ setAudioStatus('Wait for the MP3 to finish processing.'); return; }
-      await state.audioContext.resume();
-      const startAt = Date.now() + 1000;
-      await saveSetup({
-        phase:'animate',
-        animationStyle:'audio',
-        animationStartAt:startAt,
-        audioReactive:{ enabled:true, level:0, trackName:state.audioFileName || 'Host MP3', startedAt:startAt, ended:false },
-        audioBroadcast: broadcastMode === 'sync'
-          ? { enabled:true, mode:'sync', trackName:state.audioFileName || 'Host MP3', mimeType: state.audioFileType || 'audio/mpeg', dataUrl: state.audioDataUrl, startedAt:startAt, durationMs: Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null, hostPositionMs:0, playing:true }
-          : { enabled:false, mode:'visual', trackName:state.audioFileName || 'Host MP3', startedAt:startAt, playing:false }
-      });
-      try { els.audioPlayer.currentTime = 0; } catch(e){}
-      await els.audioPlayer.play();
-      setAudioStatus(`Playing ${state.audioFileName || 'host track'} with reactive visuals${broadcastMode === 'sync' ? ' and synced audience audio' : ''}.`);
-      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer);
-      const bins = new Uint8Array(state.audioAnalyser.frequencyBinCount);
-      state.audioMonitorTimer = setInterval(async () => {
-        state.audioAnalyser.getByteFrequencyData(bins);
-        const avg = bins.reduce((sum, value) => sum + value, 0) / bins.length / 255;
-        const boosted = Math.max(0, Math.min(1, Math.pow(avg * 1.9, 0.92)));
-        els.reactiveMeterFill.style.width = `${Math.round(boosted * 100)}%`;
-        try {
-          await update(sessionRef, {
-            'audioReactive/enabled': true,
-            'audioReactive/level': boosted,
-            'audioReactive/trackName': state.audioFileName || 'Host MP3',
-            'audioReactive/positionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
-            'audioReactive/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
-            'audioBroadcast/hostPositionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
-            'audioBroadcast/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
-            'audioBroadcast/playing': !els.audioPlayer.paused,
-            updatedAt: Date.now()
-          });
-        } catch (error) { console.error(error); }
-      }, 140);
-    }
-
-    function updateUploadStatus(){
-      if (state.uploadedArtworkDataUrl){
-        els.mosaicUploadStatus.textContent = `${state.uploadedArtworkName || 'Custom image'} loaded.`;
-      } else {
-        els.mosaicUploadStatus.textContent = 'No custom image loaded.';
-      }
-    }
-
-    function setCaptureStatus(message){
-      els.captureStatusBadge.textContent = message;
-      els.captureHelp.textContent = message.includes('Captured')
-        ? 'Captured photo ready. Click Use as mosaic for the big finish.'
-        : 'Start the camera, capture the room, then apply it to the audience mosaic for the big finish.';
-    }
-
-    async function stopCamera(){
-      if (state.cameraStream){
-        state.cameraStream.getTracks().forEach(track => track.stop());
-        state.cameraStream = null;
-      }
-      els.captureVideo.srcObject = null;
-      setCaptureStatus('Camera idle');
-    }
-
-    async function startCamera(){
-      try{
-        await stopCamera();
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio:false,
-          video:{ facingMode:{ ideal: state.facingMode }, width:{ ideal: 1600 }, height:{ ideal: 1000 } }
-        });
-        state.cameraStream = stream;
-        els.captureVideo.srcObject = stream;
-        setCaptureStatus(state.facingMode === 'user' ? 'Front camera live' : 'Rear camera live');
-      } catch(error){
-        console.error(error);
-        setCaptureStatus('Camera access blocked or unavailable');
-      }
-    }
-
-    async function flipCamera(){ state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment'; await startCamera(); }
-    function capturePhoto(){
-      if (!state.cameraStream || !els.captureVideo.videoWidth){ setCaptureStatus('Start camera first'); return; }
-      const canvas = els.captureCanvas, video = els.captureVideo;
-      canvas.width = video.videoWidth || 1600;
-      canvas.height = video.videoHeight || 1000;
-      const ctx = canvas.getContext('2d');
-      if (state.facingMode === 'user'){
-        ctx.save(); ctx.translate(canvas.width, 0); ctx.scale(-1, 1); ctx.drawImage(video, 0, 0, canvas.width, canvas.height); ctx.restore();
-      } else ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      state.capturedPhotoDataUrl = canvas.toDataURL('image/jpeg', .92);
-      els.capturedPhotoPreview.src = state.capturedPhotoDataUrl;
-      els.captureFallbackImage.src = state.capturedPhotoDataUrl;
-      els.captureFallbackImage.style.display = 'block';
-      setCaptureStatus('Captured photo ready');
-    }
-    function useCapturedPhoto(){
-      if (!state.capturedPhotoDataUrl){ setCaptureStatus('Capture a photo first'); return; }
-      state.uploadedArtworkDataUrl = state.capturedPhotoDataUrl;
-      state.uploadedArtworkName = `crowd-selfie-${new Date().toISOString().replace(/[:.]/g,'-')}.jpg`;
-      els.mosaicArtworkSource.value = 'upload';
-      updateUploadStatus();
-      renderStage();
-      saveSetup().catch(console.error);
-      setCaptureStatus('Captured photo applied');
-    }
-
-    function renderStage(){
-      const session = state.session || sessionPayload();
-      const participants = sortedParticipants().map(entry => entry[1]);
-      const cols = Math.max(2, session.mosaic?.cols || 4);
-      const rows = Math.max(2, session.mosaic?.rows || 6);
-      const total = cols * rows;
-      const artwork = session.mosaic?.artwork || getCurrentArtworkDataUrl();
-      const fit = session.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
-
-      els.mosaicGrid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
-      els.mosaicGrid.innerHTML = Array.from({ length: total }, (_, idx) => {
-        const p = participants.find(x => (x.mosaicIndex ?? x.tileIndex) === idx);
-        const col = idx % cols;
-        const row = Math.floor(idx / cols);
-        const bgX = cols > 1 ? (col / (cols - 1)) * 100 : 50;
-        const bgY = rows > 1 ? (row / (rows - 1)) * 100 : 50;
-        return `<div class="mosaic-cell" style="background-image:url('${artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%"><span>${p ? escapeHtml(p.nickname || 'Guest') : ''}</span></div>`;
-      }).join('');
-
-      const phase = session.phase || 'lobby';
-      const readyCount = participants.filter(p => p.ready).length;
-      els.stagePhaseChip.textContent = phase.toUpperCase();
-      els.stageReadyChip.textContent = `${readyCount} ready`;
-      els.blackoutLayer.classList.toggle('active', phase === 'blackout' || session.blackout);
-
-      if (phase === 'countdown'){
-        els.stageCountBig.textContent = els.countdownDisplay.textContent === '—' ? '6' : els.countdownDisplay.textContent;
-        els.stageHeadline.textContent = 'Phones up. Countdown is live.';
-        els.stageSubline.textContent = 'The room is charging toward the reveal.';
-      } else if (phase === 'animate'){
-        els.stageCountBig.textContent = session.animationStyle === 'audio' ? 'DROP' : 'GO';
-        els.stageHeadline.textContent = session.animationStyle === 'audio' ? 'Audio-reactive reveal in motion' : 'Live animation in progress';
-        els.stageSubline.textContent = 'This is the premium activation moment.';
-      } else if (phase === 'reveal'){
-        els.stageCountBig.textContent = 'WOW';
-        els.stageHeadline.textContent = session.finalHeadline || 'You just powered the reveal.';
-        els.stageSubline.textContent = session.finalSubhead || 'Premium interactive V3';
-      } else if (phase === 'selfie'){
-        els.stageCountBig.textContent = 'SELFIE';
-        els.stageHeadline.textContent = 'Capture the room. Turn the crowd into the art.';
-        els.stageSubline.textContent = 'Use the camera tools to create a mosaic finale.';
-      } else if (phase === 'blackout'){
-        els.stageCountBig.textContent = '';
-        els.stageHeadline.textContent = '';
-        els.stageSubline.textContent = '';
-      } else {
-        els.stageCountBig.textContent = 'LIVE';
-        els.stageHeadline.textContent = session.sessionName || 'Premium interactive room reveal';
-        els.stageSubline.textContent = 'Everyone joins, gets a role, charges the energy meter, and becomes part of the moment.';
-      }
-    }
-
-    function renderStats(){
-      const participants = sortedParticipants().map(entry => entry[1]);
-      const readyCount = participants.filter(p => p.ready).length;
-      const energy = Number(state.session?.interaction?.energyScore || 0);
-      els.connectedCount.textContent = participants.length;
-      els.readyCount.textContent = readyCount;
-      els.energyScore.textContent = `${Math.round(energy)}%`;
-      els.energyMeterFill.style.width = `${Math.round(energy)}%`;
-      els.phaseText.textContent = String(state.session?.phase || 'lobby').toUpperCase();
-      els.tileCount.textContent = state.session?.assignmentMode === 'mosaic'
-        ? Math.max(1, (state.session?.mosaic?.cols || 4) * (state.session?.mosaic?.rows || 6))
-        : (state.session?.tiles || []).length;
-
-      const rx = state.session?.reactions || {};
-      els.reactFire.textContent = rx.fire || 0;
-      els.reactClap.textContent = rx.clap || 0;
-      els.reactBoost.textContent = rx.boost || 0;
-      els.reactConfetti.textContent = rx.confetti || 0;
-
-      const teamCounts = {};
-      participants.forEach(p => { teamCounts[p.teamLabel || 'Unassigned'] = (teamCounts[p.teamLabel || 'Unassigned'] || 0) + 1; });
-      els.teamsList.innerHTML = Object.keys(teamCounts).length
-        ? Object.entries(teamCounts).map(([label,count]) => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span>${escapeHtml(label)}</span><strong>${count}</strong></div>`).join('')
-        : 'Waiting for participants…';
-    }
-
-    function renderPhoneWall(){
-      const participants = sortedParticipants().map(entry => entry[1]);
-      if (!participants.length){
-        els.phoneWall.innerHTML = `<div class="phone" style="grid-column:1/-1;aspect-ratio:auto;min-height:260px"><div class="mid"><div><div class="tile">Scan to join</div><div class="small">Phones appear here as students connect.</div></div></div></div>`;
-        return;
-      }
-      const session = state.session || {};
-      const cols = Math.max(2, session.mosaic?.cols || 4);
-      const rows = Math.max(2, session.mosaic?.rows || 6);
-      els.phoneWall.innerHTML = participants.map((p, idx) => {
-        const teamColor = p.teamColor || '#ffffff';
-        let center = '';
-        if (session.assignmentMode === 'mosaic' && session.mosaic?.artwork){
-          const sliceIndex = p.mosaicIndex ?? p.tileIndex ?? 0;
-          const col = sliceIndex % cols;
-          const row = Math.floor(sliceIndex / cols);
-          const bgX = cols > 1 ? (col / (cols - 1)) * 100 : 50;
-          const bgY = rows > 1 ? (row / (rows - 1)) * 100 : 50;
-          const fit = session.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
-          center = `<div class="slice" style="background-image:url('${session.mosaic.artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%"></div><div class="small">${escapeHtml(p.roleLabel || 'Role')}</div>`;
-        } else {
-          center = `<div><div class="tile">${escapeHtml(p.tileText || 'JOIN')}</div><div class="small">${escapeHtml(p.roleLabel || 'Role')}</div></div>`;
-        }
-        return `<div class="phone">
-          <div class="top"><span><span class="teamdot" style="background:${teamColor}"></span>${escapeHtml(p.teamLabel || 'Team')}</span><span>${p.ready ? 'READY' : 'WAIT'}</span></div>
-          <div class="mid">${center}</div>
-          <div class="small" style="text-align:center">${escapeHtml(p.nickname || `Guest ${idx+1}`)}</div>
-        </div>`;
-      }).join('');
-    }
-
-    function syncCountdownDisplay(){
-      if (state.countdownTimer) clearInterval(state.countdownTimer);
-      const phase = state.session?.phase;
-      if (phase === 'countdown' && state.session?.countdownTargetAt){
-        const tick = () => {
-          const remaining = Math.max(0, Math.ceil((state.session.countdownTargetAt - Date.now()) / 1000));
-          els.countdownDisplay.textContent = remaining;
-          if (remaining <= 0){
-            clearInterval(state.countdownTimer);
-            setTimeout(() => triggerBlackoutSnap().catch(console.error), 350);
-          }
-        };
-        tick();
-        state.countdownTimer = setInterval(tick, 200);
-        return;
-      }
-      if (phase === 'animate' && state.session?.animationStyle === 'audio'){
-        const tick = () => {
-          const level = Math.round((state.session?.audioReactive?.level || 0) * 100);
-          els.countdownDisplay.textContent = `♪ ${level}%`;
-          els.reactiveMeterFill.style.width = `${level}%`;
-        };
-        tick();
-        state.countdownTimer = setInterval(tick, 180);
-        return;
-      }
-      if (phase === 'animate' && state.session?.animationTargetAt){
-        const tick = () => {
-          const remaining = Math.max(0, Math.ceil((state.session.animationTargetAt - Date.now()) / 1000));
-          els.countdownDisplay.textContent = `${String(state.session?.animationStyle || 'pulse').toUpperCase()} ${remaining}`;
-          if (remaining <= 0){
-            clearInterval(state.countdownTimer);
-            setTimeout(() => finalReveal().catch(console.error), 250);
-          }
-        };
-        tick();
-        state.countdownTimer = setInterval(tick, 200);
-        return;
-      }
-      els.countdownDisplay.textContent = '—';
-    }
-
-    async function maybeAutoStart(){
-      const participants = sortedParticipants().map(entry => entry[1]);
-      if (!participants.length) return;
-      const readyCount = participants.filter(p => p.ready).length;
-      const pct = readyCount / participants.length * 100;
-      const threshold = Number(state.session?.autoStartReadyPct || 70);
-      if (!state.autoStarted && (state.session?.phase || 'lobby') === 'lobby' && pct >= threshold){
-        state.autoStarted = true;
-        await startCountdown();
-      }
-    }
-
-    onValue(sessionRef, snap => {
-      const data = snap.val();
-      if (!data) return;
-      state.session = data;
-      els.statusDot.classList.add('live');
-      els.statusText.textContent = 'Live session connected';
-      els.sessionName.value = data.sessionName || '';
-      els.layoutType.value = data.layoutType || 'message';
-      els.assignmentMode.value = data.assignmentMode || 'mosaic';
-      els.tileInput.value = data.assignmentMode === 'mosaic' ? els.tileInput.value : (data.tiles || []).join(' | ');
-      els.mosaicCols.value = data.mosaic?.cols || 4;
-      els.mosaicRows.value = data.mosaic?.rows || 6;
-      els.themeMode.value = data.layoutMeta?.themeMode || 'premium';
-      els.mosaicHeadline.value = data.mosaic?.headline || 'INF 286';
-      els.mosaicSubhead.value = data.mosaic?.subhead || 'Interactive Demo Day';
-      els.mosaicArtworkSource.value = data.mosaic?.artworkType || 'generated';
-      els.mosaicImageFit.value = data.mosaic?.imageFit || 'cover';
-      els.finalHeadline.value = data.finalHeadline || '';
-      els.finalSubhead.value = data.finalSubhead || '';
-      els.ctaUrl.value = data.ctaUrl || '';
-      els.countdownSeconds.value = data.countdownSeconds || 6;
-      els.animationSeconds.value = data.animationSeconds || 5;
-      els.autoStartReadyPct.value = data.autoStartReadyPct || 70;
-      els.animationStyle.value = data.animationStyle || 'pulse';
-      els.audioFlashMode.value = data.flashConfig?.mode || 'soft';
-      els.audioFlashHaptics.value = data.flashConfig?.haptics || 'vibrate';
-      renderStage();
-      renderStats();
-      renderPhoneWall();
-      syncCountdownDisplay();
-    }, error => {
-      console.error(error);
-      els.statusDot.classList.remove('live');
-      els.statusText.textContent = 'Connection problem';
-    });
-
-    onValue(participantsRef, snap => {
-      state.participants = snap.val() || {};
-      renderStage();
-      renderStats();
-      renderPhoneWall();
-      maybeAutoStart().catch(console.error);
-    });
-
-    els.saveBtn.addEventListener('click', () => saveSetup().catch(console.error));
-    els.rebalanceBtn.addEventListener('click', () => rebalanceParticipants().catch(console.error));
-    els.openLobbyBtn.addEventListener('click', () => openLobby().catch(console.error));
-    els.startCountdownBtn.addEventListener('click', () => startCountdown().catch(console.error));
-    els.blackoutBtn.addEventListener('click', () => triggerBlackoutSnap().catch(console.error));
-    els.revealBtn.addEventListener('click', () => finalReveal().catch(console.error));
-    els.selfieBtn.addEventListener('click', () => selfieMoment().catch(console.error));
-    els.resetBtn.addEventListener('click', () => resetSession().catch(console.error));
-    els.presetHypeBtn.addEventListener('click', () => runHypeIntro().catch(console.error));
-    els.presetCountdownBtn.addEventListener('click', () => runCountdownHit().catch(console.error));
-    els.presetAudioBtn.addEventListener('click', () => runAudioDrop().catch(console.error));
-    els.presetSelfieBtn.addEventListener('click', () => runSelfieFinale().catch(console.error));
-
-    els.copyLinkBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(buildJoinUrl());
-        els.copyLinkBtn.textContent = 'Copied';
-        setTimeout(() => els.copyLinkBtn.textContent = 'Copy link', 1500);
-      } catch(e){ console.error(e); }
-    });
-
-    els.regenerateArtworkBtn.addEventListener('click', () => { renderStage(); });
-    els.clearUploadBtn.addEventListener('click', () => {
-      state.uploadedArtworkDataUrl = '';
-      state.uploadedArtworkName = '';
-      els.mosaicImageUpload.value = '';
-      updateUploadStatus();
-      renderStage();
-    });
-    els.mosaicImageUpload.addEventListener('change', event => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        state.uploadedArtworkDataUrl = String(reader.result || '');
-        state.uploadedArtworkName = file.name;
-        els.mosaicArtworkSource.value = 'upload';
-        updateUploadStatus();
-        renderStage();
-      };
-      reader.readAsDataURL(file);
-    });
-
-    els.audioFile.addEventListener('change', event => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
-      state.audioObjectUrl = URL.createObjectURL(file);
-      state.audioFileName = file.name;
-      state.audioFileType = file.type || 'audio/mpeg';
-      state.audioDataUrl = '';
-      els.audioPlayer.src = state.audioObjectUrl;
-      setAudioStatus(`${file.name} loaded. Preparing audience sync copy…`);
-      const reader = new FileReader();
-      reader.onload = () => {
-        state.audioDataUrl = String(reader.result || '');
-        setAudioStatus(`${file.name} ready for host playback${els.audioBroadcastMode.value === 'sync' ? ' and audience speaker sync' : ''}.`);
-      };
-      reader.onerror = () => { setAudioStatus('Loaded on host, but sync copy failed.'); };
-      reader.readAsDataURL(file);
-    });
-    els.startAudioReactiveBtn.addEventListener('click', () => startAudioReactiveReveal().catch(console.error));
-    els.stopAudioReactiveBtn.addEventListener('click', () => stopAudioReactive(false).catch(console.error));
-    els.audioPlayer.addEventListener('ended', () => stopAudioReactive(true).catch(console.error));
-
-    els.startCameraBtn.addEventListener('click', () => startCamera());
-    els.flipCameraBtn.addEventListener('click', () => flipCamera());
-    els.capturePhotoBtn.addEventListener('click', () => capturePhoto());
-    els.useCapturedBtn.addEventListener('click', () => useCapturedPhoto());
-    els.stopCameraBtn.addEventListener('click', () => stopCamera());
-
-    window.addEventListener('beforeunload', () => {
-      if (state.cameraStream) state.cameraStream.getTracks().forEach(track => track.stop());
-      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer);
-      if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
-    });
-
-    await ensureSession();
-    await renderQR();
-    updateUploadStatus();
-    renderStage();
-  </script>
-  <script>
-    (function(){
-      const body = document.body;
-      const toggleBtn = document.getElementById('toggleControlsBtn');
-      const inspector = document.querySelector('.inspector');
-      const tabButtons = [...document.querySelectorAll('.tabbar button')];
-      const tabPanels = [...document.querySelectorAll('.tab-panel')];
-      const openLobbyTop = document.getElementById('openLobbyBtnTop');
-      const startCountdownTop = document.getElementById('startCountdownBtnTop');
-      const revealTop = document.getElementById('revealBtnTop');
-      const themeMode = document.getElementById('themeMode');
-
-      function syncTopButtons(){
-        document.getElementById('openLobbyBtn')?.click();
-      }
-      toggleBtn?.addEventListener('click', ()=> body.classList.toggle('controls-collapsed'));
-      document.addEventListener('keydown', (e)=>{
-        if (((e.key === '\\') || (e.key.toLowerCase() === 'i' && (e.metaKey || e.ctrlKey))) && window.innerWidth > 680) {
-          e.preventDefault();
-          body.classList.toggle('controls-collapsed');
-        }
-      });
-      tabButtons.forEach(btn => btn.addEventListener('click', ()=>{
-        tabButtons.forEach(b=>b.classList.toggle('active', b===btn));
-        tabPanels.forEach(panel=>panel.classList.toggle('active', panel.id===btn.dataset.tab));
-      }));
-      openLobbyTop?.addEventListener('click', ()=> document.getElementById('openLobbyBtn')?.click());
-      startCountdownTop?.addEventListener('click', ()=> document.getElementById('startCountdownBtn')?.click());
-      revealTop?.addEventListener('click', ()=> document.getElementById('revealBtn')?.click());
-      themeMode?.addEventListener('change', ()=> {
-        if (themeMode.value === 'contrast') {
-          document.documentElement.style.setProperty('--line', 'rgba(255,255,255,.16)');
-          document.documentElement.style.setProperty('--line-strong', 'rgba(255,255,255,.24)');
-        } else {
-          document.documentElement.style.setProperty('--line', 'rgba(255,255,255,.08)');
-          document.documentElement.style.setProperty('--line-strong', 'rgba(255,255,255,.14)');
-        }
-      });
-
-      const mirroredEnergy = document.querySelector('.energy-visual-fill');
-      setInterval(()=>{
-        const source = document.getElementById('energyMeterFill');
-        if (source && mirroredEnergy) mirroredEnergy.style.width = source.style.width || '0%';
-      }, 150);
-      if (window.innerWidth <= 1080) body.classList.add('controls-collapsed');
-      inspector?.addEventListener('click', (e)=> e.stopPropagation());
-    })();
-  </script>
 </body>
 </html>
