@@ -2,121 +2,171 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CrowdCode Audience — Mosaic Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdCode V3 Audience</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root{ --gold:#f7b718; --pink:#ff66c4; --ink:#101010; --text:#f8f9ff; --muted:rgba(255,255,255,.75);}
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent} html,body{margin:0;padding:0;height:100%}
-    body{
-      font-family:'Inter',system-ui,sans-serif;color:var(--text);
-      background: radial-gradient(circle at top left, rgba(247,183,24,.20), transparent 22%),
-                  radial-gradient(circle at bottom right, rgba(255,102,196,.16), transparent 24%),
-                  linear-gradient(180deg, #111327, #1a1f48 58%, #111327);
-      overflow:hidden;
+    :root{
+      --bg:#090b12; --card:#121826; --soft:rgba(255,255,255,.05); --line:rgba(255,255,255,.10);
+      --text:#f5f7ff; --muted:#a8b0c8; --gold:#f7b718; --pink:#ff66c4; --blue:#67a8ff; --green:#43d17c;
     }
-    .screen,.tile-screen{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:max(18px, env(safe-area-inset-top)) 18px max(22px, env(safe-area-inset-bottom));position:relative}
-    .glass,.reveal-card{width:min(92vw,560px);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:28px;box-shadow:0 18px 50px rgba(0,0,0,.28);backdrop-filter:blur(18px);padding:22px 18px}
-    .eyebrow{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:.88rem;margin-bottom:14px}
-    .dot{width:10px;height:10px;border-radius:50%;background:#39d98a;box-shadow:0 0 0 5px rgba(57,217,138,.16)}
-    h1,p{margin:0}
-    .title{font-size:clamp(1.5rem,6vw,2.2rem);font-weight:800;letter-spacing:-.03em}
-    .subtext{color:var(--muted);margin-top:10px;line-height:1.45}
-    input{width:100%;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.08);color:white;padding:14px 15px;font-size:1rem;outline:none}
-    .nickname-wrap,.actions,.selfie-actions{margin-top:14px}
-    .actions,.selfie-actions{display:flex;flex-direction:column;gap:12px}
-    button,a.cta{width:100%;border:0;border-radius:18px;padding:15px 18px;font-weight:800;font-size:1rem;cursor:pointer;text-decoration:none;transition:transform .18s ease, filter .18s ease}
-    button:hover,a.cta:hover{transform:translateY(-1px);filter:brightness(1.04)}
-    .primary{background:linear-gradient(135deg,var(--gold),#ffd86e);color:var(--ink)}
-    .secondary{background:rgba(255,255,255,.10);color:white;border:1px solid rgba(255,255,255,.12)}
-    .ambient{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.85}
-    .ambient::before,.ambient::after{content:'';position:absolute;width:55vw;height:55vw;max-width:340px;max-height:340px;border-radius:50%;filter:blur(30px);opacity:.32;animation:floaty 8s ease-in-out infinite alternate}
-    .ambient::before{background:var(--gold);top:-7%;left:-14%}
-    .ambient::after{background:var(--pink);bottom:-10%;right:-14%;animation-duration:9.5s}
-    .tile-index{font-size:.9rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:12px}
-    .tile-main{font-size:clamp(2.5rem,18vw,6rem);line-height:.9;font-weight:900;letter-spacing:-.05em;text-shadow:0 12px 28px rgba(0,0,0,.24);max-width:95vw;word-break:break-word}
-    .tile-caption{margin-top:12px;color:rgba(255,255,255,.82);font-size:1rem;line-height:1.4;max-width:34ch}
-    .countdown{font-size:clamp(4rem,28vw,8rem);line-height:.85;font-weight:900;letter-spacing:-.06em;text-shadow:0 14px 30px rgba(0,0,0,.26);animation:pulse 1s ease-in-out infinite}
-    .reveal-headline{font-size:clamp(2rem,11vw,4rem);line-height:.93;font-weight:900;letter-spacing:-.05em;text-shadow:0 14px 30px rgba(0,0,0,.26)}
-    .reveal-subhead{font-size:clamp(1rem,4.8vw,1.25rem);color:rgba(255,255,255,.88);line-height:1.4;margin-top:12px}
-    .selfie-wrap video,.selfie-wrap canvas{width:min(88vw,360px);aspect-ratio:9/16;object-fit:cover;border-radius:28px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 50px rgba(0,0,0,.34)}
-    .tiny{margin-top:14px;color:rgba(255,255,255,.68);font-size:.84rem;line-height:1.45}.audio-note{margin-top:10px;color:rgba(255,255,255,.82);font-size:.82rem;line-height:1.4}
-    .hidden{display:none !important}
-    .mosaic-slice{
-      width:min(92vw,560px); max-width:560px; aspect-ratio:9/16; border-radius:28px;
-      border:1px solid rgba(255,255,255,.15); box-shadow:0 18px 50px rgba(0,0,0,.28); background-repeat:no-repeat;
-      background-color:#0f1021; overflow:hidden; position:relative;
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;height:100%;background:
+      radial-gradient(circle at 10% 10%, rgba(247,183,24,.12), transparent 22%),
+      radial-gradient(circle at 90% 10%, rgba(103,168,255,.12), transparent 24%),
+      radial-gradient(circle at 70% 80%, rgba(255,102,196,.14), transparent 28%),
+      linear-gradient(180deg,#090b12,#0e1220);
+      color:var(--text);font-family:Inter,system-ui,sans-serif}
+    body{overflow-x:hidden}
+    .app{min-height:100%;display:grid;place-items:center;padding:14px}
+    .phone{
+      width:min(100%,430px);min-height:calc(100vh - 28px);border-radius:34px;overflow:hidden;
+      border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));box-shadow:0 24px 70px rgba(0,0,0,.40);position:relative;
     }
-    .mosaic-overlay{position:absolute;inset:auto 0 0 0;padding:16px;background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.45));font-weight:700}
-    .flash-layer{position:fixed;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;z-index:30;background:#fff;}
-    .flash-layer.gold{background:linear-gradient(180deg,#fff7d0,#f7b718)}
-    .flash-layer.pink{background:linear-gradient(180deg,#fff2fb,#ff66c4)}
-    .flash-layer.cycle{background:linear-gradient(135deg,#ffffff,#f7b718,#ff66c4,#ffffff)}
-    .flash-layer.live{animation:flashBurst var(--flash-duration,180ms) linear;}
-    @keyframes flashBurst{0%{opacity:0}12%{opacity:var(--flash-opacity,.85)}100%{opacity:0}}
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-    @keyframes floaty{from{transform:translateY(-8px) translateX(-8px)}to{transform:translateY(12px) translateX(10px)}}
+    .glow:before,.glow:after{content:'';position:absolute;border-radius:999px;filter:blur(36px);opacity:.45;pointer-events:none}
+    .glow:before{width:180px;height:180px;background:rgba(247,183,24,.24);left:-40px;top:20px}
+    .glow:after{width:200px;height:200px;background:rgba(255,102,196,.20);right:-60px;bottom:120px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;color:#d8def1;font-size:.84rem}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:800}
+    .stack{padding:0 18px 18px}
+    .hero{padding:10px 0 12px}
+    .eyebrow{font-size:.78rem;color:var(--muted);font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+    h1{font-size:clamp(2rem,10vw,3.1rem);line-height:.92;letter-spacing:-.05em;margin:10px 0 10px}
+    .subtitle{color:#dbe3f6;line-height:1.45;font-size:1rem}
+    .card{padding:14px;border-radius:24px;border:1px solid var(--line);background:rgba(255,255,255,.04);margin-top:14px}
+    .field{margin-top:12px}
+    .field label{display:block;font-size:.82rem;font-weight:800;margin-bottom:8px;color:#d7def1}
+    input{width:100%;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:#0d111a;color:var(--text);font:inherit}
+    button{
+      width:100%;border:0;border-radius:18px;padding:14px 16px;font:inherit;font-weight:900;cursor:pointer;margin-top:12px;
+      transition:transform .18s ease,filter .18s ease
+    }
+    button:hover{transform:translateY(-1px);filter:brightness(1.03)}
+    .primary{background:linear-gradient(135deg,var(--gold),#ffd86e);color:#151515}
+    .secondary{background:#13192a;color:#eff5ff;border:1px solid var(--line)}
+    .accent{background:linear-gradient(135deg,#67a8ff,#a78bff);color:#05131f}
+    .pink{background:linear-gradient(135deg,#ff66c4,#ff9cda);color:#1b0a19}
+    .ready{background:linear-gradient(135deg,#43d17c,#9ef7c4);color:#0a1812}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .big-slot{
+      position:relative;overflow:hidden;border-radius:28px;aspect-ratio:9/15;background:
+        radial-gradient(circle at 20% 15%, rgba(247,183,24,.12), transparent 22%),
+        radial-gradient(circle at 80% 15%, rgba(103,168,255,.14), transparent 24%),
+        radial-gradient(circle at 70% 80%, rgba(255,102,196,.16), transparent 30%),
+        linear-gradient(180deg,#0d111a,#151c2c);border:1px solid var(--line);display:grid;place-items:center;text-align:center;padding:18px
+    }
+    .big-slot.pulsing{animation:pulseGlow 1.9s ease-in-out infinite}
+    .tile{font-size:clamp(2rem,11vw,4rem);font-weight:900;letter-spacing:-.05em;line-height:.9}
+    .role{margin-top:10px;font-size:.95rem;font-weight:800;color:#d5ddf1}
+    .team{margin-top:10px;font-size:.84rem;color:#b4bdd5}
+    .teamdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+    .slice{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.95}
+    .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.18))}
+    .lower{position:absolute;left:16px;right:16px;bottom:16px}
+    .mini{font-size:.82rem;color:#d0d8eb}
+    .status-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .status-chip{padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:.8rem;font-weight:800}
+    .meter{height:12px;border-radius:999px;overflow:hidden;background:#0b1018;border:1px solid var(--line);margin-top:12px}
+    .meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink),var(--blue))}
+    .reactions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    .react-btn{padding:14px 10px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.04);text-align:center}
+    .react-btn .emoji{font-size:1.4rem}
+    .react-btn .label{margin-top:4px;font-size:.72rem;font-weight:800;color:#ccd5ea}
+    .boost-wrap{display:grid;gap:10px}
+    .footer-note{color:var(--muted);font-size:.78rem;line-height:1.45;text-align:center;margin-top:12px}
+    .blackout{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .16s;z-index:8}
+    .blackout.active{opacity:1}
+    .flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9}
+    .flash.active{animation:flash .22s ease-out}
+    .confetti-burst{position:fixed;inset:0;pointer-events:none;z-index:7;overflow:hidden}
+    .confetti{position:absolute;width:10px;height:16px;top:-20px;animation:fall linear forwards}
+    @keyframes pulseGlow{
+      0%{transform:scale(1);box-shadow:0 0 0 rgba(255,255,255,0)}
+      50%{transform:scale(1.015);box-shadow:0 0 42px rgba(255,255,255,.08)}
+      100%{transform:scale(1);box-shadow:0 0 0 rgba(255,255,255,0)}
+    }
+    @keyframes flash{0%{opacity:0}30%{opacity:.88}100%{opacity:0}}
+    @keyframes fall{to{transform:translateY(120vh) rotate(560deg);opacity:1}}
   </style>
 </head>
 <body>
-  <div class="ambient"></div>
-  <div id="flashLayer" class="flash-layer"></div>
-  <section id="joinView" class="screen">
-    <div class="glass">
-      <div class="eyebrow"><span class="dot"></span><span id="joinSessionLabel">CrowdCode</span></div>
-      <h1 class="title">Join the reveal</h1>
-      <p class="subtext">Your phone becomes part of a bigger shared moment. In mosaic mode, your screen shows one slice of a larger visual.</p>
-      <div class="nickname-wrap"><input id="nicknameInput" maxlength="24" placeholder="Your name or group name" /></div>
-      <div class="actions"><button id="joinBtn" class="primary">Join session</button><button id="readyBtn" class="secondary hidden">I'm ready</button><button id="enableSoundBtn" class="secondary">Enable synced sound</button></div>
-      <div id="audioNote" class="audio-note">Tap Enable synced sound once so this phone can play the host's MP3 through its speaker during the reveal.</div>
-      <div class="tiny">Tip: turn brightness up and hold your phone in portrait mode for the reveal.</div>
-    </div>
-  </section>
+  <div class="blackout" id="blackoutLayer"></div>
+  <div class="flash" id="flashLayer"></div>
+  <div class="confetti-burst" id="confettiBurst"></div>
 
-  <section id="tileView" class="tile-screen hidden">
-    <div class="tile-index" id="tileIndexLabel">SLOT 1</div>
-    <div id="mosaicSlice" class="mosaic-slice hidden"><div class="mosaic-overlay" id="mosaicCellLabel">Cell 1</div></div>
-    <div id="animateOverlay" class="animate-overlay hidden"><div class="animate-badge" id="animateBadge">Pulse</div></div>
-    <div id="wordTileWrap">
-      <div class="tile-main" id="tileMain">JOIN</div>
-      <div class="tile-caption" id="tileCaption">Waiting for the host…</div>
-    </div>
-  </section>
-
-  <section id="countdownView" class="tile-screen hidden">
-    <div class="tile-index">GET READY</div>
-    <div class="countdown" id="countdownNumber">3</div>
-    <div class="tile-caption">Hold your phone up when it hits zero.</div>
-  </section>
-
-  <section id="revealView" class="tile-screen hidden">
-    <div class="reveal-card">
-      <div class="reveal-headline" id="revealHeadline">Final Reveal</div>
-      <div class="reveal-subhead" id="revealSubhead">Thanks for joining the CrowdCode moment.</div>
-      <div class="actions" style="margin-top:18px;"><a id="revealCta" class="cta primary" href="#" target="_blank" rel="noopener">Open link</a></div>
-    </div>
-  </section>
-
-  <section id="selfieView" class="screen hidden">
-    <div class="selfie-wrap">
-      <div class="eyebrow"><span class="dot"></span>Selfie / share moment</div>
-      <video id="camera" playsinline autoplay muted></video>
-      <canvas id="snapshot" class="hidden"></canvas>
-      <div class="selfie-actions">
-        <button id="captureBtn" class="primary">Capture selfie</button>
-        <button id="retakeBtn" class="secondary hidden">Retake</button>
-        <a id="downloadBtn" class="cta secondary hidden" download="crowdcode-selfie.png">Save image</a>
+  <div class="app">
+    <div class="phone glow">
+      <div class="topbar">
+        <div class="pill"><span id="sessionCode">Session</span></div>
+        <div class="pill" id="phaseBadge">LOBBY</div>
       </div>
-      <div class="tiny">Great for a post-event share moment after the final reveal.</div>
-    </div>
-  </section>
 
-  <audio id="sharedAudio" playsinline preload="auto"></audio>
+      <div class="stack">
+        <section class="hero">
+          <div class="eyebrow">Live companion screen</div>
+          <h1 id="heroTitle">Join the room reveal.</h1>
+          <div class="subtitle" id="heroSubtitle">Enter your name, get your role, tap ready, and help power the moment.</div>
+        </section>
+
+        <div class="card" id="joinCard">
+          <div class="field">
+            <label for="displayName">Display name</label>
+            <input id="displayName" type="text" maxlength="24" placeholder="Your name" />
+          </div>
+          <button class="primary" id="joinBtn">Join experience</button>
+          <div class="footer-note">This works best when everyone joins and keeps their phone up during the countdown.</div>
+        </div>
+
+        <div id="liveView" style="display:none">
+          <div class="big-slot pulsing" id="bigSlot">
+            <div class="slice" id="sliceLayer" style="display:none"></div>
+            <div class="overlay"></div>
+            <div>
+              <div class="tile" id="tileText">LIVE</div>
+              <div class="role" id="roleText">Role</div>
+              <div class="team" id="teamText">Team</div>
+            </div>
+            <div class="lower">
+              <div class="mini" id="miniCaption">Hold your phone ready.</div>
+            </div>
+          </div>
+
+          <div class="status-row">
+            <div class="status-chip" id="readyChip">Not ready</div>
+            <div class="status-chip" id="energyChip">Energy 0%</div>
+            <div class="status-chip" id="slotChip">Slot —</div>
+          </div>
+
+          <div class="meter"><span id="energyMeterFill"></span></div>
+
+          <div class="grid2">
+            <button class="ready" id="readyBtn">I’m ready</button>
+            <button class="secondary" id="boostBtn">Motion / tap boost</button>
+          </div>
+
+          <div class="card">
+            <div class="eyebrow" style="margin-bottom:8px">Live reactions</div>
+            <div class="reactions">
+              <button class="react-btn" data-reaction="fire"><div class="emoji">🔥</div><div class="label">Hype</div></button>
+              <button class="react-btn" data-reaction="clap"><div class="emoji">👏</div><div class="label">Clap</div></button>
+              <button class="react-btn" data-reaction="boost"><div class="emoji">⚡</div><div class="label">Boost</div></button>
+              <button class="react-btn" data-reaction="confetti"><div class="emoji">🎉</div><div class="label">Drop</div></button>
+            </div>
+          </div>
+
+          <div class="footer-note" id="footerNote">You are part of the room-wide reveal.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="guestAudio" preload="auto"></audio>
+
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getDatabase, ref, get, set, update, onValue, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+    import { getDatabase, ref, set, update, get, onValue, onDisconnect, remove, increment } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const firebaseConfig = {
       apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
@@ -131,390 +181,275 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const sessionId = new URLSearchParams(window.location.search).get('session');
-    if (!sessionId){
-      document.body.innerHTML = '<div style="padding:24px;color:white;font-family:Inter,sans-serif;">Missing session code.</div>';
-      throw new Error('Missing session ID');
+
+    const els = Object.fromEntries([...document.querySelectorAll('[id]')].map(el => [el.id, el]));
+    const url = new URL(window.location.href);
+    const sessionId = url.searchParams.get('session');
+    if (!sessionId) {
+      alert('No session found in the URL.');
+      throw new Error('Missing session parameter.');
     }
 
-    const els = {
-      joinView: document.getElementById('joinView'),
-      tileView: document.getElementById('tileView'),
-      countdownView: document.getElementById('countdownView'),
-      revealView: document.getElementById('revealView'),
-      selfieView: document.getElementById('selfieView'),
-      nicknameInput: document.getElementById('nicknameInput'),
-      joinBtn: document.getElementById('joinBtn'),
-      readyBtn: document.getElementById('readyBtn'),
-      enableSoundBtn: document.getElementById('enableSoundBtn'),
-      audioNote: document.getElementById('audioNote'),
-      sharedAudio: document.getElementById('sharedAudio'),
-      joinSessionLabel: document.getElementById('joinSessionLabel'),
-      tileIndexLabel: document.getElementById('tileIndexLabel'),
-      tileMain: document.getElementById('tileMain'),
-      tileCaption: document.getElementById('tileCaption'),
-      wordTileWrap: document.getElementById('wordTileWrap'),
-      mosaicSlice: document.getElementById('mosaicSlice'),
-      mosaicCellLabel: document.getElementById('mosaicCellLabel'),
-      animateOverlay: document.getElementById('animateOverlay'),
-      animateBadge: document.getElementById('animateBadge'),
-      flashLayer: document.getElementById('flashLayer'),
-      countdownNumber: document.getElementById('countdownNumber'),
-      revealHeadline: document.getElementById('revealHeadline'),
-      revealSubhead: document.getElementById('revealSubhead'),
-      revealCta: document.getElementById('revealCta'),
-      camera: document.getElementById('camera'),
-      snapshot: document.getElementById('snapshot'),
-      captureBtn: document.getElementById('captureBtn'),
-      retakeBtn: document.getElementById('retakeBtn'),
-      downloadBtn: document.getElementById('downloadBtn')
-    };
+    const localKey = `crowdcode-v3-${sessionId}-participant`;
+    let participantId = localStorage.getItem(localKey) || '';
+    if (!participantId) {
+      participantId = crypto.randomUUID().slice(0, 12);
+      localStorage.setItem(localKey, participantId);
+    }
 
     const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
-    const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
-    let participantId = localStorage.getItem(`crowdcode:${sessionId}:participantId`) || crypto.randomUUID().slice(0,12);
-    localStorage.setItem(`crowdcode:${sessionId}:participantId`, participantId);
     const participantRef = ref(db, `crowdcode/sessions/${sessionId}/participants/${participantId}`);
-    const state = { session:null, participant:null, countdownTimer:null, stream:null, lastFlashAt:0, lastVibrateAt:0, audioUnlocked:false, loadedAudioDataUrl:'', audioSyncTimer:null };
 
-    function setAudioNote(message){
-      els.audioNote.textContent = message;
+    let sessionState = null;
+    let participantState = null;
+    let audioLoadedDataUrl = '';
+    let motionEnabled = false;
+    let boostCooldown = false;
+
+    function escapeHtml(str=''){ return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
+    function safeVibrate(pattern){ try { if (navigator.vibrate) navigator.vibrate(pattern); } catch(e){} }
+    function toggleFlash(){
+      els.flashLayer.classList.remove('active');
+      void els.flashLayer.offsetWidth;
+      els.flashLayer.classList.add('active');
+      setTimeout(() => els.flashLayer.classList.remove('active'), 240);
+    }
+    function makeConfetti(){
+      els.confettiBurst.innerHTML = '';
+      const colors = ['#f7b718','#ff66c4','#67a8ff','#9ef7c4','#ffffff'];
+      for (let i = 0; i < 28; i++){
+        const piece = document.createElement('div');
+        piece.className = 'confetti';
+        piece.style.left = `${Math.random()*100}%`;
+        piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+        piece.style.animationDuration = `${2.4 + Math.random()*1.6}s`;
+        piece.style.opacity = '1';
+        piece.style.transform = `rotate(${Math.random()*180}deg)`;
+        els.confettiBurst.appendChild(piece);
+      }
+      setTimeout(() => els.confettiBurst.innerHTML = '', 4200);
     }
 
-    async function unlockAudio(){
-      state.audioUnlocked = true;
-      els.sharedAudio.muted = false;
-      try {
-        await els.sharedAudio.play();
-        els.sharedAudio.pause();
-        els.sharedAudio.currentTime = 0;
-      } catch (e) {}
-      setAudioNote('Synced sound enabled on this phone. When the host starts the MP3, this device will try to play it in time.');
-      els.enableSoundBtn.textContent = 'Sound enabled';
-    }
-
-    function stopSyncedAudio(){
-      if (state.audioSyncTimer){ clearInterval(state.audioSyncTimer); state.audioSyncTimer = null; }
-      try { els.sharedAudio.pause(); } catch(e) {}
-    }
-
-    async function syncSharedAudio(){
-      const audioCfg = state.session?.audioBroadcast;
-      if (!audioCfg?.enabled || audioCfg.mode !== 'sync' || !audioCfg.dataUrl){
-        stopSyncedAudio();
+    async function joinExperience(){
+      const nickname = els.displayName.value.trim().slice(0,24);
+      if (!nickname) {
+        els.displayName.focus();
         return;
       }
-      if (state.loadedAudioDataUrl !== audioCfg.dataUrl){
-        state.loadedAudioDataUrl = audioCfg.dataUrl;
-        els.sharedAudio.src = audioCfg.dataUrl;
-        els.sharedAudio.load();
-      }
-      if (!state.audioUnlocked){
-        setAudioNote('The host is ready to broadcast audio. Tap Enable synced sound to let this phone play it.');
+      const snap = await get(sessionRef);
+      if (!snap.exists()) {
+        alert('This session is not active yet.');
         return;
       }
-      const desiredMs = Math.max(0, Number(audioCfg.hostPositionMs || (Date.now() - (audioCfg.startedAt || Date.now()))));
-      const desiredSec = desiredMs / 1000;
-      const drift = Math.abs((els.sharedAudio.currentTime || 0) - desiredSec);
-      if (drift > 0.35 && Number.isFinite(desiredSec)) {
-        try { els.sharedAudio.currentTime = desiredSec; } catch(e) {}
-      }
-      if (audioCfg.playing){
-        try { await els.sharedAudio.play(); } catch (e) { setAudioNote('Tap Enable synced sound again if this phone stays silent.'); }
-      } else {
-        try { els.sharedAudio.pause(); } catch(e) {}
-      }
-      setAudioNote(`Now playing host track: ${audioCfg.trackName || 'MP3'}${audioCfg.durationMs ? ` • ${Math.max(0, Math.ceil((audioCfg.durationMs - desiredMs)/1000))}s left` : ''}`);
-      if (!state.audioSyncTimer){
-        state.audioSyncTimer = setInterval(() => {
-          const cfg = state.session?.audioBroadcast;
-          if (!cfg?.enabled || cfg.mode !== 'sync' || !cfg.playing) return;
-          const shouldBe = Math.max(0, Number(cfg.hostPositionMs || 0)) / 1000;
-          const driftInner = Math.abs((els.sharedAudio.currentTime || 0) - shouldBe);
-          if (driftInner > 0.45){ try { els.sharedAudio.currentTime = shouldBe; } catch(e) {} }
-        }, 500);
-      }
-    }
-
-    function show(view){
-      [els.joinView, els.tileView, els.countdownView, els.revealView, els.selfieView].forEach(v => v.classList.add('hidden'));
-      view.classList.remove('hidden');
-    }
-
-    function computeAssignment(index, totalCount, session){
-      const tiles = session.tiles || [];
-      const mode = session.assignmentMode || 'repeat';
-      if (mode === 'mosaic'){
-        const totalCells = Math.max(1, (session.mosaic?.cols || 4) * (session.mosaic?.rows || 6));
-        const sliceIndex = index % totalCells;
-        return { tileIndex:sliceIndex, tileText:`CELL ${sliceIndex + 1}`, groupIndex:sliceIndex, mosaicIndex:sliceIndex };
-      }
-      if (!tiles.length) return { tileIndex:index, tileText:`#${index+1}`, groupIndex:index };
-      if (mode === 'unique') return { tileIndex:index, tileText:tiles[index] ?? `#${index+1}`, groupIndex:Math.min(index, tiles.length-1) };
-      if (mode === 'sections'){
-        const sectionSize = Math.max(1, Math.ceil(totalCount / tiles.length));
-        const sectionIndex = Math.min(Math.floor(index / sectionSize), tiles.length-1);
-        return { tileIndex:sectionIndex, tileText:tiles[sectionIndex], groupIndex:sectionIndex };
-      }
-      const repeatedIndex = index % tiles.length;
-      return { tileIndex:repeatedIndex, tileText:tiles[repeatedIndex], groupIndex:repeatedIndex };
-    }
-
-    async function joinSession(){
-      const sessionSnap = await get(sessionRef);
-      if (!sessionSnap.exists()){ alert('This session was not found.'); return; }
-      const session = sessionSnap.val();
-      const participantsSnap = await get(participantsRef);
-      const participants = participantsSnap.val() || {};
-      const nickname = els.nicknameInput.value.trim() || `Phone ${Math.floor(Math.random()*90)+10}`;
-      const participantEntries = Object.entries(participants).sort((a,b)=>(a[1]?.joinedAt||0)-(b[1]?.joinedAt||0));
-      const existing = participants[participantId];
-      const existingIndex = participantEntries.findIndex(([id]) => id === participantId);
-      const joinIndex = existingIndex >= 0 ? existingIndex : participantEntries.length;
-      const assigned = computeAssignment(joinIndex, Math.max(1, participantEntries.length + (existing ? 0 : 1)), session);
-
       await set(participantRef, {
         nickname,
-        tileIndex: assigned.tileIndex,
-        tileText: assigned.tileText,
-        groupIndex: assigned.groupIndex,
-        mosaicIndex: assigned.mosaicIndex ?? null,
-        slotNumber: joinIndex + 1,
-        joinedAt: existing?.joinedAt || Date.now(),
-        ready: true,
-        online: true,
-        updatedAt: serverTimestamp(),
-        userAgent: navigator.userAgent
+        ready: false,
+        joinedAt: Date.now(),
+        roleLabel: 'Joining…',
+        teamLabel: 'Assigning…',
+        energyBoosts: 0,
+        lastReactionAt: 0
       });
-      onDisconnect(participantRef).update({ online:false, ready:false, updatedAt:serverTimestamp() });
-      els.readyBtn.classList.remove('hidden');
+      onDisconnect(participantRef).remove();
+      els.joinCard.style.display = 'none';
+      els.liveView.style.display = 'block';
+      renderParticipant();
     }
 
-    async function setReady(){ await update(participantRef, { ready:true, online:true, updatedAt:serverTimestamp() }); }
-
-    function applyAudioReactiveLevel(level = 0){
-      const clamped = Math.max(0, Math.min(1, Number(level) || 0));
-      els.tileView.style.setProperty('--reactive-scale', (1 + clamped * 0.16).toFixed(3));
-      els.tileView.style.setProperty('--reactive-brightness', (1 + clamped * 0.65).toFixed(3));
-      els.tileView.style.setProperty('--reactive-glow', `${Math.round(clamped * 42)}px`);
+    async function markReady(){
+      if (!participantState) return;
+      await update(participantRef, { ready: true, updatedAt: Date.now() });
+      safeVibrate([80,40,80]);
+      toggleFlash();
     }
 
-    function clearAudioReactiveLevel(){
-      els.tileView.style.removeProperty('--reactive-scale');
-      els.tileView.style.removeProperty('--reactive-brightness');
-      els.tileView.style.removeProperty('--reactive-glow');
-      els.tileView.classList.remove('audio-reactive');
+    async function pushEnergy(amount = 5){
+      if (!participantState || boostCooldown) return;
+      boostCooldown = true;
+      await update(participantRef, { energyBoosts: (participantState.energyBoosts || 0) + amount, updatedAt: Date.now() });
+      await update(sessionRef, {
+        'interaction/energyScore': Math.min(100, Math.round((sessionState?.interaction?.energyScore || 0) + amount * 0.8)),
+        updatedAt: Date.now()
+      });
+      safeVibrate(70);
+      toggleFlash();
+      setTimeout(() => boostCooldown = false, 900);
     }
 
-    function getFlashProfile(level = 0){
-      const config = state.session?.flashConfig || {};
-      const mode = config.mode || 'soft';
-      const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (mode === 'off' || reducedMotion) return null;
-      const profiles = {
-        soft: { threshold:0.58, opacity:0.45, duration:170, cooldown:260 },
-        medium: { threshold:0.48, opacity:0.72, duration:150, cooldown:180 },
-        strobe: { threshold:0.36, opacity:0.92, duration:110, cooldown:90 }
-      };
-      const profile = { ...(profiles[mode] || profiles.soft) };
-      if (level < profile.threshold) return null;
-      profile.color = config.color || 'white';
-      profile.haptics = config.haptics || 'off';
-      profile.opacity = Math.min(0.95, profile.opacity + Math.max(0, level - profile.threshold) * 0.45);
-      profile.duration = Math.max(80, profile.duration - Math.round(level * 25));
-      return profile;
-    }
-
-    function triggerFlash(profile){
-      if (!profile) return;
+    async function sendReaction(type){
+      if (!participantState || !type) return;
       const now = Date.now();
-      if (now - state.lastFlashAt < profile.cooldown) return;
-      state.lastFlashAt = now;
-      els.flashLayer.className = 'flash-layer';
-      if (profile.color && profile.color !== 'white') els.flashLayer.classList.add(profile.color);
-      els.flashLayer.style.setProperty('--flash-opacity', String(profile.opacity));
-      els.flashLayer.style.setProperty('--flash-duration', `${profile.duration}ms`);
-      void els.flashLayer.offsetWidth;
-      els.flashLayer.classList.add('live');
-      if (profile.haptics === 'vibrate' && navigator.vibrate && now - state.lastVibrateAt > 220){
-        state.lastVibrateAt = now;
-        navigator.vibrate(18);
-      }
+      if ((participantState.lastReactionAt || 0) + 450 > now) return;
+      await update(sessionRef, { [`reactions/${type}`]: increment(1), updatedAt: now });
+      await update(participantRef, { lastReactionAt: now });
+      if (type === 'confetti') makeConfetti();
+      if (type === 'boost') pushEnergy(4);
+      safeVibrate(40);
     }
 
-    function clearFlashLayer(){
-      els.flashLayer.className = 'flash-layer';
-      els.flashLayer.style.removeProperty('--flash-opacity');
-      els.flashLayer.style.removeProperty('--flash-duration');
-    }
-
-    function setAnimationState(isLive, style='pulse', remaining=null){
-      els.tileView.classList.remove('phase-animate','flash','ripple','audio-reactive');
-      els.animateOverlay.classList.add('hidden');
-      els.animateOverlay.classList.remove('live');
-      if (!isLive){ clearFlashLayer(); return; }
-      els.tileView.classList.add('phase-animate');
-      if (style === 'flash') els.tileView.classList.add('flash');
-      if (style === 'ripple') els.tileView.classList.add('ripple');
-      if (style === 'audio') els.tileView.classList.add('audio-reactive');
-      els.animateOverlay.classList.remove('hidden');
-      requestAnimationFrame(() => els.animateOverlay.classList.add('live'));
-      const label = String(style || 'pulse').toUpperCase();
-      els.animateBadge.textContent = remaining !== null ? `${label} • ${remaining}` : label;
-    }
-
-    function runAnimatePhase(){
-      if (state.countdownTimer) clearInterval(state.countdownTimer);
-      const style = state.session?.animationStyle || 'pulse';
-      if (style === 'audio'){
-        const tick = () => {
-          const level = state.session?.audioReactive?.level || 0;
-          const label = state.session?.audioReactive?.trackName ? `AUDIO • ${Math.round(level * 100)}%` : 'AUDIO';
-          setAnimationState(true, 'audio', null);
-          els.animateBadge.textContent = label;
-          applyAudioReactiveLevel(level);
-          triggerFlash(getFlashProfile(level));
-        };
-        tick();
-        state.countdownTimer = setInterval(tick, 120);
-        return;
-      }
-      const target = state.session?.animationTargetAt;
-      if (!target){
-        setAnimationState(true, style, null);
-        return;
-      }
-      const tick = () => {
-        const remaining = Math.max(0, Math.ceil((target - Date.now()) / 1000));
-        setAnimationState(true, style, remaining);
-        if (remaining <= 0){
-          clearInterval(state.countdownTimer);
-          setAnimationState(false);
+    async function ensureMotionPermission(){
+      if (motionEnabled) return true;
+      try {
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          const result = await DeviceMotionEvent.requestPermission();
+          motionEnabled = result === 'granted';
+        } else {
+          motionEnabled = true;
         }
-      };
-      tick();
-      state.countdownTimer = setInterval(tick, 160);
+      } catch (e) {
+        motionEnabled = false;
+      }
+      return motionEnabled;
     }
 
-    function updateTileView(){
-      const p = state.participant || {};
-      const session = state.session || {};
-      const isMosaic = session.assignmentMode === 'mosaic' && session.mosaic?.artwork;
-      els.joinSessionLabel.textContent = session.sessionName || `Session ${sessionId}`;
-      els.tileIndexLabel.textContent = `SLOT ${p.slotNumber || (p.tileIndex ?? 0)+1} • ${String(session.assignmentMode || 'repeat').toUpperCase()}`;
+    async function enableMotionBoost(){
+      const ok = await ensureMotionPermission();
+      if (!ok) {
+        pushEnergy(5);
+        return;
+      }
+      pushEnergy(5);
+    }
 
-      if (isMosaic){
-        const cols = Math.max(2, session.mosaic?.cols || 4);
-        const rows = Math.max(2, session.mosaic?.rows || 6);
-        const sliceIndex = p.mosaicIndex ?? p.tileIndex ?? 0;
+    function applyAudienceAudio(){
+      const audioBroadcast = sessionState?.audioBroadcast;
+      if (!audioBroadcast?.enabled || audioBroadcast.mode !== 'sync' || !audioBroadcast.dataUrl) return;
+      if (audioLoadedDataUrl !== audioBroadcast.dataUrl) {
+        audioLoadedDataUrl = audioBroadcast.dataUrl;
+        els.guestAudio.src = audioLoadedDataUrl;
+      }
+      if (audioBroadcast.playing) {
+        const hostPosSec = (audioBroadcast.hostPositionMs || 0) / 1000;
+        if (Math.abs((els.guestAudio.currentTime || 0) - hostPosSec) > 0.8) {
+          try { els.guestAudio.currentTime = hostPosSec; } catch(e){}
+        }
+        els.guestAudio.play().catch(() => {});
+      } else {
+        try { els.guestAudio.pause(); } catch(e){}
+      }
+    }
+
+    function applyPhaseEffects(phase){
+      els.phaseBadge.textContent = String(phase || 'lobby').toUpperCase();
+      els.blackoutLayer.classList.toggle('active', phase === 'blackout' || sessionState?.blackout);
+
+      if (phase === 'countdown') {
+        safeVibrate(70);
+        toggleFlash();
+      }
+      if (phase === 'animate' && sessionState?.animationStyle === 'audio') {
+        const level = Math.round((sessionState?.audioReactive?.level || 0) * 100);
+        els.energyMeterFill.style.width = `${level}%`;
+        els.energyChip.textContent = `Audio ${level}%`;
+      }
+      if (phase === 'reveal') {
+        makeConfetti();
+        toggleFlash();
+        safeVibrate([80,40,110]);
+      }
+    }
+
+    function renderParticipant(){
+      if (!participantState || !sessionState) return;
+
+      const phase = sessionState.phase || 'lobby';
+      els.sessionCode.textContent = sessionId;
+      els.heroTitle.textContent = sessionState.sessionName || 'Join the room reveal.';
+      els.heroSubtitle.textContent = phase === 'reveal'
+        ? (sessionState.finalSubhead || 'Thanks for joining')
+        : 'Enter your name, get your role, tap ready, and help power the moment.';
+
+      const nickname = participantState.nickname || 'Guest';
+      const teamColor = participantState.teamColor || '#ffffff';
+      const teamLabel = participantState.teamLabel || 'Team';
+      const roleLabel = participantState.roleLabel || 'Role';
+      const tileText = phase === 'reveal'
+        ? (sessionState.finalHeadline || participantState.tileText || 'WOW')
+        : (phase === 'countdown'
+          ? Math.max(0, Math.ceil(((sessionState.countdownTargetAt || Date.now()) - Date.now()) / 1000)).toString()
+          : (participantState.tileText || 'LIVE'));
+
+      els.tileText.textContent = tileText;
+      els.roleText.textContent = roleLabel;
+      els.teamText.innerHTML = `<span class="teamdot" style="background:${teamColor}"></span>${escapeHtml(teamLabel)}`;
+      els.slotChip.textContent = `Slot ${participantState.slotNumber || '—'}`;
+      els.readyChip.textContent = participantState.ready ? 'Ready' : 'Not ready';
+      els.energyChip.textContent = `Energy ${Math.round(sessionState?.interaction?.energyScore || 0)}%`;
+      els.energyMeterFill.style.width = `${Math.round(sessionState?.interaction?.energyScore || 0)}%`;
+      els.footerNote.textContent = phase === 'reveal'
+        ? `${nickname}, you helped power the moment.`
+        : `${nickname}, you are part of the room-wide reveal.`;
+
+      els.miniCaption.textContent =
+        phase === 'lobby' ? 'Hold your phone ready.' :
+        phase === 'countdown' ? 'Countdown live. Phones up.' :
+        phase === 'animate' ? 'Live animation in motion.' :
+        phase === 'blackout' ? '' :
+        phase === 'selfie' ? 'You may become the mosaic.' :
+        (sessionState.finalSubhead || 'Premium interactive V3');
+
+      els.bigSlot.classList.toggle('pulsing', phase === 'lobby' || !!sessionState?.interaction?.hypePulse);
+
+      const isMosaic = sessionState.assignmentMode === 'mosaic' && sessionState.mosaic?.artwork;
+      if (isMosaic) {
+        const cols = Math.max(2, sessionState.mosaic?.cols || 4);
+        const rows = Math.max(2, sessionState.mosaic?.rows || 6);
+        const sliceIndex = participantState.mosaicIndex ?? participantState.tileIndex ?? 0;
         const col = sliceIndex % cols;
         const row = Math.floor(sliceIndex / cols);
         const bgX = cols > 1 ? (col / (cols - 1)) * 100 : 50;
         const bgY = rows > 1 ? (row / (rows - 1)) * 100 : 50;
-        els.wordTileWrap.classList.add('hidden');
-        els.mosaicSlice.classList.remove('hidden');
-        els.mosaicSlice.style.backgroundImage = `url(${session.mosaic.artwork})`;
-        els.mosaicSlice.style.backgroundSize = session.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
-        els.mosaicSlice.style.backgroundPosition = `${bgX}% ${bgY}%`;
-        els.mosaicSlice.style.backgroundRepeat = 'no-repeat';
-        els.mosaicCellLabel.textContent = `${session.mosaic.headline || 'Artwork'} • Cell ${sliceIndex + 1}`;
+        const fit = sessionState.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
+        els.sliceLayer.style.display = 'block';
+        els.sliceLayer.style.backgroundImage = `url('${sessionState.mosaic.artwork}')`;
+        els.sliceLayer.style.backgroundSize = fit;
+        els.sliceLayer.style.backgroundPosition = `${bgX}% ${bgY}%`;
       } else {
-        els.mosaicSlice.classList.add('hidden');
-        els.wordTileWrap.classList.remove('hidden');
-        els.tileMain.textContent = p.tileText || 'JOIN';
-        els.tileCaption.textContent = session.sessionName || 'Waiting for the host…';
+        els.sliceLayer.style.display = 'none';
       }
 
-      els.revealHeadline.textContent = session.finalHeadline || 'Final Reveal';
-      els.revealSubhead.textContent = session.finalSubhead || 'Thanks for joining.';
-      els.revealCta.href = session.ctaUrl || '#';
-      els.revealCta.textContent = session.ctaUrl ? 'Open link' : 'Thanks for joining';
-      if (!session.ctaUrl) els.revealCta.removeAttribute('target'); else els.revealCta.setAttribute('target', '_blank');
+      applyPhaseEffects(phase);
+      applyAudienceAudio();
     }
 
-    function runCountdown(){
-      if (state.countdownTimer) clearInterval(state.countdownTimer);
-      const targetAt = state.session?.countdownTargetAt;
-      if (!targetAt) return;
-      const tick = () => {
-        const value = Math.max(0, Math.ceil((targetAt - Date.now()) / 1000));
-        els.countdownNumber.textContent = value;
-        if (value <= 0) clearInterval(state.countdownTimer);
-      };
-      tick();
-      state.countdownTimer = setInterval(tick, 120);
-    }
+    onValue(sessionRef, snap => {
+      sessionState = snap.val();
+      if (!sessionState) return;
+      renderParticipant();
+    });
 
-    async function ensureSelfieCamera(){
-      if (state.stream) return;
-      try {
-        state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode:'user', width:{ ideal:1080 }, height:{ ideal:1920 } }, audio:false });
-        els.camera.srcObject = state.stream;
-      } catch (err){ console.error(err); }
-    }
-
-    function applyPhase(){
-      const phase = state.session?.phase || 'lobby';
-      updateTileView();
-      if (state.countdownTimer && !['countdown','animate'].includes(phase)) clearInterval(state.countdownTimer);
-      if (phase === 'lobby'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(state.participant ? els.tileView : els.joinView); }
-      if (phase === 'countdown'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(els.countdownView); runCountdown(); }
-      if (phase === 'animate'){ show(els.tileView); runAnimatePhase(); syncSharedAudio().catch(console.error); }
-      if (phase === 'reveal'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(els.revealView); }
-      if (phase === 'selfie'){ stopSyncedAudio(); clearAudioReactiveLevel(); setAnimationState(false); show(els.selfieView); ensureSelfieCamera(); }
-    }
-
-    onValue(sessionRef, snap => { const data = snap.val(); if (!data) return; state.session = data; applyPhase(); if ((state.session?.phase || 'lobby') === 'animate' && (state.session?.animationStyle === 'audio')) syncSharedAudio().catch(console.error); });
     onValue(participantRef, snap => {
-      state.participant = snap.val();
-      if (state.participant){
-        els.readyBtn.classList.remove('hidden');
-        if ((state.session?.phase || 'lobby') === 'lobby'){ setAnimationState(false); show(els.tileView); }
+      participantState = snap.val();
+      if (!participantState) {
+        els.joinCard.style.display = 'block';
+        els.liveView.style.display = 'none';
+        return;
       }
-      updateTileView();
+      els.displayName.value = participantState.nickname || '';
+      els.joinCard.style.display = 'none';
+      els.liveView.style.display = 'block';
+      renderParticipant();
     });
 
-    els.joinBtn.addEventListener('click', async () => { await unlockAudio(); joinSession().catch(console.error); });
-    els.readyBtn.addEventListener('click', async () => { await unlockAudio(); setReady().catch(console.error); });
-    els.enableSoundBtn.addEventListener('click', () => unlockAudio().catch(console.error));
-    els.nicknameInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinSession().catch(console.error); });
+    els.joinBtn.addEventListener('click', () => joinExperience().catch(console.error));
+    els.readyBtn.addEventListener('click', () => markReady().catch(console.error));
+    els.boostBtn.addEventListener('click', () => enableMotionBoost().catch(console.error));
 
-    els.captureBtn.addEventListener('click', () => {
-      const video = els.camera, canvas = els.snapshot;
-      if (!video.videoWidth || !video.videoHeight) return;
-      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const grad = ctx.createLinearGradient(0, canvas.height * 0.6, 0, canvas.height);
-      grad.addColorStop(0, 'rgba(16,16,16,0)');
-      grad.addColorStop(1, 'rgba(16,16,16,.72)');
-      ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#f7b718';
-      ctx.font = `700 ${Math.max(32, canvas.width * 0.05)}px Inter, sans-serif`;
-      ctx.fillText(state.session?.finalHeadline || 'CrowdCode', canvas.width * 0.08, canvas.height * 0.84);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = `500 ${Math.max(22, canvas.width * 0.032)}px Inter, sans-serif`;
-      ctx.fillText(state.session?.finalSubhead || '', canvas.width * 0.08, canvas.height * 0.89);
-      const dataUrl = canvas.toDataURL('image/png');
-      els.downloadBtn.href = dataUrl;
-      els.snapshot.classList.remove('hidden');
-      els.camera.classList.add('hidden');
-      els.downloadBtn.classList.remove('hidden');
-      els.retakeBtn.classList.remove('hidden');
-      els.captureBtn.classList.add('hidden');
+    document.querySelectorAll('[data-reaction]').forEach(btn => {
+      btn.addEventListener('click', () => sendReaction(btn.dataset.reaction).catch(console.error));
     });
 
-    els.retakeBtn.addEventListener('click', () => {
-      els.snapshot.classList.add('hidden');
-      els.camera.classList.remove('hidden');
-      els.downloadBtn.classList.add('hidden');
-      els.retakeBtn.classList.add('hidden');
-      els.captureBtn.classList.remove('hidden');
+    window.addEventListener('devicemotion', event => {
+      if (!motionEnabled || !participantState) return;
+      const a = event.accelerationIncludingGravity;
+      if (!a) return;
+      const magnitude = Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0);
+      if (magnitude > 34) pushEnergy(3).catch(console.error);
     });
 
-    updateTileView();
-
-    window.addEventListener('beforeunload', () => { stopSyncedAudio(); });
+    window.addEventListener('beforeunload', () => {
+      // onDisconnect handles cleanup
+    });
   </script>
 </body>
 </html>
