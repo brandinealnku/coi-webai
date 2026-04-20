@@ -1327,9 +1327,6 @@
     updateUploadStatus();
     renderStage();
   </script>
-</body>
-</html>
-
   <script>
     (function(){
       const body = document.body;
@@ -1347,7 +1344,7 @@
       }
       toggleBtn?.addEventListener('click', ()=> body.classList.toggle('controls-collapsed'));
       document.addEventListener('keydown', (e)=>{
-        if ((e.key === '\' || (e.key.toLowerCase() === 'i' && (e.metaKey || e.ctrlKey))) && window.innerWidth > 680) {
+        if (((e.key === '\\') || (e.key.toLowerCase() === 'i' && (e.metaKey || e.ctrlKey))) && window.innerWidth > 680) {
           e.preventDefault();
           body.classList.toggle('controls-collapsed');
         }
