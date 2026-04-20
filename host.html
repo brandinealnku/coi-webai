@@ -60,7 +60,8 @@
       padding:18px;
     }
     button,input,select,textarea{font:inherit}
-    .app{max-width:1680px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start;position:relative}
+    .app{max-width:1720px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start;position:relative;min-width:0}
+    .layout-main{min-width:0}
     .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
     .hero-header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px}
     .brand{display:flex;align-items:center;gap:16px;min-width:0}
@@ -80,7 +81,7 @@
     .stat{padding:16px 18px;border-radius:22px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
     .stat .k{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
     .stat .v{font-size:1.8rem;font-weight:900;letter-spacing:-.04em}
-    .stage-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,420px);gap:18px;align-items:start}
+    .stage-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,.8fr);gap:18px}
     .stage-panel{padding:18px}
     .stage-shell{position:relative;min-height:620px;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:var(--stage)}
     .stage-shell::before{content:'';position:absolute;inset:0;background:
@@ -99,7 +100,7 @@
     .subline{margin-top:14px;font-size:1.02rem;line-height:1.5;color:#dbe5fb;max-width:60ch}
     .blackout{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .24s;z-index:3}
     .blackout.active{opacity:1}
-    .support-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+    .support-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,360px);gap:18px}
     .section-card{padding:18px}
     .section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
     .section-head h3{font-size:1.25rem;letter-spacing:-.03em}
@@ -119,23 +120,18 @@
     .phone .small{font-size:.8rem;color:#bfc8de;margin-top:8px}
     .slice{width:100%;aspect-ratio:9/16;border-radius:18px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.14)}
     .teamdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-    .inspector-backdrop{position:fixed;inset:0;background:rgba(8,14,26,.24);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:28}
-    body.inspector-open .inspector-backdrop{opacity:1;pointer-events:auto}
-    .inspector{position:fixed;top:18px;right:18px;bottom:18px;width:min(max(380px,var(--inspector-width, 32vw)),640px);max-height:calc(100vh - 36px);overflow:auto;padding:18px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);z-index:30;transform:translateX(calc(100% + 24px));transition:transform .24s ease, opacity .24s ease;opacity:0;resize:none}
-    body.inspector-open .inspector{transform:translateX(0);opacity:1}
+    .inspector{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:auto;padding:18px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
     .inspector::-webkit-scrollbar{width:10px}.inspector::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:999px}
-    .inspector-resize-handle{position:absolute;left:-8px;top:18px;bottom:18px;width:16px;cursor:ew-resize;display:grid;place-items:center}
-    .inspector-resize-handle::before{content:'';width:4px;height:76px;border-radius:999px;background:var(--line-strong)}
     .inspector-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
     .status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding:12px 14px;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
     .statusleft{display:flex;align-items:center;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 6px rgba(231,102,102,.16)}.dot.live{background:var(--green);box-shadow:0 0 0 6px rgba(43,197,125,.18)}
-    .controls{display:grid;gap:14px}
+    
     .control-card{padding:16px;border-radius:22px;border:1px solid var(--line);background:var(--panel)}
     .control-card h3{font-size:1.02rem;letter-spacing:-.02em;margin-bottom:4px}
     .help{font-size:.88rem;line-height:1.45;color:var(--muted);margin-bottom:14px}
     .field-grid{display:grid;gap:12px}
-    .field-grid.two{grid-template-columns:1fr 1fr}
-    .field-grid.three{grid-template-columns:repeat(3,1fr)}
+    .field-grid.two{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .field-grid.three{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
     .field{display:grid;gap:8px}
     .field label{font-size:.82rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
     .text-input,.url-input,.textarea, .native-select, .file-input, .number-input{
@@ -145,9 +141,9 @@
     .native-select{appearance:none;background-image:linear-gradient(45deg, transparent 50%, var(--muted) 50%),linear-gradient(135deg, var(--muted) 50%, transparent 50%);background-position:calc(100% - 20px) calc(1em + 8px),calc(100% - 15px) calc(1em + 8px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:40px}
     .visually-hidden-control{position:absolute !important;opacity:0 !important;pointer-events:none !important;width:1px !important;height:1px !important;overflow:hidden !important}
     .segmented{display:grid;gap:8px}
-    .segmented.two{grid-template-columns:1fr 1fr}
-    .segmented.three{grid-template-columns:repeat(3,1fr)}
-    .segmented.four{grid-template-columns:repeat(4,1fr)}
+    .segmented.two{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+    .segmented.three{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+    .segmented.four{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
     .segmented button{min-height:var(--control-h);border-radius:16px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;padding:10px 12px;cursor:pointer}
     .segmented button.active{background:linear-gradient(135deg,rgba(92,142,245,.22),rgba(141,100,247,.18));border-color:rgba(92,142,245,.40);box-shadow:inset 0 0 0 1px rgba(92,142,245,.16)}
     .tone-gold button.active{background:linear-gradient(135deg,rgba(244,190,42,.24),rgba(255,215,111,.18));border-color:rgba(244,190,42,.38)}
@@ -157,7 +153,7 @@
     .range-value{font-weight:900;letter-spacing:-.03em}
     .range-input{width:100%;accent-color:var(--blue)}
     .micro-actions{display:flex;flex-wrap:wrap;gap:10px}
-    .micro-actions button,.action-grid button,.preset-grid button{min-height:48px;border-radius:16px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;padding:12px 14px;cursor:pointer}
+    .micro-actions button,.action-grid button,.preset-grid button,.field button{min-height:48px;border-radius:16px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;padding:12px 14px;cursor:pointer}
     .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .action-grid .primary{background:linear-gradient(135deg,var(--gold),#ffd76f);color:#111;border-color:rgba(244,190,42,.35)}
@@ -178,11 +174,11 @@
     .audio-meter{height:12px;background:#0a0d14;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
     .audio-meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,#67a8ff,#ff66c4,#f7b718)}
     
-    .toolbar .drawer-toggle.active{background:rgba(92,142,245,.18);border-color:rgba(92,142,245,.34)}
-    .inspector-close{height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;cursor:pointer}
-    .drawer-toggle{display:inline-flex}
-    @media (max-width:1440px){.stage-grid{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
-    @media (max-width:840px){body{padding:10px}.hero-header{padding:16px}.stats{grid-template-columns:1fr 1fr}.field-grid.two,.field-grid.three,.capture-grid,.join-card,.action-grid,.preset-grid,.segmented.two,.segmented.three,.segmented.four{grid-template-columns:1fr}.toolbar{justify-content:flex-start}.stage-shell{min-height:520px}.inspector{top:10px;right:10px;bottom:10px;max-height:calc(100vh - 20px);width:min(max(320px,var(--inspector-width, 92vw)),96vw)}}
+      .drawer-toggle{display:inline-flex}
+    @media (max-width:1480px){.stage-grid{grid-template-columns:1fr}.support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.inspector{width:min(max(560px,var(--inspector-width,52vw)),900px)}}
+    @media (max-width:1180px){.support-grid{grid-template-columns:1fr}.inspector{width:min(max(420px,var(--inspector-width,68vw)),860px)}}
+    @media (max-width:840px){body{padding:10px}.hero-header{padding:16px}.stats{grid-template-columns:1fr 1fr}.capture-grid,.join-card,.action-grid,.preset-grid{grid-template-columns:1fr}.toolbar{justify-content:flex-start}.stage-shell{min-height:520px}.inspector{top:10px;right:10px;bottom:10px;max-width:calc(100vw - 20px);width:min(max(360px,var(--inspector-width,92vw)),96vw)}.field-grid.two,.field-grid.three,.segmented.two,.segmented.three,.segmented.four{grid-template-columns:1fr}}
+    @media (max-width:560px){.stats{grid-template-columns:1fr}.toolbar button{flex:1 1 auto}.inspector{width:calc(100vw - 16px);top:8px;right:8px;bottom:8px;max-width:none}}
   </style>
 </head>
 <body>
@@ -197,7 +193,7 @@
         </div>
       </div>
       <div class="toolbar">
-        <button class="drawer-toggle" type="button" id="toggleInspectorBtn" aria-expanded="true" aria-controls="inspectorPanel">☰ Controls</button>
+        <button class="drawer-toggle" type="button" id="toggleInspectorBtn">☰ Controls</button>
         <button type="button" id="openLobbyBtn">Lobby</button>
         <button type="button" class="accent" id="startCountdownBtn">Countdown</button>
         <button type="button" class="gold" id="revealBtn">Reveal</button>
@@ -205,7 +201,7 @@
       </div>
     </header>
 
-    <div class="inspector-backdrop" id="inspectorBackdrop"></div>
+    <div class="inspector-backdrop" id="inspectorBackdrop" aria-hidden="true"></div>
 
     <div class="layout-main">
       <section class="stats">
@@ -302,14 +298,14 @@
       </section>
     </div>
 
-    <aside class="inspector" id="inspectorPanel" aria-hidden="false">
+    <aside class="inspector" id="inspectorPanel" aria-hidden="true">
       <div class="inspector-resize-handle" id="inspectorResizeHandle" aria-hidden="true"></div>
       <div class="inspector-header">
         <div>
           <div class="eyebrow">Inspector</div>
           <h2 style="font-size:1.45rem;letter-spacing:-.04em">Show controls</h2>
         </div>
-        <div style="display:flex;align-items:center;gap:10px"><div class="tiny">Resizable • click outside to hide</div><button type="button" class="inspector-close" id="closeInspectorBtn">Hide</button></div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div class="tiny">Auto-width • drag edge • click outside to hide</div><button type="button" class="inspector-close" id="closeInspectorBtn">Hide</button></div>
       </div>
 
       <div class="status-row">
@@ -575,12 +571,12 @@
               </div>
               <div class="field-grid two" style="margin-top:10px">
                 <div class="field">
-                  <label for="cameraDeviceSelect">Camera source</label>
-                  <select id="cameraDeviceSelect" class="native-select"></select>
+                  <label for="cameraSourceSelect">Camera source</label>
+                  <select id="cameraSourceSelect" class="native-select"></select>
                 </div>
                 <div class="field">
-                  <label for="cameraRefreshBtn">Available cameras</label>
-                  <button type="button" id="cameraRefreshBtn" style="min-height:var(--control-h);border-radius:16px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;padding:12px 14px;cursor:pointer">Refresh camera list</button>
+                  <label>&nbsp;</label>
+                  <button type="button" id="refreshCameraBtn">Refresh camera list</button>
                 </div>
               </div>
               <div class="micro-actions" style="margin-top:10px">
@@ -613,64 +609,69 @@
       const inspectorBtn = document.getElementById('toggleInspectorBtn');
       const inspectorBackdrop = document.getElementById('inspectorBackdrop');
       const closeInspectorBtn = document.getElementById('closeInspectorBtn');
-      const inspectorResizeHandle = document.getElementById('inspectorResizeHandle');
+      const resizeHandle = document.getElementById('inspectorResizeHandle');
       const sessionName = document.getElementById('sessionName');
       const sessionNamePreview = document.getElementById('sessionNamePreview');
-      const inspectorWidthKey = 'crowdcode-host-inspector-width';
       function applyTheme(mode){
         body.classList.toggle('dark', mode === 'dark');
         localStorage.setItem(storageKey, mode);
         if(themeBtn) themeBtn.textContent = mode === 'dark' ? '☀︎' : '◐';
       }
-      function setInspectorOpen(isOpen){
-        body.classList.toggle('inspector-open', !!isOpen);
-        inspectorBtn?.classList.toggle('active', !!isOpen);
-        inspectorBtn?.setAttribute('aria-expanded', String(!!isOpen));
-        inspector?.setAttribute('aria-hidden', String(!isOpen));
+      function getPreferredInspectorWidth(){
+        const stored = Number(localStorage.getItem('crowdcode_host_inspector_width') || '0');
+        if (stored) return stored;
+        return Math.min(Math.max(window.innerWidth * 0.46, 540), 860);
       }
-      function applyInspectorWidth(px){
-        const clamped = Math.min(Math.max(px, 360), Math.min(window.innerWidth - 20, 760));
-        document.documentElement.style.setProperty('--inspector-width', clamped + 'px');
-        localStorage.setItem(inspectorWidthKey, String(clamped));
+      function clampInspectorWidth(width){
+        return Math.max(360, Math.min(width, window.innerWidth - 24));
+      }
+      function setInspectorWidth(width){
+        const clamped = clampInspectorWidth(width);
+        document.documentElement.style.setProperty('--inspector-width', `${clamped}px`);
+        localStorage.setItem('crowdcode_host_inspector_width', String(clamped));
+      }
+      function autoFitInspectorWidth(){
+        const controls = inspector?.querySelector('.controls');
+        if (!inspector || !controls) return;
+        const desired = clampInspectorWidth(Math.max(getPreferredInspectorWidth(), controls.scrollWidth + 70));
+        setInspectorWidth(desired);
+      }
+      function openInspector(){
+        body.classList.add('inspector-open');
+        inspector?.setAttribute('aria-hidden', 'false');
+        inspectorBackdrop?.setAttribute('aria-hidden', 'false');
+        setTimeout(autoFitInspectorWidth, 40);
+      }
+      function closeInspector(){
+        body.classList.remove('inspector-open');
+        inspector?.setAttribute('aria-hidden', 'true');
+        inspectorBackdrop?.setAttribute('aria-hidden', 'true');
       }
       applyTheme(localStorage.getItem(storageKey) || 'light');
-      applyInspectorWidth(Number(localStorage.getItem(inspectorWidthKey) || 470));
-      setInspectorOpen(window.innerWidth > 900);
+      setInspectorWidth(getPreferredInspectorWidth());
       themeBtn?.addEventListener('click', ()=>applyTheme(body.classList.contains('dark') ? 'light' : 'dark'));
-      inspectorBtn?.addEventListener('click', (e)=> { e.stopPropagation(); setInspectorOpen(!body.classList.contains('inspector-open')); });
-      closeInspectorBtn?.addEventListener('click', ()=> setInspectorOpen(false));
-      inspectorBackdrop?.addEventListener('click', ()=> setInspectorOpen(false));
-      document.addEventListener('click', (event) => {
+      inspectorBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); openInspector(); });
+      closeInspectorBtn?.addEventListener('click', closeInspector);
+      inspectorBackdrop?.addEventListener('click', closeInspector);
+      document.addEventListener('mousedown', (e) => {
         if (!body.classList.contains('inspector-open')) return;
-        if (inspector?.contains(event.target) || inspectorBtn?.contains(event.target)) return;
-        setInspectorOpen(false);
+        if (inspector?.contains(e.target) || inspectorBtn?.contains(e.target)) return;
+        closeInspector();
       });
-      window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') setInspectorOpen(false);
+      window.addEventListener('resize', autoFitInspectorWidth);
+      if (window.innerWidth >= 1180) openInspector();
+      let resizeState = null;
+      resizeHandle?.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        resizeState = { startX: e.clientX, startWidth: inspector.getBoundingClientRect().width };
+        resizeHandle.setPointerCapture?.(e.pointerId);
       });
-      let resizing = false;
-      let resizeStartX = 0;
-      let resizeStartWidth = 0;
-      inspectorResizeHandle?.addEventListener('pointerdown', (event) => {
-        resizing = true;
-        resizeStartX = event.clientX;
-        resizeStartWidth = inspector.getBoundingClientRect().width;
-        inspectorResizeHandle.setPointerCapture(event.pointerId);
-        document.body.style.userSelect = 'none';
+      window.addEventListener('pointermove', (e) => {
+        if (!resizeState) return;
+        const delta = resizeState.startX - e.clientX;
+        setInspectorWidth(resizeState.startWidth + delta);
       });
-      inspectorResizeHandle?.addEventListener('pointermove', (event) => {
-        if (!resizing) return;
-        const delta = resizeStartX - event.clientX;
-        applyInspectorWidth(resizeStartWidth + delta);
-      });
-      const stopResize = () => { resizing = false; document.body.style.userSelect = ''; };
-      inspectorResizeHandle?.addEventListener('pointerup', stopResize);
-      inspectorResizeHandle?.addEventListener('pointercancel', stopResize);
-      window.addEventListener('resize', () => {
-        const saved = Number(localStorage.getItem(inspectorWidthKey) || 470);
-        applyInspectorWidth(saved);
-        if (window.innerWidth <= 900) setInspectorOpen(false);
-      });
+      window.addEventListener('pointerup', () => { resizeState = null; });
       sessionName?.addEventListener('input', ()=> { if(sessionNamePreview) sessionNamePreview.textContent = sessionName.value || 'CrowdCode Live'; });
 
       function syncSegmented(){
@@ -785,8 +786,7 @@
       audioSourceNode: null,
       audioMonitorTimer: null,
       autoStarted: false,
-      availableVideoInputs: [],
-      selectedCameraId: ''
+      selectedVideoDeviceId: ''
     };
 
     const teams = [
@@ -1168,28 +1168,6 @@
       }
     }
 
-
-    async function refreshCameraOptions(){
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videos = devices.filter(d => d.kind === 'videoinput');
-        state.availableVideoInputs = videos;
-        const current = state.selectedCameraId || els.cameraDeviceSelect.value || '';
-        els.cameraDeviceSelect.innerHTML = videos.length
-          ? videos.map((d, i) => `<option value="${d.deviceId}">${escapeHtml(d.label || `Camera ${i+1}`)}</option>`).join('')
-          : '<option value="">No camera found</option>';
-        if (videos.some(v => v.deviceId === current)) {
-          els.cameraDeviceSelect.value = current;
-        } else if (videos[0]) {
-          els.cameraDeviceSelect.value = videos[0].deviceId;
-          state.selectedCameraId = videos[0].deviceId;
-        }
-      } catch (error) {
-        console.error(error);
-        els.cameraDeviceSelect.innerHTML = '<option value="">Camera list unavailable</option>';
-      }
-    }
-
     function setCaptureStatus(message){
       els.captureStatusBadge.textContent = message;
       els.captureHelp.textContent = message.includes('Captured')
@@ -1206,23 +1184,52 @@
       setCaptureStatus('Camera idle');
     }
 
+    async function refreshCameraDevices(){
+      if (!navigator.mediaDevices?.enumerateDevices) return;
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        if (els.cameraSourceSelect){
+          const previous = els.cameraSourceSelect.value || state.selectedVideoDeviceId;
+          els.cameraSourceSelect.innerHTML = '<option value="">Auto camera</option>' + videoDevices.map((device, index) => `<option value="${device.deviceId}">${escapeHtml(device.label || `Camera ${index + 1}`)}</option>`).join('');
+          const nextValue = videoDevices.some(device => device.deviceId === previous) ? previous : '';
+          els.cameraSourceSelect.value = nextValue;
+          state.selectedVideoDeviceId = nextValue;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     async function startCamera(){
       try{
         await stopCamera();
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio:false,
-          video:{ facingMode:{ ideal: state.facingMode }, width:{ ideal: 1600 }, height:{ ideal: 1000 } }
-        });
+        const selectedId = els.cameraSourceSelect?.value || state.selectedVideoDeviceId || '';
+        const videoConstraint = selectedId
+          ? { deviceId:{ exact:selectedId }, width:{ ideal: 1600 }, height:{ ideal: 1000 } }
+          : { facingMode:{ ideal: state.facingMode }, width:{ ideal: 1600 }, height:{ ideal: 1000 } };
+        const stream = await navigator.mediaDevices.getUserMedia({ audio:false, video: videoConstraint });
         state.cameraStream = stream;
         els.captureVideo.srcObject = stream;
-        setCaptureStatus(state.facingMode === 'user' ? 'Front camera live' : 'Rear camera live');
+        const activeTrack = stream.getVideoTracks?.()[0];
+        const activeSettings = activeTrack?.getSettings?.() || {};
+        if (activeSettings.deviceId) state.selectedVideoDeviceId = activeSettings.deviceId;
+        await refreshCameraDevices();
+        if (els.cameraSourceSelect && state.selectedVideoDeviceId) els.cameraSourceSelect.value = state.selectedVideoDeviceId;
+        const label = activeTrack?.label || (state.facingMode === 'user' ? 'Front camera' : 'Rear camera');
+        setCaptureStatus(`${label} live`);
       } catch(error){
         console.error(error);
         setCaptureStatus('Camera access blocked or unavailable');
       }
     }
 
-    async function flipCamera(){ state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment'; await startCamera(); }
+    async function flipCamera(){
+      state.selectedVideoDeviceId = '';
+      if (els.cameraSourceSelect) els.cameraSourceSelect.value = '';
+      state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment';
+      await startCamera();
+    }
     function capturePhoto(){
       if (!state.cameraStream || !els.captureVideo.videoWidth){ setCaptureStatus('Start camera first'); return; }
       const canvas = els.captureCanvas, video = els.captureVideo;
@@ -1522,9 +1529,9 @@
     els.audioPlayer.addEventListener('ended', () => stopAudioReactive(true).catch(console.error));
 
     els.startCameraBtn.addEventListener('click', () => startCamera());
+    els.refreshCameraBtn?.addEventListener('click', () => refreshCameraDevices());
+    els.cameraSourceSelect?.addEventListener('change', (e) => { state.selectedVideoDeviceId = e.target.value || ''; });
     els.flipCameraBtn.addEventListener('click', () => flipCamera());
-    els.cameraRefreshBtn.addEventListener('click', () => refreshCameraOptions());
-    els.cameraDeviceSelect.addEventListener('change', () => { state.selectedCameraId = els.cameraDeviceSelect.value; });
     els.capturePhotoBtn.addEventListener('click', () => capturePhoto());
     els.useCapturedBtn.addEventListener('click', () => useCapturedPhoto());
     els.stopCameraBtn.addEventListener('click', () => stopCamera());
@@ -1535,9 +1542,9 @@
       if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
     });
 
+    await refreshCameraDevices();
     await ensureSession();
     await renderQR();
-    await refreshCameraOptions();
     updateUploadStatus();
     renderStage();
   </script>
