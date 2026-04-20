@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdCode Host — Mosaic Mode</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --gold:#f7b718; --pink:#ff66c4; --bg1:#0f1021; --bg2:#1b1d3a; --panel:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.16); --text:#f8f8fb; --muted:#c5c7d3; --good:#39d98a; --danger:#ff6b6b;
+      --shadow:0 18px 48px rgba(0,0,0,.28); --radius:22px;
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0}
+    body{
+      font-family:'Inter',system-ui,sans-serif; min-height:100vh; color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(247,183,24,.16), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(255,102,196,.14), transparent 22%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      padding:22px;
+    }
+    .shell{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:430px 1fr;gap:22px}
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+    .sidebar,.stage{padding:22px}
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+    .brand-badge{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),#ffd86e);color:#111;font-weight:900}
+    .brand h1{margin:0;font-size:1.45rem;line-height:1}
+    .brand p{margin:4px 0 0;color:var(--muted);font-size:.93rem}
+    .status-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-weight:700;margin:4px 0 16px}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 6px rgba(255,107,107,.14)}
+    .dot.live{background:var(--good);box-shadow:0 0 0 6px rgba(57,217,138,.14)}
+    .field{margin-bottom:14px}
+    .field label{display:block;margin-bottom:7px;font-weight:700;font-size:.92rem}
+    .field input,.field select,.field textarea{
+      width:100%;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--text);padding:12px 14px;font-size:.97rem;outline:none
+    }
+    .field textarea{min-height:88px;resize:vertical}
+    .grid-2,.grid-3{display:grid;gap:12px}
+    .grid-2{grid-template-columns:1fr 1fr}
+    .grid-3{grid-template-columns:1fr 1fr 1fr}
+    .small-note,.subtle,.footer-note{color:var(--muted);font-size:.85rem;line-height:1.45}
+    .button-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;margin-bottom:16px}
+    button{border:0;border-radius:14px;padding:12px 16px;font-weight:800;font-size:.95rem;cursor:pointer;transition:transform .18s ease, filter .18s ease}
+    button:hover{transform:translateY(-1px);filter:brightness(1.03)}
+    .primary{background:linear-gradient(135deg,var(--gold),#ffd86e);color:#111}
+    .secondary{background:rgba(255,255,255,.1);color:var(--text);border:1px solid rgba(255,255,255,.14)}
+    .danger{background:rgba(255,107,107,.14);color:#ffd0d0;border:1px solid rgba(255,107,107,.25)}
+    .join-card,.art-card{display:grid;gap:16px;padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);margin-bottom:18px}
+    .join-card{grid-template-columns:160px 1fr;align-items:center}
+    #qrcode{width:160px;height:160px;background:white;border-radius:14px;display:grid;place-items:center;padding:12px}
+    .join-url{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .join-url code{display:block;word-break:break-all;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;color:#fff7d6;flex:1 1 320px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+    .stat{padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+    .stat .label{color:var(--muted);font-size:.85rem;margin-bottom:6px}
+    .stat .value{font-size:1.65rem;font-weight:800}
+    .preview-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+    .preview-header h2{margin:0;font-size:1.2rem}
+    .mosaic-preview{
+      width:min(100%,980px); aspect-ratio:10/16; margin:0 auto 18px; border-radius:26px; overflow:hidden;
+      background:#0f1021; border:1px solid rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+      background-position:center; background-size:cover; position:relative;
+    }
+    .mosaic-grid{position:absolute; inset:0; display:grid}
+    .mosaic-cell{border:1px solid rgba(255,255,255,.2); display:flex; align-items:flex-start; justify-content:flex-start; padding:8px; color:white; font-size:.76rem; font-weight:800; text-shadow:0 2px 8px rgba(0,0,0,.5)}
+    .phone-wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+    .phone{aspect-ratio:9/16;border-radius:28px;border:2px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04));position:relative;overflow:hidden;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+    .phone::before{content:'';width:42%;height:18px;background:rgba(255,255,255,.12);border-radius:0 0 16px 16px;position:absolute;top:0;left:50%;transform:translateX(-50%)}
+    .phone-top,.phone-bottom{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:rgba(255,255,255,.78)}
+    .phone-top{margin-top:12px}
+    .phone-slot{flex:1;display:grid;place-items:center;text-align:center;padding:10px}
+    .mini-slice{
+      width:100%; aspect-ratio:9/16; border-radius:18px; border:1px solid rgba(255,255,255,.14);
+      background-position:center; background-size:cover; box-shadow: inset 0 1px 0 rgba(255,255,255,.1)
+    }
+    .tile-big{font-weight:900;line-height:.95;font-size:clamp(1.9rem,5vw,3.8rem);letter-spacing:-.03em;text-shadow:0 8px 22px rgba(0,0,0,.24)}
+    .tile-small{font-size:.88rem;color:rgba(255,255,255,.85);margin-top:10px;line-height:1.35}
+    @media (max-width:1100px){.shell{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:680px){body{padding:14px}.join-card,.grid-2,.grid-3{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+  
+    .capture-panel{margin-top:14px;padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}
+    .capture-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:start}
+    .camera-stage{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/10;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1)}
+    .camera-stage video,.camera-stage canvas,.camera-stage img{width:100%;height:100%;object-fit:cover;display:block}
+    .camera-badge{position:absolute;top:10px;left:10px;padding:8px 10px;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);font-size:.8rem;font-weight:700}
+    .capture-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .capture-preview{border-radius:16px;overflow:hidden;aspect-ratio:1/1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+    .capture-preview img{width:100%;height:100%;object-fit:cover;display:block}
+    @media (max-width: 900px){.capture-grid{grid-template-columns:1fr}}
+
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="panel sidebar">
+      <div class="brand"><div class="brand-badge">CC</div><div><h1>CrowdCode Host</h1><p>Mosaic + full-room participation edition</p></div></div>
+      <div class="status-pill"><span id="statusDot" class="dot"></span><span id="statusText">Connecting…</span></div>
+
+      <div class="field"><label for="sessionName">Session title</label><input id="sessionName" value="AI Literacy Day Reveal" /></div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="assignmentMode">Participant assignment</label>
+          <select id="assignmentMode">
+            <option value="repeat">Repeat tiles across room</option>
+            <option value="sections">Section blocks by crowd size</option>
+            <option value="unique">Unique tiles, then numbered overflow</option>
+            <option value="mosaic" selected>Mosaic slices across room</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="tileSourceMode">Tile source</label>
+          <select id="tileSourceMode">
+            <option value="manual">Manual pipe-separated tiles</option>
+            <option value="words">Auto-split by words</option>
+            <option value="chars">Auto-split by characters</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field"><label for="tileInput">Tiles or phrase</label><textarea id="tileInput">AI LITERACY STARTS HERE</textarea><div class="small-note">Used for repeat, section, and unique modes. Mosaic mode uses the artwork settings below.</div></div>
+
+      <div class="grid-2">
+        <div class="field"><label for="layoutType">Reveal type</label><select id="layoutType"><option value="message" selected>Message / words</option><option value="countdown">Numbers / countdown tiles</option><option value="cta">Call to action</option></select></div>
+        <div class="field"><label for="countdownSeconds">Countdown seconds</label><input id="countdownSeconds" type="number" min="3" max="30" value="8" /></div>
+      </div>
+
+      <div class="art-card">
+        <div style="font-weight:800;">Mosaic artwork builder</div>
+        <div class="grid-2">
+          <div class="field"><label for="mosaicHeadline">Artwork headline</label><input id="mosaicHeadline" value="INF 125" /></div>
+          <div class="field"><label for="mosaicSubhead">Artwork subhead</label><input id="mosaicSubhead" value="AI Literacy" /></div>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label for="mosaicCols">Columns</label><input id="mosaicCols" type="number" min="2" max="12" value="4" /></div>
+          <div class="field"><label for="mosaicRows">Rows</label><input id="mosaicRows" type="number" min="2" max="20" value="6" /></div>
+          <div class="field"><label for="mosaicTheme">Theme</label>
+            <select id="mosaicTheme">
+              <option value="nku" selected>NKU gold + pink</option>
+              <option value="midnight">Midnight neon</option>
+              <option value="sunrise">Sunrise glow</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label for="mosaicArtworkSource">Artwork source</label>
+            <select id="mosaicArtworkSource">
+              <option value="generated" selected>Generated from headline + subhead</option>
+              <option value="upload">Uploaded image / logo</option>
+            </select>
+          </div>
+          <div class="field"><label for="mosaicImageFit">Image fit</label>
+            <select id="mosaicImageFit">
+              <option value="cover" selected>Cover cells</option>
+              <option value="contain">Contain full image</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label for="mosaicImageUpload">Custom artwork upload</label><input id="mosaicImageUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /><div id="mosaicUploadStatus" class="small-note">No custom image loaded yet.</div></div>
+        <div class="button-row" style="margin-top:0; margin-bottom:8px;">
+          <button class="secondary" id="regenerateArtworkBtn" type="button">Regenerate artwork preview</button>
+          <button class="secondary" id="clearUploadBtn" type="button">Clear uploaded image</button>
+        </div>
+        
+        <div class="capture-panel">
+          <div style="font-weight:800; margin-bottom:10px;">Live photo capture</div>
+          <div class="capture-grid">
+            <div>
+              <div class="camera-stage">
+                <video id="captureVideo" playsinline muted></video>
+                <img id="captureFallbackImage" alt="Captured preview" style="display:none;" />
+                <div class="camera-badge" id="captureStatusBadge">Camera idle</div>
+              </div>
+              <div class="capture-actions">
+                <button class="secondary" id="startCameraBtn" type="button">Start camera</button>
+                <button class="secondary" id="flipCameraBtn" type="button">Flip camera</button>
+                <button class="secondary" id="capturePhotoBtn" type="button">Capture photo</button>
+                <button class="secondary" id="useCapturedBtn" type="button">Use captured photo</button>
+                <button class="secondary" id="stopCameraBtn" type="button">Stop camera</button>
+              </div>
+            </div>
+            <div>
+              <div class="capture-preview"><img id="capturedPhotoPreview" alt="Captured photo preview" /></div>
+              <div id="captureHelp" class="small-note" style="margin-top:10px;">Use this when you want the room to become a fresh crowd selfie or event photo. Start the camera, capture a frame, then apply it as the mosaic artwork.</div>
+            </div>
+          </div>
+          <canvas id="captureCanvas" width="1600" height="1000" style="display:none;"></canvas>
+        </div>
+
+        <div class="small-note">Generated mode creates artwork from your headline and subhead. Upload mode lets you turn a logo, flyer, or event photo into a room-sized mosaic. If more people join than cells, slices repeat.</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field"><label for="finalHeadline">Final headline</label><input id="finalHeadline" value="INF 125: AI Literacy" /></div>
+        <div class="field"><label for="finalSubhead">Final subhead</label><input id="finalSubhead" value="Scan to explore. Register for Fall 2026." /></div>
+      </div>
+
+      <div class="art-card">
+        <div style="font-weight:800; margin-bottom:10px;">Reveal choreography</div>
+        <div class="grid-3">
+          <div class="field"><label for="animationSeconds">Animation seconds</label><input id="animationSeconds" type="number" min="2" max="20" value="5" /></div>
+          <div class="field"><label for="animationStyle">Animation style</label><select id="animationStyle"><option value="pulse" selected>Pulse</option><option value="flash">Flash</option><option value="ripple">Ripple</option><option value="audio">Audio reactive (host MP3)</option></select></div>
+          <div class="field"><label for="animationToPhase">After animation, go to</label><select id="animationToPhase"><option value="reveal" selected>Final reveal</option><option value="selfie">Selfie moment</option><option value="lobby">Lobby</option></select></div>
+        </div>
+        <div class="button-row" style="margin-top:0; margin-bottom:8px;"><button class="secondary" id="animateBtn" type="button">Animate reveal</button></div>
+      </div>
+
+      <div class="art-card">
+        <div style="font-weight:800; margin-bottom:10px;">Audio-reactive MP3 reveal</div>
+        <div class="grid-2">
+          <div class="field"><label for="audioFile">Host MP3 upload</label><input id="audioFile" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/aac,audio/mp4,audio/*" /><div id="audioStatus" class="small-note">Upload a short MP3 clip, then start the audio-reactive reveal. This version can also push the uploaded clip to joined phones so their speakers play in sync. Keep clips short for fastest loading.</div></div>
+          <div class="field"><label for="audioToPhase">When the track ends</label><select id="audioToPhase"><option value="reveal" selected>Final reveal</option><option value="selfie">Selfie moment</option><option value="lobby">Lobby</option></select><audio id="audioPlayer" controls preload="metadata"></audio><div class="reactive-meter"><span id="reactiveMeterFill"></span></div></div><div class="field"><label for="audioBroadcastMode">Audience speaker mode</label><select id="audioBroadcastMode"><option value="visual" selected>Visual only</option><option value="sync">Play uploaded MP3 on audience speakers</option></select><div class="small-note">Speaker sync works best after each guest taps Join or I'm ready. Use short clips for fastest loading and tighter sync.</div></div>
+        </div>
+        <div class="button-row" style="margin-top:0; margin-bottom:8px;">
+          <button class="secondary" id="startAudioReactiveBtn" type="button">Start MP3 reactive reveal</button>
+          <button class="secondary" id="stopAudioReactiveBtn" type="button">Stop MP3 reveal</button>
+        </div>
+        <div class="grid-3" style="margin-top:8px;">
+          <div class="field"><label for="audioFlashMode">Phone flash style</label><select id="audioFlashMode"><option value="off">Off</option><option value="soft" selected>Soft pulse flash</option><option value="medium">Medium flash</option><option value="strobe">Short strobe bursts</option></select></div>
+          <div class="field"><label for="audioFlashColor">Flash color</label><select id="audioFlashColor"><option value="white" selected>White</option><option value="gold">Gold</option><option value="pink">Pink</option><option value="cycle">NKU color cycle</option></select></div>
+          <div class="field"><label for="audioFlashHaptics">Extra effects</label><select id="audioFlashHaptics"><option value="off" selected>Visual only</option><option value="vibrate">Add light vibration</option></select><div class="small-note">Keep strong flashing brief. Use Soft for the safest default in live rooms.</div></div>
+        </div>
+      </div>
+
+      <div class="field"><label for="ctaUrl">CTA link for finale / selfie share</label><input id="ctaUrl" value="https://www.nku.edu/" /></div>
+
+      <div class="button-row">
+        <button class="primary" id="saveBtn">Save setup</button>
+        <button class="secondary" id="rebalanceBtn">Rebalance participants</button>
+        <button class="secondary" id="openLobbyBtn">Open lobby</button>
+        <button class="secondary" id="startCountdownBtn">Start countdown</button>
+        <button class="secondary" id="revealBtn">Final reveal</button>
+        <button class="secondary" id="selfieBtn">Selfie moment</button>
+        <button class="danger" id="resetBtn">Reset session</button>
+      </div>
+
+      <div class="join-card">
+        <div id="qrcode"></div>
+        <div>
+          <h3 style="margin:0 0 8px;">Audience join link</h3>
+          <div class="subtle">Guests scan the QR code and each device receives a word tile or a mosaic slice.</div>
+          <div class="join-url"><code id="joinUrlText">Preparing link…</code><button class="secondary" id="copyLinkBtn">Copy</button></div>
+        </div>
+      </div>
+
+      <div class="footer-note">Mosaic mode is best when you want a wow moment on video. Repeat mode is still the easiest for very large rooms.</div>
+    </section>
+
+    <section class="panel stage">
+      <div class="stats">
+        <div class="stat"><div class="label">Connected phones</div><div class="value" id="connectedCount">0</div></div>
+        <div class="stat"><div class="label">Configured slots</div><div class="value" id="tileCount">0</div></div>
+        <div class="stat"><div class="label">Current phase</div><div class="value" id="phaseText" style="font-size:1.15rem;">LOBBY</div></div>
+        <div class="stat"><div class="label">Countdown / animation</div><div class="value" id="countdownDisplay">—</div></div>
+      </div>
+
+      <div class="preview-header"><div><h2>Live mosaic preview</h2><div class="subtle">Preview of the full-room artwork or word tiles.</div></div><div class="subtle" id="sessionCodeLabel">Session: —</div></div>
+      <div id="mosaicPreview" class="mosaic-preview"><div id="mosaicGrid" class="mosaic-grid"></div></div>
+
+      <div class="preview-header"><div><h2>Audience phone wall preview</h2><div class="subtle">Each phone shows its tile or image slice.</div></div></div>
+      <div id="phoneWall" class="phone-wall"></div>
+    </section>
+  </div>
+
+  <canvas id="artCanvas" width="1080" height="1728" style="display:none"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+    import { getDatabase, ref, set, update, get, onValue, onDisconnect, serverTimestamp, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
+      authDomain: "crowdcode-713e4.firebaseapp.com",
+      databaseURL: "https://crowdcode-713e4-default-rtdb.firebaseio.com",
+      projectId: "crowdcode-713e4",
+      storageBucket: "crowdcode-713e4.firebasestorage.app",
+      messagingSenderId: "415062434213",
+      appId: "1:415062434213:web:0ac4da57c4ffe6a5e7884c",
+      measurementId: "G-E1CNDCQWC0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const els = {
+      sessionName: document.getElementById('sessionName'),
+      layoutType: document.getElementById('layoutType'),
+      countdownSeconds: document.getElementById('countdownSeconds'),
+      animationSeconds: document.getElementById('animationSeconds'),
+      animationStyle: document.getElementById('animationStyle'),
+      animationToPhase: document.getElementById('animationToPhase'),
+      audioFile: document.getElementById('audioFile'),
+      audioPlayer: document.getElementById('audioPlayer'),
+      audioStatus: document.getElementById('audioStatus'),
+      reactiveMeterFill: document.getElementById('reactiveMeterFill'),
+      audioToPhase: document.getElementById('audioToPhase'),
+      audioBroadcastMode: document.getElementById('audioBroadcastMode'),
+      audioFlashMode: document.getElementById('audioFlashMode'),
+      audioFlashColor: document.getElementById('audioFlashColor'),
+      audioFlashHaptics: document.getElementById('audioFlashHaptics'),
+      startAudioReactiveBtn: document.getElementById('startAudioReactiveBtn'),
+      stopAudioReactiveBtn: document.getElementById('stopAudioReactiveBtn'),
+      assignmentMode: document.getElementById('assignmentMode'),
+      tileSourceMode: document.getElementById('tileSourceMode'),
+      tileInput: document.getElementById('tileInput'),
+      mosaicHeadline: document.getElementById('mosaicHeadline'),
+      mosaicSubhead: document.getElementById('mosaicSubhead'),
+      mosaicCols: document.getElementById('mosaicCols'),
+      mosaicRows: document.getElementById('mosaicRows'),
+      mosaicTheme: document.getElementById('mosaicTheme'),
+      finalHeadline: document.getElementById('finalHeadline'),
+      finalSubhead: document.getElementById('finalSubhead'),
+      ctaUrl: document.getElementById('ctaUrl'),
+      saveBtn: document.getElementById('saveBtn'),
+      rebalanceBtn: document.getElementById('rebalanceBtn'),
+      openLobbyBtn: document.getElementById('openLobbyBtn'),
+      startCountdownBtn: document.getElementById('startCountdownBtn'),
+      animateBtn: document.getElementById('animateBtn'),
+      revealBtn: document.getElementById('revealBtn'),
+      selfieBtn: document.getElementById('selfieBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      copyLinkBtn: document.getElementById('copyLinkBtn'),
+      qrcode: document.getElementById('qrcode'),
+      joinUrlText: document.getElementById('joinUrlText'),
+      connectedCount: document.getElementById('connectedCount'),
+      tileCount: document.getElementById('tileCount'),
+      phaseText: document.getElementById('phaseText'),
+      countdownDisplay: document.getElementById('countdownDisplay'),
+      phoneWall: document.getElementById('phoneWall'),
+      statusDot: document.getElementById('statusDot'),
+      statusText: document.getElementById('statusText'),
+      sessionCodeLabel: document.getElementById('sessionCodeLabel'),
+      mosaicPreview: document.getElementById('mosaicPreview'),
+      mosaicGrid: document.getElementById('mosaicGrid'),
+      artCanvas: document.getElementById('artCanvas'),
+      mosaicArtworkSource: document.getElementById('mosaicArtworkSource'),
+      mosaicImageFit: document.getElementById('mosaicImageFit'),
+      mosaicImageUpload: document.getElementById('mosaicImageUpload'),
+      mosaicUploadStatus: document.getElementById('mosaicUploadStatus'),
+      regenerateArtworkBtn: document.getElementById('regenerateArtworkBtn'),
+      clearUploadBtn: document.getElementById('clearUploadBtn'),
+      captureVideo: document.getElementById('captureVideo'),
+      captureFallbackImage: document.getElementById('captureFallbackImage'),
+      captureStatusBadge: document.getElementById('captureStatusBadge'),
+      startCameraBtn: document.getElementById('startCameraBtn'),
+      flipCameraBtn: document.getElementById('flipCameraBtn'),
+      capturePhotoBtn: document.getElementById('capturePhotoBtn'),
+      useCapturedBtn: document.getElementById('useCapturedBtn'),
+      stopCameraBtn: document.getElementById('stopCameraBtn'),
+      capturedPhotoPreview: document.getElementById('capturedPhotoPreview'),
+      captureCanvas: document.getElementById('captureCanvas'),
+      captureHelp: document.getElementById('captureHelp')
+    };
+
+    const url = new URL(window.location.href);
+    let sessionId = url.searchParams.get('session');
+    if (!sessionId) {
+      sessionId = crypto.randomUUID().slice(0, 8).toUpperCase();
+      url.searchParams.set('session', sessionId);
+      history.replaceState({}, '', url);
+    }
+
+    const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
+    const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
+    const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
+    const state = { session:null, participants:{}, countdownTimer:null, uploadedArtworkDataUrl:'', uploadedArtworkName:'', cameraStream:null, facingMode:'environment', capturedPhotoDataUrl:'', audioObjectUrl:'', audioFileName:'', audioFileType:'audio/mpeg', audioDataUrl:'', audioContext:null, audioAnalyser:null, audioSourceNode:null, audioMonitorTimer:null };
+
+    els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
+
+    function escapeHtml(str=''){ return str.replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
+    function parseTiles(raw = els.tileInput.value, mode = els.tileSourceMode.value){
+      if (mode === 'words') return raw.split(/\s+/).map(s => s.trim()).filter(Boolean);
+      if (mode === 'chars') return [...raw].filter(ch => ch.trim());
+      return raw.split('|').map(s => s.trim()).filter(Boolean);
+    }
+    function buildJoinUrl(){
+      const audienceUrl = new URL('./audience.html', window.location.href);
+      audienceUrl.searchParams.set('session', sessionId);
+      return audienceUrl.toString();
+    }
+    async function renderQR(){
+      const joinUrl = buildJoinUrl();
+      els.joinUrlText.textContent = joinUrl;
+      els.qrcode.innerHTML = '';
+      await QRCode.toCanvas(joinUrl, { width:136, margin:1 }, (err, canvas) => { if (!err) els.qrcode.appendChild(canvas); });
+    }
+
+    function setAudioStatus(message){
+      els.audioStatus.textContent = message;
+    }
+
+    function clearReactiveMeter(){
+      els.reactiveMeterFill.style.width = '0%';
+    }
+
+    function ensureAudioGraph(){
+      if (!els.audioPlayer.src) return false;
+      if (!state.audioContext) state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (!state.audioSourceNode){
+        state.audioSourceNode = state.audioContext.createMediaElementSource(els.audioPlayer);
+        state.audioAnalyser = state.audioContext.createAnalyser();
+        state.audioAnalyser.fftSize = 256;
+        state.audioSourceNode.connect(state.audioAnalyser);
+        state.audioAnalyser.connect(state.audioContext.destination);
+      }
+      return true;
+    }
+
+    async function stopAudioReactive(transition = true){
+      if (state.audioMonitorTimer){
+        clearInterval(state.audioMonitorTimer);
+        state.audioMonitorTimer = null;
+      }
+      clearReactiveMeter();
+      try { els.audioPlayer.pause(); } catch (e) {}
+      await update(sessionRef, {
+        phase: 'lobby',
+        animationStyle: state.session?.animationStyle === 'audio' ? 'audio' : (state.session?.animationStyle || 'pulse'),
+        audioReactive: null,
+        audioBroadcast: null,
+        animationStartAt: null,
+        animationTargetAt: null,
+        updatedAt: Date.now()
+      });
+      if (transition){
+        const nextPhase = els.audioToPhase.value || state.session?.animationToPhase || 'reveal';
+        const action = nextPhase === 'selfie' ? selfieMoment : nextPhase === 'lobby' ? openLobby : finalReveal;
+        await action();
+      }
+      setAudioStatus('Audio reactive reveal stopped.');
+    }
+
+    async function startAudioReactiveReveal(){
+      if (!els.audioPlayer.src){
+        setAudioStatus('Upload an MP3 first.');
+        return;
+      }
+      if (!ensureAudioGraph()){
+        setAudioStatus('Unable to create audio analysis.');
+        return;
+      }
+      const broadcastMode = els.audioBroadcastMode.value || 'visual';
+      if (broadcastMode === 'sync' && !state.audioDataUrl){
+        setAudioStatus('Wait for the uploaded MP3 to finish processing, then start again.');
+        return;
+      }
+      await state.audioContext.resume();
+      const startAt = Date.now() + 1200;
+      await saveSetup({
+        phase:'animate',
+        countdownStartAt:null,
+        countdownTargetAt:null,
+        animationStartAt:startAt,
+        animationTargetAt:null,
+        animationStyle:'audio',
+        animationToPhase: els.audioToPhase.value || 'reveal',
+        audioReactive: {
+          enabled: true,
+          level: 0,
+          trackName: state.audioFileName || 'Host MP3',
+          startedAt: startAt,
+          ended: false
+        },
+        audioBroadcast: broadcastMode === 'sync' ? {
+          enabled: true,
+          mode: 'sync',
+          trackName: state.audioFileName || 'Host MP3',
+          mimeType: state.audioFileType || 'audio/mpeg',
+          dataUrl: state.audioDataUrl,
+          startedAt: startAt,
+          durationMs: Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+          hostPositionMs: 0,
+          playing: true
+        } : {
+          enabled: false,
+          mode: 'visual',
+          trackName: state.audioFileName || 'Host MP3',
+          startedAt: startAt,
+          playing: false
+        }
+      });
+      try { els.audioPlayer.currentTime = 0; } catch(e) {}
+      await els.audioPlayer.play();
+      setAudioStatus(`Playing ${state.audioFileName || 'host track'} and broadcasting live intensity to the crowd.`);
+      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer);
+      const bins = new Uint8Array(state.audioAnalyser.frequencyBinCount);
+      state.audioMonitorTimer = setInterval(async () => {
+        state.audioAnalyser.getByteFrequencyData(bins);
+        const avg = bins.reduce((sum, value) => sum + value, 0) / bins.length / 255;
+        const boosted = Math.max(0, Math.min(1, Math.pow(avg * 1.85, 0.9)));
+        els.reactiveMeterFill.style.width = `${Math.round(boosted * 100)}%`;
+        try {
+          await update(sessionRef, {
+            'audioReactive/enabled': true,
+            'audioReactive/level': boosted,
+            'audioReactive/trackName': state.audioFileName || 'Host MP3',
+            'audioReactive/positionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
+            'audioReactive/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+            'audioReactive/ended': false,
+            'audioBroadcast/hostPositionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
+            'audioBroadcast/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+            'audioBroadcast/playing': !els.audioPlayer.paused,
+            updatedAt: Date.now()
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }, 120);
+    }
+
+    function updateUploadStatus(){
+      const source = els.mosaicArtworkSource.value;
+      if (state.uploadedArtworkDataUrl){
+        els.mosaicUploadStatus.textContent = `${state.uploadedArtworkName || 'Custom image'} loaded. ${source === 'upload' ? 'This image will be used for the mosaic.' : 'Switch Artwork source to Uploaded image / logo to use it.'}`;
+        return;
+      }
+      const sessionArtworkType = state.session?.mosaic?.artworkType;
+      if (source === 'upload' && sessionArtworkType === 'upload' && state.session?.mosaic?.artwork){
+        els.mosaicUploadStatus.textContent = 'A saved uploaded image is already attached to this session.';
+      } else {
+        els.mosaicUploadStatus.textContent = 'No custom image loaded yet.';
+      }
+    }
+
+
+    function setCaptureStatus(message){
+      els.captureStatusBadge.textContent = message;
+      els.captureHelp.textContent = message.includes('Captured')
+        ? 'Captured photo ready. Click Use captured photo to turn it into the mosaic artwork.'
+        : 'Use this when you want the room to become a fresh crowd selfie or event photo. Start the camera, capture a frame, then apply it as the mosaic artwork.';
+    }
+
+    async function stopCamera(){
+      if (state.cameraStream){
+        state.cameraStream.getTracks().forEach(track => track.stop());
+        state.cameraStream = null;
+      }
+      els.captureVideo.srcObject = null;
+      setCaptureStatus('Camera idle');
+    }
+
+    async function startCamera(){
+      try{
+        await stopCamera();
+        const constraints = {
+          audio: false,
+          video: {
+            facingMode: { ideal: state.facingMode },
+            width: { ideal: 1600 },
+            height: { ideal: 1000 }
+          }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        state.cameraStream = stream;
+        els.captureVideo.srcObject = stream;
+        els.captureFallbackImage.style.display = state.capturedPhotoDataUrl ? 'block' : 'none';
+        setCaptureStatus(state.facingMode === 'user' ? 'Front camera live' : 'Rear camera live');
+      } catch (error){
+        console.error(error);
+        setCaptureStatus('Camera access blocked or unavailable');
+      }
+    }
+
+    async function flipCamera(){
+      state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment';
+      await startCamera();
+    }
+
+    function capturePhoto(){
+      if (!state.cameraStream || !els.captureVideo.videoWidth){
+        setCaptureStatus('Start camera first');
+        return;
+      }
+      const canvas = els.captureCanvas;
+      const video = els.captureVideo;
+      canvas.width = video.videoWidth || 1600;
+      canvas.height = video.videoHeight || 1000;
+      const ctx = canvas.getContext('2d');
+      if (state.facingMode === 'user'){
+        ctx.save();
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      } else {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      }
+      state.capturedPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      els.capturedPhotoPreview.src = state.capturedPhotoDataUrl;
+      els.captureFallbackImage.src = state.capturedPhotoDataUrl;
+      els.captureFallbackImage.style.display = 'block';
+      setCaptureStatus('Captured photo ready');
+    }
+
+    function useCapturedPhoto(){
+      if (!state.capturedPhotoDataUrl){
+        setCaptureStatus('Capture a photo first');
+        return;
+      }
+      state.uploadedArtworkDataUrl = state.capturedPhotoDataUrl;
+      state.uploadedArtworkName = `live-capture-${new Date().toISOString().replace(/[:.]/g,'-')}.jpg`;
+      els.mosaicArtworkSource.value = 'upload';
+      updateUploadStatus();
+      renderMosaicPreview();
+      setCaptureStatus('Captured photo applied to mosaic');
+    }
+
+    function getCurrentArtworkDataUrl(){
+      const source = els.mosaicArtworkSource.value;
+      if (source === 'upload' && state.uploadedArtworkDataUrl) return state.uploadedArtworkDataUrl;
+      if (source === 'upload' && state.session?.mosaic?.artworkType === 'upload' && state.session?.mosaic?.artwork) return state.session.mosaic.artwork;
+      return generateMosaicArtwork();
+    }
+
+    function getTheme(theme){
+      const map = {
+        nku: { bg1:'#0f1021', bg2:'#1b1d3a', accent1:'#f7b718', accent2:'#ff66c4', text:'#ffffff' },
+        midnight: { bg1:'#09121f', bg2:'#1b2844', accent1:'#4cc9f0', accent2:'#b5179e', text:'#ffffff' },
+        sunrise: { bg1:'#2d112b', bg2:'#5f2c82', accent1:'#ffb347', accent2:'#ff5f6d', text:'#fffdf7' }
+      };
+      return map[theme] || map.nku;
+    }
+
+    function generateMosaicArtwork(){
+      const canvas = els.artCanvas;
+      const ctx = canvas.getContext('2d');
+      const theme = getTheme(els.mosaicTheme.value);
+      const w = canvas.width, h = canvas.height;
+
+      const bg = ctx.createLinearGradient(0, 0, w, h);
+      bg.addColorStop(0, theme.bg1);
+      bg.addColorStop(1, theme.bg2);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      const orb1 = ctx.createRadialGradient(w*0.15, h*0.18, 10, w*0.15, h*0.18, w*0.35);
+      orb1.addColorStop(0, `${theme.accent1}cc`);
+      orb1.addColorStop(1, `${theme.accent1}00`);
+      ctx.fillStyle = orb1; ctx.fillRect(0, 0, w, h);
+
+      const orb2 = ctx.createRadialGradient(w*0.82, h*0.74, 10, w*0.82, h*0.74, w*0.32);
+      orb2.addColorStop(0, `${theme.accent2}bb`);
+      orb2.addColorStop(1, `${theme.accent2}00`);
+      ctx.fillStyle = orb2; ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.globalAlpha = .12;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      for (let i = -h; i < w; i += 70){
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + h, h);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.fillStyle = theme.text;
+      ctx.textAlign = 'center';
+      ctx.font = '900 170px Inter, sans-serif';
+      wrapText(ctx, (els.mosaicHeadline.value || 'INF 125').toUpperCase(), w/2, h*0.37, w*0.78, 170);
+      ctx.fillStyle = `${theme.text}dd`;
+      ctx.font = '700 84px Inter, sans-serif';
+      wrapText(ctx, els.mosaicSubhead.value || 'AI Literacy', w/2, h*0.62, w*0.7, 92);
+      ctx.fillStyle = `${theme.accent1}`;
+      ctx.font = '800 52px Inter, sans-serif';
+      ctx.fillText('CrowdCode Mosaic Reveal', w/2, h*0.88);
+
+      ctx.strokeStyle = `${theme.text}22`;
+      ctx.lineWidth = 8;
+      ctx.strokeRect(34, 34, w-68, h-68);
+      return canvas.toDataURL('image/jpeg', .86);
+    }
+
+    function wrapText(ctx, text, x, startY, maxWidth, lineHeight){
+      const words = text.split(/\s+/);
+      let line = '';
+      let y = startY;
+      for (let n = 0; n < words.length; n++){
+        const test = line ? `${line} ${words[n]}` : words[n];
+        if (ctx.measureText(test).width > maxWidth && line){
+          ctx.fillText(line, x, y);
+          line = words[n];
+          y += lineHeight;
+        } else line = test;
+      }
+      if (line) ctx.fillText(line, x, y);
+    }
+
+    function sessionPayload(overrides = {}){
+      const assignmentMode = els.assignmentMode.value;
+      const mosaicCols = Math.max(2, Number(els.mosaicCols.value) || 4);
+      const mosaicRows = Math.max(2, Number(els.mosaicRows.value) || 6);
+      const tiles = assignmentMode === 'mosaic'
+        ? Array.from({ length: mosaicCols * mosaicRows }, (_, i) => `SLICE ${i+1}`)
+        : parseTiles();
+      const mosaicArtwork = getCurrentArtworkDataUrl();
+      return {
+        sessionName: els.sessionName.value.trim() || 'CrowdCode Session',
+        layoutType: els.layoutType.value,
+        countdownSeconds: Number(els.countdownSeconds.value) || 8,
+        assignmentMode,
+        tileSourceMode: els.tileSourceMode.value,
+        tiles,
+        mosaic: {
+          enabled: assignmentMode === 'mosaic',
+          cols: mosaicCols,
+          rows: mosaicRows,
+          headline: els.mosaicHeadline.value.trim() || 'INF 125',
+          subhead: els.mosaicSubhead.value.trim() || 'AI Literacy',
+          theme: els.mosaicTheme.value,
+          artworkType: els.mosaicArtworkSource.value,
+          imageFit: els.mosaicImageFit.value,
+          uploadedImageName: state.uploadedArtworkName || state.session?.mosaic?.uploadedImageName || '',
+          artwork: mosaicArtwork
+        },
+        finalHeadline: els.finalHeadline.value.trim() || 'Final Reveal',
+        finalSubhead: els.finalSubhead.value.trim() || 'Thanks for joining',
+        ctaUrl: els.ctaUrl.value.trim() || '',
+        phase: 'lobby',
+        countdownStartAt: null,
+        countdownTargetAt: null,
+        animationStartAt: null,
+        animationTargetAt: null,
+        audioReactive: null,
+        flashConfig: {
+          mode: els.audioFlashMode.value || 'soft',
+          color: els.audioFlashColor.value || 'white',
+          haptics: els.audioFlashHaptics.value || 'off'
+        },
+        updatedAt: Date.now(),
+        ...overrides
+      };
+    }
+
+    function sortedParticipants(){
+      return Object.entries(state.participants || {}).sort((a,b) => (a[1]?.joinedAt || 0) - (b[1]?.joinedAt || 0));
+    }
+
+    function computeAssignment(index, totalCount, session){
+      const tiles = session.tiles || [];
+      const mode = session.assignmentMode || 'repeat';
+      if (mode === 'mosaic'){
+        const totalCells = Math.max(1, (session.mosaic?.cols || 4) * (session.mosaic?.rows || 6));
+        const sliceIndex = index % totalCells;
+        return {
+          tileIndex: sliceIndex,
+          tileText: `CELL ${sliceIndex + 1}`,
+          groupIndex: sliceIndex,
+          mosaicIndex: sliceIndex
+        };
+      }
+      if (!tiles.length) return { tileIndex:index, tileText:`#${index+1}`, groupIndex:index };
+      if (mode === 'unique') return { tileIndex:index, tileText:tiles[index] ?? `#${index+1}`, groupIndex:Math.min(index, tiles.length-1) };
+      if (mode === 'sections'){
+        const sectionSize = Math.max(1, Math.ceil(totalCount / tiles.length));
+        const sectionIndex = Math.min(Math.floor(index / sectionSize), tiles.length-1);
+        return { tileIndex:sectionIndex, tileText:tiles[sectionIndex], groupIndex:sectionIndex };
+      }
+      const repeatedIndex = index % tiles.length;
+      return { tileIndex:repeatedIndex, tileText:tiles[repeatedIndex], groupIndex:repeatedIndex };
+    }
+
+    async function rebalanceParticipants(){
+      const participants = sortedParticipants();
+      if (!participants.length) return;
+      const session = state.session || sessionPayload();
+      const payload = {};
+      participants.forEach(([id,p], idx) => {
+        const assigned = computeAssignment(idx, participants.length, session);
+        payload[`${id}/tileIndex`] = assigned.tileIndex;
+        payload[`${id}/tileText`] = assigned.tileText;
+        payload[`${id}/groupIndex`] = assigned.groupIndex;
+        payload[`${id}/mosaicIndex`] = assigned.mosaicIndex ?? null;
+        payload[`${id}/slotNumber`] = idx + 1;
+        payload[`${id}/updatedAt`] = Date.now();
+      });
+      await update(participantsRef, payload);
+    }
+
+    async function ensureSession(){
+      const snap = await get(sessionRef);
+      if (!snap.exists()) await set(sessionRef, sessionPayload());
+      await set(hostPresenceRef, { online:true, updatedAt:serverTimestamp() });
+      onDisconnect(hostPresenceRef).remove();
+    }
+
+    async function saveSetup(extra = {}){
+      const currentPhase = state.session?.phase || 'lobby';
+      await update(sessionRef, sessionPayload({ phase: currentPhase, ...extra }));
+      await rebalanceParticipants();
+    }
+    async function openLobby(){ if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await saveSetup({ phase:'lobby', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
+    async function startCountdown(){
+      const seconds = Number(els.countdownSeconds.value) || 8;
+      const startAt = Date.now() + 1500;
+      const targetAt = startAt + seconds * 1000;
+      await saveSetup({ phase:'countdown', countdownStartAt:startAt, countdownTargetAt:targetAt, animationStartAt:null, animationTargetAt:null });
+    }
+    async function animateReveal(){
+      const seconds = Number(els.animationSeconds.value) || 5;
+      const startAt = Date.now() + 600;
+      const targetAt = startAt + seconds * 1000;
+      await saveSetup({
+        phase:'animate',
+        countdownStartAt:null,
+        countdownTargetAt:null,
+        animationStartAt:startAt,
+        animationTargetAt:targetAt,
+        animationSeconds: seconds,
+        animationStyle: els.animationStyle.value || 'pulse',
+        animationToPhase: els.animationToPhase.value || 'reveal',
+        audioReactive: null
+      });
+    }
+    async function finalReveal(){ if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await saveSetup({ phase:'reveal', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
+    async function selfieMoment(){ if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await saveSetup({ phase:'selfie', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
+    async function resetSession(){
+      if (state.countdownTimer) clearInterval(state.countdownTimer);
+      await remove(participantsRef);
+      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); clearReactiveMeter(); await set(sessionRef, sessionPayload({ phase:'lobby', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }));
+    }
+
+    function renderMosaicPreview(){
+      const session = state.session || {};
+      const previewSession = sessionPayload({ phase: session.phase || 'lobby' });
+      const artwork = previewSession.mosaic?.artwork || session.mosaic?.artwork;
+      els.mosaicPreview.style.backgroundImage = artwork ? `url(${artwork})` : 'none';
+      els.mosaicPreview.style.backgroundSize = previewSession.mosaic?.imageFit === 'contain' ? 'contain' : 'cover';
+      els.mosaicPreview.style.backgroundRepeat = 'no-repeat';
+      els.mosaicPreview.style.backgroundPosition = 'center';
+      const cols = Math.max(2, previewSession.mosaic?.cols || session.mosaic?.cols || 4);
+      const rows = Math.max(2, previewSession.mosaic?.rows || session.mosaic?.rows || 6);
+      els.mosaicGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      els.mosaicGrid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+      const participants = sortedParticipants();
+      const occupied = new Map(participants.map(([id,p]) => [p.mosaicIndex ?? p.tileIndex, p]));
+      const total = cols * rows;
+      els.mosaicGrid.innerHTML = Array.from({ length: total }, (_, idx) => {
+        const p = occupied.get(idx);
+        return `<div class="mosaic-cell">${p ? escapeHtml(p.nickname || `Phone ${p.slotNumber || ''}`) : ''}</div>`;
+      }).join('');
+    }
+
+    function renderPhoneWall(){
+      const participants = sortedParticipants();
+      const session = state.session || {};
+      els.connectedCount.textContent = participants.length;
+      els.tileCount.textContent = session.assignmentMode === 'mosaic'
+        ? Math.max(1, (session.mosaic?.cols || 4) * (session.mosaic?.rows || 6))
+        : (session.tiles || []).length;
+      els.phaseText.textContent = String(session.phase || 'lobby').toUpperCase();
+
+      if (!participants.length){
+        els.phoneWall.innerHTML = `<div class="phone" style="min-height:280px;grid-column:1/-1;aspect-ratio:auto"><div class="phone-slot"><div><div class="tile-big">Scan to Join</div><div class="tile-small">Phones will appear here as they connect.</div></div></div></div>`;
+        return;
+      }
+
+      const cols = Math.max(2, session.mosaic?.cols || 4);
+      const rows = Math.max(2, session.mosaic?.rows || 6);
+
+      els.phoneWall.innerHTML = participants.map(([id,p], idx) => {
+        const isMosaic = session.assignmentMode === 'mosaic';
+        let slotHtml = '';
+        if (isMosaic && session.mosaic?.artwork){
+          const sliceIndex = p.mosaicIndex ?? p.tileIndex ?? 0;
+          const col = sliceIndex % cols;
+          const row = Math.floor(sliceIndex / cols);
+          const bgX = cols > 1 ? (col / (cols - 1)) * 100 : 50;
+          const bgY = rows > 1 ? (row / (rows - 1)) * 100 : 50;
+          const fit = session.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
+          slotHtml = `<div class="mini-slice" style="background-image:url('${session.mosaic.artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%;background-repeat:no-repeat;"></div><div class="tile-small">Cell ${(sliceIndex||0)+1}</div>`;
+        } else {
+          slotHtml = `<div><div class="tile-big">${escapeHtml(p.tileText || 'JOIN')}</div><div class="tile-small">${escapeHtml(session.sessionName || 'CrowdCode')}</div></div>`;
+        }
+        return `<div class="phone"><div class="phone-top"><span>${escapeHtml(p.nickname || `Phone ${idx+1}`)}</span><span>${p.ready ? 'Ready' : 'Connecting'}</span></div><div class="phone-slot">${slotHtml}</div><div class="phone-bottom"><span>Slot ${p.slotNumber || idx+1}</span><span>${escapeHtml(session.assignmentMode || 'repeat')}</span></div></div>`;
+      }).join('');
+    }
+
+    function syncCountdownDisplay(){
+      if (state.countdownTimer) clearInterval(state.countdownTimer);
+      const phase = state.session?.phase;
+      if (phase === 'countdown' && state.session?.countdownTargetAt){
+        const tick = () => {
+          const remaining = Math.max(0, Math.ceil((state.session.countdownTargetAt - Date.now()) / 1000));
+          els.countdownDisplay.textContent = remaining;
+          if (remaining <= 0){
+            clearInterval(state.countdownTimer);
+            setTimeout(() => finalReveal().catch(console.error), 800);
+          }
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 250);
+        return;
+      }
+      if (phase === 'animate' && state.session?.animationStyle === 'audio'){
+        const tick = () => {
+          const level = Math.round(((state.session?.audioReactive?.level || 0) * 100));
+          els.countdownDisplay.textContent = `♪ ${level}%`;
+          els.reactiveMeterFill.style.width = `${level}%`;
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 180);
+        return;
+      }
+      if (phase === 'animate' && state.session?.animationTargetAt){
+        const tick = () => {
+          const remaining = Math.max(0, Math.ceil((state.session.animationTargetAt - Date.now()) / 1000));
+          const styleLabel = String(state.session?.animationStyle || 'pulse').toUpperCase();
+          els.countdownDisplay.textContent = `${styleLabel} ${remaining}`;
+          if (remaining <= 0){
+            clearInterval(state.countdownTimer);
+            const nextPhase = state.session?.animationToPhase || 'reveal';
+            const action = nextPhase === 'selfie' ? selfieMoment : nextPhase === 'lobby' ? openLobby : finalReveal;
+            setTimeout(() => action().catch(console.error), 350);
+          }
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 200);
+        return;
+      }
+      els.countdownDisplay.textContent = '—';
+    }
+
+    onValue(sessionRef, snap => {
+      const data = snap.val();
+      if (!data) return;
+      state.session = data;
+      els.statusDot.classList.add('live');
+      els.statusText.textContent = 'Live session connected';
+      els.sessionName.value = data.sessionName || '';
+      els.layoutType.value = data.layoutType || 'message';
+      els.countdownSeconds.value = data.countdownSeconds || 8;
+      els.assignmentMode.value = data.assignmentMode || 'repeat';
+      els.tileSourceMode.value = data.tileSourceMode || 'manual';
+      els.tileInput.value = data.assignmentMode === 'mosaic' ? els.tileInput.value : (data.tiles || []).join(data.tileSourceMode === 'manual' ? '|' : ' ');
+      els.mosaicHeadline.value = data.mosaic?.headline || 'INF 125';
+      els.mosaicSubhead.value = data.mosaic?.subhead || 'AI Literacy';
+      els.mosaicCols.value = data.mosaic?.cols || 4;
+      els.mosaicRows.value = data.mosaic?.rows || 6;
+      els.mosaicTheme.value = data.mosaic?.theme || 'nku';
+      els.mosaicArtworkSource.value = data.mosaic?.artworkType || 'generated';
+      els.mosaicImageFit.value = data.mosaic?.imageFit || 'cover';
+      state.uploadedArtworkName = data.mosaic?.uploadedImageName || state.uploadedArtworkName;
+      els.finalHeadline.value = data.finalHeadline || '';
+      els.finalSubhead.value = data.finalSubhead || '';
+      els.ctaUrl.value = data.ctaUrl || '';
+      els.audioFlashMode.value = data.flashConfig?.mode || 'soft';
+      els.audioFlashColor.value = data.flashConfig?.color || 'white';
+      els.audioFlashHaptics.value = data.flashConfig?.haptics || 'off';
+      els.animationSeconds.value = data.animationSeconds || els.animationSeconds.value || 5;
+      els.animationStyle.value = data.animationStyle || els.animationStyle.value || 'pulse';
+      els.animationToPhase.value = data.animationToPhase || els.animationToPhase.value || 'reveal';
+      updateUploadStatus();
+      renderMosaicPreview();
+      renderPhoneWall();
+      syncCountdownDisplay();
+    }, error => {
+      console.error(error);
+      els.statusDot.classList.remove('live');
+      els.statusText.textContent = 'Connection problem';
+    });
+
+    onValue(participantsRef, snap => {
+      state.participants = snap.val() || {};
+      renderMosaicPreview();
+      renderPhoneWall();
+    });
+
+    els.saveBtn.addEventListener('click', () => saveSetup().catch(console.error));
+    els.rebalanceBtn.addEventListener('click', () => rebalanceParticipants().catch(console.error));
+    els.openLobbyBtn.addEventListener('click', () => openLobby().catch(console.error));
+    els.startCountdownBtn.addEventListener('click', () => startCountdown().catch(console.error));
+    els.animateBtn.addEventListener('click', () => animateReveal().catch(console.error));
+    els.revealBtn.addEventListener('click', () => finalReveal().catch(console.error));
+    els.selfieBtn.addEventListener('click', () => selfieMoment().catch(console.error));
+    els.resetBtn.addEventListener('click', () => resetSession().catch(console.error));
+    els.copyLinkBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(buildJoinUrl());
+        els.copyLinkBtn.textContent = 'Copied';
+        setTimeout(() => els.copyLinkBtn.textContent = 'Copy', 1500);
+      } catch (e) { console.error(e); }
+    });
+    ['input','change'].forEach(evt => {
+      [els.mosaicHeadline, els.mosaicSubhead, els.mosaicCols, els.mosaicRows, els.mosaicTheme, els.assignmentMode, els.mosaicArtworkSource, els.mosaicImageFit].forEach(el => el.addEventListener(evt, () => { updateUploadStatus(); renderMosaicPreview(); }));
+    });
+
+    els.regenerateArtworkBtn.addEventListener('click', () => { renderMosaicPreview(); });
+    els.clearUploadBtn.addEventListener('click', () => {
+      state.uploadedArtworkDataUrl = '';
+      state.uploadedArtworkName = '';
+      els.mosaicImageUpload.value = '';
+      updateUploadStatus();
+      renderMosaicPreview();
+    });
+    els.mosaicImageUpload.addEventListener('change', async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.uploadedArtworkDataUrl = String(reader.result || '');
+        state.uploadedArtworkName = file.name;
+        els.mosaicArtworkSource.value = 'upload';
+        updateUploadStatus();
+        renderMosaicPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+
+
+    els.audioFile.addEventListener('change', async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
+      state.audioObjectUrl = URL.createObjectURL(file);
+      state.audioFileName = file.name;
+      state.audioFileType = file.type || 'audio/mpeg';
+      state.audioDataUrl = '';
+      els.audioPlayer.src = state.audioObjectUrl;
+      setAudioStatus(`${file.name} loaded. Preparing broadcast copy for audience devices…`);
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.audioDataUrl = String(reader.result || '');
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+        setAudioStatus(`${file.name} loaded (${sizeMb} MB). Ready for host playback${els.audioBroadcastMode.value === 'sync' ? ' and synced audience speakers' : ''}.`);
+      };
+      reader.onerror = () => {
+        setAudioStatus('Loaded on the host, but failed to prepare a synced copy for audience speakers.');
+      };
+      reader.readAsDataURL(file);
+    });
+    els.startAudioReactiveBtn.addEventListener('click', () => startAudioReactiveReveal().catch(console.error));
+    els.stopAudioReactiveBtn.addEventListener('click', () => stopAudioReactive(false).catch(console.error));
+    els.audioPlayer.addEventListener('ended', () => stopAudioReactive(true).catch(console.error));
+
+    els.startCameraBtn.addEventListener('click', () => startCamera());
+    els.flipCameraBtn.addEventListener('click', () => flipCamera());
+    els.capturePhotoBtn.addEventListener('click', () => capturePhoto());
+    els.useCapturedBtn.addEventListener('click', () => useCapturedPhoto());
+    els.stopCameraBtn.addEventListener('click', () => stopCamera());
+    window.addEventListener('beforeunload', () => { if (state.cameraStream) state.cameraStream.getTracks().forEach(track => track.stop()); if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer); if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl); });
+
+    await ensureSession();
+    await renderQR();
+    updateUploadStatus();
+    renderMosaicPreview();
+  </script>
+</body>
+</html>
