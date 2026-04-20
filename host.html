@@ -1,268 +1,1447 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CrowdCode Host V7</title>
-
-<style>
-:root {
-  --bg: #f5f7fb;
-  --panel: #ffffff;
-  --text: #111827;
-  --muted: #6b7280;
-  --accent: #6366f1;
-  --accent-soft: #e0e7ff;
-  --border: #e5e7eb;
-  --radius: 16px;
-}
-
-body.dark {
-  --bg: #0f172a;
-  --panel: #111827;
-  --text: #f9fafb;
-  --muted: #9ca3af;
-  --border: #1f2937;
-  --accent-soft: #1e293b;
-}
-
-body {
-  margin:0;
-  font-family: Inter, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 20px;
-  padding: 20px;
-}
-
-.panel {
-  background: var(--panel);
-  border-radius: var(--radius);
-  padding: 18px;
-  border: 1px solid var(--border);
-}
-
-/* ---------- SEGMENTED CONTROL ---------- */
-.segmented {
-  display:flex;
-  background: var(--accent-soft);
-  border-radius: 12px;
-  padding: 4px;
-}
-
-.segmented button {
-  flex:1;
-  border:none;
-  background: transparent;
-  padding:10px;
-  border-radius: 10px;
-  cursor:pointer;
-}
-
-.segmented button.active {
-  background: white;
-  font-weight:600;
-}
-
-/* ---------- SWITCH ---------- */
-.switch {
-  position: relative;
-  width: 44px;
-  height: 24px;
-}
-
-.switch input {
-  display:none;
-}
-
-.slider {
-  position:absolute;
-  cursor:pointer;
-  inset:0;
-  background:#ccc;
-  border-radius: 999px;
-}
-
-.slider:before {
-  content:"";
-  position:absolute;
-  width:18px;
-  height:18px;
-  left:3px;
-  top:3px;
-  background:white;
-  border-radius:50%;
-  transition:.2s;
-}
-
-input:checked + .slider {
-  background: var(--accent);
-}
-
-input:checked + .slider:before {
-  transform: translateX(20px);
-}
-
-/* ---------- BUTTON GROUP ---------- */
-.btn-group {
-  display:flex;
-  gap:8px;
-}
-
-.btn-group button {
-  flex:1;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background: var(--panel);
-  cursor:pointer;
-}
-
-.btn-group button.active {
-  background: var(--accent);
-  color:white;
-}
-
-/* ---------- RANGE SLIDER ---------- */
-.range {
-  width:100%;
-}
-
-/* ---------- STEPPER ---------- */
-.stepper {
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.stepper button {
-  width:32px;
-  height:32px;
-  border-radius:8px;
-  border:1px solid var(--border);
-  background: var(--panel);
-  cursor:pointer;
-}
-
-/* ---------- INPUT ---------- */
-input[type="text"] {
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid var(--border);
-}
-
-/* ---------- HEADER ---------- */
-.header {
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:20px;
-}
-
-h3 {
-  margin:0 0 10px;
-}
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdCode Host V7 Connected</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      color-scheme: light;
+      --bg:#eef2f7;
+      --bg-2:#e8edf5;
+      --panel:#ffffff;
+      --panel-2:#f7f9fd;
+      --line:#d7dfeb;
+      --line-strong:#c2cddd;
+      --text:#13223c;
+      --muted:#617391;
+      --gold:#f4be2a;
+      --pink:#f56cc8;
+      --blue:#5c8ef5;
+      --purple:#8d64f7;
+      --green:#2bc57d;
+      --danger:#e76666;
+      --shadow:0 18px 44px rgba(24,39,75,.12);
+      --radius:24px;
+      --radius-sm:16px;
+      --soft:rgba(15,35,66,.04);
+      --soft-strong:rgba(15,35,66,.08);
+      --stage:#0a1120;
+      --control-h:46px;
+    }
+    body.dark{
+      color-scheme: dark;
+      --bg:#09101d;
+      --bg-2:#0e1627;
+      --panel:#101828;
+      --panel-2:#131d31;
+      --line:rgba(255,255,255,.10);
+      --line-strong:rgba(255,255,255,.16);
+      --text:#f3f7ff;
+      --muted:#9fb0ce;
+      --shadow:0 24px 60px rgba(0,0,0,.42);
+      --soft:rgba(255,255,255,.05);
+      --soft-strong:rgba(255,255,255,.09);
+      --stage:#070b13;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;min-height:100%}
+    body{
+      font-family:Inter,system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 5%, rgba(244,190,42,.10), transparent 22%),
+        radial-gradient(circle at 90% 10%, rgba(92,142,245,.10), transparent 22%),
+        radial-gradient(circle at 70% 80%, rgba(245,108,200,.10), transparent 24%),
+        linear-gradient(180deg,var(--bg),var(--bg-2));
+      padding:18px;
+    }
+    button,input,select,textarea{font:inherit}
+    .app{max-width:1600px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero-header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px}
+    .brand{display:flex;align-items:center;gap:16px;min-width:0}
+    .badge{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,var(--gold),#ffd76f);color:#111}
+    .eyebrow{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    h1,h2,h3,p{margin:0}
+    h1{font-size:2rem;letter-spacing:-.04em}
+    .subtle{color:var(--muted)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+    .toolbar button,.toolbar .ghost-link{height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;cursor:pointer}
+    .toolbar .accent{background:rgba(92,142,245,.16);border-color:rgba(92,142,245,.28)}
+    .toolbar .gold{background:rgba(244,190,42,.22);border-color:rgba(244,190,42,.34)}
+    .toolbar .pink{background:rgba(245,108,200,.20);border-color:rgba(245,108,200,.30)}
+    .toolbar .icon{min-width:48px;padding:0 14px}
+    .layout-main{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+    .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+    .stat{padding:16px 18px;border-radius:22px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
+    .stat .k{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+    .stat .v{font-size:1.8rem;font-weight:900;letter-spacing:-.04em}
+    .stage-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,.8fr);gap:18px}
+    .stage-panel{padding:18px}
+    .stage-shell{position:relative;min-height:620px;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:var(--stage)}
+    .stage-shell::before{content:'';position:absolute;inset:0;background:
+      radial-gradient(circle at 15% 20%, rgba(244,190,42,.18), transparent 22%),
+      radial-gradient(circle at 85% 15%, rgba(92,142,245,.18), transparent 24%),
+      radial-gradient(circle at 70% 80%, rgba(245,108,200,.20), transparent 26%),
+      linear-gradient(180deg,#0b1322,#101a30 55%,#0b1222)}
+    .stage-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:12px;align-items:center;padding:18px;z-index:2;background:linear-gradient(180deg,rgba(0,0,0,.36),transparent)}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.10);color:#fff;font-size:.82rem;font-weight:800}
+    .mosaic-preview{position:absolute;inset:0;display:grid;z-index:1;opacity:.92}
+    .mosaic-cell{border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden}
+    .mosaic-cell span{position:absolute;left:8px;bottom:8px;font-size:.72rem;font-weight:800;background:rgba(0,0,0,.42);padding:4px 8px;border-radius:999px;color:#fff}
+    .stage-center{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px;z-index:2}
+    .count-big{font-size:clamp(4rem,12vw,8rem);font-weight:900;letter-spacing:-.06em;color:#fff}
+    .headline{font-size:clamp(2.4rem,5vw,5rem);line-height:.94;font-weight:900;letter-spacing:-.05em;color:#fff;max-width:14ch;text-wrap:balance}
+    .subline{margin-top:14px;font-size:1.02rem;line-height:1.5;color:#dbe5fb;max-width:60ch}
+    .blackout{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .24s;z-index:3}
+    .blackout.active{opacity:1}
+    .support-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,360px);gap:18px}
+    .section-card{padding:18px}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+    .section-head h3{font-size:1.25rem;letter-spacing:-.03em}
+    .meter{height:14px;background:rgba(8,15,29,.08);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+    body.dark .meter{background:#09101d}
+    .meter > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink),var(--blue))}
+    .reaction-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .reaction-pill{padding:16px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(92,142,245,.10),rgba(245,108,200,.10))}
+    .reaction-pill .emoji{font-size:1.3rem}
+    .reaction-pill .num{font-size:1.5rem;font-weight:900;margin:6px 0 2px}
+    .phone-wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+    .phone{aspect-ratio:9/16;border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid var(--line);padding:12px;position:relative;overflow:hidden}
+    .phone:before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);width:42%;height:18px;background:rgba(255,255,255,.10);border-radius:0 0 12px 12px}
+    .phone .top{display:flex;justify-content:space-between;font-size:.74rem;color:#d1d8ea;margin-top:12px}
+    .phone .mid{height:74%;display:grid;place-items:center;text-align:center}
+    .phone .tile{font-size:1.8rem;font-weight:900;letter-spacing:-.04em;color:#fff}
+    .phone .small{font-size:.8rem;color:#bfc8de;margin-top:8px}
+    .slice{width:100%;aspect-ratio:9/16;border-radius:18px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.14)}
+    .teamdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+    .inspector{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:auto;padding:18px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+    .inspector::-webkit-scrollbar{width:10px}.inspector::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:999px}
+    .inspector-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+    .status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding:12px 14px;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+    .statusleft{display:flex;align-items:center;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 6px rgba(231,102,102,.16)}.dot.live{background:var(--green);box-shadow:0 0 0 6px rgba(43,197,125,.18)}
+    .controls{display:grid;gap:14px}
+    .control-card{padding:16px;border-radius:22px;border:1px solid var(--line);background:var(--panel)}
+    .control-card h3{font-size:1.02rem;letter-spacing:-.02em;margin-bottom:4px}
+    .help{font-size:.88rem;line-height:1.45;color:var(--muted);margin-bottom:14px}
+    .field-grid{display:grid;gap:12px}
+    .field-grid.two{grid-template-columns:1fr 1fr}
+    .field-grid.three{grid-template-columns:repeat(3,1fr)}
+    .field{display:grid;gap:8px}
+    .field label{font-size:.82rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+    .text-input,.url-input,.textarea, .native-select, .file-input, .number-input{
+      width:100%;min-height:var(--control-h);border-radius:16px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);padding:12px 14px;outline:none
+    }
+    .textarea{min-height:96px;resize:vertical}
+    .native-select{appearance:none;background-image:linear-gradient(45deg, transparent 50%, var(--muted) 50%),linear-gradient(135deg, var(--muted) 50%, transparent 50%);background-position:calc(100% - 20px) calc(1em + 8px),calc(100% - 15px) calc(1em + 8px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:40px}
+    .visually-hidden-control{position:absolute !important;opacity:0 !important;pointer-events:none !important;width:1px !important;height:1px !important;overflow:hidden !important}
+    .segmented{display:grid;gap:8px}
+    .segmented.two{grid-template-columns:1fr 1fr}
+    .segmented.three{grid-template-columns:repeat(3,1fr)}
+    .segmented.four{grid-template-columns:repeat(4,1fr)}
+    .segmented button{min-height:var(--control-h);border-radius:16px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;padding:10px 12px;cursor:pointer}
+    .segmented button.active{background:linear-gradient(135deg,rgba(92,142,245,.22),rgba(141,100,247,.18));border-color:rgba(92,142,245,.40);box-shadow:inset 0 0 0 1px rgba(92,142,245,.16)}
+    .tone-gold button.active{background:linear-gradient(135deg,rgba(244,190,42,.24),rgba(255,215,111,.18));border-color:rgba(244,190,42,.38)}
+    .tone-pink button.active{background:linear-gradient(135deg,rgba(245,108,200,.24),rgba(255,165,220,.18));border-color:rgba(245,108,200,.38)}
+    .range-row{display:grid;gap:8px}
+    .range-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .range-value{font-weight:900;letter-spacing:-.03em}
+    .range-input{width:100%;accent-color:var(--blue)}
+    .micro-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .micro-actions button,.action-grid button,.preset-grid button{min-height:48px;border-radius:16px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-weight:800;padding:12px 14px;cursor:pointer}
+    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .action-grid .primary{background:linear-gradient(135deg,var(--gold),#ffd76f);color:#111;border-color:rgba(244,190,42,.35)}
+    .action-grid .accent{background:linear-gradient(135deg,#77a7ff,#98a7ff);color:#081322;border-color:rgba(92,142,245,.42)}
+    .action-grid .pink{background:linear-gradient(135deg,#ff7bce,#ff9dd9);color:#250914;border-color:rgba(245,108,200,.42)}
+    .action-grid .danger{background:rgba(231,102,102,.12);color:var(--danger);border-color:rgba(231,102,102,.30)}
+    .join-card{display:grid;grid-template-columns:140px 1fr;gap:14px;align-items:center;padding:14px;border-radius:22px;background:var(--panel-2);border:1px solid var(--line)}
+    #qrcode{width:140px;height:140px;background:#fff;border-radius:16px;display:grid;place-items:center;padding:10px}
+    code{display:block;padding:12px 14px;border-radius:16px;background:#0d1527;color:#fff1c2;word-break:break-all;border:1px solid rgba(255,255,255,.08)}
+    body:not(.dark) code{background:#15233f;color:#fff4c4}
+    .tiny{font-size:.84rem;line-height:1.45;color:var(--muted)}
+    .capture-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
+    .cam-box{position:relative;aspect-ratio:16/10;border-radius:18px;overflow:hidden;background:#0a0d14;border:1px solid var(--line)}
+    .cam-box video,.cam-box img,.cam-box canvas{width:100%;height:100%;object-fit:cover;display:block}
+    .cam-status{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.48);padding:8px 10px;border-radius:999px;font-size:.75rem;font-weight:800;color:#fff}
+    .capture-preview{aspect-ratio:1/1;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0a0d14}
+    .capture-preview img{width:100%;height:100%;object-fit:cover}
+    .audio-meter{height:12px;background:#0a0d14;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .audio-meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,#67a8ff,#ff66c4,#f7b718)}
+    .drawer-toggle{display:none}
+    @media (max-width:1320px){.app{grid-template-columns:1fr}.inspector{position:relative;top:auto;max-height:none}.stage-grid,.support-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.drawer-toggle{display:inline-flex}}
+    @media (max-width:840px){body{padding:10px}.hero-header{padding:16px}.stats{grid-template-columns:1fr 1fr}.field-grid.two,.field-grid.three,.capture-grid,.join-card,.action-grid,.preset-grid,.segmented.two,.segmented.three,.segmented.four{grid-template-columns:1fr}.toolbar{justify-content:flex-start}.stage-shell{min-height:520px}}
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <header class="card hero-header">
+      <div class="brand">
+        <div class="badge">CC</div>
+        <div>
+          <div class="eyebrow">Live activation control room</div>
+          <h1>CrowdCode premium host</h1>
+          <p class="subtle">Modern controls, stage-first layout, and the full V3 show logic underneath.</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="drawer-toggle" type="button" id="toggleInspectorBtn">☰ Controls</button>
+        <button type="button" id="openLobbyBtn">Lobby</button>
+        <button type="button" class="accent" id="startCountdownBtn">Countdown</button>
+        <button type="button" class="gold" id="revealBtn">Reveal</button>
+        <button type="button" class="icon" id="themeToggleBtn">◐</button>
+      </div>
+    </header>
 
-<div class="container">
+    <div class="layout-main">
+      <section class="stats">
+        <div class="stat"><div class="k">Phones</div><div class="v" id="connectedCount">0</div><div class="subtle" id="readyCountWrap"><span id="readyCount">0</span> ready</div></div>
+        <div class="stat"><div class="k">Slots</div><div class="v" id="tileCount">0</div><div class="subtle">configured</div></div>
+        <div class="stat"><div class="k">Phase</div><div class="v" id="phaseText">LOBBY</div><div class="subtle" id="countdownDisplay">—</div></div>
+        <div class="stat"><div class="k">Room energy</div><div class="v" id="energyScore">0%</div><div class="meter" style="margin-top:10px"><span id="energyMeterFill"></span></div></div>
+        <div class="stat"><div class="k">Session</div><div class="v" id="sessionCodeLabel">Session: —</div><div class="subtle" id="statusText">Connecting…</div></div>
+        <div class="stat"><div class="k">Live state</div><div class="v" style="font-size:1.25rem" id="stagePhaseChip">PRE-SHOW</div><div class="subtle" id="stageReadyChip">0 ready</div></div>
+      </section>
 
-  <!-- MAIN STAGE -->
-  <div class="panel">
-    <h2>CrowdCode Live</h2>
-    <p>Stage preview stays here</p>
+      <section class="stage-grid">
+        <div class="card stage-panel">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">On-screen presentation</div>
+              <h3 id="sessionNamePreview">CrowdCode Live</h3>
+              <p class="help" style="margin-top:6px">Everyone joins, gets a role, charges the energy meter, and becomes part of the moment.</p>
+            </div>
+            <div class="micro-actions">
+              <button type="button" data-proxy-click="copyLinkBtn">Copy join</button>
+              <button type="button" data-proxy-click="blackoutBtn">Blackout snap</button>
+              <button type="button" class="pink" id="selfieBtn">Selfie finale</button>
+            </div>
+          </div>
+          <div class="stage-shell" id="stage">
+            <div class="stage-top">
+              <div class="chip">Phase: <span id="stagePhaseChipDup">LIVE</span></div>
+              <div class="chip">Audience: <span id="stageReadyChipDup">0 ready</span></div>
+            </div>
+            <div class="mosaic-preview" id="mosaicGrid"></div>
+            <div class="stage-center">
+              <div>
+                <div class="count-big" id="stageCountBig">LIVE</div>
+                <div class="headline" id="stageHeadline">Premium interactive room reveal</div>
+                <div class="subline" id="stageSubline">Everyone joins, gets a role, charges the energy meter, and becomes part of the moment.</div>
+              </div>
+            </div>
+            <div class="blackout" id="blackoutLayer"></div>
+          </div>
+        </div>
 
-    <div style="height:400px;border-radius:20px;background:#111;"></div>
+        <div class="support-grid">
+          <div class="card section-card">
+            <div class="section-head">
+              <div>
+                <div class="eyebrow">Audience entry</div>
+                <h3>Join link</h3>
+                <p class="help" style="margin-top:6px">Keep scan + join visible from the operator view so late arrivals do not derail the demo.</p>
+              </div>
+            </div>
+            <div class="join-card">
+              <div id="qrcode"></div>
+              <div>
+                <code id="joinUrlText">Preparing link…</code>
+                <div class="micro-actions" style="margin-top:10px">
+                  <button type="button" id="copyLinkBtn">Copy join link</button>
+                  <button type="button" id="saveBtn">Save setup</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card section-card">
+            <div class="section-head">
+              <div>
+                <div class="eyebrow">Room interaction</div>
+                <h3>Trigger audience reactions</h3>
+                <p class="help" style="margin-top:6px">These controls stay visible because they are high-frequency live actions.</p>
+              </div>
+            </div>
+            <div class="reaction-grid">
+              <div class="reaction-pill"><div class="emoji">🔥</div><div class="num" id="reactFire">0</div><div class="tiny">Hype</div></div>
+              <div class="reaction-pill"><div class="emoji">👏</div><div class="num" id="reactClap">0</div><div class="tiny">Clap</div></div>
+              <div class="reaction-pill"><div class="emoji">⚡</div><div class="num" id="reactBoost">0</div><div class="tiny">Boost</div></div>
+              <div class="reaction-pill"><div class="emoji">🎉</div><div class="num" id="reactConfetti">0</div><div class="tiny">Confetti</div></div>
+            </div>
+            <div class="tiny" style="margin-top:14px">Live energy meter</div>
+            <div class="meter" style="margin-top:8px"><span id="energyMeterFillDup"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section-card">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Audience wall</div>
+            <h3>Connected phones</h3>
+            <p class="help" style="margin-top:6px">Compact preview of roles, readiness, and slices.</p>
+          </div>
+          <div class="tiny" id="teamsList">Waiting for participants…</div>
+        </div>
+        <div class="phone-wall" id="phoneWall"></div>
+      </section>
+    </div>
+
+    <aside class="inspector" id="inspectorPanel">
+      <div class="inspector-header">
+        <div>
+          <div class="eyebrow">Inspector</div>
+          <h2 style="font-size:1.45rem;letter-spacing:-.04em">Show controls</h2>
+        </div>
+        <div class="tiny">All options remain available here.</div>
+      </div>
+
+      <div class="status-row">
+        <div class="statusleft"><span id="statusDot" class="dot"></span><strong>Live state</strong></div>
+        <div class="tiny" id="statusTextMirror">Connecting…</div>
+      </div>
+
+      <div class="controls">
+        <section class="control-card">
+          <h3>Live session settings</h3>
+          <p class="help">Use progressive disclosure here: quick actions first, detailed setup after.</p>
+          <div class="field-grid">
+            <div class="field">
+              <label for="sessionName">Session title</label>
+              <input class="text-input" id="sessionName" value="INF 286 Demo Day" />
+            </div>
+            <div class="field">
+              <label for="layoutType">Reveal type</label>
+              <select id="layoutType" class="visually-hidden-control">
+                <option value="message" selected>Message reveal</option>
+                <option value="countdown">Countdown</option>
+                <option value="cta">CTA finish</option>
+              </select>
+              <div class="segmented three" data-target="layoutType">
+                <button type="button" data-value="message">Message</button>
+                <button type="button" data-value="countdown">Countdown</button>
+                <button type="button" data-value="cta">CTA</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="assignmentMode">Audience mode</label>
+              <select id="assignmentMode" class="visually-hidden-control">
+                <option value="mosaic" selected>Mosaic slices</option>
+                <option value="repeat">Repeat tiles</option>
+                <option value="sections">Section blocks</option>
+                <option value="unique">Unique tiles</option>
+              </select>
+              <div class="segmented four" data-target="assignmentMode">
+                <button type="button" data-value="mosaic">Mosaic</button>
+                <button type="button" data-value="repeat">Repeat</button>
+                <button type="button" data-value="sections">Sections</button>
+                <button type="button" data-value="unique">Unique</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="tileInput">Tiles or phrase</label>
+              <textarea class="textarea" id="tileInput">INF 286 | INTRO TO WEB DEVELOPMENT | DEMO DAY</textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-card">
+          <h3>Visual system</h3>
+          <p class="help">Use explicit controls for discrete choices, and sliders for bounded numeric values.</p>
+          <div class="field-grid">
+            <div class="field">
+              <label for="themeMode">Theme</label>
+              <select id="themeMode" class="visually-hidden-control">
+                <option value="premium" selected>Premium arena</option>
+                <option value="nku">NKU gold + pink</option>
+                <option value="midnight">Midnight neon</option>
+              </select>
+              <div class="segmented three tone-gold" data-target="themeMode">
+                <button type="button" data-value="premium">Premium</button>
+                <button type="button" data-value="nku">NKU</button>
+                <button type="button" data-value="midnight">Midnight</button>
+              </div>
+            </div>
+            <div class="field-grid two">
+              <div class="field">
+                <label for="mosaicHeadline">Artwork headline</label>
+                <input class="text-input" id="mosaicHeadline" value="INF 286" />
+              </div>
+              <div class="field">
+                <label for="mosaicSubhead">Artwork subhead</label>
+                <input class="text-input" id="mosaicSubhead" value="Interactive Demo Day" />
+              </div>
+            </div>
+            <div class="field-grid two">
+              <div class="field range-row">
+                <div class="range-top"><label for="mosaicCols">Columns</label><span class="range-value" data-value-for="mosaicCols">4</span></div>
+                <input class="range-input" id="mosaicCols" type="range" min="2" max="12" value="4" />
+              </div>
+              <div class="field range-row">
+                <div class="range-top"><label for="mosaicRows">Rows</label><span class="range-value" data-value-for="mosaicRows">6</span></div>
+                <input class="range-input" id="mosaicRows" type="range" min="2" max="20" value="6" />
+              </div>
+            </div>
+            <div class="field-grid two">
+              <div class="field">
+                <label for="mosaicArtworkSource">Artwork source</label>
+                <select id="mosaicArtworkSource" class="visually-hidden-control">
+                  <option value="generated" selected>Generated poster</option>
+                  <option value="upload">Uploaded artwork / selfie</option>
+                </select>
+                <div class="segmented two" data-target="mosaicArtworkSource">
+                  <button type="button" data-value="generated">Generated</button>
+                  <button type="button" data-value="upload">Upload / selfie</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="mosaicImageFit">Image fit</label>
+                <select id="mosaicImageFit" class="visually-hidden-control">
+                  <option value="cover" selected>Cover</option>
+                  <option value="contain">Contain</option>
+                </select>
+                <div class="segmented two" data-target="mosaicImageFit">
+                  <button type="button" data-value="cover">Cover</button>
+                  <button type="button" data-value="contain">Contain</button>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="mosaicImageUpload">Custom artwork upload</label>
+              <input class="file-input" id="mosaicImageUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+              <div id="mosaicUploadStatus" class="tiny" style="margin-top:8px">No custom image loaded.</div>
+            </div>
+            <div class="micro-actions">
+              <button type="button" id="regenerateArtworkBtn">Regenerate artwork</button>
+              <button type="button" id="clearUploadBtn">Clear upload</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-card">
+          <h3>Reveal choreography</h3>
+          <p class="help">Continuous values use sliders so the host can tune without typing.</p>
+          <div class="field-grid">
+            <div class="field-grid three">
+              <div class="field range-row">
+                <div class="range-top"><label for="countdownSeconds">Countdown</label><span class="range-value" data-value-for="countdownSeconds">6s</span></div>
+                <input class="range-input" id="countdownSeconds" type="range" min="3" max="30" value="6" />
+              </div>
+              <div class="field range-row">
+                <div class="range-top"><label for="animationSeconds">Animation</label><span class="range-value" data-value-for="animationSeconds">5s</span></div>
+                <input class="range-input" id="animationSeconds" type="range" min="2" max="20" value="5" />
+              </div>
+              <div class="field range-row">
+                <div class="range-top"><label for="autoStartReadyPct">Auto-start when ready % reaches</label><span class="range-value" data-value-for="autoStartReadyPct">70%</span></div>
+                <input class="range-input" id="autoStartReadyPct" type="range" min="10" max="100" value="70" />
+              </div>
+            </div>
+            <div class="field-grid two">
+              <div class="field">
+                <label for="animationStyle">Animation style</label>
+                <select id="animationStyle" class="visually-hidden-control">
+                  <option value="pulse" selected>Pulse</option>
+                  <option value="flash">Flash</option>
+                  <option value="ripple">Ripple</option>
+                  <option value="audio">Audio reactive</option>
+                </select>
+                <div class="segmented four" data-target="animationStyle">
+                  <button type="button" data-value="pulse">Pulse</button>
+                  <button type="button" data-value="flash">Flash</button>
+                  <button type="button" data-value="ripple">Ripple</button>
+                  <button type="button" data-value="audio">Audio</button>
+                </div>
+              </div>
+              <div class="field-grid two">
+                <div class="field">
+                  <label for="audioFlashMode">Phone flash style</label>
+                  <select id="audioFlashMode" class="visually-hidden-control">
+                    <option value="soft" selected>Soft pulse</option>
+                    <option value="medium">Medium flash</option>
+                    <option value="strobe">Strobe</option>
+                    <option value="off">Off</option>
+                  </select>
+                  <div class="segmented four tone-pink" data-target="audioFlashMode">
+                    <button type="button" data-value="soft">Soft</button>
+                    <button type="button" data-value="medium">Medium</button>
+                    <button type="button" data-value="strobe">Strobe</button>
+                    <button type="button" data-value="off">Off</button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="audioFlashHaptics">Haptics</label>
+                  <select id="audioFlashHaptics" class="visually-hidden-control">
+                    <option value="vibrate" selected>Vibrate</option>
+                    <option value="off">Off</option>
+                  </select>
+                  <div class="segmented two" data-target="audioFlashHaptics">
+                    <button type="button" data-value="vibrate">Vibrate</button>
+                    <button type="button" data-value="off">Off</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field-grid two">
+              <div class="field">
+                <label for="finalHeadline">Final headline</label>
+                <input class="text-input" id="finalHeadline" value="You just powered the reveal." />
+              </div>
+              <div class="field">
+                <label for="finalSubhead">Final subhead</label>
+                <input class="text-input" id="finalSubhead" value="INF 286 — premium interactive V3" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="ctaUrl">CTA URL</label>
+              <input class="url-input" id="ctaUrl" type="url" value="https://www.nku.edu/" />
+            </div>
+          </div>
+        </section>
+
+        <section class="control-card">
+          <h3>Go live</h3>
+          <p class="help">These are the moments you will use most often during class.</p>
+          <div class="preset-grid" style="margin-bottom:10px">
+            <button type="button" id="presetHypeBtn">Hype intro</button>
+            <button type="button" id="presetCountdownBtn">Ready → countdown</button>
+            <button type="button" id="presetAudioBtn">Music reveal</button>
+            <button type="button" id="presetSelfieBtn">Selfie finale</button>
+          </div>
+          <div class="action-grid">
+            <button type="button" id="rebalanceBtn">Rebalance</button>
+            <button type="button" class="primary" id="saveBtnProxy" data-proxy-click="saveBtn">Save setup</button>
+            <button type="button" data-proxy-click="openLobbyBtn">Open lobby</button>
+            <button type="button" class="accent" data-proxy-click="startCountdownBtn">Start countdown</button>
+            <button type="button" id="blackoutBtn">Blackout snap</button>
+            <button type="button" class="primary" data-proxy-click="revealBtn">Final reveal</button>
+            <button type="button" class="pink" data-proxy-click="selfieBtn">Selfie moment</button>
+            <button type="button" class="danger" id="resetBtn">Reset session</button>
+          </div>
+        </section>
+
+        <section class="control-card">
+          <h3>Audio-reactive reveal</h3>
+          <div class="field-grid">
+            <div class="field">
+              <label for="audioFile">Host MP3 upload</label>
+              <input class="file-input" id="audioFile" type="file" accept="audio/*" />
+              <div id="audioStatus" class="tiny" style="margin-top:8px">Upload a short track for reactive reveal.</div>
+            </div>
+            <div class="field">
+              <label for="audioBroadcastMode">Audience speaker mode</label>
+              <select id="audioBroadcastMode" class="visually-hidden-control">
+                <option value="visual" selected>Visual only</option>
+                <option value="sync">Play on audience phones</option>
+              </select>
+              <div class="segmented two" data-target="audioBroadcastMode">
+                <button type="button" data-value="visual">Visual only</button>
+                <button type="button" data-value="sync">Synced phones</button>
+              </div>
+              <audio id="audioPlayer" controls preload="metadata" style="width:100%;margin-top:10px"></audio>
+              <div class="audio-meter" style="margin-top:10px"><span id="reactiveMeterFill"></span></div>
+            </div>
+            <div class="micro-actions">
+              <button type="button" id="startAudioReactiveBtn">Start MP3 reveal</button>
+              <button type="button" id="stopAudioReactiveBtn">Stop MP3 reveal</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-card">
+          <h3>Selfie mosaic capture</h3>
+          <p class="help">Capture the room and turn it into the final mosaic without leaving the host view.</p>
+          <div class="capture-grid">
+            <div>
+              <div class="cam-box">
+                <video id="captureVideo" playsinline muted></video>
+                <img id="captureFallbackImage" alt="capture preview" style="display:none" />
+                <div class="cam-status" id="captureStatusBadge">Camera idle</div>
+              </div>
+              <div class="micro-actions" style="margin-top:10px">
+                <button type="button" id="startCameraBtn">Start camera</button>
+                <button type="button" id="flipCameraBtn">Flip</button>
+                <button type="button" id="capturePhotoBtn">Capture</button>
+                <button type="button" id="useCapturedBtn">Use as mosaic</button>
+                <button type="button" id="stopCameraBtn">Stop</button>
+              </div>
+            </div>
+            <div>
+              <div class="capture-preview"><img id="capturedPhotoPreview" alt="captured photo preview" /></div>
+              <div id="captureHelp" class="tiny" style="margin-top:10px">Start the camera, capture the room, then apply it to the audience mosaic for the big finish.</div>
+            </div>
+          </div>
+          <canvas id="captureCanvas" width="1600" height="1000" style="display:none"></canvas>
+        </section>
+      </div>
+    </aside>
   </div>
 
-  <!-- INSPECTOR -->
-  <div class="panel">
+  <canvas id="artCanvas" width="1080" height="1728" style="display:none"></canvas>
 
-    <div class="header">
-      <h3>Controls</h3>
+  <script>
+    (function(){
+      const body = document.body;
+      const storageKey = 'crowdcode-host-theme';
+      const themeBtn = document.getElementById('themeToggleBtn');
+      const inspector = document.getElementById('inspectorPanel');
+      const inspectorBtn = document.getElementById('toggleInspectorBtn');
+      const sessionName = document.getElementById('sessionName');
+      const sessionNamePreview = document.getElementById('sessionNamePreview');
+      function applyTheme(mode){
+        body.classList.toggle('dark', mode === 'dark');
+        localStorage.setItem(storageKey, mode);
+        if(themeBtn) themeBtn.textContent = mode === 'dark' ? '☀︎' : '◐';
+      }
+      applyTheme(localStorage.getItem(storageKey) || 'light');
+      themeBtn?.addEventListener('click', ()=>applyTheme(body.classList.contains('dark') ? 'light' : 'dark'));
+      inspectorBtn?.addEventListener('click', ()=> inspector.scrollIntoView({behavior:'smooth', block:'start'}));
+      sessionName?.addEventListener('input', ()=> { if(sessionNamePreview) sessionNamePreview.textContent = sessionName.value || 'CrowdCode Live'; });
 
-      <!-- DARK MODE -->
-      <label class="switch">
-        <input type="checkbox" id="themeToggle">
-        <span class="slider"></span>
-      </label>
-    </div>
+      function syncSegmented(){
+        document.querySelectorAll('.segmented[data-target]').forEach(group => {
+          const target = document.getElementById(group.dataset.target);
+          if(!target) return;
+          group.querySelectorAll('button[data-value]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.value === target.value);
+          });
+        });
+      }
+      document.querySelectorAll('.segmented[data-target]').forEach(group => {
+        const target = document.getElementById(group.dataset.target);
+        group.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-value]');
+          if(!btn || !target) return;
+          target.value = btn.dataset.value;
+          target.dispatchEvent(new Event('input', {bubbles:true}));
+          target.dispatchEvent(new Event('change', {bubbles:true}));
+          syncSegmented();
+        });
+      });
 
-    <!-- SESSION -->
-    <h3>Session</h3>
-    <input type="text" placeholder="Session name">
+      function syncRanges(){
+        document.querySelectorAll('[data-value-for]').forEach(node => {
+          const target = document.getElementById(node.dataset.valueFor);
+          if(!target) return;
+          const suffix = target.id.includes('Pct') ? '%' : (target.id.includes('Seconds') ? 's' : '');
+          node.textContent = `${target.value}${suffix}`;
+        });
+      }
+      document.querySelectorAll('input[type="range"]').forEach(input => {
+        input.addEventListener('input', syncRanges);
+        input.addEventListener('change', syncRanges);
+      });
+      document.querySelectorAll('[data-proxy-click]').forEach(btn => {
+        btn.addEventListener('click', ()=> {
+          const target = document.getElementById(btn.dataset.proxyClick);
+          target?.click();
+        });
+      });
+      setInterval(() => {
+        syncSegmented();
+        syncRanges();
+        if(sessionName && sessionNamePreview && sessionNamePreview.textContent !== (sessionName.value || 'CrowdCode Live')) {
+          sessionNamePreview.textContent = sessionName.value || 'CrowdCode Live';
+        }
+        const a = document.getElementById('statusText');
+        const b = document.getElementById('statusTextMirror');
+        if (a && b) b.textContent = a.textContent;
+        const sp = document.getElementById('stagePhaseChip');
+        const sp2 = document.getElementById('stagePhaseChipDup');
+        if (sp && sp2) sp2.textContent = sp.textContent;
+        const sr = document.getElementById('stageReadyChip');
+        const sr2 = document.getElementById('stageReadyChipDup');
+        if (sr && sr2) sr2.textContent = sr.textContent;
+        const e1 = document.getElementById('energyMeterFill');
+        const e2 = document.getElementById('energyMeterFillDup');
+        if (e1 && e2) e2.style.width = e1.style.width;
+      }, 350);
+      syncSegmented();
+      syncRanges();
+    })();
+  </script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+    import { getDatabase, ref, set, update, get, onValue, onDisconnect, serverTimestamp, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
-    <!-- MODE -->
-    <h3>Mode</h3>
-    <div class="segmented">
-      <button class="active">Mosaic</button>
-      <button>Repeat</button>
-      <button>Sections</button>
-    </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
+      authDomain: "crowdcode-713e4.firebaseapp.com",
+      databaseURL: "https://crowdcode-713e4-default-rtdb.firebaseio.com",
+      projectId: "crowdcode-713e4",
+      storageBucket: "crowdcode-713e4.firebasestorage.app",
+      messagingSenderId: "415062434213",
+      appId: "1:415062434213:web:0ac4da57c4ffe6a5e7884c",
+      measurementId: "G-E1CNDCQWC0"
+    };
 
-    <!-- COUNTDOWN -->
-    <h3>Countdown</h3>
-    <div class="stepper">
-      <button>-</button>
-      <span>8s</span>
-      <button>+</button>
-    </div>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    <!-- AUTO START -->
-    <h3>Auto Start</h3>
-    <label class="switch">
-      <input type="checkbox" checked>
-      <span class="slider"></span>
-    </label>
+    const els = Object.fromEntries([...document.querySelectorAll('[id]')].map(el => [el.id, el]));
+    const url = new URL(window.location.href);
+    let sessionId = url.searchParams.get('session');
+    if (!sessionId) {
+      sessionId = crypto.randomUUID().slice(0, 8).toUpperCase();
+      url.searchParams.set('session', sessionId);
+      history.replaceState({}, '', url);
+    }
 
-    <!-- ENERGY -->
-    <h3>Room Energy Sensitivity</h3>
-    <input type="range" class="range" min="0" max="100">
+    const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
+    const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
+    const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
 
-    <!-- ANIMATION STYLE -->
-    <h3>Animation Style</h3>
-    <div class="btn-group">
-      <button class="active">Pulse</button>
-      <button>Flash</button>
-      <button>Audio</button>
-    </div>
+    const state = {
+      session: null,
+      participants: {},
+      countdownTimer: null,
+      uploadedArtworkDataUrl: '',
+      uploadedArtworkName: '',
+      cameraStream: null,
+      facingMode: 'environment',
+      capturedPhotoDataUrl: '',
+      audioObjectUrl: '',
+      audioFileName: '',
+      audioFileType: 'audio/mpeg',
+      audioDataUrl: '',
+      audioContext: null,
+      audioAnalyser: null,
+      audioSourceNode: null,
+      audioMonitorTimer: null,
+      autoStarted: false
+    };
 
-    <!-- FLASH SETTINGS -->
-    <h3>Flash Strength</h3>
-    <input type="range" class="range">
+    const teams = [
+      { key:'gold', label:'Gold Team', color:'#f7b718' },
+      { key:'pink', label:'Pink Team', color:'#ff66c4' },
+      { key:'blue', label:'Blue Team', color:'#67a8ff' },
+      { key:'spotlight', label:'Spotlight Team', color:'#9ef7c4' }
+    ];
 
-    <!-- AUDIO -->
-    <h3>Audio Mode</h3>
-    <div class="btn-group">
-      <button class="active">Visual</button>
-      <button>Sync</button>
-    </div>
+    const roles = ['Center Tile','Hype Lead','Flash Lead','Reveal Crew','Energy Builder','North Wing','South Wing','Finale Squad'];
 
-    <!-- ACTIONS -->
-    <h3>Actions</h3>
-    <div class="btn-group">
-      <button>Lobby</button>
-      <button>Countdown</button>
-      <button>Reveal</button>
-    </div>
+    els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
 
-  </div>
+    function escapeHtml(str=''){ return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
+    function parseTiles(raw = els.tileInput.value){
+      return raw.split('|').map(s => s.trim()).filter(Boolean);
+    }
+    function buildJoinUrl(){
+      const audienceUrl = new URL('./audience-v3.html', window.location.href);
+      audienceUrl.searchParams.set('session', sessionId);
+      return audienceUrl.toString();
+    }
+    async function renderQR(){
+      const joinUrl = buildJoinUrl();
+      els.joinUrlText.textContent = joinUrl;
+      els.qrcode.innerHTML = '';
+      await QRCode.toCanvas(joinUrl, { width:130, margin:1 }, (err, canvas) => { if (!err) els.qrcode.appendChild(canvas); });
+    }
+    function getTheme(theme){
+      const map = {
+        premium: {bg1:'#090b12', bg2:'#151a27', accent1:'#f7b718', accent2:'#67a8ff', accent3:'#ff66c4', text:'#ffffff'},
+        nku: {bg1:'#0f1021', bg2:'#1b1d3a', accent1:'#f7b718', accent2:'#ff66c4', accent3:'#67a8ff', text:'#ffffff'},
+        midnight: {bg1:'#07111c', bg2:'#101d31', accent1:'#67a8ff', accent2:'#9e8bff', accent3:'#ff66c4', text:'#ffffff'}
+      };
+      return map[theme] || map.premium;
+    }
 
-</div>
+    function wrapText(ctx, text, x, startY, maxWidth, lineHeight){
+      const words = text.split(/\s+/);
+      let line = '';
+      let y = startY;
+      for (let n = 0; n < words.length; n++){
+        const test = line ? `${line} ${words[n]}` : words[n];
+        if (ctx.measureText(test).width > maxWidth && line){
+          ctx.fillText(line, x, y);
+          line = words[n];
+          y += lineHeight;
+        } else line = test;
+      }
+      if (line) ctx.fillText(line, x, y);
+    }
 
-<script>
-document.getElementById("themeToggle").addEventListener("change", e => {
-  document.body.classList.toggle("dark", e.target.checked);
-});
-</script>
+    function generateMosaicArtwork(){
+      const canvas = els.artCanvas;
+      const ctx = canvas.getContext('2d');
+      const theme = getTheme(els.themeMode.value);
+      const w = canvas.width, h = canvas.height;
 
+      const bg = ctx.createLinearGradient(0, 0, w, h);
+      bg.addColorStop(0, theme.bg1);
+      bg.addColorStop(1, theme.bg2);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      const orb1 = ctx.createRadialGradient(w*0.15, h*0.18, 10, w*0.15, h*0.18, w*0.35);
+      orb1.addColorStop(0, `${theme.accent1}cc`);
+      orb1.addColorStop(1, `${theme.accent1}00`);
+      ctx.fillStyle = orb1; ctx.fillRect(0, 0, w, h);
+
+      const orb2 = ctx.createRadialGradient(w*0.82, h*0.72, 10, w*0.82, h*0.72, w*0.32);
+      orb2.addColorStop(0, `${theme.accent2}cc`);
+      orb2.addColorStop(1, `${theme.accent2}00`);
+      ctx.fillStyle = orb2; ctx.fillRect(0, 0, w, h);
+
+      const orb3 = ctx.createRadialGradient(w*0.5, h*0.35, 10, w*0.5, h*0.35, w*0.24);
+      orb3.addColorStop(0, `${theme.accent3}88`);
+      orb3.addColorStop(1, `${theme.accent3}00`);
+      ctx.fillStyle = orb3; ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.globalAlpha = .14;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      for (let i = -h; i < w; i += 74){
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + h, h);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.fillStyle = theme.text;
+      ctx.textAlign = 'center';
+      ctx.font = '900 172px Inter, sans-serif';
+      wrapText(ctx, (els.mosaicHeadline.value || 'INF 286').toUpperCase(), w/2, h*0.34, w*0.78, 170);
+      ctx.font = '700 80px Inter, sans-serif';
+      ctx.fillStyle = `${theme.text}dd`;
+      wrapText(ctx, els.mosaicSubhead.value || 'Interactive Demo Day', w/2, h*0.6, w*0.72, 92);
+
+      ctx.fillStyle = theme.accent1;
+      ctx.font = '800 52px Inter, sans-serif';
+      ctx.fillText('PREMIUM INTERACTIVE V3', w/2, h*0.88);
+
+      ctx.strokeStyle = `${theme.text}22`;
+      ctx.lineWidth = 8;
+      ctx.strokeRect(34, 34, w-68, h-68);
+      return canvas.toDataURL('image/jpeg', .88);
+    }
+
+    function getCurrentArtworkDataUrl(){
+      if (els.mosaicArtworkSource.value === 'upload' && state.uploadedArtworkDataUrl) return state.uploadedArtworkDataUrl;
+      if (els.mosaicArtworkSource.value === 'upload' && state.session?.mosaic?.artworkType === 'upload' && state.session?.mosaic?.artwork) return state.session.mosaic.artwork;
+      return generateMosaicArtwork();
+    }
+
+    function sessionPayload(overrides = {}){
+      const assignmentMode = els.assignmentMode.value;
+      const cols = Math.max(2, Number(els.mosaicCols.value) || 4);
+      const rows = Math.max(2, Number(els.mosaicRows.value) || 6);
+      const tiles = assignmentMode === 'mosaic'
+        ? Array.from({ length: cols * rows }, (_, i) => `SLICE ${i+1}`)
+        : parseTiles();
+
+      return {
+        sessionName: els.sessionName.value.trim() || 'CrowdCode V3',
+        layoutType: els.layoutType.value,
+        assignmentMode,
+        tiles,
+        countdownSeconds: Number(els.countdownSeconds.value) || 6,
+        animationSeconds: Number(els.animationSeconds.value) || 5,
+        autoStartReadyPct: Number(els.autoStartReadyPct.value) || 70,
+        finalHeadline: els.finalHeadline.value.trim() || 'You just powered the reveal.',
+        finalSubhead: els.finalSubhead.value.trim() || 'Premium interactive V3',
+        ctaUrl: els.ctaUrl.value.trim() || '',
+        phase: state.session?.phase || 'lobby',
+        blackout: false,
+        layoutMeta: {
+          themeMode: els.themeMode.value
+        },
+        reactions: state.session?.reactions || { fire:0, clap:0, boost:0, confetti:0 },
+        interaction: {
+          energyScore: state.session?.interaction?.energyScore || 0,
+          hypePulse: state.session?.interaction?.hypePulse || false
+        },
+        flashConfig: {
+          mode: els.audioFlashMode.value || 'soft',
+          haptics: els.audioFlashHaptics.value || 'vibrate'
+        },
+        audioReactive: state.session?.audioReactive || null,
+        audioBroadcast: state.session?.audioBroadcast || null,
+        countdownStartAt: state.session?.countdownStartAt || null,
+        countdownTargetAt: state.session?.countdownTargetAt || null,
+        animationStartAt: state.session?.animationStartAt || null,
+        animationTargetAt: state.session?.animationTargetAt || null,
+        animationStyle: els.animationStyle.value || 'pulse',
+        mosaic: {
+          enabled: assignmentMode === 'mosaic',
+          cols, rows,
+          headline: els.mosaicHeadline.value.trim() || 'INF 286',
+          subhead: els.mosaicSubhead.value.trim() || 'Interactive Demo Day',
+          artworkType: els.mosaicArtworkSource.value,
+          imageFit: els.mosaicImageFit.value,
+          uploadedImageName: state.uploadedArtworkName || state.session?.mosaic?.uploadedImageName || '',
+          artwork: getCurrentArtworkDataUrl()
+        },
+        updatedAt: Date.now(),
+        ...overrides
+      };
+    }
+
+    function sortedParticipants(){
+      return Object.entries(state.participants || {}).sort((a,b) => (a[1]?.joinedAt || 0) - (b[1]?.joinedAt || 0));
+    }
+
+    function teamForIndex(idx){ return teams[idx % teams.length]; }
+    function roleForIndex(idx){ return roles[idx % roles.length]; }
+
+    function computeAssignment(index, totalCount, session){
+      const tiles = session.tiles || [];
+      const mode = session.assignmentMode || 'mosaic';
+      const team = teamForIndex(index);
+      const role = roleForIndex(index);
+      if (mode === 'mosaic'){
+        const totalCells = Math.max(1, (session.mosaic?.cols || 4) * (session.mosaic?.rows || 6));
+        const sliceIndex = index % totalCells;
+        return {
+          tileIndex: sliceIndex,
+          tileText: `CELL ${sliceIndex + 1}`,
+          groupIndex: sliceIndex,
+          mosaicIndex: sliceIndex,
+          teamKey: team.key,
+          teamLabel: team.label,
+          teamColor: team.color,
+          roleLabel: role
+        };
+      }
+      if (!tiles.length) {
+        return { tileIndex:index, tileText:`#${index+1}`, groupIndex:index, teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
+      }
+      if (mode === 'unique') {
+        return { tileIndex:index, tileText:tiles[index] ?? `#${index+1}`, groupIndex:Math.min(index, tiles.length-1), teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
+      }
+      if (mode === 'sections'){
+        const sectionSize = Math.max(1, Math.ceil(totalCount / tiles.length));
+        const sectionIndex = Math.min(Math.floor(index / sectionSize), tiles.length-1);
+        return { tileIndex:sectionIndex, tileText:tiles[sectionIndex], groupIndex:sectionIndex, teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
+      }
+      const repeatedIndex = index % tiles.length;
+      return { tileIndex:repeatedIndex, tileText:tiles[repeatedIndex], groupIndex:repeatedIndex, teamKey:team.key, teamLabel:team.label, teamColor:team.color, roleLabel:role };
+    }
+
+    async function rebalanceParticipants(){
+      const participants = sortedParticipants();
+      if (!participants.length) return;
+      const session = state.session || sessionPayload();
+      const payload = {};
+      participants.forEach(([id,p], idx) => {
+        const assigned = computeAssignment(idx, participants.length, session);
+        payload[`${id}/tileIndex`] = assigned.tileIndex;
+        payload[`${id}/tileText`] = assigned.tileText;
+        payload[`${id}/groupIndex`] = assigned.groupIndex;
+        payload[`${id}/mosaicIndex`] = assigned.mosaicIndex ?? null;
+        payload[`${id}/slotNumber`] = idx + 1;
+        payload[`${id}/teamKey`] = assigned.teamKey;
+        payload[`${id}/teamLabel`] = assigned.teamLabel;
+        payload[`${id}/teamColor`] = assigned.teamColor;
+        payload[`${id}/roleLabel`] = assigned.roleLabel;
+        payload[`${id}/updatedAt`] = Date.now();
+      });
+      await update(participantsRef, payload);
+    }
+
+    async function ensureSession(){
+      const snap = await get(sessionRef);
+      if (!snap.exists()) await set(sessionRef, sessionPayload({ phase:'lobby' }));
+      await set(hostPresenceRef, { online:true, updatedAt:serverTimestamp() });
+      onDisconnect(hostPresenceRef).remove();
+    }
+
+    async function saveSetup(extra = {}){
+      await update(sessionRef, sessionPayload({ ...extra }));
+      await rebalanceParticipants();
+    }
+
+    function setAudioStatus(message){ els.audioStatus.textContent = message; }
+    function clearReactiveMeter(){ els.reactiveMeterFill.style.width = '0%'; }
+    function ensureAudioGraph(){
+      if (!els.audioPlayer.src) return false;
+      if (!state.audioContext) state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (!state.audioSourceNode){
+        state.audioSourceNode = state.audioContext.createMediaElementSource(els.audioPlayer);
+        state.audioAnalyser = state.audioContext.createAnalyser();
+        state.audioAnalyser.fftSize = 256;
+        state.audioSourceNode.connect(state.audioAnalyser);
+        state.audioAnalyser.connect(state.audioContext.destination);
+      }
+      return true;
+    }
+
+    async function openLobby(){ state.autoStarted = false; await saveSetup({ phase:'lobby', blackout:false, countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
+    async function startCountdown(){
+      const seconds = Number(els.countdownSeconds.value) || 6;
+      const startAt = Date.now() + 1200;
+      const targetAt = startAt + seconds * 1000;
+      await saveSetup({ phase:'countdown', blackout:false, countdownStartAt:startAt, countdownTargetAt:targetAt, animationStartAt:null, animationTargetAt:null });
+    }
+    async function animateReveal(style = null){
+      const seconds = Number(els.animationSeconds.value) || 5;
+      const startAt = Date.now() + 600;
+      const targetAt = startAt + seconds * 1000;
+      await saveSetup({
+        phase:'animate',
+        blackout:false,
+        countdownStartAt:null,
+        countdownTargetAt:null,
+        animationStartAt:startAt,
+        animationTargetAt:targetAt,
+        animationStyle: style || els.animationStyle.value || 'pulse'
+      });
+    }
+    async function triggerBlackoutSnap(){
+      await saveSetup({ phase:'blackout', blackout:true });
+      setTimeout(() => finalReveal().catch(console.error), 420);
+    }
+    async function finalReveal(){ await saveSetup({ phase:'reveal', blackout:false, countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
+    async function selfieMoment(){ await saveSetup({ phase:'selfie', blackout:false, countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null }); }
+    async function resetSession(){
+      state.autoStarted = false;
+      if (state.countdownTimer) clearInterval(state.countdownTimer);
+      await remove(participantsRef);
+      await set(sessionRef, sessionPayload({
+        phase:'lobby',
+        blackout:false,
+        reactions:{ fire:0, clap:0, boost:0, confetti:0 },
+        interaction:{ energyScore:0, hypePulse:false },
+        audioReactive:null,
+        audioBroadcast:null,
+        countdownStartAt:null,
+        countdownTargetAt:null,
+        animationStartAt:null,
+        animationTargetAt:null
+      }));
+    }
+
+    async function runHypeIntro(){
+      await saveSetup({ phase:'lobby', blackout:false, interaction:{ ...(state.session?.interaction||{}), hypePulse:true } });
+      setTimeout(() => saveSetup({ interaction:{ ...(state.session?.interaction||{}), hypePulse:false } }).catch(console.error), 2400);
+    }
+    async function runCountdownHit(){ await startCountdown(); }
+    async function runAudioDrop(){ await startAudioReactiveReveal(); }
+    async function runSelfieFinale(){
+      await selfieMoment();
+      if (state.capturedPhotoDataUrl) {
+        useCapturedPhoto();
+        setTimeout(() => finalReveal().catch(console.error), 900);
+      }
+    }
+
+    async function stopAudioReactive(transition=false){
+      if (state.audioMonitorTimer){ clearInterval(state.audioMonitorTimer); state.audioMonitorTimer = null; }
+      clearReactiveMeter();
+      try { els.audioPlayer.pause(); } catch(e) {}
+      await update(sessionRef, {
+        phase: transition ? 'reveal' : (state.session?.phase || 'lobby'),
+        audioReactive: null,
+        audioBroadcast: null,
+        updatedAt: Date.now()
+      });
+      setAudioStatus('Audio reactive reveal stopped.');
+    }
+
+    async function startAudioReactiveReveal(){
+      if (!els.audioPlayer.src){ setAudioStatus('Upload an MP3 first.'); return; }
+      if (!ensureAudioGraph()){ setAudioStatus('Unable to create audio analysis.'); return; }
+      const broadcastMode = els.audioBroadcastMode.value || 'visual';
+      if (broadcastMode === 'sync' && !state.audioDataUrl){ setAudioStatus('Wait for the MP3 to finish processing.'); return; }
+      await state.audioContext.resume();
+      const startAt = Date.now() + 1000;
+      await saveSetup({
+        phase:'animate',
+        animationStyle:'audio',
+        animationStartAt:startAt,
+        audioReactive:{ enabled:true, level:0, trackName:state.audioFileName || 'Host MP3', startedAt:startAt, ended:false },
+        audioBroadcast: broadcastMode === 'sync'
+          ? { enabled:true, mode:'sync', trackName:state.audioFileName || 'Host MP3', mimeType: state.audioFileType || 'audio/mpeg', dataUrl: state.audioDataUrl, startedAt:startAt, durationMs: Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null, hostPositionMs:0, playing:true }
+          : { enabled:false, mode:'visual', trackName:state.audioFileName || 'Host MP3', startedAt:startAt, playing:false }
+      });
+      try { els.audioPlayer.currentTime = 0; } catch(e){}
+      await els.audioPlayer.play();
+      setAudioStatus(`Playing ${state.audioFileName || 'host track'} with reactive visuals${broadcastMode === 'sync' ? ' and synced audience audio' : ''}.`);
+      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer);
+      const bins = new Uint8Array(state.audioAnalyser.frequencyBinCount);
+      state.audioMonitorTimer = setInterval(async () => {
+        state.audioAnalyser.getByteFrequencyData(bins);
+        const avg = bins.reduce((sum, value) => sum + value, 0) / bins.length / 255;
+        const boosted = Math.max(0, Math.min(1, Math.pow(avg * 1.9, 0.92)));
+        els.reactiveMeterFill.style.width = `${Math.round(boosted * 100)}%`;
+        try {
+          await update(sessionRef, {
+            'audioReactive/enabled': true,
+            'audioReactive/level': boosted,
+            'audioReactive/trackName': state.audioFileName || 'Host MP3',
+            'audioReactive/positionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
+            'audioReactive/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+            'audioBroadcast/hostPositionMs': Math.round((els.audioPlayer.currentTime || 0) * 1000),
+            'audioBroadcast/durationMs': Number.isFinite(els.audioPlayer.duration) ? Math.round(els.audioPlayer.duration * 1000) : null,
+            'audioBroadcast/playing': !els.audioPlayer.paused,
+            updatedAt: Date.now()
+          });
+        } catch (error) { console.error(error); }
+      }, 140);
+    }
+
+    function updateUploadStatus(){
+      if (state.uploadedArtworkDataUrl){
+        els.mosaicUploadStatus.textContent = `${state.uploadedArtworkName || 'Custom image'} loaded.`;
+      } else {
+        els.mosaicUploadStatus.textContent = 'No custom image loaded.';
+      }
+    }
+
+    function setCaptureStatus(message){
+      els.captureStatusBadge.textContent = message;
+      els.captureHelp.textContent = message.includes('Captured')
+        ? 'Captured photo ready. Click Use as mosaic for the big finish.'
+        : 'Start the camera, capture the room, then apply it to the audience mosaic for the big finish.';
+    }
+
+    async function stopCamera(){
+      if (state.cameraStream){
+        state.cameraStream.getTracks().forEach(track => track.stop());
+        state.cameraStream = null;
+      }
+      els.captureVideo.srcObject = null;
+      setCaptureStatus('Camera idle');
+    }
+
+    async function startCamera(){
+      try{
+        await stopCamera();
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio:false,
+          video:{ facingMode:{ ideal: state.facingMode }, width:{ ideal: 1600 }, height:{ ideal: 1000 } }
+        });
+        state.cameraStream = stream;
+        els.captureVideo.srcObject = stream;
+        setCaptureStatus(state.facingMode === 'user' ? 'Front camera live' : 'Rear camera live');
+      } catch(error){
+        console.error(error);
+        setCaptureStatus('Camera access blocked or unavailable');
+      }
+    }
+
+    async function flipCamera(){ state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment'; await startCamera(); }
+    function capturePhoto(){
+      if (!state.cameraStream || !els.captureVideo.videoWidth){ setCaptureStatus('Start camera first'); return; }
+      const canvas = els.captureCanvas, video = els.captureVideo;
+      canvas.width = video.videoWidth || 1600;
+      canvas.height = video.videoHeight || 1000;
+      const ctx = canvas.getContext('2d');
+      if (state.facingMode === 'user'){
+        ctx.save(); ctx.translate(canvas.width, 0); ctx.scale(-1, 1); ctx.drawImage(video, 0, 0, canvas.width, canvas.height); ctx.restore();
+      } else ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      state.capturedPhotoDataUrl = canvas.toDataURL('image/jpeg', .92);
+      els.capturedPhotoPreview.src = state.capturedPhotoDataUrl;
+      els.captureFallbackImage.src = state.capturedPhotoDataUrl;
+      els.captureFallbackImage.style.display = 'block';
+      setCaptureStatus('Captured photo ready');
+    }
+    function useCapturedPhoto(){
+      if (!state.capturedPhotoDataUrl){ setCaptureStatus('Capture a photo first'); return; }
+      state.uploadedArtworkDataUrl = state.capturedPhotoDataUrl;
+      state.uploadedArtworkName = `crowd-selfie-${new Date().toISOString().replace(/[:.]/g,'-')}.jpg`;
+      els.mosaicArtworkSource.value = 'upload';
+      updateUploadStatus();
+      renderStage();
+      saveSetup().catch(console.error);
+      setCaptureStatus('Captured photo applied');
+    }
+
+    function renderStage(){
+      const session = state.session || sessionPayload();
+      const participants = sortedParticipants().map(entry => entry[1]);
+      const cols = Math.max(2, session.mosaic?.cols || 4);
+      const rows = Math.max(2, session.mosaic?.rows || 6);
+      const total = cols * rows;
+      const artwork = session.mosaic?.artwork || getCurrentArtworkDataUrl();
+      const fit = session.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
+
+      els.mosaicGrid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+      els.mosaicGrid.innerHTML = Array.from({ length: total }, (_, idx) => {
+        const p = participants.find(x => (x.mosaicIndex ?? x.tileIndex) === idx);
+        const col = idx % cols;
+        const row = Math.floor(idx / cols);
+        const bgX = cols > 1 ? (col / (cols - 1)) * 100 : 50;
+        const bgY = rows > 1 ? (row / (rows - 1)) * 100 : 50;
+        return `<div class="mosaic-cell" style="background-image:url('${artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%"><span>${p ? escapeHtml(p.nickname || 'Guest') : ''}</span></div>`;
+      }).join('');
+
+      const phase = session.phase || 'lobby';
+      const readyCount = participants.filter(p => p.ready).length;
+      els.stagePhaseChip.textContent = phase.toUpperCase();
+      els.stageReadyChip.textContent = `${readyCount} ready`;
+      els.blackoutLayer.classList.toggle('active', phase === 'blackout' || session.blackout);
+
+      if (phase === 'countdown'){
+        els.stageCountBig.textContent = els.countdownDisplay.textContent === '—' ? '6' : els.countdownDisplay.textContent;
+        els.stageHeadline.textContent = 'Phones up. Countdown is live.';
+        els.stageSubline.textContent = 'The room is charging toward the reveal.';
+      } else if (phase === 'animate'){
+        els.stageCountBig.textContent = session.animationStyle === 'audio' ? 'DROP' : 'GO';
+        els.stageHeadline.textContent = session.animationStyle === 'audio' ? 'Audio-reactive reveal in motion' : 'Live animation in progress';
+        els.stageSubline.textContent = 'This is the premium activation moment.';
+      } else if (phase === 'reveal'){
+        els.stageCountBig.textContent = 'WOW';
+        els.stageHeadline.textContent = session.finalHeadline || 'You just powered the reveal.';
+        els.stageSubline.textContent = session.finalSubhead || 'Premium interactive V3';
+      } else if (phase === 'selfie'){
+        els.stageCountBig.textContent = 'SELFIE';
+        els.stageHeadline.textContent = 'Capture the room. Turn the crowd into the art.';
+        els.stageSubline.textContent = 'Use the camera tools to create a mosaic finale.';
+      } else if (phase === 'blackout'){
+        els.stageCountBig.textContent = '';
+        els.stageHeadline.textContent = '';
+        els.stageSubline.textContent = '';
+      } else {
+        els.stageCountBig.textContent = 'LIVE';
+        els.stageHeadline.textContent = session.sessionName || 'Premium interactive room reveal';
+        els.stageSubline.textContent = 'Everyone joins, gets a role, charges the energy meter, and becomes part of the moment.';
+      }
+    }
+
+    function renderStats(){
+      const participants = sortedParticipants().map(entry => entry[1]);
+      const readyCount = participants.filter(p => p.ready).length;
+      const energy = Number(state.session?.interaction?.energyScore || 0);
+      els.connectedCount.textContent = participants.length;
+      els.readyCount.textContent = readyCount;
+      els.energyScore.textContent = `${Math.round(energy)}%`;
+      els.energyMeterFill.style.width = `${Math.round(energy)}%`;
+      els.phaseText.textContent = String(state.session?.phase || 'lobby').toUpperCase();
+      els.tileCount.textContent = state.session?.assignmentMode === 'mosaic'
+        ? Math.max(1, (state.session?.mosaic?.cols || 4) * (state.session?.mosaic?.rows || 6))
+        : (state.session?.tiles || []).length;
+
+      const rx = state.session?.reactions || {};
+      els.reactFire.textContent = rx.fire || 0;
+      els.reactClap.textContent = rx.clap || 0;
+      els.reactBoost.textContent = rx.boost || 0;
+      els.reactConfetti.textContent = rx.confetti || 0;
+
+      const teamCounts = {};
+      participants.forEach(p => { teamCounts[p.teamLabel || 'Unassigned'] = (teamCounts[p.teamLabel || 'Unassigned'] || 0) + 1; });
+      els.teamsList.innerHTML = Object.keys(teamCounts).length
+        ? Object.entries(teamCounts).map(([label,count]) => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span>${escapeHtml(label)}</span><strong>${count}</strong></div>`).join('')
+        : 'Waiting for participants…';
+    }
+
+    function renderPhoneWall(){
+      const participants = sortedParticipants().map(entry => entry[1]);
+      if (!participants.length){
+        els.phoneWall.innerHTML = `<div class="phone" style="grid-column:1/-1;aspect-ratio:auto;min-height:260px"><div class="mid"><div><div class="tile">Scan to join</div><div class="small">Phones appear here as students connect.</div></div></div></div>`;
+        return;
+      }
+      const session = state.session || {};
+      const cols = Math.max(2, session.mosaic?.cols || 4);
+      const rows = Math.max(2, session.mosaic?.rows || 6);
+      els.phoneWall.innerHTML = participants.map((p, idx) => {
+        const teamColor = p.teamColor || '#ffffff';
+        let center = '';
+        if (session.assignmentMode === 'mosaic' && session.mosaic?.artwork){
+          const sliceIndex = p.mosaicIndex ?? p.tileIndex ?? 0;
+          const col = sliceIndex % cols;
+          const row = Math.floor(sliceIndex / cols);
+          const bgX = cols > 1 ? (col / (cols - 1)) * 100 : 50;
+          const bgY = rows > 1 ? (row / (rows - 1)) * 100 : 50;
+          const fit = session.mosaic?.imageFit === 'contain' ? 'contain' : `${cols * 100}% ${rows * 100}%`;
+          center = `<div class="slice" style="background-image:url('${session.mosaic.artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%"></div><div class="small">${escapeHtml(p.roleLabel || 'Role')}</div>`;
+        } else {
+          center = `<div><div class="tile">${escapeHtml(p.tileText || 'JOIN')}</div><div class="small">${escapeHtml(p.roleLabel || 'Role')}</div></div>`;
+        }
+        return `<div class="phone">
+          <div class="top"><span><span class="teamdot" style="background:${teamColor}"></span>${escapeHtml(p.teamLabel || 'Team')}</span><span>${p.ready ? 'READY' : 'WAIT'}</span></div>
+          <div class="mid">${center}</div>
+          <div class="small" style="text-align:center">${escapeHtml(p.nickname || `Guest ${idx+1}`)}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function syncCountdownDisplay(){
+      if (state.countdownTimer) clearInterval(state.countdownTimer);
+      const phase = state.session?.phase;
+      if (phase === 'countdown' && state.session?.countdownTargetAt){
+        const tick = () => {
+          const remaining = Math.max(0, Math.ceil((state.session.countdownTargetAt - Date.now()) / 1000));
+          els.countdownDisplay.textContent = remaining;
+          if (remaining <= 0){
+            clearInterval(state.countdownTimer);
+            setTimeout(() => triggerBlackoutSnap().catch(console.error), 350);
+          }
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 200);
+        return;
+      }
+      if (phase === 'animate' && state.session?.animationStyle === 'audio'){
+        const tick = () => {
+          const level = Math.round((state.session?.audioReactive?.level || 0) * 100);
+          els.countdownDisplay.textContent = `♪ ${level}%`;
+          els.reactiveMeterFill.style.width = `${level}%`;
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 180);
+        return;
+      }
+      if (phase === 'animate' && state.session?.animationTargetAt){
+        const tick = () => {
+          const remaining = Math.max(0, Math.ceil((state.session.animationTargetAt - Date.now()) / 1000));
+          els.countdownDisplay.textContent = `${String(state.session?.animationStyle || 'pulse').toUpperCase()} ${remaining}`;
+          if (remaining <= 0){
+            clearInterval(state.countdownTimer);
+            setTimeout(() => finalReveal().catch(console.error), 250);
+          }
+        };
+        tick();
+        state.countdownTimer = setInterval(tick, 200);
+        return;
+      }
+      els.countdownDisplay.textContent = '—';
+    }
+
+    async function maybeAutoStart(){
+      const participants = sortedParticipants().map(entry => entry[1]);
+      if (!participants.length) return;
+      const readyCount = participants.filter(p => p.ready).length;
+      const pct = readyCount / participants.length * 100;
+      const threshold = Number(state.session?.autoStartReadyPct || 70);
+      if (!state.autoStarted && (state.session?.phase || 'lobby') === 'lobby' && pct >= threshold){
+        state.autoStarted = true;
+        await startCountdown();
+      }
+    }
+
+    onValue(sessionRef, snap => {
+      const data = snap.val();
+      if (!data) return;
+      state.session = data;
+      els.statusDot.classList.add('live');
+      els.statusText.textContent = 'Live session connected';
+      els.sessionName.value = data.sessionName || '';
+      els.layoutType.value = data.layoutType || 'message';
+      els.assignmentMode.value = data.assignmentMode || 'mosaic';
+      els.tileInput.value = data.assignmentMode === 'mosaic' ? els.tileInput.value : (data.tiles || []).join(' | ');
+      els.mosaicCols.value = data.mosaic?.cols || 4;
+      els.mosaicRows.value = data.mosaic?.rows || 6;
+      els.themeMode.value = data.layoutMeta?.themeMode || 'premium';
+      els.mosaicHeadline.value = data.mosaic?.headline || 'INF 286';
+      els.mosaicSubhead.value = data.mosaic?.subhead || 'Interactive Demo Day';
+      els.mosaicArtworkSource.value = data.mosaic?.artworkType || 'generated';
+      els.mosaicImageFit.value = data.mosaic?.imageFit || 'cover';
+      els.finalHeadline.value = data.finalHeadline || '';
+      els.finalSubhead.value = data.finalSubhead || '';
+      els.ctaUrl.value = data.ctaUrl || '';
+      els.countdownSeconds.value = data.countdownSeconds || 6;
+      els.animationSeconds.value = data.animationSeconds || 5;
+      els.autoStartReadyPct.value = data.autoStartReadyPct || 70;
+      els.animationStyle.value = data.animationStyle || 'pulse';
+      els.audioFlashMode.value = data.flashConfig?.mode || 'soft';
+      els.audioFlashHaptics.value = data.flashConfig?.haptics || 'vibrate';
+      renderStage();
+      renderStats();
+      renderPhoneWall();
+      syncCountdownDisplay();
+    }, error => {
+      console.error(error);
+      els.statusDot.classList.remove('live');
+      els.statusText.textContent = 'Connection problem';
+    });
+
+    onValue(participantsRef, snap => {
+      state.participants = snap.val() || {};
+      renderStage();
+      renderStats();
+      renderPhoneWall();
+      maybeAutoStart().catch(console.error);
+    });
+
+    els.saveBtn.addEventListener('click', () => saveSetup().catch(console.error));
+    els.rebalanceBtn.addEventListener('click', () => rebalanceParticipants().catch(console.error));
+    els.openLobbyBtn.addEventListener('click', () => openLobby().catch(console.error));
+    els.startCountdownBtn.addEventListener('click', () => startCountdown().catch(console.error));
+    els.blackoutBtn.addEventListener('click', () => triggerBlackoutSnap().catch(console.error));
+    els.revealBtn.addEventListener('click', () => finalReveal().catch(console.error));
+    els.selfieBtn.addEventListener('click', () => selfieMoment().catch(console.error));
+    els.resetBtn.addEventListener('click', () => resetSession().catch(console.error));
+    els.presetHypeBtn.addEventListener('click', () => runHypeIntro().catch(console.error));
+    els.presetCountdownBtn.addEventListener('click', () => runCountdownHit().catch(console.error));
+    els.presetAudioBtn.addEventListener('click', () => runAudioDrop().catch(console.error));
+    els.presetSelfieBtn.addEventListener('click', () => runSelfieFinale().catch(console.error));
+
+    els.copyLinkBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(buildJoinUrl());
+        els.copyLinkBtn.textContent = 'Copied';
+        setTimeout(() => els.copyLinkBtn.textContent = 'Copy link', 1500);
+      } catch(e){ console.error(e); }
+    });
+
+    els.regenerateArtworkBtn.addEventListener('click', () => { renderStage(); });
+    els.clearUploadBtn.addEventListener('click', () => {
+      state.uploadedArtworkDataUrl = '';
+      state.uploadedArtworkName = '';
+      els.mosaicImageUpload.value = '';
+      updateUploadStatus();
+      renderStage();
+    });
+    els.mosaicImageUpload.addEventListener('change', event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.uploadedArtworkDataUrl = String(reader.result || '');
+        state.uploadedArtworkName = file.name;
+        els.mosaicArtworkSource.value = 'upload';
+        updateUploadStatus();
+        renderStage();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    els.audioFile.addEventListener('change', event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
+      state.audioObjectUrl = URL.createObjectURL(file);
+      state.audioFileName = file.name;
+      state.audioFileType = file.type || 'audio/mpeg';
+      state.audioDataUrl = '';
+      els.audioPlayer.src = state.audioObjectUrl;
+      setAudioStatus(`${file.name} loaded. Preparing audience sync copy…`);
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.audioDataUrl = String(reader.result || '');
+        setAudioStatus(`${file.name} ready for host playback${els.audioBroadcastMode.value === 'sync' ? ' and audience speaker sync' : ''}.`);
+      };
+      reader.onerror = () => { setAudioStatus('Loaded on host, but sync copy failed.'); };
+      reader.readAsDataURL(file);
+    });
+    els.startAudioReactiveBtn.addEventListener('click', () => startAudioReactiveReveal().catch(console.error));
+    els.stopAudioReactiveBtn.addEventListener('click', () => stopAudioReactive(false).catch(console.error));
+    els.audioPlayer.addEventListener('ended', () => stopAudioReactive(true).catch(console.error));
+
+    els.startCameraBtn.addEventListener('click', () => startCamera());
+    els.flipCameraBtn.addEventListener('click', () => flipCamera());
+    els.capturePhotoBtn.addEventListener('click', () => capturePhoto());
+    els.useCapturedBtn.addEventListener('click', () => useCapturedPhoto());
+    els.stopCameraBtn.addEventListener('click', () => stopCamera());
+
+    window.addEventListener('beforeunload', () => {
+      if (state.cameraStream) state.cameraStream.getTracks().forEach(track => track.stop());
+      if (state.audioMonitorTimer) clearInterval(state.audioMonitorTimer);
+      if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
+    });
+
+    await ensureSession();
+    await renderQR();
+    updateUploadStatus();
+    renderStage();
+  </script>
 </body>
 </html>
