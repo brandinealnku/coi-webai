@@ -37,11 +37,12 @@
         radial-gradient(circle at 85% 12%, rgba(113,167,255,.12), transparent 20%),
         radial-gradient(circle at 75% 78%, rgba(255,102,196,.12), transparent 24%),
         linear-gradient(180deg,var(--bg),var(--bg-2));
-      overflow:hidden;
+      overflow:auto;
+      min-height:100vh;
     }
     button,input,select,textarea{font:inherit}
     button{cursor:pointer}
-    .app-shell{height:100%;display:grid;grid-template-columns:minmax(0,1fr) var(--inspector-width);gap:18px;padding:18px;transition:grid-template-columns .26s ease}
+    .app-shell{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,var(--inspector-width));gap:18px;padding:18px;align-items:start;transition:grid-template-columns .26s ease}
     body.controls-collapsed .app-shell{grid-template-columns:minmax(0,1fr) 0px}
     .panel{
       background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
@@ -51,7 +52,7 @@
       backdrop-filter:blur(16px);
       min-height:0;
     }
-    .main-shell{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:16px;min-height:0}
+    .main-shell{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:16px;min-height:calc(100vh - 36px)}
     .topbar,.summarybar,.canvas-grid,.inspector{min-height:0}
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px}
     .brand{display:flex;align-items:center;gap:14px;min-width:0}
@@ -114,17 +115,18 @@
     .mini-slice{width:100%;aspect-ratio:9/16;border-radius:18px;border:1px solid rgba(255,255,255,.14);background-position:center;background-size:cover;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
     .tile-big{font-size:clamp(1.6rem,3.5vw,3rem);font-weight:900;line-height:.94;letter-spacing:-.03em}
     .tile-small{font-size:.88rem;color:rgba(255,255,255,.84);margin-top:8px;line-height:1.35}
-    .inspector{position:relative;overflow:hidden}
-    .inspector-shell{height:100%;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:14px;padding:16px}
+    .inspector{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:hidden}
+    .inspector-shell{height:100%;max-height:calc(100vh - 36px);display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:14px;padding:16px;min-height:0}
     .inspector-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .inspector-title{font-size:1rem;font-weight:850}
     .status-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.9rem;font-weight:700}
     .dot{width:10px;height:10px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 6px rgba(255,111,111,.14)}
     .dot.live{background:var(--green);box-shadow:0 0 0 6px rgba(57,217,138,.14)}
-    .tabbar{display:flex;gap:8px;overflow:auto;padding-bottom:2px}
+    .tabbar{display:flex;gap:8px;overflow:auto;padding-bottom:2px;scrollbar-width:none}
+    .tabbar::-webkit-scrollbar{display:none}
     .tabbar button{white-space:nowrap;border-radius:14px;padding:10px 12px;border:1px solid var(--line);background:#0d1320;color:var(--muted);font-weight:800}
     .tabbar button.active{background:rgba(255,255,255,.08);color:var(--text);border-color:var(--line-strong)}
-    .tab-panels{overflow:auto;padding-right:4px}
+    .tab-panels{min-height:0;overflow:auto;overscroll-behavior:contain;padding-right:6px;padding-bottom:28px;scrollbar-gutter:stable}
     .tab-panel{display:none}
     .tab-panel.active{display:block}
     .control-block{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:22px;padding:14px;margin-bottom:14px}
@@ -164,14 +166,15 @@
       .split-stack{grid-template-columns:1fr;grid-template-rows:auto auto minmax(320px,1fr)}
     }
     @media (max-width: 1080px){
-      .app-shell{grid-template-columns:minmax(0,1fr)}
-      .inspector{position:fixed;inset:12px 12px 12px auto;width:min(92vw,420px);z-index:70;transform:translateX(0);transition:transform .26s ease,opacity .26s ease}
+      .app-shell{grid-template-columns:minmax(0,1fr);padding-right:12px}
+      .main-shell{min-height:auto}
+      .inspector{position:fixed;top:12px;right:12px;bottom:12px;left:auto;width:min(94vw,460px);max-height:calc(100vh - 24px);z-index:70;transform:translateX(0);transition:transform .26s ease,opacity .26s ease}
+      .inspector-shell{max-height:calc(100vh - 24px)}
       body.controls-collapsed .inspector{transform:translateX(calc(100% + 18px));opacity:0;pointer-events:none}
-      body:not(.controls-collapsed) .main-shell{filter:blur(0)}
+      body:not(.controls-collapsed) .main-shell{filter:none}
     }
     @media (max-width: 820px){
-      body{overflow:auto}
-      .app-shell{height:auto;min-height:100%;padding:12px}
+      .app-shell{min-height:100vh;padding:12px}
       .topbar,.summarybar,.stage-panel,.side-stage,.inspector-shell{padding:14px}
       .summarybar{grid-template-columns:repeat(2,minmax(0,1fr))}
       .join-card,.capture-grid,.grid2,.grid3{grid-template-columns:1fr}
@@ -334,6 +337,7 @@
           <button data-tab="tab-effects" type="button">Effects</button>
           <button data-tab="tab-media" type="button">Media</button>
         </div>
+        <div class="hint">All controls stay reachable here. On smaller screens, open the inspector with the Controls button and scroll inside this panel.</div>
 
         <div class="tab-panels">
           <section id="tab-show" class="tab-panel active">
