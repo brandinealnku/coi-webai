@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebAI Task Pulse Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">GitHub Pages Prototype</p>
+      <h1>WebAI Task Pulse</h1>
+      <p class="subtext">Tracks clicks, estimates active tasks, and shows how long users spend working.</p>
+    </div>
+    <div class="topbar-actions">
+      <button id="exportBtn" class="ghost-btn">Export JSON</button>
+      <button id="resetBtn" class="ghost-btn danger">Reset Session</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card setup-card">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow">Prototype Setup</p>
+          <h2>What are you working on?</h2>
+        </div>
+      </div>
+
+      <div class="task-builder">
+        <label>
+          <span>Task name</span>
+          <input id="taskNameInput" type="text" maxlength="60" placeholder="Example: Build landing page hero" />
+        </label>
+
+        <label>
+          <span>Keywords for auto-detection</span>
+          <input id="taskKeywordsInput" type="text" maxlength="120" placeholder="hero, header, landing, homepage" />
+        </label>
+
+        <label>
+          <span>Notes</span>
+          <textarea id="taskNotesInput" rows="3" placeholder="Optional details about the work"></textarea>
+        </label>
+
+        <button id="addTaskBtn" class="primary-btn">Add Task Profile</button>
+      </div>
+
+      <div class="task-chip-wrap" id="taskChipWrap"></div>
+    </section>
+
+    <section class="grid-two">
+      <section class="card workbench">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Simulated Work Surface</p>
+            <h2>Click around to generate activity</h2>
+          </div>
+          <div class="pill" id="activeTaskBadge">No active task</div>
+        </div>
+
+        <p class="supporting-copy">
+          This mock workspace lets you test tracking behavior on GitHub Pages. In your real project,
+          the same script can watch buttons, links, forms, cards, and named work zones.
+        </p>
+
+        <div class="zones">
+          <button class="zone-card" data-task-context="Design system, UI styling, visual polish">
+            <strong>Design Panel</strong>
+            <span>Buttons, spacing, colors, layout refinement</span>
+          </button>
+
+          <button class="zone-card" data-task-context="Frontend logic, JavaScript, interactions, click handlers">
+            <strong>Logic Console</strong>
+            <span>Scripts, event wiring, state updates, troubleshooting</span>
+          </button>
+
+          <button class="zone-card" data-task-context="Content writing, copy updates, microcopy, headlines">
+            <strong>Content Studio</strong>
+            <span>Headlines, descriptions, UX writing, messaging</span>
+          </button>
+
+          <button class="zone-card" data-task-context="Testing, QA, debugging, browser checks">
+            <strong>QA Zone</strong>
+            <span>Testing flows, validating fixes, catching errors</span>
+          </button>
+        </div>
+
+        <div class="controls-grid">
+          <button class="action-btn" data-task-context="Create feature, build prototype, new component">Build Feature</button>
+          <button class="action-btn" data-task-context="Debug issue, inspect error, fix click handler">Fix Bug</button>
+          <button class="action-btn" data-task-context="Review analytics, interpret usage, compare flows">Review Analytics</button>
+          <button class="action-btn" data-task-context="Write content, craft announcement, improve CTA">Write Copy</button>
+          <button class="action-btn" data-task-context="Refactor code, clean structure, rename variables">Refactor</button>
+          <button class="action-btn" data-task-context="Test mobile, check responsiveness, run browser validation">Test Mobile</button>
+        </div>
+
+        <div class="manual-controls">
+          <label>
+            <span>Manually switch active task</span>
+            <select id="manualTaskSelect">
+              <option value="">Choose a task...</option>
+            </select>
+          </label>
+          <button id="manualStartBtn" class="secondary-btn">Start Selected Task</button>
+          <button id="pauseBtn" class="ghost-btn">Pause Tracking</button>
+        </div>
+      </section>
+
+      <section class="card analytics-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">Live Insight</p>
+            <h2>Task timing summary</h2>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span>Total clicks</span>
+            <strong id="totalClicks">0</strong>
+          </div>
+          <div class="stat-box">
+            <span>Tasks tracked</span>
+            <strong id="tasksTracked">0</strong>
+          </div>
+          <div class="stat-box">
+            <span>Session length</span>
+            <strong id="sessionLength">00:00</strong>
+          </div>
+          <div class="stat-box">
+            <span>Current task</span>
+            <strong id="currentTaskName">None</strong>
+          </div>
+        </div>
+
+        <div class="timeline-box">
+          <h3>Recent activity</h3>
+          <ul id="activityFeed" class="activity-feed"></ul>
+        </div>
+      </section>
+    </section>
+
+    <section class="card report-card">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow">Auto Summary</p>
+          <h2>What the user appears to be working on</h2>
+        </div>
+      </div>
+
+      <div id="taskSummaryList" class="task-summary-list"></div>
+    </section>
+  </main>
+
+  <template id="taskChipTemplate">
+    <div class="task-chip">
+      <div>
+        <strong class="task-chip-name"></strong>
+        <p class="task-chip-keywords"></p>
+      </div>
+      <button class="chip-delete-btn" type="button">Remove</button>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
