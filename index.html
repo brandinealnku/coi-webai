@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkTrail AI Starter</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div>
+        <p class="eyebrow">GitHub Pages Starter</p>
+        <h1>WorkTrail AI</h1>
+        <p class="muted">A local-first prototype for organizing your digital work into a timeline, projects, rules, and reports.</p>
+      </div>
+
+      <nav class="nav-list">
+        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view="timeline">Timeline</button>
+        <button class="nav-btn" data-view="projects">Projects</button>
+        <button class="nav-btn" data-view="rules">Rules</button>
+        <button class="nav-btn" data-view="reports">Reports</button>
+        <button class="nav-btn" data-view="settings">Settings</button>
+      </nav>
+
+      <div class="card status-card">
+        <h2>Tracker status</h2>
+        <p id="trackerStatus">Manual mode active</p>
+        <small>Static GitHub Pages cannot automatically watch every app by itself. Use this dashboard with the Chrome extension and desktop companion for real tracking imports.</small>
+      </div>
+
+      <div class="card quick-actions">
+        <h2>Quick actions</h2>
+        <button id="seedDemoBtn">Load demo data</button>
+        <button id="clearDataBtn" class="secondary">Clear all data</button>
+        <button id="exportJsonBtn" class="secondary">Export JSON</button>
+        <label class="upload-btn secondary" for="importJsonInput">Import JSON</label>
+        <input id="importJsonInput" type="file" accept="application/json" hidden />
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Personal activity intelligence</p>
+          <h2 id="viewTitle">Dashboard</h2>
+        </div>
+        <div class="pill-row">
+          <span class="pill">Local only</span>
+          <span class="pill">No sign-in</span>
+          <span class="pill">Import dedupe</span>
+          <span class="pill">GitHub Pages ready</span>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboardView">
+        <div class="hero-grid">
+          <div class="card hero-card">
+            <p class="eyebrow">Today at a glance</p>
+            <h3 id="todayFocusProject">No project tagged yet</h3>
+            <p id="todaySummaryText" class="muted">Start logging activity or load demo data to see a daily summary.</p>
+            <div class="metric-grid">
+              <div class="metric-card">
+                <span>Total sessions</span>
+                <strong id="metricSessions">0</strong>
+              </div>
+              <div class="metric-card">
+                <span>Total minutes</span>
+                <strong id="metricMinutes">0</strong>
+              </div>
+              <div class="metric-card">
+                <span>Projects</span>
+                <strong id="metricProjects">0</strong>
+              </div>
+              <div class="metric-card">
+                <span>Rules matched</span>
+                <strong id="metricRules">0</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card log-card">
+            <p class="eyebrow">Add activity</p>
+            <form id="activityForm" class="stack-form">
+              <label>
+                Activity title
+                <input type="text" id="activityTitle" placeholder="Working on INF 286 final project page" required />
+              </label>
+              <div class="three-up">
+                <label>
+                  Source
+                  <select id="activitySource">
+                    <option value="manual">Manual</option>
+                    <option value="browser-extension">Browser extension</option>
+                    <option value="desktop-companion">Desktop companion</option>
+                    <option value="imported-json">Imported JSON</option>
+                  </select>
+                </label>
+                <label>
+                  App / Tool
+                  <input type="text" id="activityApp" placeholder="Chrome, VS Code, Canva" required />
+                </label>
+                <label>
+                  Domain
+                  <input type="text" id="activityDomain" placeholder="canvas.nku.edu" />
+                </label>
+              </div>
+              <div class="two-up">
+                <label>
+                  Start
+                  <input type="datetime-local" id="activityStart" required />
+                </label>
+                <label>
+                  End
+                  <input type="datetime-local" id="activityEnd" required />
+                </label>
+              </div>
+              <div class="two-up">
+                <label>
+                  Project
+                  <select id="activityProject"></select>
+                </label>
+                <label>
+                  Category
+                  <select id="activityCategory"></select>
+                </label>
+              </div>
+              <label>
+                Notes
+                <textarea id="activityNotes" rows="3" placeholder="Optional notes about what you worked on"></textarea>
+              </label>
+              <div class="button-row">
+                <button type="submit">Save activity</button>
+                <button type="button" id="applyRulesBtn" class="secondary">Run auto-organize</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="two-panel-grid">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Recent activity</p>
+                <h3>Latest sessions</h3>
+              </div>
+            </div>
+            <div id="recentActivityList" class="list-stack empty-state">No activity yet.</div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Source mix</p>
+                <h3>Where activity came from</h3>
+              </div>
+            </div>
+            <div id="sourceBreakdownList" class="list-stack empty-state">No source data yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="timelineView">
+        <div class="card filter-bar">
+          <div class="three-up">
+            <label>
+              Search
+              <input type="text" id="timelineSearch" placeholder="Search title, app, domain, project" />
+            </label>
+            <label>
+              Filter by project
+              <select id="timelineProjectFilter"></select>
+            </label>
+            <label>
+              Filter by source
+              <select id="timelineSourceFilter">
+                <option value="">All sources</option>
+                <option value="manual">Manual</option>
+                <option value="browser-extension">Browser extension</option>
+                <option value="desktop-companion">Desktop companion</option>
+                <option value="imported-json">Imported JSON</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Chronological view</p>
+              <h3>Timeline</h3>
+            </div>
+          </div>
+          <div id="timelineList" class="timeline-list empty-state">No sessions found.</div>
+        </div>
+      </section>
+
+      <section class="view" id="projectsView">
+        <div class="projects-grid">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Project organizer</p>
+                <h3>Add project</h3>
+              </div>
+            </div>
+            <form id="projectForm" class="stack-form">
+              <label>
+                Project name
+                <input type="text" id="projectName" placeholder="INF 286" required />
+              </label>
+              <label>
+                Description
+                <textarea id="projectDescription" rows="3" placeholder="What belongs in this project?"></textarea>
+              </label>
+              <button type="submit">Create project</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Time by project</p>
+                <h3>Project totals</h3>
+              </div>
+            </div>
+            <div id="projectTotalsList" class="list-stack empty-state">No projects yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="rulesView">
+        <div class="projects-grid">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Rules engine</p>
+                <h3>Add smart rule</h3>
+              </div>
+            </div>
+            <form id="ruleForm" class="stack-form">
+              <label>
+                Match field
+                <select id="ruleField">
+                  <option value="title">Title</option>
+                  <option value="app">App</option>
+                  <option value="domain">Domain</option>
+                  <option value="notes">Notes</option>
+                  <option value="source">Source</option>
+                </select>
+              </label>
+              <label>
+                Contains text
+                <input type="text" id="ruleValue" placeholder="canvas or INF 286" required />
+              </label>
+              <div class="two-up">
+                <label>
+                  Assign project
+                  <select id="ruleProject"></select>
+                </label>
+                <label>
+                  Assign category
+                  <select id="ruleCategory"></select>
+                </label>
+              </div>
+              <button type="submit">Save rule</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Saved rules</p>
+                <h3>Auto-organization rules</h3>
+              </div>
+            </div>
+            <div id="rulesList" class="list-stack empty-state">No rules yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="reportsView">
+        <div class="projects-grid">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Daily summary</p>
+                <h3>What your time says</h3>
+              </div>
+            </div>
+            <div id="reportSummary" class="report-copy empty-state">No data yet.</div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Breakdowns</p>
+                <h3>Top apps and categories</h3>
+              </div>
+            </div>
+            <div id="reportBreakdowns" class="list-stack empty-state">No report data yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="settingsView">
+        <div class="projects-grid">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Privacy</p>
+                <h3>Local-first settings</h3>
+              </div>
+            </div>
+            <div class="setting-list">
+              <label class="switch-row"><input type="checkbox" checked disabled /> Store data in localStorage only</label>
+              <label class="switch-row"><input type="checkbox" checked disabled /> Manual logging mode available</label>
+              <label class="switch-row"><input type="checkbox" checked disabled /> Browser extension import supported</label>
+              <label class="switch-row"><input type="checkbox" checked disabled /> Desktop JSON import supported</label>
+              <label class="switch-row"><input type="checkbox" checked disabled /> Duplicate imports are skipped automatically</label>
+            </div>
+
+            <div class="settings-block">
+              <p class="eyebrow">Desktop companion</p>
+              <h4>Import desktop activity</h4>
+              <p class="muted">Import a desktop export JSON file from the companion app scaffold to merge app and window sessions into your dashboard.</p>
+              <label class="file-input-label">
+                <span>Select desktop export JSON</span>
+                <input type="file" id="desktopImportInput" accept="application/json" />
+              </label>
+              <p class="mini-status" id="desktopImportStatus">No desktop export imported yet.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Browser connection</p>
+                <h3>Connect Chrome extension</h3>
+              </div>
+            </div>
+            <div class="stack-form">
+              <label>
+                Chrome extension ID
+                <input type="text" id="extensionIdInput" placeholder="Paste the WorkTrail extension ID here" />
+              </label>
+              <div class="button-row">
+                <button type="button" id="saveExtensionBtn">Save ID</button>
+                <button type="button" id="connectExtensionBtn" class="secondary">Test connection</button>
+                <button type="button" id="importExtensionBtn" class="secondary">Import browser sessions</button>
+              </div>
+              <p id="extensionStatus" class="muted">Install the extension in Chrome, copy its ID from the popup, then connect it here.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Next upgrade</p>
+                <h3>How to make this real</h3>
+              </div>
+            </div>
+            <ol class="upgrade-list">
+              <li>Merge browser and desktop sessions automatically into one local database.</li>
+              <li>Build a tray-friendly Tauri or Electron desktop app for always-on tracking.</li>
+              <li>Replace localStorage with SQLite.</li>
+              <li>Add AI summaries and natural-language search.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
