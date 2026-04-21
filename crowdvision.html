@@ -511,17 +511,38 @@
   async function startCamera() {
     try {
       await initVision();
-      if (stream) stream.getTracks().forEach(track => track.stop());
+      running = false;
+      if (animationId) cancelAnimationFrame(animationId);
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      video.srcObject = null;
       setStatus('Requesting camera…');
       const facingMode = cameraSelect.value;
-      stream = await navigator.mediaDevices.getUserMedia({
+      const preferredConstraints = {
         video: {
-          facingMode,
+          facingMode: { ideal: facingMode },
           width: { ideal: 1280 },
           height: { ideal: 720 }
         },
         audio: false
-      });
+      };
+      const strictConstraints = {
+        video: {
+          facingMode: { exact: facingMode },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
+      };
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(strictConstraints);
+      } catch (strictError) {
+        stream = await navigator.mediaDevices.getUserMedia(preferredConstraints);
+      }
+
       video.srcObject = stream;
       await video.play();
       resizeCanvas();
@@ -743,7 +764,13 @@
   });
   confidenceRange.addEventListener('input', applyThresholds);
   mirrorToggle.addEventListener('change', updateMirror);
-  cameraSelect.addEventListener('change', () => addLog(`Camera preference changed to ${cameraSelect.value === 'environment' ? 'back' : 'front'} camera.`, 'Controls'));
+  cameraSelect.addEventListener('change', async () => {
+    addLog(`Camera preference changed to ${cameraSelect.value === 'environment' ? 'back' : 'front'} camera.`, 'Controls');
+    if (running) {
+      addLog('Restarting camera to apply the new lens...', 'Camera');
+      await startCamera();
+    }
+  });
   startButtons.forEach(btn => btn.addEventListener('click', startCamera));
   stopButton.addEventListener('click', stopCamera);
   switchModeButtons.forEach(btn => btn.addEventListener('click', switchMode));
