@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdVision AI | Crowd Count + Gesture Vote</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0d1a2d;
+      --panel:rgba(13,26,45,.84);
+      --panel-strong:rgba(10,19,34,.96);
+      --line:rgba(255,255,255,.1);
+      --text:#f5f7fb;
+      --muted:#b7c3d8;
+      --accent:#7c5cff;
+      --accent2:#16c7ff;
+      --accent3:#70ffa9;
+      --danger:#ff6b81;
+      --warn:#ffd166;
+      --shadow:0 24px 80px rgba(0,0,0,.35);
+      --radius-xl:28px;
+      --radius-lg:20px;
+      --radius-md:14px;
+      --maxw:1380px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(124,92,255,.25), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(22,199,255,.16), transparent 24%),
+        radial-gradient(circle at 50% 78%, rgba(112,255,169,.1), transparent 20%),
+        linear-gradient(180deg, #050b16 0%, #081120 45%, #091524 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    button,select,input{font:inherit}
+    .shell{width:min(var(--maxw),calc(100vw - 28px));margin:0 auto}
+    .glow{position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.9;background:
+      radial-gradient(circle at 20% 12%, rgba(124,92,255,.10), transparent 20%),
+      radial-gradient(circle at 80% 10%, rgba(22,199,255,.08), transparent 18%),
+      radial-gradient(circle at 50% 90%, rgba(112,255,169,.06), transparent 22%);filter:blur(18px)}
+    .nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);background:rgba(6,13,24,.72);border-bottom:1px solid var(--line)}
+    .nav-inner{width:min(var(--maxw),calc(100vw - 28px));margin:0 auto;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:14px;font-weight:800;letter-spacing:.02em}
+    .brand-badge{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;box-shadow:0 10px 30px rgba(124,92,255,.35);font-size:.95rem;font-weight:900}
+    .brand-sub{display:block;font-size:.78rem;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+    .nav-links{display:flex;gap:18px;flex-wrap:wrap;align-items:center;color:var(--muted);font-weight:600;font-size:.94rem}
+    .nav-links a:hover{color:var(--text)}
+    .nav-actions{display:flex;gap:10px;align-items:center}
+    .btn{border:0;border-radius:999px;padding:.9rem 1.1rem;font-weight:800;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;display:inline-flex;align-items:center;gap:10px}
+    .btn:hover{transform:translateY(-2px)}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 12px 34px rgba(124,92,255,.32)}
+    .btn-secondary{color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line)}
+    .btn-danger{color:#fff;background:linear-gradient(135deg,#ff6b81,#ff8f70)}
+    .hero{padding:42px 0 20px}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}
+    .card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow);backdrop-filter:blur(16px)}
+    .card{padding:26px}
+    .hero-tag{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#d7e1f2;border-radius:999px;padding:.5rem .85rem;font-size:.84rem;font-weight:700;letter-spacing:.03em;margin-bottom:16px}
+    .pulse{display:inline-flex;align-items:center;gap:8px}
+    .pulse::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent3);box-shadow:0 0 0 0 rgba(112,255,169,.7);animation:pulse 1.8s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(112,255,169,.7)}70%{box-shadow:0 0 0 12px rgba(112,255,169,0)}100%{box-shadow:0 0 0 0 rgba(112,255,169,0)}}
+    h1{margin:0;font-size:clamp(2.2rem,6vw,4.4rem);line-height:.95;letter-spacing:-.04em;max-width:11ch}
+    .gradient{background:linear-gradient(135deg,#fff,#8ee7ff 40%,#9e8bff 72%,#7effb0 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{margin:18px 0 0;max-width:62ch;font-size:1.02rem;color:var(--muted);line-height:1.7}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+    .hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}
+    .stat{border-radius:18px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .stat-label{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;font-weight:700}
+    .stat-value{font-size:1.35rem;font-weight:900;letter-spacing:-.03em}
+    .stage-wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;padding:24px 0 34px}
+    .stage-shell{padding:18px}
+    .stage-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+    .eyebrow{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}
+    .status-chip{display:inline-flex;align-items:center;gap:8px;padding:.55rem .85rem;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:700;color:#e8f2ff;font-size:.88rem}
+    .status-dot{width:9px;height:9px;border-radius:50%;background:var(--warn);box-shadow:0 0 12px rgba(255,209,102,.55)}
+    .status-dot.live{background:var(--accent3);box-shadow:0 0 12px rgba(112,255,169,.7)}
+    .video-stage{position:relative;min-height:540px;border-radius:24px;overflow:hidden;background:linear-gradient(180deg,rgba(12,23,41,.62),rgba(7,16,30,.94));border:1px solid rgba(255,255,255,.10)}
+    video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    video.mirrored, canvas.mirrored{transform:scaleX(-1)}
+    .scan-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom, rgba(255,255,255,.55), transparent 92%);pointer-events:none}
+    .scan-line{position:absolute;left:6%;right:6%;top:12%;height:2px;border-radius:999px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);box-shadow:0 0 18px rgba(22,199,255,.75);animation:scanMove 4.2s linear infinite;pointer-events:none}
+    @keyframes scanMove{0%{top:14%;opacity:.6}50%{top:74%;opacity:1}100%{top:14%;opacity:.6}}
+    .stage-overlay{position:absolute;left:16px;right:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:end;pointer-events:none}
+    .metric-pills{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{border-radius:999px;padding:.68rem .9rem;background:rgba(8,16,28,.85);border:1px solid rgba(255,255,255,.10);color:#e8f2ff;font-size:.86rem;font-weight:800}
+    .stage-highlight{padding:14px 16px;min-width:240px;border-radius:18px;background:rgba(8,16,28,.88);border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 30px rgba(0,0,0,.26)}
+    .stage-highlight-label{color:var(--muted);font-size:.78rem;letter-spacing:.08em;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+    .stage-highlight-value{font-size:1.65rem;font-weight:900;letter-spacing:-.04em}
+    .controls{display:grid;gap:18px}
+    .panel{padding:20px}
+    .panel h3{margin:0 0 14px;font-size:1.02rem;letter-spacing:-.02em}
+    .panel p{margin:0;color:var(--muted);line-height:1.6}
+    .control-group{display:grid;gap:12px;margin-top:14px}
+    .field{display:grid;gap:8px}
+    .field label{font-size:.82rem;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+    .field select,.field input[type="range"]{width:100%}
+    .field select{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:.88rem .95rem}
+    .toggles{display:grid;gap:10px;margin-top:10px}
+    .toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#ebf3ff}
+    .toggle small{display:block;color:var(--muted);margin-top:3px}
+    .switch{position:relative;width:54px;height:30px;flex:0 0 auto}
+    .switch input{opacity:0;width:0;height:0;position:absolute}
+    .slider{position:absolute;inset:0;border-radius:999px;background:rgba(255,255,255,.12);transition:.2s ease;border:1px solid rgba(255,255,255,.10)}
+    .slider::before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s ease;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+    .switch input:checked + .slider{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .switch input:checked + .slider::before{transform:translateX(24px)}
+    .metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .metric-card{padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .metric-card-label{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px}
+    .metric-card-value{font-size:1.48rem;font-weight:900;letter-spacing:-.04em}
+    .vote-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+    .vote-card{padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .vote-card h4{margin:0 0 8px;font-size:1rem}
+    .vote-sub{color:var(--muted);font-size:.88rem;margin-bottom:10px}
+    .vote-value{font-size:2rem;font-weight:900;letter-spacing:-.04em}
+    .vote-card.leader{border-color:rgba(112,255,169,.45);box-shadow:0 0 0 1px rgba(112,255,169,.18) inset}
+    .log-list{display:grid;gap:10px;margin-top:14px;max-height:260px;overflow:auto;padding-right:4px}
+    .log-item{display:flex;gap:12px;align-items:start;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+    .log-dot{width:10px;height:10px;border-radius:50%;background:var(--accent3);margin-top:7px;box-shadow:0 0 12px rgba(112,255,169,.7);flex:0 0 auto}
+    .log-text{color:#e8f2ff;font-size:.94rem;line-height:1.5}
+    .log-time{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
+    .hint-list{display:grid;gap:10px}
+    .hint{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--muted);line-height:1.6}
+    .footer{padding:0 0 32px;color:var(--muted);font-size:.94rem}
+    .footer-inner{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
+    .hidden{display:none !important}
+    @media (max-width:1160px){.hero-grid,.stage-wrap{grid-template-columns:1fr}.video-stage{min-height:440px}}
+    @media (max-width:760px){.nav-links{display:none}.card,.panel{padding:18px}.hero-stats,.metric-grid,.vote-grid{grid-template-columns:1fr}.video-stage{min-height:380px}.stage-highlight{min-width:0;width:100%}}
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand">
+        <div class="brand-badge">CV</div>
+        <div>
+          CrowdVision AI
+          <span class="brand-sub">Dual-mode live browser vision demo</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="#stage">Live Stage</a>
+        <a href="#controlsPanel">Controls</a>
+        <a href="#votesPanel">Votes</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="btn btn-secondary" id="switchModeTop">Switch Mode</button>
+        <button class="btn btn-primary" id="startCameraTop">Start Camera</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="card">
+          <div class="hero-tag"><span class="pulse">Now running: Crowd Count + Gesture Vote</span></div>
+          <h1>Launch a <span class="gradient">live audience AI experience</span></h1>
+          <p>
+            CrowdVision AI now lets you switch between two event-friendly camera modes in one page:
+            <strong>Crowd Count</strong> for face-based audience counting and <strong>Gesture Vote</strong>
+            for hands-up voting using thumbs up, peace sign, and open palm.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="startCameraHero">Start CrowdVision AI</button>
+            <button class="btn btn-secondary" id="switchModeHero">Switch to Gesture Vote</button>
+          </div>
+          <div class="hero-stats">
+            <div class="stat"><div class="stat-label">Modes</div><div class="stat-value">2 live modes</div></div>
+            <div class="stat"><div class="stat-label">Hosting</div><div class="stat-value">GitHub Pages</div></div>
+            <div class="stat"><div class="stat-label">Camera Flow</div><div class="stat-value">Phone ready</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Best uses</div>
+          <div class="hint-list" style="margin-top:12px;">
+            <div class="hint"><strong style="color:#fff;display:block;margin-bottom:4px;">Crowd Count</strong> Count how many faces are in frame during class, a recruiting booth, or a demo moment.</div>
+            <div class="hint"><strong style="color:#fff;display:block;margin-bottom:4px;">Gesture Vote</strong> Let the room vote without tapping a screen: thumbs up for A, peace sign for B, open palm for C.</div>
+            <div class="hint"><strong style="color:#fff;display:block;margin-bottom:4px;">Switch live</strong> Start with audience count, then flip into voting mode during the same session.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stage">
+      <div class="shell stage-wrap">
+        <div class="card stage-shell">
+          <div class="stage-top">
+            <div>
+              <div class="eyebrow">Live Stage</div>
+              <div style="font-size:1.3rem;font-weight:900;letter-spacing:-.03em;margin-top:4px;" id="modeTitle">Crowd Count</div>
+            </div>
+            <div class="status-chip"><span class="status-dot" id="statusDot"></span><span id="statusText">Camera idle</span></div>
+          </div>
+
+          <div class="video-stage">
+            <video id="video" playsinline muted></video>
+            <canvas id="overlay"></canvas>
+            <div class="scan-grid"></div>
+            <div class="scan-line"></div>
+            <div class="stage-overlay">
+              <div class="metric-pills">
+                <div class="pill" id="pillMode">Mode: Crowd Count</div>
+                <div class="pill" id="pillCurrent">Current Count: 0</div>
+                <div class="pill" id="pillPeak">Peak: 0</div>
+              </div>
+              <div class="stage-highlight">
+                <div class="stage-highlight-label">Current trigger</div>
+                <div class="stage-highlight-value" id="highlightValue">Waiting to start</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls" id="controlsPanel">
+          <div class="panel">
+            <h3>Session controls</h3>
+            <div class="control-group">
+              <div class="field">
+                <label for="modeSelect">Mode</label>
+                <select id="modeSelect">
+                  <option value="crowd">Crowd Count</option>
+                  <option value="gesture">Gesture Vote</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="cameraSelect">Camera</label>
+                <select id="cameraSelect">
+                  <option value="user">Front / selfie camera</option>
+                  <option value="environment">Back camera</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="confidenceRange">Minimum confidence</label>
+                <input id="confidenceRange" type="range" min="20" max="90" step="5" value="50" />
+                <div style="color:var(--muted);font-size:.9rem;" id="confidenceLabel">50%</div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+                <button class="btn btn-primary" id="startButton">Start Camera</button>
+                <button class="btn btn-secondary" id="stopButton">Stop</button>
+                <button class="btn btn-secondary" id="switchModeButton">Switch Mode</button>
+                <button class="btn btn-danger" id="resetVotesButton">Reset Votes</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Display toggles</h3>
+            <div class="toggles">
+              <div class="toggle">
+                <div><strong>Mirror preview</strong><small>Helpful when using the front camera while presenting.</small></div>
+                <label class="switch"><input type="checkbox" id="mirrorToggle" checked /><span class="slider"></span></label>
+              </div>
+              <div class="toggle">
+                <div><strong>Show boxes / landmarks</strong><small>Draw overlays for faces or hands while detecting.</small></div>
+                <label class="switch"><input type="checkbox" id="overlayToggle" checked /><span class="slider"></span></label>
+              </div>
+              <div class="toggle">
+                <div><strong>Live logging</strong><small>Add session events to the activity feed below.</small></div>
+                <label class="switch"><input type="checkbox" id="loggingToggle" checked /><span class="slider"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Session metrics</h3>
+            <div class="metric-grid">
+              <div class="metric-card"><div class="metric-card-label">Current count</div><div class="metric-card-value" id="metricCurrent">0</div></div>
+              <div class="metric-card"><div class="metric-card-label">Peak count</div><div class="metric-card-value" id="metricPeak">0</div></div>
+              <div class="metric-card"><div class="metric-card-label">Active mode</div><div class="metric-card-value" id="metricMode">Crowd</div></div>
+              <div class="metric-card"><div class="metric-card-label">Leader</div><div class="metric-card-value" id="metricLeader">—</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell stage-wrap" style="padding-top:0;grid-template-columns:.95fr 1.05fr;">
+        <div class="panel" id="votesPanel">
+          <h3>Gesture Vote scoreboard</h3>
+          <p>Use <strong>Thumbs Up</strong> for Option A, <strong>Victory / Peace Sign</strong> for Option B, and <strong>Open Palm</strong> for Option C.</p>
+          <div class="vote-grid">
+            <div class="vote-card" id="voteA"><h4>Option A</h4><div class="vote-sub">Thumbs Up</div><div class="vote-value" id="voteCountA">0</div></div>
+            <div class="vote-card" id="voteB"><h4>Option B</h4><div class="vote-sub">Peace Sign</div><div class="vote-value" id="voteCountB">0</div></div>
+            <div class="vote-card" id="voteC"><h4>Option C</h4><div class="vote-sub">Open Palm</div><div class="vote-value" id="voteCountC">0</div></div>
+          </div>
+          <div class="hint" style="margin-top:12px;">
+            Tip: for the cleanest vote capture, use one hand at a time, hold the gesture steady for a moment, and give the camera decent lighting.
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Activity log</h3>
+          <p>This feed updates as modes change, detections happen, and votes are counted.</p>
+          <div class="log-list" id="logList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <div>CrowdVision AI · Dual-mode V1</div>
+      <div>Built for GitHub Pages, phone demos, and live audience interaction</div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { FilesetResolver, FaceDetector, GestureRecognizer, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/+esm';
+
+    const video = document.getElementById('video');
+    const overlay = document.getElementById('overlay');
+    const ctx = overlay.getContext('2d');
+
+    const modeSelect = document.getElementById('modeSelect');
+    const cameraSelect = document.getElementById('cameraSelect');
+    const confidenceRange = document.getElementById('confidenceRange');
+    const confidenceLabel = document.getElementById('confidenceLabel');
+    const mirrorToggle = document.getElementById('mirrorToggle');
+    const overlayToggle = document.getElementById('overlayToggle');
+    const loggingToggle = document.getElementById('loggingToggle');
+
+    const startButtons = [
+      document.getElementById('startCameraTop'),
+      document.getElementById('startCameraHero'),
+      document.getElementById('startButton')
+    ];
+    const stopButton = document.getElementById('stopButton');
+    const switchModeButtons = [
+      document.getElementById('switchModeTop'),
+      document.getElementById('switchModeHero'),
+      document.getElementById('switchModeButton')
+    ];
+    const resetVotesButton = document.getElementById('resetVotesButton');
+
+    const modeTitle = document.getElementById('modeTitle');
+    const pillMode = document.getElementById('pillMode');
+    const pillCurrent = document.getElementById('pillCurrent');
+    const pillPeak = document.getElementById('pillPeak');
+    const highlightValue = document.getElementById('highlightValue');
+    const metricCurrent = document.getElementById('metricCurrent');
+    const metricPeak = document.getElementById('metricPeak');
+    const metricMode = document.getElementById('metricMode');
+    const metricLeader = document.getElementById('metricLeader');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const logList = document.getElementById('logList');
+
+    const voteCountA = document.getElementById('voteCountA');
+    const voteCountB = document.getElementById('voteCountB');
+    const voteCountC = document.getElementById('voteCountC');
+    const voteA = document.getElementById('voteA');
+    const voteB = document.getElementById('voteB');
+    const voteC = document.getElementById('voteC');
+
+    let stream = null;
+    let animationId = null;
+    let vision = null;
+    let faceDetector = null;
+    let gestureRecognizer = null;
+    let running = false;
+    let lastVideoTime = -1;
+    let currentMode = 'crowd';
+    let peakCount = 0;
+    let lastLoggedCount = -1;
+    let lastVoteLabel = null;
+    let lastVoteTime = 0;
+    let voteCooldownMs = 1700;
+    let votes = { A: 0, B: 0, C: 0 };
+
+    function addLog(message, timeLabel = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })) {
+      if (!loggingToggle.checked) return;
+      const item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML = `
+        <div class="log-dot"></div>
+        <div class="log-text">${message}<span class="log-time">${timeLabel}</span></div>
+      `;
+      logList.prepend(item);
+      while (logList.children.length > 24) logList.removeChild(logList.lastChild);
+    }
+
+    function setStatus(text, live = false) {
+      statusText.textContent = text;
+      statusDot.classList.toggle('live', live);
+    }
+
+    function updateMirror() {
+      const mirrored = mirrorToggle.checked;
+      video.classList.toggle('mirrored', mirrored);
+      overlay.classList.toggle('mirrored', mirrored);
+    }
+
+    function resizeCanvas() {
+      const rect = video.getBoundingClientRect();
+      overlay.width = rect.width;
+      overlay.height = rect.height;
+    }
+
+    function resetVisuals() {
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+      metricCurrent.textContent = '0';
+      metricPeak.textContent = String(peakCount);
+      pillCurrent.textContent = 'Current Count: 0';
+      pillPeak.textContent = `Peak: ${peakCount}`;
+    }
+
+    function updateVoteUI() {
+      voteCountA.textContent = votes.A;
+      voteCountB.textContent = votes.B;
+      voteCountC.textContent = votes.C;
+
+      voteA.classList.remove('leader');
+      voteB.classList.remove('leader');
+      voteC.classList.remove('leader');
+
+      const max = Math.max(votes.A, votes.B, votes.C);
+      if (max === 0) {
+        metricLeader.textContent = '—';
+        return;
+      }
+      const leaders = [];
+      if (votes.A === max) leaders.push('A');
+      if (votes.B === max) leaders.push('B');
+      if (votes.C === max) leaders.push('C');
+      leaders.forEach(letter => {
+        if (letter === 'A') voteA.classList.add('leader');
+        if (letter === 'B') voteB.classList.add('leader');
+        if (letter === 'C') voteC.classList.add('leader');
+      });
+      metricLeader.textContent = leaders.length === 1 ? `Option ${leaders[0]}` : `Tie: ${leaders.join(' / ')}`;
+    }
+
+    function resetVotes() {
+      votes = { A: 0, B: 0, C: 0 };
+      updateVoteUI();
+      addLog('Gesture vote totals were reset.', 'Reset');
+    }
+
+    function setModeUI() {
+      const crowd = currentMode === 'crowd';
+      modeTitle.textContent = crowd ? 'Crowd Count' : 'Gesture Vote';
+      pillMode.textContent = `Mode: ${crowd ? 'Crowd Count' : 'Gesture Vote'}`;
+      highlightValue.textContent = crowd ? 'Looking for faces' : 'Looking for vote gestures';
+      metricMode.textContent = crowd ? 'Crowd' : 'Gesture';
+      peakCount = 0;
+      lastLoggedCount = -1;
+      metricPeak.textContent = '0';
+      pillPeak.textContent = 'Peak: 0';
+      metricCurrent.textContent = '0';
+      pillCurrent.textContent = 'Current Count: 0';
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+      addLog(`${crowd ? 'Crowd Count' : 'Gesture Vote'} mode selected.`, 'Mode');
+    }
+
+    async function initVision() {
+      if (vision) return;
+      setStatus('Loading MediaPipe models…');
+      addLog('Loading MediaPipe Tasks Vision assets.', 'Loading');
+      vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm');
+
+      faceDetector = await FaceDetector.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'
+        },
+        runningMode: 'VIDEO',
+        minDetectionConfidence: Number(confidenceRange.value) / 100
+      });
+
+      gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task'
+        },
+        runningMode: 'VIDEO',
+        numHands: 2,
+        minHandDetectionConfidence: Number(confidenceRange.value) / 100,
+        minHandPresenceConfidence: Number(confidenceRange.value) / 100,
+        minTrackingConfidence: 0.5
+      });
+      addLog('Vision models loaded successfully.', 'Ready');
+    }
+
+    async function startCamera() {
+      try {
+        await initVision();
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+        setStatus('Requesting camera…');
+        const facingMode = cameraSelect.value;
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+        video.srcObject = stream;
+        await video.play();
+        resizeCanvas();
+        running = true;
+        lastVideoTime = -1;
+        setStatus('Camera live', true);
+        addLog(`Camera started using ${facingMode === 'environment' ? 'back' : 'front'} camera.`, 'Camera');
+        renderLoop();
+      } catch (error) {
+        console.error(error);
+        setStatus('Camera unavailable');
+        addLog(`Camera error: ${error.message}`, 'Error');
+        alert('Unable to access the camera. Make sure you are testing on HTTPS or GitHub Pages and that camera permissions are allowed.');
+      }
+    }
+
+    function stopCamera() {
+      running = false;
+      if (animationId) cancelAnimationFrame(animationId);
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      video.srcObject = null;
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+      setStatus('Camera stopped');
+      addLog('Camera session stopped.', 'Stopped');
+    }
+
+    function applyThresholds() {
+      const threshold = Number(confidenceRange.value) / 100;
+      confidenceLabel.textContent = `${confidenceRange.value}%`;
+      if (faceDetector) {
+        faceDetector.setOptions({ minDetectionConfidence: threshold });
+      }
+      if (gestureRecognizer) {
+        gestureRecognizer.setOptions({
+          minHandDetectionConfidence: threshold,
+          minHandPresenceConfidence: threshold
+        });
+      }
+      addLog(`Confidence threshold updated to ${confidenceRange.value}%.`, 'Controls');
+    }
+
+    function drawFaceDetections(detections) {
+      const count = detections.length;
+      peakCount = Math.max(peakCount, count);
+      metricCurrent.textContent = String(count);
+      metricPeak.textContent = String(peakCount);
+      pillCurrent.textContent = `Current Count: ${count}`;
+      pillPeak.textContent = `Peak: ${peakCount}`;
+      highlightValue.textContent = count > 0 ? `Detected ${count} face${count === 1 ? '' : 's'}` : 'Looking for faces';
+
+      if (count !== lastLoggedCount) {
+        addLog(`Crowd Count updated: ${count} face${count === 1 ? '' : 's'} visible.`, 'Crowd');
+        lastLoggedCount = count;
+      }
+
+      if (!overlayToggle.checked) return;
+
+      const scaleX = overlay.width / video.videoWidth;
+      const scaleY = overlay.height / video.videoHeight;
+      ctx.lineWidth = 2;
+      ctx.font = '700 12px Inter, sans-serif';
+      detections.forEach((detection, index) => {
+        const box = detection.boundingBox;
+        const x = box.originX * scaleX;
+        const y = box.originY * scaleY;
+        const w = box.width * scaleX;
+        const h = box.height * scaleY;
+        ctx.strokeStyle = 'rgba(112,255,169,.92)';
+        ctx.fillStyle = 'rgba(112,255,169,.08)';
+        roundRect(ctx, x, y, w, h, 14, true, true);
+        ctx.fillStyle = 'rgba(7,17,31,.96)';
+        const label = `FACE ${index + 1}`;
+        const labelWidth = Math.max(78, ctx.measureText(label).width + 18);
+        roundRect(ctx, x + 10, Math.max(4, y - 16), labelWidth, 20, 999, true, false);
+        ctx.fillStyle = '#eaf4ff';
+        ctx.fillText(label, x + 18, Math.max(18, y - 2));
+      });
+    }
+
+    function mapGestureName(name) {
+      if (name === 'Thumb_Up') return { option: 'A', label: 'Option A', display: 'Thumbs Up' };
+      if (name === 'Victory') return { option: 'B', label: 'Option B', display: 'Peace Sign' };
+      if (name === 'Open_Palm') return { option: 'C', label: 'Option C', display: 'Open Palm' };
+      return null;
+    }
+
+    function drawGestureResults(result) {
+      const landmarks = result.landmarks || [];
+      const recognized = result.gestures || [];
+      const handCount = landmarks.length;
+      peakCount = Math.max(peakCount, handCount);
+      metricCurrent.textContent = String(handCount);
+      metricPeak.textContent = String(peakCount);
+      pillCurrent.textContent = `Current Count: ${handCount}`;
+      pillPeak.textContent = `Peak: ${peakCount}`;
+      highlightValue.textContent = handCount > 0 ? `Detected ${handCount} hand${handCount === 1 ? '' : 's'}` : 'Looking for vote gestures';
+
+      if (handCount !== lastLoggedCount) {
+        addLog(`Gesture Vote updated: ${handCount} hand${handCount === 1 ? '' : 's'} visible.`, 'Gesture');
+        lastLoggedCount = handCount;
+      }
+
+      if (overlayToggle.checked) {
+        const drawingUtils = new DrawingUtils(ctx);
+        landmarks.forEach((handLandmarks, index) => {
+          drawingUtils.drawConnectors(handLandmarks, GestureRecognizer.HAND_CONNECTIONS ?? [], {
+            color: '#16c7ff',
+            lineWidth: 3
+          });
+          drawingUtils.drawLandmarks(handLandmarks, {
+            color: '#7c5cff',
+            radius: 3
+          });
+
+          const xs = handLandmarks.map(p => p.x * overlay.width);
+          const ys = handLandmarks.map(p => p.y * overlay.height);
+          const minX = Math.min(...xs);
+          const maxX = Math.max(...xs);
+          const minY = Math.min(...ys);
+          const maxY = Math.max(...ys);
+          ctx.strokeStyle = 'rgba(22,199,255,.92)';
+          ctx.fillStyle = 'rgba(22,199,255,.06)';
+          roundRect(ctx, minX - 12, minY - 12, (maxX - minX) + 24, (maxY - minY) + 24, 14, true, true);
+
+          const gestureName = recognized[index]?.[0]?.categoryName || 'Hand';
+          const tag = gestureName.replaceAll('_', ' ');
+          ctx.fillStyle = 'rgba(7,17,31,.96)';
+          const labelWidth = Math.max(88, ctx.measureText(tag).width + 18);
+          roundRect(ctx, minX - 2, Math.max(4, minY - 24), labelWidth, 20, 999, true, false);
+          ctx.fillStyle = '#eaf4ff';
+          ctx.fillText(tag, minX + 6, Math.max(18, minY - 10));
+        });
+      }
+
+      if (recognized.length > 0) {
+        for (const handGestures of recognized) {
+          const best = handGestures[0];
+          if (!best) continue;
+          const mapped = mapGestureName(best.categoryName);
+          if (!mapped) continue;
+          const now = performance.now();
+          if (mapped.label === lastVoteLabel && (now - lastVoteTime) < voteCooldownMs) continue;
+          lastVoteLabel = mapped.label;
+          lastVoteTime = now;
+          votes[mapped.option] += 1;
+          updateVoteUI();
+          highlightValue.textContent = `${mapped.label} captured`;
+          addLog(`Vote counted for ${mapped.label} via ${mapped.display}.`, 'Vote');
+          break;
+        }
+      }
+    }
+
+    async function renderLoop() {
+      if (!running) return;
+      animationId = requestAnimationFrame(renderLoop);
+      if (!video.videoWidth || video.currentTime === lastVideoTime) return;
+      lastVideoTime = video.currentTime;
+      resizeCanvas();
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+      const timeMs = performance.now();
+      if (currentMode === 'crowd') {
+        const result = faceDetector.detectForVideo(video, timeMs);
+        drawFaceDetections(result.detections || []);
+      } else {
+        const result = gestureRecognizer.recognizeForVideo(video, timeMs);
+        drawGestureResults(result);
+      }
+    }
+
+    function roundRect(context, x, y, width, height, radius, fill, stroke) {
+      const r = Math.min(radius, width / 2, height / 2);
+      context.beginPath();
+      context.moveTo(x + r, y);
+      context.arcTo(x + width, y, x + width, y + height, r);
+      context.arcTo(x + width, y + height, x, y + height, r);
+      context.arcTo(x, y + height, x, y, r);
+      context.arcTo(x, y, x + width, y, r);
+      context.closePath();
+      if (fill) context.fill();
+      if (stroke) context.stroke();
+    }
+
+    function switchMode() {
+      currentMode = currentMode === 'crowd' ? 'gesture' : 'crowd';
+      modeSelect.value = currentMode;
+      setModeUI();
+    }
+
+    modeSelect.addEventListener('change', () => {
+      currentMode = modeSelect.value;
+      setModeUI();
+    });
+    confidenceRange.addEventListener('input', applyThresholds);
+    mirrorToggle.addEventListener('change', updateMirror);
+    cameraSelect.addEventListener('change', () => addLog(`Camera preference changed to ${cameraSelect.value === 'environment' ? 'back' : 'front'} camera.`, 'Controls'));
+    startButtons.forEach(btn => btn.addEventListener('click', startCamera));
+    stopButton.addEventListener('click', stopCamera);
+    switchModeButtons.forEach(btn => btn.addEventListener('click', switchMode));
+    resetVotesButton.addEventListener('click', resetVotes);
+    window.addEventListener('resize', resizeCanvas);
+
+    updateMirror();
+    updateVoteUI();
+    setModeUI();
+    addLog('CrowdVision AI loaded. Start the camera when you are ready.', 'Ready');
+  </script>
+</body>
+</html>
