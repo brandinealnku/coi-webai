@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CrowdCode Stage View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040507; --bg2:#0b1020; --panel:rgba(16,23,34,.92); --line:rgba(255,255,255,.10); --text:#f5f7fb; --muted:#9fb0c8;
+  --gold:#caa64b; --gold2:#f5d57a; --navy:#243a73; --pink:#ff66c4; --green:#2cc37d;
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%}
+body{font-family:Inter,system-ui,sans-serif;color:var(--text);background:
+radial-gradient(circle at top left, rgba(202,166,75,.14), transparent 22%),
+radial-gradient(circle at 90% 10%, rgba(255,102,196,.10), transparent 22%),
+linear-gradient(180deg,var(--bg),var(--bg2));padding:20px}
+.shell{max-width:1700px;margin:0 auto;display:grid;gap:18px}
+.topbar,.panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;backdrop-filter:blur(16px);box-shadow:0 24px 72px rgba(0,0,0,.34)}
+.topbar{padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;gap:14px;align-items:center}
+.badge{width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:grid;place-items:center;color:#111;font-weight:900}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+h1{font-size:1.12rem;margin:4px 0 0}
+.pill{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-weight:800}
+.main{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+@media (max-width:1100px){.main{grid-template-columns:1fr}}
+.panel{padding:18px}
+.hero{aspect-ratio:16/9;border-radius:28px;overflow:hidden;position:relative;border:1px solid var(--line);background:
+radial-gradient(circle at 20% 20%, rgba(202,166,75,.18), transparent 22%),
+radial-gradient(circle at 80% 18%, rgba(36,58,115,.34), transparent 24%),
+radial-gradient(circle at 74% 78%, rgba(255,102,196,.18), transparent 30%),
+linear-gradient(180deg,#0e141f,#151c2c);display:grid;place-items:center;text-align:center}
+.hero-art{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.96}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.36))}
+.hero-content{position:relative;z-index:1;padding:24px}
+.hero-title{font-size:clamp(2rem,5vw,4.7rem);font-weight:900;letter-spacing:-.05em;line-height:.92}
+.hero-sub{margin-top:12px;color:#d8e3f4;font-size:1.05rem}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{padding:14px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+.stat .n{font-size:1.45rem;font-weight:900;margin-top:4px}
+.reaction-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:700px){.reaction-grid{grid-template-columns:repeat(2,1fr)}}
+.reaction-box{padding:14px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04);text-align:center}
+.reaction-box .emoji{font-size:1.5rem}.reaction-box .count{font-size:1.35rem;font-weight:900;margin-top:4px}
+.phonewall{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.phone{aspect-ratio:9/16;border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));padding:10px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.phone:before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:40%;height:14px;background:rgba(255,255,255,.12);border-radius:0 0 14px 14px}
+.slot{display:grid;place-items:center;flex:1;text-align:center;padding:8px}
+.big{font-size:clamp(1rem,2.5vw,1.7rem);font-weight:900;line-height:.96}
+.small{font-size:.84rem;color:var(--muted);line-height:1.45}
+.slice{width:100%;aspect-ratio:9/16;border-radius:16px;border:1px solid var(--line);background-repeat:no-repeat;background-position:center}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand"><div class="badge">CC</div><div><div class="eyebrow">Stage View</div><h1 id="sessionLabel">Session: —</h1></div></div>
+    <div class="pill" id="phaseBadge">LOBBY</div>
+  </div>
+
+  <div class="main">
+    <div style="display:grid;gap:18px">
+      <section class="panel">
+        <div class="hero">
+          <div class="hero-art" id="heroArt"></div>
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <div class="hero-title" id="heroTitle">CrowdCode Live</div>
+            <div class="hero-sub" id="heroSub">Waiting for the room to join.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="eyebrow">Participant wall</div>
+        <div class="small" style="margin:8px 0 12px" id="metaSummary">Waiting for participants…</div>
+        <div class="phonewall" id="phoneWall"></div>
+      </section>
+    </div>
+
+    <div style="display:grid;gap:18px">
+      <section class="panel">
+        <div class="eyebrow">Live metrics</div>
+        <div class="stats" style="margin-top:12px">
+          <div class="stat"><div class="small">Connected</div><div class="n" id="connectedCount">0</div></div>
+          <div class="stat"><div class="small">Ready</div><div class="n" id="readyCount">0</div></div>
+          <div class="stat"><div class="small">Energy</div><div class="n" id="energyScore">0%</div></div>
+          <div class="stat"><div class="small">Boosts</div><div class="n" id="boostCount">0</div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="eyebrow">Live reactions</div>
+        <div class="reaction-grid" style="margin-top:12px">
+          <div class="reaction-box"><div class="emoji">🔥</div><div class="count" id="reactionFire">0</div><div class="small">Hype</div></div>
+          <div class="reaction-box"><div class="emoji">👏</div><div class="count" id="reactionClap">0</div><div class="small">Clap</div></div>
+          <div class="reaction-box"><div class="emoji">⚡</div><div class="count" id="reactionBoost">0</div><div class="small">Boost</div></div>
+          <div class="reaction-box"><div class="emoji">🎉</div><div class="count" id="reactionConfetti">0</div><div class="small">Drop</div></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
+  authDomain: "crowdcode-713e4.firebaseapp.com",
+  databaseURL: "https://crowdcode-713e4-default-rtdb.firebaseio.com",
+  projectId: "crowdcode-713e4",
+  storageBucket: "crowdcode-713e4.firebasestorage.app",
+  messagingSenderId: "415062434213",
+  appId: "1:415062434213:web:0ac4da57c4ffe6a5e7884c",
+  measurementId: "G-E1CNDCQWC0"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const els = Object.fromEntries([...document.querySelectorAll('[id]')].map(el => [el.id, el]));
+const url = new URL(window.location.href);
+const sessionId = url.searchParams.get('session');
+if (!sessionId) throw new Error('Missing session');
+els.sessionLabel.textContent = `Session: ${sessionId}`;
+let sessionState = null;
+let participants = {};
+const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
+const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
+function sortedParticipants(){ return Object.entries(participants || {}).sort((a,b) => (a[1]?.joinedAt||0) - (b[1]?.joinedAt||0)); }
+function renderAll(){
+  const s = sessionState || {};
+  const list = sortedParticipants().map(x=>x[1]);
+  const ready = list.filter(p=>p.ready).length;
+  const boosts = list.reduce((n,p)=>n+(p.energyBoosts||0),0);
+  els.connectedCount.textContent = list.length;
+  els.readyCount.textContent = ready;
+  els.boostCount.textContent = boosts;
+  els.energyScore.textContent = `${Math.round(s?.interaction?.energyScore || 0)}%`;
+  els.phaseBadge.textContent = String(s.phase || 'lobby').toUpperCase();
+  els.heroTitle.textContent = s.phase === 'reveal' ? (s.finalHeadline || s.sessionName || 'CrowdCode Live') : (s.sessionName || 'CrowdCode Live');
+  els.heroSub.textContent = s.phase === 'reveal' ? (s.finalSubhead || 'Thanks for joining.') : (s.ctaUrl || 'Waiting for the room to join.');
+  els.heroArt.style.backgroundImage = s.mosaic?.artwork ? `url(${s.mosaic.artwork})` : 'none';
+  const reactions = s.reactions || {};
+  els.reactionFire.textContent = reactions.fire || 0;
+  els.reactionClap.textContent = reactions.clap || 0;
+  els.reactionBoost.textContent = reactions.boost || 0;
+  els.reactionConfetti.textContent = reactions.confetti || 0;
+  els.metaSummary.textContent = list.length ? `${list.length} devices connected · ${ready} ready` : 'Waiting for participants…';
+  if (!list.length){ els.phoneWall.innerHTML = `<div class="phone" style="grid-column:1/-1"><div class="slot"><div><div class="big">Scan to join</div><div class="small">Audience phones will appear here.</div></div></div></div>`; return; }
+  const cols=Math.max(2,s.mosaic?.cols||4), rows=Math.max(2,s.mosaic?.rows||6);
+  els.phoneWall.innerHTML = list.map((p,idx)=>{ let slotHtml=''; if (s.assignmentMode==='mosaic' && s.mosaic?.artwork) { const sliceIndex=p.mosaicIndex??p.tileIndex??0; const col=sliceIndex%cols, row=Math.floor(sliceIndex/cols); const bgX=cols>1?(col/(cols-1))*100:50, bgY=rows>1?(row/(rows-1))*100:50; const fit=s.mosaic?.imageFit==='contain' ? 'contain' : `${cols*100}% ${rows*100}%`; slotHtml=`<div class="slice" style="background-image:url('${s.mosaic.artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%"></div><div class="small">Cell ${sliceIndex+1}</div>`; } else slotHtml=`<div><div class="big">${p.tileText || 'LIVE'}</div><div class="small">${p.roleLabel || ''}</div></div>`; return `<div class="phone"><div class="small">${p.nickname || `Phone ${idx+1}`}</div><div class="slot">${slotHtml}</div><div class="small">Slot ${p.slotNumber || idx+1} · ${p.ready ? 'Ready' : 'Not ready'}</div></div>`; }).join('');
+}
+onValue(sessionRef, snap => { sessionState = snap.val() || {}; renderAll(); });
+onValue(participantsRef, snap => { participants = snap.val() || {}; renderAll(); });
+</script>
+</body>
+</html>
