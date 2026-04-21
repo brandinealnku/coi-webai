@@ -315,407 +315,446 @@
     </div>
   </footer>
 
-  <script type="module">
-    import { FilesetResolver, FaceDetector, GestureRecognizer, DrawingUtils } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/+esm';
+  <script>
+  const video = document.getElementById('video');
+  const overlay = document.getElementById('overlay');
+  const ctx = overlay.getContext('2d');
 
-    const video = document.getElementById('video');
-    const overlay = document.getElementById('overlay');
-    const ctx = overlay.getContext('2d');
+  const modeSelect = document.getElementById('modeSelect');
+  const cameraSelect = document.getElementById('cameraSelect');
+  const confidenceRange = document.getElementById('confidenceRange');
+  const confidenceLabel = document.getElementById('confidenceLabel');
+  const mirrorToggle = document.getElementById('mirrorToggle');
+  const overlayToggle = document.getElementById('overlayToggle');
+  const loggingToggle = document.getElementById('loggingToggle');
 
-    const modeSelect = document.getElementById('modeSelect');
-    const cameraSelect = document.getElementById('cameraSelect');
-    const confidenceRange = document.getElementById('confidenceRange');
-    const confidenceLabel = document.getElementById('confidenceLabel');
-    const mirrorToggle = document.getElementById('mirrorToggle');
-    const overlayToggle = document.getElementById('overlayToggle');
-    const loggingToggle = document.getElementById('loggingToggle');
+  const startButtons = [
+    document.getElementById('startCameraTop'),
+    document.getElementById('startCameraHero'),
+    document.getElementById('startButton')
+  ].filter(Boolean);
+  const stopButton = document.getElementById('stopButton');
+  const switchModeButtons = [
+    document.getElementById('switchModeTop'),
+    document.getElementById('switchModeHero'),
+    document.getElementById('switchModeButton')
+  ].filter(Boolean);
+  const resetVotesButton = document.getElementById('resetVotesButton');
 
-    const startButtons = [
-      document.getElementById('startCameraTop'),
-      document.getElementById('startCameraHero'),
-      document.getElementById('startButton')
-    ];
-    const stopButton = document.getElementById('stopButton');
-    const switchModeButtons = [
-      document.getElementById('switchModeTop'),
-      document.getElementById('switchModeHero'),
-      document.getElementById('switchModeButton')
-    ];
-    const resetVotesButton = document.getElementById('resetVotesButton');
+  const modeTitle = document.getElementById('modeTitle');
+  const pillMode = document.getElementById('pillMode');
+  const pillCurrent = document.getElementById('pillCurrent');
+  const pillPeak = document.getElementById('pillPeak');
+  const highlightValue = document.getElementById('highlightValue');
+  const metricCurrent = document.getElementById('metricCurrent');
+  const metricPeak = document.getElementById('metricPeak');
+  const metricMode = document.getElementById('metricMode');
+  const metricLeader = document.getElementById('metricLeader');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+  const logList = document.getElementById('logList');
 
-    const modeTitle = document.getElementById('modeTitle');
-    const pillMode = document.getElementById('pillMode');
-    const pillCurrent = document.getElementById('pillCurrent');
-    const pillPeak = document.getElementById('pillPeak');
-    const highlightValue = document.getElementById('highlightValue');
-    const metricCurrent = document.getElementById('metricCurrent');
-    const metricPeak = document.getElementById('metricPeak');
-    const metricMode = document.getElementById('metricMode');
-    const metricLeader = document.getElementById('metricLeader');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const logList = document.getElementById('logList');
+  const voteCountA = document.getElementById('voteCountA');
+  const voteCountB = document.getElementById('voteCountB');
+  const voteCountC = document.getElementById('voteCountC');
+  const voteA = document.getElementById('voteA');
+  const voteB = document.getElementById('voteB');
+  const voteC = document.getElementById('voteC');
 
-    const voteCountA = document.getElementById('voteCountA');
-    const voteCountB = document.getElementById('voteCountB');
-    const voteCountC = document.getElementById('voteCountC');
-    const voteA = document.getElementById('voteA');
-    const voteB = document.getElementById('voteB');
-    const voteC = document.getElementById('voteC');
+  const HAND_CONNECTIONS = [
+    [0,1],[1,2],[2,3],[3,4],
+    [0,5],[5,6],[6,7],[7,8],
+    [5,9],[9,10],[10,11],[11,12],
+    [9,13],[13,14],[14,15],[15,16],
+    [13,17],[17,18],[18,19],[19,20],
+    [0,17]
+  ];
 
-    let stream = null;
-    let animationId = null;
-    let vision = null;
-    let faceDetector = null;
-    let gestureRecognizer = null;
-    let running = false;
-    let lastVideoTime = -1;
-    let currentMode = 'crowd';
-    let peakCount = 0;
-    let lastLoggedCount = -1;
-    let lastVoteLabel = null;
-    let lastVoteTime = 0;
-    let voteCooldownMs = 1700;
-    let votes = { A: 0, B: 0, C: 0 };
+  let stream = null;
+  let animationId = null;
+  let vision = null;
+  let faceDetector = null;
+  let gestureRecognizer = null;
+  let FilesetResolver = null;
+  let FaceDetector = null;
+  let GestureRecognizer = null;
+  let running = false;
+  let lastVideoTime = -1;
+  let currentMode = 'crowd';
+  let peakCount = 0;
+  let lastLoggedCount = -1;
+  let lastVoteLabel = null;
+  let lastVoteTime = 0;
+  let voteCooldownMs = 1700;
+  let votes = { A: 0, B: 0, C: 0 };
 
-    function addLog(message, timeLabel = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })) {
-      if (!loggingToggle.checked) return;
-      const item = document.createElement('div');
-      item.className = 'log-item';
-      item.innerHTML = `
-        <div class="log-dot"></div>
-        <div class="log-text">${message}<span class="log-time">${timeLabel}</span></div>
-      `;
-      logList.prepend(item);
-      while (logList.children.length > 24) logList.removeChild(logList.lastChild);
+  function addLog(message, timeLabel = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })) {
+    if (!loggingToggle.checked) return;
+    const item = document.createElement('div');
+    item.className = 'log-item';
+    item.innerHTML = `
+      <div class="log-dot"></div>
+      <div class="log-text">${message}<span class="log-time">${timeLabel}</span></div>
+    `;
+    logList.prepend(item);
+    while (logList.children.length > 24) logList.removeChild(logList.lastChild);
+  }
+
+  function setStatus(text, live = false) {
+    statusText.textContent = text;
+    statusDot.classList.toggle('live', live);
+  }
+
+  function updateMirror() {
+    const mirrored = mirrorToggle.checked;
+    video.classList.toggle('mirrored', mirrored);
+    overlay.classList.toggle('mirrored', mirrored);
+  }
+
+  function resizeCanvas() {
+    const rect = video.getBoundingClientRect();
+    overlay.width = Math.max(1, rect.width);
+    overlay.height = Math.max(1, rect.height);
+  }
+
+  function updateVoteUI() {
+    voteCountA.textContent = votes.A;
+    voteCountB.textContent = votes.B;
+    voteCountC.textContent = votes.C;
+    voteA.classList.remove('leader');
+    voteB.classList.remove('leader');
+    voteC.classList.remove('leader');
+    const max = Math.max(votes.A, votes.B, votes.C);
+    if (max === 0) {
+      metricLeader.textContent = '—';
+      return;
     }
+    const leaders = [];
+    if (votes.A === max) leaders.push('A');
+    if (votes.B === max) leaders.push('B');
+    if (votes.C === max) leaders.push('C');
+    leaders.forEach(letter => {
+      if (letter === 'A') voteA.classList.add('leader');
+      if (letter === 'B') voteB.classList.add('leader');
+      if (letter === 'C') voteC.classList.add('leader');
+    });
+    metricLeader.textContent = leaders.length === 1 ? `Option ${leaders[0]}` : `Tie: ${leaders.join(' / ')}`;
+  }
 
-    function setStatus(text, live = false) {
-      statusText.textContent = text;
-      statusDot.classList.toggle('live', live);
+  function resetVotes() {
+    votes = { A: 0, B: 0, C: 0 };
+    updateVoteUI();
+    addLog('Gesture vote totals were reset.', 'Reset');
+  }
+
+  function setModeUI() {
+    const crowd = currentMode === 'crowd';
+    modeTitle.textContent = crowd ? 'Crowd Count' : 'Gesture Vote';
+    pillMode.textContent = `Mode: ${crowd ? 'Crowd Count' : 'Gesture Vote'}`;
+    highlightValue.textContent = crowd ? 'Looking for faces' : 'Looking for vote gestures';
+    metricMode.textContent = crowd ? 'Crowd' : 'Gesture';
+    peakCount = 0;
+    lastLoggedCount = -1;
+    metricPeak.textContent = '0';
+    pillPeak.textContent = 'Peak: 0';
+    metricCurrent.textContent = '0';
+    pillCurrent.textContent = 'Current Count: 0';
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    addLog(`${crowd ? 'Crowd Count' : 'Gesture Vote'} mode selected.`, 'Mode');
+  }
+
+  async function loadVisionLibs() {
+    if (FilesetResolver && FaceDetector && GestureRecognizer) return;
+    setStatus('Loading vision libraries…');
+    addLog('Loading browser vision libraries.', 'Loading');
+    try {
+      const mod = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/+esm');
+      FilesetResolver = mod.FilesetResolver;
+      FaceDetector = mod.FaceDetector;
+      GestureRecognizer = mod.GestureRecognizer;
+    } catch (e) {
+      addLog('Primary CDN failed. Trying fallback CDN.', 'Loading');
+      const mod = await import('https://unpkg.com/@mediapipe/tasks-vision@0.10.34/+esm');
+      FilesetResolver = mod.FilesetResolver;
+      FaceDetector = mod.FaceDetector;
+      GestureRecognizer = mod.GestureRecognizer;
     }
+  }
 
-    function updateMirror() {
-      const mirrored = mirrorToggle.checked;
-      video.classList.toggle('mirrored', mirrored);
-      overlay.classList.toggle('mirrored', mirrored);
-    }
+  async function initVision() {
+    if (vision && faceDetector && gestureRecognizer) return;
+    await loadVisionLibs();
+    setStatus('Loading AI models…');
+    vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/wasm');
 
-    function resizeCanvas() {
-      const rect = video.getBoundingClientRect();
-      overlay.width = rect.width;
-      overlay.height = rect.height;
-    }
+    faceDetector = await FaceDetector.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'
+      },
+      runningMode: 'VIDEO',
+      minDetectionConfidence: Number(confidenceRange.value) / 100
+    });
 
-    function resetVisuals() {
-      ctx.clearRect(0, 0, overlay.width, overlay.height);
-      metricCurrent.textContent = '0';
-      metricPeak.textContent = String(peakCount);
-      pillCurrent.textContent = 'Current Count: 0';
-      pillPeak.textContent = `Peak: ${peakCount}`;
-    }
+    gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task'
+      },
+      runningMode: 'VIDEO',
+      numHands: 2,
+      minHandDetectionConfidence: Number(confidenceRange.value) / 100,
+      minHandPresenceConfidence: Number(confidenceRange.value) / 100,
+      minTrackingConfidence: 0.5
+    });
+    addLog('Vision models loaded successfully.', 'Ready');
+  }
 
-    function updateVoteUI() {
-      voteCountA.textContent = votes.A;
-      voteCountB.textContent = votes.B;
-      voteCountC.textContent = votes.C;
-
-      voteA.classList.remove('leader');
-      voteB.classList.remove('leader');
-      voteC.classList.remove('leader');
-
-      const max = Math.max(votes.A, votes.B, votes.C);
-      if (max === 0) {
-        metricLeader.textContent = '—';
-        return;
-      }
-      const leaders = [];
-      if (votes.A === max) leaders.push('A');
-      if (votes.B === max) leaders.push('B');
-      if (votes.C === max) leaders.push('C');
-      leaders.forEach(letter => {
-        if (letter === 'A') voteA.classList.add('leader');
-        if (letter === 'B') voteB.classList.add('leader');
-        if (letter === 'C') voteC.classList.add('leader');
-      });
-      metricLeader.textContent = leaders.length === 1 ? `Option ${leaders[0]}` : `Tie: ${leaders.join(' / ')}`;
-    }
-
-    function resetVotes() {
-      votes = { A: 0, B: 0, C: 0 };
-      updateVoteUI();
-      addLog('Gesture vote totals were reset.', 'Reset');
-    }
-
-    function setModeUI() {
-      const crowd = currentMode === 'crowd';
-      modeTitle.textContent = crowd ? 'Crowd Count' : 'Gesture Vote';
-      pillMode.textContent = `Mode: ${crowd ? 'Crowd Count' : 'Gesture Vote'}`;
-      highlightValue.textContent = crowd ? 'Looking for faces' : 'Looking for vote gestures';
-      metricMode.textContent = crowd ? 'Crowd' : 'Gesture';
-      peakCount = 0;
-      lastLoggedCount = -1;
-      metricPeak.textContent = '0';
-      pillPeak.textContent = 'Peak: 0';
-      metricCurrent.textContent = '0';
-      pillCurrent.textContent = 'Current Count: 0';
-      ctx.clearRect(0, 0, overlay.width, overlay.height);
-      addLog(`${crowd ? 'Crowd Count' : 'Gesture Vote'} mode selected.`, 'Mode');
-    }
-
-    async function initVision() {
-      if (vision) return;
-      setStatus('Loading MediaPipe models…');
-      addLog('Loading MediaPipe Tasks Vision assets.', 'Loading');
-      vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm');
-
-      faceDetector = await FaceDetector.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'
+  async function startCamera() {
+    try {
+      await initVision();
+      if (stream) stream.getTracks().forEach(track => track.stop());
+      setStatus('Requesting camera…');
+      const facingMode = cameraSelect.value;
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode,
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         },
-        runningMode: 'VIDEO',
-        minDetectionConfidence: Number(confidenceRange.value) / 100
+        audio: false
       });
-
-      gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task'
-        },
-        runningMode: 'VIDEO',
-        numHands: 2,
-        minHandDetectionConfidence: Number(confidenceRange.value) / 100,
-        minHandPresenceConfidence: Number(confidenceRange.value) / 100,
-        minTrackingConfidence: 0.5
-      });
-      addLog('Vision models loaded successfully.', 'Ready');
+      video.srcObject = stream;
+      await video.play();
+      resizeCanvas();
+      running = true;
+      lastVideoTime = -1;
+      setStatus('Camera live', true);
+      addLog(`Camera started using ${facingMode === 'environment' ? 'back' : 'front'} camera.`, 'Camera');
+      renderLoop();
+    } catch (error) {
+      console.error(error);
+      setStatus('Camera unavailable');
+      addLog(`Camera error: ${error.message}`, 'Error');
+      alert('Unable to access the camera or load the AI libraries. Test on GitHub Pages/HTTPS and allow camera permission. Open the browser console to see the exact error.');
     }
+  }
 
-    async function startCamera() {
-      try {
-        await initVision();
-        if (stream) {
-          stream.getTracks().forEach(track => track.stop());
-        }
-        setStatus('Requesting camera…');
-        const facingMode = cameraSelect.value;
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode,
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        });
-        video.srcObject = stream;
-        await video.play();
-        resizeCanvas();
-        running = true;
-        lastVideoTime = -1;
-        setStatus('Camera live', true);
-        addLog(`Camera started using ${facingMode === 'environment' ? 'back' : 'front'} camera.`, 'Camera');
-        renderLoop();
-      } catch (error) {
-        console.error(error);
-        setStatus('Camera unavailable');
-        addLog(`Camera error: ${error.message}`, 'Error');
-        alert('Unable to access the camera. Make sure you are testing on HTTPS or GitHub Pages and that camera permissions are allowed.');
-      }
+  function stopCamera() {
+    running = false;
+    if (animationId) cancelAnimationFrame(animationId);
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
     }
+    video.srcObject = null;
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    setStatus('Camera stopped');
+    addLog('Camera session stopped.', 'Stopped');
+  }
 
-    function stopCamera() {
-      running = false;
-      if (animationId) cancelAnimationFrame(animationId);
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
-      video.srcObject = null;
-      ctx.clearRect(0, 0, overlay.width, overlay.height);
-      setStatus('Camera stopped');
-      addLog('Camera session stopped.', 'Stopped');
-    }
-
-    function applyThresholds() {
-      const threshold = Number(confidenceRange.value) / 100;
-      confidenceLabel.textContent = `${confidenceRange.value}%`;
-      if (faceDetector) {
-        faceDetector.setOptions({ minDetectionConfidence: threshold });
-      }
+  function applyThresholds() {
+    const threshold = Number(confidenceRange.value) / 100;
+    confidenceLabel.textContent = `${confidenceRange.value}%`;
+    try {
+      if (faceDetector) faceDetector.setOptions({ minDetectionConfidence: threshold });
       if (gestureRecognizer) {
         gestureRecognizer.setOptions({
           minHandDetectionConfidence: threshold,
           minHandPresenceConfidence: threshold
         });
       }
-      addLog(`Confidence threshold updated to ${confidenceRange.value}%.`, 'Controls');
+    } catch (e) {
+      console.warn(e);
+    }
+    addLog(`Confidence threshold updated to ${confidenceRange.value}%.`, 'Controls');
+  }
+
+  function roundRect(context, x, y, width, height, radius, fill, stroke) {
+    const r = Math.min(radius, width / 2, height / 2);
+    context.beginPath();
+    context.moveTo(x + r, y);
+    context.arcTo(x + width, y, x + width, y + height, r);
+    context.arcTo(x + width, y + height, x, y + height, r);
+    context.arcTo(x, y + height, x, y, r);
+    context.arcTo(x, y, x + width, y, r);
+    context.closePath();
+    if (fill) context.fill();
+    if (stroke) context.stroke();
+  }
+
+  function drawFaceDetections(detections) {
+    const count = detections.length;
+    peakCount = Math.max(peakCount, count);
+    metricCurrent.textContent = String(count);
+    metricPeak.textContent = String(peakCount);
+    pillCurrent.textContent = `Current Count: ${count}`;
+    pillPeak.textContent = `Peak: ${peakCount}`;
+    highlightValue.textContent = count > 0 ? `Detected ${count} face${count === 1 ? '' : 's'}` : 'Looking for faces';
+
+    if (count !== lastLoggedCount) {
+      addLog(`Crowd Count updated: ${count} face${count === 1 ? '' : 's'} visible.`, 'Crowd');
+      lastLoggedCount = count;
     }
 
-    function drawFaceDetections(detections) {
-      const count = detections.length;
-      peakCount = Math.max(peakCount, count);
-      metricCurrent.textContent = String(count);
-      metricPeak.textContent = String(peakCount);
-      pillCurrent.textContent = `Current Count: ${count}`;
-      pillPeak.textContent = `Peak: ${peakCount}`;
-      highlightValue.textContent = count > 0 ? `Detected ${count} face${count === 1 ? '' : 's'}` : 'Looking for faces';
+    if (!overlayToggle.checked) return;
+    const scaleX = overlay.width / video.videoWidth;
+    const scaleY = overlay.height / video.videoHeight;
+    ctx.lineWidth = 2;
+    ctx.font = '700 12px Inter, sans-serif';
+    detections.forEach((detection, index) => {
+      const box = detection.boundingBox;
+      const x = box.originX * scaleX;
+      const y = box.originY * scaleY;
+      const w = box.width * scaleX;
+      const h = box.height * scaleY;
+      ctx.strokeStyle = 'rgba(112,255,169,.92)';
+      ctx.fillStyle = 'rgba(112,255,169,.08)';
+      roundRect(ctx, x, y, w, h, 14, true, true);
+      ctx.fillStyle = 'rgba(7,17,31,.96)';
+      const label = `FACE ${index + 1}`;
+      const labelWidth = Math.max(78, ctx.measureText(label).width + 18);
+      roundRect(ctx, x + 10, Math.max(4, y - 16), labelWidth, 20, 999, true, false);
+      ctx.fillStyle = '#eaf4ff';
+      ctx.fillText(label, x + 18, Math.max(18, y - 2));
+    });
+  }
 
-      if (count !== lastLoggedCount) {
-        addLog(`Crowd Count updated: ${count} face${count === 1 ? '' : 's'} visible.`, 'Crowd');
-        lastLoggedCount = count;
-      }
+  function mapGestureName(name) {
+    if (name === 'Thumb_Up') return { option: 'A', label: 'Option A', display: 'Thumbs Up' };
+    if (name === 'Victory') return { option: 'B', label: 'Option B', display: 'Peace Sign' };
+    if (name === 'Open_Palm') return { option: 'C', label: 'Option C', display: 'Open Palm' };
+    return null;
+  }
 
-      if (!overlayToggle.checked) return;
+  function drawLandmarkPoint(x, y, color = '#7c5cff', radius = 4) {
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
-      const scaleX = overlay.width / video.videoWidth;
-      const scaleY = overlay.height / video.videoHeight;
-      ctx.lineWidth = 2;
+  function drawHandConnectors(points) {
+    ctx.strokeStyle = 'rgba(22,199,255,.85)';
+    ctx.lineWidth = 3;
+    HAND_CONNECTIONS.forEach(([a,b]) => {
+      const p1 = points[a], p2 = points[b];
+      if (!p1 || !p2) return;
+      ctx.beginPath();
+      ctx.moveTo(p1.x * overlay.width, p1.y * overlay.height);
+      ctx.lineTo(p2.x * overlay.width, p2.y * overlay.height);
+      ctx.stroke();
+    });
+  }
+
+  function drawGestureResults(result) {
+    const landmarks = result.landmarks || [];
+    const recognized = result.gestures || [];
+    const handCount = landmarks.length;
+    peakCount = Math.max(peakCount, handCount);
+    metricCurrent.textContent = String(handCount);
+    metricPeak.textContent = String(peakCount);
+    pillCurrent.textContent = `Current Count: ${handCount}`;
+    pillPeak.textContent = `Peak: ${peakCount}`;
+    highlightValue.textContent = handCount > 0 ? `Detected ${handCount} hand${handCount === 1 ? '' : 's'}` : 'Looking for vote gestures';
+
+    if (handCount !== lastLoggedCount) {
+      addLog(`Gesture Vote updated: ${handCount} hand${handCount === 1 ? '' : 's'} visible.`, 'Gesture');
+      lastLoggedCount = handCount;
+    }
+
+    if (overlayToggle.checked) {
       ctx.font = '700 12px Inter, sans-serif';
-      detections.forEach((detection, index) => {
-        const box = detection.boundingBox;
-        const x = box.originX * scaleX;
-        const y = box.originY * scaleY;
-        const w = box.width * scaleX;
-        const h = box.height * scaleY;
-        ctx.strokeStyle = 'rgba(112,255,169,.92)';
-        ctx.fillStyle = 'rgba(112,255,169,.08)';
-        roundRect(ctx, x, y, w, h, 14, true, true);
+      landmarks.forEach((handLandmarks, index) => {
+        drawHandConnectors(handLandmarks);
+        handLandmarks.forEach(pt => drawLandmarkPoint(pt.x * overlay.width, pt.y * overlay.height));
+
+        const xs = handLandmarks.map(p => p.x * overlay.width);
+        const ys = handLandmarks.map(p => p.y * overlay.height);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+        ctx.strokeStyle = 'rgba(22,199,255,.92)';
+        ctx.fillStyle = 'rgba(22,199,255,.06)';
+        roundRect(ctx, minX - 12, minY - 12, (maxX - minX) + 24, (maxY - minY) + 24, 14, true, true);
+
+        const gestureName = recognized[index]?.[0]?.categoryName || 'Hand';
+        const tag = gestureName.replaceAll('_', ' ');
         ctx.fillStyle = 'rgba(7,17,31,.96)';
-        const label = `FACE ${index + 1}`;
-        const labelWidth = Math.max(78, ctx.measureText(label).width + 18);
-        roundRect(ctx, x + 10, Math.max(4, y - 16), labelWidth, 20, 999, true, false);
+        const labelWidth = Math.max(88, ctx.measureText(tag).width + 18);
+        roundRect(ctx, minX - 2, Math.max(4, minY - 24), labelWidth, 20, 999, true, false);
         ctx.fillStyle = '#eaf4ff';
-        ctx.fillText(label, x + 18, Math.max(18, y - 2));
+        ctx.fillText(tag, minX + 6, Math.max(18, minY - 10));
       });
     }
 
-    function mapGestureName(name) {
-      if (name === 'Thumb_Up') return { option: 'A', label: 'Option A', display: 'Thumbs Up' };
-      if (name === 'Victory') return { option: 'B', label: 'Option B', display: 'Peace Sign' };
-      if (name === 'Open_Palm') return { option: 'C', label: 'Option C', display: 'Open Palm' };
-      return null;
-    }
-
-    function drawGestureResults(result) {
-      const landmarks = result.landmarks || [];
-      const recognized = result.gestures || [];
-      const handCount = landmarks.length;
-      peakCount = Math.max(peakCount, handCount);
-      metricCurrent.textContent = String(handCount);
-      metricPeak.textContent = String(peakCount);
-      pillCurrent.textContent = `Current Count: ${handCount}`;
-      pillPeak.textContent = `Peak: ${peakCount}`;
-      highlightValue.textContent = handCount > 0 ? `Detected ${handCount} hand${handCount === 1 ? '' : 's'}` : 'Looking for vote gestures';
-
-      if (handCount !== lastLoggedCount) {
-        addLog(`Gesture Vote updated: ${handCount} hand${handCount === 1 ? '' : 's'} visible.`, 'Gesture');
-        lastLoggedCount = handCount;
-      }
-
-      if (overlayToggle.checked) {
-        const drawingUtils = new DrawingUtils(ctx);
-        landmarks.forEach((handLandmarks, index) => {
-          drawingUtils.drawConnectors(handLandmarks, GestureRecognizer.HAND_CONNECTIONS ?? [], {
-            color: '#16c7ff',
-            lineWidth: 3
-          });
-          drawingUtils.drawLandmarks(handLandmarks, {
-            color: '#7c5cff',
-            radius: 3
-          });
-
-          const xs = handLandmarks.map(p => p.x * overlay.width);
-          const ys = handLandmarks.map(p => p.y * overlay.height);
-          const minX = Math.min(...xs);
-          const maxX = Math.max(...xs);
-          const minY = Math.min(...ys);
-          const maxY = Math.max(...ys);
-          ctx.strokeStyle = 'rgba(22,199,255,.92)';
-          ctx.fillStyle = 'rgba(22,199,255,.06)';
-          roundRect(ctx, minX - 12, minY - 12, (maxX - minX) + 24, (maxY - minY) + 24, 14, true, true);
-
-          const gestureName = recognized[index]?.[0]?.categoryName || 'Hand';
-          const tag = gestureName.replaceAll('_', ' ');
-          ctx.fillStyle = 'rgba(7,17,31,.96)';
-          const labelWidth = Math.max(88, ctx.measureText(tag).width + 18);
-          roundRect(ctx, minX - 2, Math.max(4, minY - 24), labelWidth, 20, 999, true, false);
-          ctx.fillStyle = '#eaf4ff';
-          ctx.fillText(tag, minX + 6, Math.max(18, minY - 10));
-        });
-      }
-
-      if (recognized.length > 0) {
-        for (const handGestures of recognized) {
-          const best = handGestures[0];
-          if (!best) continue;
-          const mapped = mapGestureName(best.categoryName);
-          if (!mapped) continue;
-          const now = performance.now();
-          if (mapped.label === lastVoteLabel && (now - lastVoteTime) < voteCooldownMs) continue;
-          lastVoteLabel = mapped.label;
-          lastVoteTime = now;
-          votes[mapped.option] += 1;
-          updateVoteUI();
-          highlightValue.textContent = `${mapped.label} captured`;
-          addLog(`Vote counted for ${mapped.label} via ${mapped.display}.`, 'Vote');
-          break;
-        }
+    if (recognized.length > 0) {
+      for (const handGestures of recognized) {
+        const best = handGestures[0];
+        if (!best) continue;
+        const mapped = mapGestureName(best.categoryName);
+        if (!mapped) continue;
+        const now = performance.now();
+        if (mapped.label === lastVoteLabel && (now - lastVoteTime) < voteCooldownMs) continue;
+        lastVoteLabel = mapped.label;
+        lastVoteTime = now;
+        votes[mapped.option] += 1;
+        updateVoteUI();
+        highlightValue.textContent = `${mapped.label} captured`;
+        addLog(`Vote counted for ${mapped.label} via ${mapped.display}.`, 'Vote');
+        break;
       }
     }
+  }
 
-    async function renderLoop() {
-      if (!running) return;
-      animationId = requestAnimationFrame(renderLoop);
-      if (!video.videoWidth || video.currentTime === lastVideoTime) return;
-      lastVideoTime = video.currentTime;
-      resizeCanvas();
-      ctx.clearRect(0, 0, overlay.width, overlay.height);
+  async function renderLoop() {
+    if (!running) return;
+    animationId = requestAnimationFrame(renderLoop);
+    if (!video.videoWidth || video.currentTime === lastVideoTime) return;
+    lastVideoTime = video.currentTime;
+    resizeCanvas();
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-      const timeMs = performance.now();
+    const timeMs = performance.now();
+    try {
       if (currentMode === 'crowd') {
         const result = faceDetector.detectForVideo(video, timeMs);
         drawFaceDetections(result.detections || []);
       } else {
         const result = gestureRecognizer.recognizeForVideo(video, timeMs);
-        drawGestureResults(result);
+        drawGestureResults(result || {});
       }
+    } catch (e) {
+      console.error(e);
+      addLog(`Detection error: ${e.message}`, 'Error');
+      setStatus('Detection error');
+      stopCamera();
     }
+  }
 
-    function roundRect(context, x, y, width, height, radius, fill, stroke) {
-      const r = Math.min(radius, width / 2, height / 2);
-      context.beginPath();
-      context.moveTo(x + r, y);
-      context.arcTo(x + width, y, x + width, y + height, r);
-      context.arcTo(x + width, y + height, x, y + height, r);
-      context.arcTo(x, y + height, x, y, r);
-      context.arcTo(x, y, x + width, y, r);
-      context.closePath();
-      if (fill) context.fill();
-      if (stroke) context.stroke();
-    }
-
-    function switchMode() {
-      currentMode = currentMode === 'crowd' ? 'gesture' : 'crowd';
-      modeSelect.value = currentMode;
-      setModeUI();
-    }
-
-    modeSelect.addEventListener('change', () => {
-      currentMode = modeSelect.value;
-      setModeUI();
-    });
-    confidenceRange.addEventListener('input', applyThresholds);
-    mirrorToggle.addEventListener('change', updateMirror);
-    cameraSelect.addEventListener('change', () => addLog(`Camera preference changed to ${cameraSelect.value === 'environment' ? 'back' : 'front'} camera.`, 'Controls'));
-    startButtons.forEach(btn => btn.addEventListener('click', startCamera));
-    stopButton.addEventListener('click', stopCamera);
-    switchModeButtons.forEach(btn => btn.addEventListener('click', switchMode));
-    resetVotesButton.addEventListener('click', resetVotes);
-    window.addEventListener('resize', resizeCanvas);
-
-    updateMirror();
-    updateVoteUI();
+  function switchMode() {
+    currentMode = currentMode === 'crowd' ? 'gesture' : 'crowd';
+    modeSelect.value = currentMode;
     setModeUI();
-    addLog('CrowdVision AI loaded. Start the camera when you are ready.', 'Ready');
-  </script>
+  }
+
+  modeSelect.addEventListener('change', () => {
+    currentMode = modeSelect.value;
+    setModeUI();
+  });
+  confidenceRange.addEventListener('input', applyThresholds);
+  mirrorToggle.addEventListener('change', updateMirror);
+  cameraSelect.addEventListener('change', () => addLog(`Camera preference changed to ${cameraSelect.value === 'environment' ? 'back' : 'front'} camera.`, 'Controls'));
+  startButtons.forEach(btn => btn.addEventListener('click', startCamera));
+  stopButton.addEventListener('click', stopCamera);
+  switchModeButtons.forEach(btn => btn.addEventListener('click', switchMode));
+  resetVotesButton.addEventListener('click', resetVotes);
+  window.addEventListener('resize', resizeCanvas);
+
+  updateMirror();
+  applyThresholds();
+  updateVoteUI();
+  setModeUI();
+  addLog('CrowdVision AI loaded. Buttons are active. Start the camera when you are ready.', 'Ready');
+</script>
 </body>
 </html>
