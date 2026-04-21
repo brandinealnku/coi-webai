@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CrowdCode Host Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080d; --bg2:#0d1320; --panel:#101722; --panel2:#151f2f; --text:#f5f7fb; --muted:#9fb0c8;
+  --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.16);
+  --gold:#caa64b; --gold2:#f5d57a; --black:#0a0a0a; --navy:#243a73; --pink:#ff66c4; --green:#2cc37d; --red:#e45b6b;
+  --shadow:0 24px 72px rgba(0,0,0,.34); --radius:24px;
+}
+body.light{
+  --bg:#f0f3f8; --bg2:#e7edf7; --panel:#ffffff; --panel2:#f7f9fd; --text:#142236; --muted:#607290;
+  --line:#d7e0ed; --line2:#c4d1e3; --shadow:0 20px 60px rgba(30,51,84,.12);
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%}
+body{font-family:Inter,system-ui,sans-serif;color:var(--text);background:
+radial-gradient(circle at top left, rgba(202,166,75,.14), transparent 22%),
+radial-gradient(circle at 90% 10%, rgba(255,102,196,.10), transparent 22%),
+linear-gradient(180deg,var(--bg),var(--bg2));padding:18px}
+button,input,select,textarea{font:inherit}
+.shell{max-width:1600px;margin:0 auto;display:grid;gap:18px}
+.topbar,.panel{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius);backdrop-filter:blur(16px)}
+.topbar{padding:14px 18px;display:flex;justify-content:space-between;gap:14px;align-items:center;position:sticky;top:16px;z-index:10}
+.brand{display:flex;gap:14px;align-items:center}
+.badge{width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:grid;place-items:center;color:#111;font-weight:900}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+h1{font-size:1.12rem;margin:4px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+button,.linkbtn{border:0;border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111}
+.soft{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+.pink{background:linear-gradient(135deg,var(--pink),#ff9cda);color:#250d1f}
+.main{display:grid;grid-template-columns:minmax(320px,1.2fr) minmax(420px,.9fr);gap:18px}
+@media (max-width:1180px){.main{grid-template-columns:1fr}}
+.left,.right{display:grid;gap:18px}
+.panel{padding:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+.label{display:block;font-weight:800;font-size:.88rem;margin-bottom:8px}
+.field input[type=text], .field input[type=url], .field input[type=number], .field select, .field textarea{
+  width:100%;border-radius:14px;border:1px solid var(--line2);background:var(--panel2);color:var(--text);padding:12px 14px;outline:none
+}
+.field textarea{min-height:92px;resize:vertical}
+.small{font-size:.84rem;color:var(--muted);line-height:1.45}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.segment{display:flex;flex-wrap:wrap;gap:8px}
+.segment button{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:11px 14px}
+.segment button.active{background:linear-gradient(135deg,var(--navy),#4367c6);color:#fff;border-color:transparent}
+.preview{aspect-ratio:10/16;border-radius:28px;overflow:hidden;background:#070d17;position:relative;border:1px solid var(--line)}
+.preview-grid{position:absolute;inset:0;display:grid}
+.preview-cell{border:1px solid rgba(255,255,255,.16);padding:8px;font-size:.72rem;font-weight:800;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.qrbox{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center}
+@media (max-width:680px){.qrbox{grid-template-columns:1fr}}
+#qrcode{width:140px;height:140px;border-radius:16px;background:#fff;display:grid;place-items:center;padding:10px}
+code{display:block;padding:10px 12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);word-break:break-all}
+.phonewall{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px}
+.phone{aspect-ratio:9/16;border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));padding:10px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+body.light .phone{background:linear-gradient(180deg,rgba(17,24,39,.04),rgba(17,24,39,.02))}
+.phone:before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:40%;height:14px;background:rgba(255,255,255,.12);border-radius:0 0 14px 14px}
+.slot{display:grid;place-items:center;flex:1;text-align:center;padding:8px}
+.big{font-size:clamp(1rem,2.5vw,1.7rem);font-weight:900;line-height:.96}
+.slice{width:100%;aspect-ratio:9/16;border-radius:16px;border:1px solid var(--line);background-repeat:no-repeat;background-position:center}
+.sticky-actions{position:sticky;bottom:14px;display:flex;flex-wrap:wrap;gap:10px;padding:14px 16px;border-radius:22px;background:rgba(16,23,34,.95);border:1px solid var(--line);box-shadow:0 16px 40px rgba(19,35,61,.16)}
+body.light .sticky-actions{background:rgba(255,255,255,.95)}
+.spacer{flex:1}
+.camerabox{display:grid;grid-template-columns:1.2fr .8fr;gap:14px} @media (max-width:900px){.camerabox{grid-template-columns:1fr}}
+.camera-stage{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:#050a13;border:1px solid var(--line)}
+.camera-stage video,.camera-stage img{width:100%;height:100%;object-fit:cover;display:block}
+.camera-stage video{position:absolute;inset:0;z-index:1}
+.camera-stage img{position:absolute;inset:0;z-index:2;display:none}
+.camera-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.42);color:#fff;padding:8px 10px;border-radius:999px;font-size:.8rem;font-weight:700;z-index:3}
+.capture-preview{aspect-ratio:1/1;border-radius:18px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.capture-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{padding:14px;border:1px solid var(--line);border-radius:18px;background:var(--panel2)}
+.stat .n{font-size:1.4rem;font-weight:900;margin-top:4px}
+.reaction-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:760px){.reaction-grid{grid-template-columns:repeat(2,1fr)}}
+.reaction-box{padding:14px;border-radius:18px;border:1px solid var(--line);background:var(--panel2);text-align:center}
+.reaction-box .emoji{font-size:1.4rem}
+.reaction-box .count{font-size:1.3rem;font-weight:900;margin-top:4px}
+.debug-note{margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand"><div class="badge">CC</div><div><div class="eyebrow">NKU × ITSBAD Host Console</div><h1 id="sessionCodeLabel">Session: —</h1></div></div>
+    <div class="actions">
+      <button class="soft" id="themeToggle">Light mode</button>
+      <a class="linkbtn soft" id="openStageLink" target="_blank" rel="noopener">Open stage view</a>
+      <button class="primary" id="saveBtn">Save setup</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="left">
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Show basics</div><div class="small">Core content and session setup</div></div></div>
+        <div class="grid2">
+          <div class="field"><label class="label" for="sessionName">Session title</label><input id="sessionName" type="text" value="NKU CrowdCode Live"></div>
+          <div class="field"><label class="label" for="ctaUrl">CTA link</label><input id="ctaUrl" type="url" value="https://www.nku.edu/"></div>
+        </div>
+        <div class="grid2" style="margin-top:14px">
+          <div class="field"><label class="label">Participant assignment</label><div class="segment" id="assignmentModeSegment"><button data-value="mosaic" class="active">Mosaic</button><button data-value="repeat">Repeat</button><button data-value="sections">Sections</button><button data-value="unique">Unique</button></div><input id="assignmentMode" type="hidden" value="mosaic"></div>
+          <div class="field"><label class="label">Tile source</label><div class="segment" id="tileSourceModeSegment"><button data-value="manual" class="active">Manual</button><button data-value="words">Words</button><button data-value="chars">Chars</button></div><input id="tileSourceMode" type="hidden" value="manual"></div>
+        </div>
+        <div class="field" style="margin-top:14px"><label class="label" for="tileInput">Tiles or phrase</label><textarea id="tileInput">NKU|ITSBAD|AI|LIVE</textarea><div class="small">Use a pipe-separated list for manual mode, or type a phrase to split by words or characters.</div></div>
+        <div class="grid2" style="margin-top:14px"><div class="field"><label class="label" for="finalHeadline">Final headline</label><input id="finalHeadline" type="text" value="AI LITERACY LIVE"></div><div class="field"><label class="label" for="finalSubhead">Final subhead</label><input id="finalSubhead" type="text" value="Powered by NKU and ITSBAD LLC"></div></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Mosaic artwork</div><div class="small">Generate graphics or switch to an uploaded / captured image</div></div></div>
+        <div class="grid2">
+          <div class="field"><label class="label" for="mosaicHeadline">Artwork headline</label><input id="mosaicHeadline" type="text" value="NKU"></div>
+          <div class="field"><label class="label" for="mosaicSubhead">Artwork subhead</label><input id="mosaicSubhead" type="text" value="ITSBAD LIVE"></div>
+        </div>
+        <div class="grid3" style="margin-top:14px">
+          <div class="field"><label class="label" for="mosaicCols">Columns</label><input id="mosaicCols" type="number" min="2" max="12" value="4"></div>
+          <div class="field"><label class="label" for="mosaicRows">Rows</label><input id="mosaicRows" type="number" min="2" max="20" value="6"></div>
+          <div class="field"><label class="label" for="mosaicTheme">Theme</label><select id="mosaicTheme"><option value="nku">NKU gold + black</option><option value="itsbad">ITSBAD navy + pink</option><option value="fusion">Fusion</option></select></div>
+        </div>
+        <div class="grid2" style="margin-top:14px">
+          <div class="field"><label class="label" for="mosaicArtworkSource">Artwork source</label><select id="mosaicArtworkSource"><option value="generated">Generated from headline + subhead</option><option value="upload">Uploaded image / logo</option></select></div>
+          <div class="field"><label class="label" for="mosaicImageFit">Image fit</label><select id="mosaicImageFit"><option value="cover">Cover cells</option><option value="contain">Contain full image</option></select></div>
+        </div>
+        <div class="grid2" style="margin-top:14px">
+          <div class="field"><label class="label" for="mosaicImageUpload">Custom artwork upload</label><input id="mosaicImageUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><div id="mosaicUploadStatus" class="small">No custom image loaded yet.</div></div>
+          <div class="field"><label class="label">Artwork actions</label><div class="segment"><button type="button" id="regenerateArtworkBtn">Regenerate preview</button><button type="button" id="clearUploadBtn">Clear upload</button></div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Reveal choreography</div><div class="small">Countdowns, animation style, and finale behavior</div></div></div>
+        <div class="grid3">
+          <div class="field"><label class="label" for="countdownSeconds">Countdown seconds</label><input id="countdownSeconds" type="number" min="3" max="30" value="8"></div>
+          <div class="field"><label class="label" for="animationSeconds">Animation seconds</label><input id="animationSeconds" type="number" min="2" max="20" value="5"></div>
+          <div class="field"><label class="label" for="layoutType">Reveal type</label><select id="layoutType"><option value="message">Message / words</option><option value="countdown">Numbers / countdown tiles</option><option value="cta">Call to action</option></select></div>
+        </div>
+        <div class="grid2" style="margin-top:14px">
+          <div class="field"><label class="label">Animation style</label><div class="segment" id="animationStyleSegment"><button data-value="pulse" class="active">Pulse</button><button data-value="flash">Flash</button><button data-value="ripple">Ripple</button><button data-value="audio">Audio</button></div><input id="animationStyle" type="hidden" value="pulse"></div>
+          <div class="field"><label class="label" for="animationToPhase">After animation, go to</label><select id="animationToPhase"><option value="reveal">Final reveal</option><option value="selfie">Selfie moment</option><option value="lobby">Lobby</option></select></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Media + capture</div><div class="small">Audio reactive reveal and selfie mosaic capture</div></div></div>
+        <div class="grid2">
+          <div class="field"><label class="label" for="audioFile">Host MP3 upload</label><input id="audioFile" type="file" accept="audio/*"><div id="audioStatus" class="small">Upload a short MP3 clip for audio-reactive testing.</div></div>
+          <div class="field"><label class="label" for="audioBroadcastMode">Audience speaker mode</label><select id="audioBroadcastMode"><option value="visual">Visual only</option><option value="sync">Play uploaded MP3 on audience speakers</option></select></div>
+        </div>
+        <div class="grid3" style="margin-top:14px">
+          <div class="field"><label class="label" for="audioFlashMode">Phone flash style</label><select id="audioFlashMode"><option value="off">Off</option><option value="soft">Soft pulse flash</option><option value="medium">Medium flash</option><option value="strobe">Short strobe bursts</option></select></div>
+          <div class="field"><label class="label" for="audioFlashColor">Flash color</label><select id="audioFlashColor"><option value="white">White</option><option value="gold">Gold</option><option value="pink">Pink</option><option value="cycle">Gold / pink cycle</option></select></div>
+          <div class="field"><label class="label" for="audioFlashHaptics">Extra effects</label><select id="audioFlashHaptics"><option value="off">Visual only</option><option value="vibrate">Add light vibration</option></select></div>
+        </div>
+        <div class="segment" style="margin-top:14px"><button type="button" id="startAudioReactiveBtn">Start MP3 reactive reveal</button><button type="button" id="stopAudioReactiveBtn">Stop MP3 reveal</button></div>
+        <hr style="border:none;border-top:1px solid var(--line);margin:18px 0">
+        <div class="camerabox">
+          <div>
+            <div class="field"><label class="label" for="cameraDeviceSelect">Camera source</label><div class="grid2"><select id="cameraDeviceSelect"><option value="">Default camera</option></select><button type="button" class="soft" id="refreshCameraListBtn">Refresh camera list</button></div></div>
+            <div class="camera-stage"><video id="captureVideo" playsinline autoplay muted></video><img id="captureFallbackImage" alt="Captured preview"><div class="camera-badge" id="captureStatusBadge">Camera idle</div></div>
+            <div class="segment" style="margin-top:12px"><button type="button" id="startCameraBtn">Start camera</button><button type="button" id="flipCameraBtn">Flip camera</button><button type="button" id="capturePhotoBtn">Capture photo</button><button type="button" id="useCapturedBtn">Use captured photo</button><button type="button" id="stopCameraBtn">Stop camera</button></div>
+            <div class="debug-note" id="cameraDebugNote">Waiting for camera access.</div>
+          </div>
+          <div>
+            <div class="capture-preview"><img id="capturedPhotoPreview" alt="Captured photo preview"></div>
+            <div id="captureHelp" class="small" style="margin-top:10px">Capture a fresh room selfie, then apply it as the mosaic artwork.</div>
+          </div>
+        </div>
+        <canvas id="captureCanvas" width="1600" height="1000" style="display:none"></canvas>
+      </section>
+    </div>
+
+    <div class="right">
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Live metrics</div><div class="small">Realtime audience signals</div></div></div>
+        <div class="stats">
+          <div class="stat"><div class="small">Connected</div><div class="n" id="connectedCount">0</div></div>
+          <div class="stat"><div class="small">Ready</div><div class="n" id="readyCount">0</div></div>
+          <div class="stat"><div class="small">Energy</div><div class="n" id="energyScore">0%</div></div>
+          <div class="stat"><div class="small">Boosts</div><div class="n" id="boostCount">0</div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Live reactions</div><div class="small">Visible again on the host pages</div></div></div>
+        <div class="reaction-grid">
+          <div class="reaction-box"><div class="emoji">🔥</div><div class="count" id="reactionFire">0</div><div class="small">Hype</div></div>
+          <div class="reaction-box"><div class="emoji">👏</div><div class="count" id="reactionClap">0</div><div class="small">Clap</div></div>
+          <div class="reaction-box"><div class="emoji">⚡</div><div class="count" id="reactionBoost">0</div><div class="small">Boost</div></div>
+          <div class="reaction-box"><div class="emoji">🎉</div><div class="count" id="reactionConfetti">0</div><div class="small">Drop</div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Live preview</div><div class="small">This updates as you change the session</div></div></div>
+        <div id="mosaicPreview" class="preview"><div id="mosaicGrid" class="preview-grid"></div></div>
+      </section>
+      <section class="panel">
+        <div class="qrbox"><div id="qrcode"></div><div><div class="eyebrow">Audience join link</div><p class="small">Share this with participants in the room.</p><code id="joinUrlText">Preparing link…</code><div style="margin-top:12px"><button class="soft" id="copyLinkBtn">Copy link</button></div></div></div>
+      </section>
+      <section class="panel">
+        <div class="section-title"><div><div class="eyebrow">Phone wall</div><div class="small">Each phone’s assigned word or mosaic slice</div></div><div class="small" id="metaSummary">Waiting for participants…</div></div>
+        <div class="phonewall" id="phoneWall"></div>
+      </section>
+      <section class="panel">
+        <div class="sticky-actions">
+          <button class="soft" id="openLobbyBtn">Open lobby</button>
+          <button class="soft" id="startCountdownBtn">Start countdown</button>
+          <button class="soft" id="animateBtn">Animate reveal</button>
+          <button class="soft" id="revealBtn">Final reveal</button>
+          <button class="soft" id="selfieBtn">Selfie moment</button>
+          <div class="spacer"></div>
+          <button class="pink" id="resetBtn">Reset session</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<canvas id="artCanvas" width="1080" height="1728" style="display:none"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import { getDatabase, ref, set, update, get, onValue, onDisconnect, serverTimestamp, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDG34fpXimkHbqiLD0YFbM1FuSUlLW7FSo",
+  authDomain: "crowdcode-713e4.firebaseapp.com",
+  databaseURL: "https://crowdcode-713e4-default-rtdb.firebaseio.com",
+  projectId: "crowdcode-713e4",
+  storageBucket: "crowdcode-713e4.firebasestorage.app",
+  messagingSenderId: "415062434213",
+  appId: "1:415062434213:web:0ac4da57c4ffe6a5e7884c",
+  measurementId: "G-E1CNDCQWC0"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const url = new URL(window.location.href);
+let sessionId = url.searchParams.get('session');
+if (!sessionId) {
+  sessionId = crypto.randomUUID().slice(0,8).toUpperCase();
+  url.searchParams.set('session', sessionId);
+  history.replaceState({}, '', url);
+}
+const sessionRef = ref(db, `crowdcode/sessions/${sessionId}`);
+const participantsRef = ref(db, `crowdcode/sessions/${sessionId}/participants`);
+const hostPresenceRef = ref(db, `crowdcode/sessions/${sessionId}/hostPresence`);
+const state = { session:null, participants:{}, uploadedArtworkDataUrl:'', uploadedArtworkName:'', capturedPhotoDataUrl:'', cameraStream:null, facingMode:'environment', audioObjectUrl:'', audioDataUrl:'', audioFileName:'', audioFileType:'audio/mpeg' };
+
+function escapeHtml(str=''){ return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
+function parseTiles(raw, mode){ raw = raw || ''; if (mode === 'words') return raw.split(/\s+/).map(s=>s.trim()).filter(Boolean); if (mode === 'chars') return [...raw].filter(ch => ch.trim()); return raw.split('|').map(s=>s.trim()).filter(Boolean); }
+function buildJoinUrl(){ const u = new URL('./audience-v3-theme-toggle.html', window.location.href); u.searchParams.set('session', sessionId); return u.toString(); }
+function getTheme(theme){
+  return {
+    nku:{ bg1:'#050505', bg2:'#1a1a1a', accent1:'#caa64b', accent2:'#f5d57a', text:'#ffffff' },
+    itsbad:{ bg1:'#0d1630', bg2:'#243a73', accent1:'#ff66c4', accent2:'#caa64b', text:'#ffffff' },
+    fusion:{ bg1:'#07090f', bg2:'#18233e', accent1:'#caa64b', accent2:'#ff66c4', text:'#ffffff' }
+  }[theme] || { bg1:'#050505', bg2:'#1a1a1a', accent1:'#caa64b', accent2:'#f5d57a', text:'#ffffff' };
+}
+function wrapText(ctx, text, x, startY, maxWidth, lineHeight){
+  const words = String(text||'').split(/\s+/); let line='', y = startY;
+  for (let i=0;i<words.length;i++){ const test = line ? `${line} ${words[i]}` : words[i]; if (ctx.measureText(test).width > maxWidth && line){ ctx.fillText(line,x,y); line = words[i]; y += lineHeight; } else line = test; }
+  if (line) ctx.fillText(line,x,y);
+}
+function generateMosaicArtwork(canvas, headline, subhead, themeName){
+  const ctx = canvas.getContext('2d'); const theme = getTheme(themeName); const w = canvas.width, h = canvas.height;
+  const bg = ctx.createLinearGradient(0,0,w,h); bg.addColorStop(0, theme.bg1); bg.addColorStop(1, theme.bg2); ctx.fillStyle = bg; ctx.fillRect(0,0,w,h);
+  const orb1 = ctx.createRadialGradient(w*0.18,h*0.2,10,w*0.18,h*0.2,w*0.34); orb1.addColorStop(0, `${theme.accent1}cc`); orb1.addColorStop(1, `${theme.accent1}00`); ctx.fillStyle = orb1; ctx.fillRect(0,0,w,h);
+  const orb2 = ctx.createRadialGradient(w*0.82,h*0.74,10,w*0.82,h*0.74,w*0.34); orb2.addColorStop(0, `${theme.accent2}bb`); orb2.addColorStop(1, `${theme.accent2}00`); ctx.fillStyle = orb2; ctx.fillRect(0,0,w,h);
+  ctx.save(); ctx.globalAlpha = .12; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i=-h;i<w;i+=70){ ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+h,h); ctx.stroke(); } ctx.restore();
+  ctx.fillStyle = theme.text; ctx.textAlign = 'center'; ctx.font = '900 170px Inter, sans-serif'; wrapText(ctx, (headline || 'NKU').toUpperCase(), w/2, h*0.37, w*0.78, 170);
+  ctx.fillStyle = `${theme.text}dd`; ctx.font = '700 80px Inter, sans-serif'; wrapText(ctx, subhead || 'ITSBAD LIVE', w/2, h*0.62, w*0.72, 92);
+  ctx.fillStyle = theme.accent1; ctx.font = '800 48px Inter, sans-serif'; ctx.fillText('CrowdCode Experience', w/2, h*0.88);
+  ctx.strokeStyle = `${theme.text}22`; ctx.lineWidth = 8; ctx.strokeRect(34,34,w-68,h-68);
+  return canvas.toDataURL('image/jpeg', .86);
+}
+function computeAssignment(index, totalCount, session){
+  const tiles = session.tiles || []; const mode = session.assignmentMode || 'repeat';
+  if (mode === 'mosaic') { const totalCells = Math.max(1, (session.mosaic?.cols || 4) * (session.mosaic?.rows || 6)); const sliceIndex = index % totalCells; return { tileIndex:sliceIndex, tileText:`CELL ${sliceIndex+1}`, groupIndex:sliceIndex, mosaicIndex:sliceIndex }; }
+  if (!tiles.length) return { tileIndex:index, tileText:`#${index+1}`, groupIndex:index };
+  if (mode === 'unique') return { tileIndex:index, tileText:tiles[index] ?? `#${index+1}`, groupIndex:Math.min(index, tiles.length-1) };
+  if (mode === 'sections') { const sectionSize = Math.max(1, Math.ceil(totalCount / tiles.length)); const sectionIndex = Math.min(Math.floor(index / sectionSize), tiles.length-1); return { tileIndex:sectionIndex, tileText:tiles[sectionIndex], groupIndex:sectionIndex }; }
+  const repeatedIndex = index % tiles.length; return { tileIndex:repeatedIndex, tileText:tiles[repeatedIndex], groupIndex:repeatedIndex };
+}
+function sortedParticipants(){ return Object.entries(state.participants || {}).sort((a,b) => (a[1]?.joinedAt||0) - (b[1]?.joinedAt||0)); }
+async function rebalanceParticipants(){
+  const participants = sortedParticipants(); if (!participants.length) return; const session = state.session || defaultSessionPayload(); const payload = {};
+  participants.forEach(([id,p], idx) => { const assigned = computeAssignment(idx, participants.length, session); payload[`${id}/tileIndex`] = assigned.tileIndex; payload[`${id}/tileText`] = assigned.tileText; payload[`${id}/groupIndex`] = assigned.groupIndex; payload[`${id}/mosaicIndex`] = assigned.mosaicIndex ?? null; payload[`${id}/slotNumber`] = idx + 1; payload[`${id}/updatedAt`] = Date.now(); });
+  await update(participantsRef, payload);
+}
+async function ensureSession(){
+  const snap = await get(sessionRef);
+  if (!snap.exists()) await set(sessionRef, defaultSessionPayload());
+  await set(hostPresenceRef, { online:true, updatedAt:serverTimestamp() });
+  onDisconnect(hostPresenceRef).remove();
+}
+const els = Object.fromEntries([...document.querySelectorAll('[id]')].map(el => [el.id, el]));
+const themeKey = 'crowdcode-host-theme';
+const savedTheme = localStorage.getItem(themeKey) || 'dark';
+if (savedTheme === 'light') document.body.classList.add('light');
+els.themeToggle.textContent = document.body.classList.contains('light') ? 'Dark mode' : 'Light mode';
+els.themeToggle.onclick = () => { document.body.classList.toggle('light'); const light = document.body.classList.contains('light'); localStorage.setItem(themeKey, light ? 'light':'dark'); els.themeToggle.textContent = light ? 'Dark mode' : 'Light mode'; };
+els.sessionCodeLabel.textContent = `Session: ${sessionId}`;
+els.openStageLink.href = `./host-stage.html?session=${sessionId}`;
+
+function setSegment(groupEl, hiddenInput, value){ hiddenInput.value = value; Array.from(groupEl.querySelectorAll('button[data-value]')).forEach(btn => btn.classList.toggle('active', btn.dataset.value === value)); }
+[['assignmentModeSegment', els.assignmentMode], ['tileSourceModeSegment', els.tileSourceMode], ['animationStyleSegment', els.animationStyle]].forEach(([groupId, input]) => {
+  const group = document.getElementById(groupId);
+  group.addEventListener('click', e => { const btn = e.target.closest('button[data-value]'); if (!btn) return; setSegment(group, input, btn.dataset.value); renderMosaicPreview(); });
+});
+function getCurrentArtworkDataUrl(){
+  const source = els.mosaicArtworkSource.value;
+  if (source === 'upload' && state.uploadedArtworkDataUrl) return state.uploadedArtworkDataUrl;
+  if (source === 'upload' && state.session?.mosaic?.artworkType === 'upload' && state.session?.mosaic?.artwork) return state.session.mosaic.artwork;
+  return generateMosaicArtwork(els.artCanvas, els.mosaicHeadline.value, els.mosaicSubhead.value, els.mosaicTheme.value);
+}
+function defaultSessionPayload(overrides={}){
+  const assignmentMode = els.assignmentMode.value || 'mosaic';
+  const cols = Math.max(2, Number(els.mosaicCols.value) || 4), rows = Math.max(2, Number(els.mosaicRows.value) || 6);
+  const tiles = assignmentMode === 'mosaic' ? Array.from({length:cols*rows}, (_,i)=>`SLICE ${i+1}`) : parseTiles(els.tileInput.value, els.tileSourceMode.value);
+  return {
+    sessionName: els.sessionName.value.trim() || 'CrowdCode Session',
+    layoutType: els.layoutType.value || 'message',
+    countdownSeconds: Number(els.countdownSeconds.value)||8,
+    assignmentMode,
+    tileSourceMode: els.tileSourceMode.value || 'manual',
+    tiles,
+    mosaic:{ enabled:assignmentMode==='mosaic', cols, rows, headline:els.mosaicHeadline.value.trim()||'NKU', subhead:els.mosaicSubhead.value.trim()||'ITSBAD LIVE', theme:els.mosaicTheme.value || 'fusion', artworkType:els.mosaicArtworkSource.value || 'generated', imageFit:els.mosaicImageFit.value || 'cover', uploadedImageName:state.uploadedArtworkName || state.session?.mosaic?.uploadedImageName || '', artwork:getCurrentArtworkDataUrl() },
+    finalHeadline: els.finalHeadline.value.trim() || 'Final Reveal',
+    finalSubhead: els.finalSubhead.value.trim() || 'Powered by NKU and ITSBAD',
+    ctaUrl: els.ctaUrl.value.trim() || '',
+    phase: state.session?.phase || 'lobby',
+    countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null,
+    animationSeconds:Number(els.animationSeconds.value)||5, animationStyle:els.animationStyle.value||'pulse', animationToPhase:els.animationToPhase.value||'reveal',
+    audioReactive:null, audioBroadcast:null,
+    flashConfig:{ mode:els.audioFlashMode.value||'soft', color:els.audioFlashColor.value||'white', haptics:els.audioFlashHaptics.value||'off' },
+    interaction: state.session?.interaction || { energyScore:0 },
+    reactions: state.session?.reactions || { fire:0, clap:0, boost:0, confetti:0 },
+    updatedAt:Date.now(), ...overrides
+  };
+}
+function updateUploadStatus(){
+  if (state.uploadedArtworkDataUrl) els.mosaicUploadStatus.textContent = `${state.uploadedArtworkName || 'Custom image'} loaded.`;
+  else if (els.mosaicArtworkSource.value === 'upload' && state.session?.mosaic?.artwork) els.mosaicUploadStatus.textContent = 'A saved uploaded image is attached to this session.';
+  else els.mosaicUploadStatus.textContent = 'No custom image loaded yet.';
+}
+async function saveSetup(extra={}){ await update(sessionRef, defaultSessionPayload({ ...extra, phase: extra.phase || state.session?.phase || 'lobby' })); await rebalanceParticipants(); }
+async function openLobby(){ await saveSetup({ phase:'lobby', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null, audioBroadcast:null }); }
+async function startCountdown(){ const sec = Number(els.countdownSeconds.value)||8; const startAt = Date.now()+1500; await saveSetup({ phase:'countdown', countdownStartAt:startAt, countdownTargetAt:startAt + sec*1000, animationStartAt:null, animationTargetAt:null }); }
+async function animateReveal(){ const sec = Number(els.animationSeconds.value)||5; const startAt = Date.now()+600; await saveSetup({ phase:'animate', countdownStartAt:null, countdownTargetAt:null, animationStartAt:startAt, animationTargetAt:startAt+sec*1000, animationSeconds:sec, animationStyle:els.animationStyle.value||'pulse', animationToPhase:els.animationToPhase.value||'reveal' }); }
+async function finalReveal(){ await saveSetup({ phase:'reveal', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null, audioReactive:null, audioBroadcast:null }); }
+async function selfieMoment(){ await saveSetup({ phase:'selfie', countdownStartAt:null, countdownTargetAt:null, animationStartAt:null, animationTargetAt:null }); }
+async function resetSession(){ await remove(participantsRef); await set(sessionRef, { ...defaultSessionPayload({ phase:'lobby' }), reactions:{ fire:0, clap:0, boost:0, confetti:0 }, interaction:{ energyScore:0 } }); }
+function renderMosaicPreview(){
+  const s = state.session || defaultSessionPayload(); const artwork = s.mosaic?.artwork || getCurrentArtworkDataUrl();
+  els.mosaicPreview.style.backgroundImage = artwork ? `url(${artwork})` : 'none';
+  els.mosaicPreview.style.backgroundSize = (s.mosaic?.imageFit || els.mosaicImageFit.value) === 'contain' ? 'contain' : 'cover';
+  els.mosaicPreview.style.backgroundRepeat='no-repeat'; els.mosaicPreview.style.backgroundPosition='center';
+  const cols=Math.max(2, s.mosaic?.cols || Number(els.mosaicCols.value)||4), rows=Math.max(2, s.mosaic?.rows || Number(els.mosaicRows.value)||6);
+  els.mosaicGrid.style.gridTemplateColumns=`repeat(${cols},1fr)`; els.mosaicGrid.style.gridTemplateRows=`repeat(${rows},1fr)`;
+  const occ = new Map(sortedParticipants().map(([id,p])=>[p.mosaicIndex??p.tileIndex,p]));
+  els.mosaicGrid.innerHTML = Array.from({length:cols*rows}, (_,idx)=>`<div class="preview-cell">${occ.get(idx)?escapeHtml(occ.get(idx).nickname||`Phone ${occ.get(idx).slotNumber||''}`):''}</div>`).join('');
+}
+function renderPhoneWall(){
+  const participants = sortedParticipants(); const s = state.session || defaultSessionPayload();
+  els.metaSummary.textContent = participants.length ? `${participants.length} devices connected · ${s.assignmentMode} mode` : 'Waiting for participants…';
+  if (!participants.length) { els.phoneWall.innerHTML=`<div class="phone" style="grid-column:1/-1"><div class="slot"><div><div class="big">Scan to join</div><div class="small">Audience phones will appear here.</div></div></div></div>`; return; }
+  const cols=Math.max(2,s.mosaic?.cols||4), rows=Math.max(2,s.mosaic?.rows||6);
+  els.phoneWall.innerHTML = participants.map(([id,p],idx)=>{ let slotHtml=''; if (s.assignmentMode==='mosaic' && s.mosaic?.artwork) { const sliceIndex=p.mosaicIndex??p.tileIndex??0; const col=sliceIndex%cols, row=Math.floor(sliceIndex/cols); const bgX=cols>1?(col/(cols-1))*100:50, bgY=rows>1?(row/(rows-1))*100:50; const fit=s.mosaic?.imageFit==='contain' ? 'contain' : `${cols*100}% ${rows*100}%`; slotHtml=`<div class="slice" style="background-image:url('${s.mosaic.artwork}');background-size:${fit};background-position:${bgX}% ${bgY}%"></div><div class="small">Cell ${sliceIndex+1}</div>`; } else slotHtml = `<div><div class="big">${escapeHtml(p.tileText || 'JOIN')}</div><div class="small">${escapeHtml(s.sessionName || 'CrowdCode')}</div></div>`; return `<div class="phone"><div class="small">${escapeHtml(p.nickname || `Phone ${idx+1}`)}</div><div class="slot">${slotHtml}</div><div class="small">Slot ${p.slotNumber||idx+1}</div></div>`; }).join('');
+}
+function renderMetrics(){
+  const participants = sortedParticipants().map(x=>x[1]);
+  const ready = participants.filter(p=>p.ready).length;
+  const boosts = participants.reduce((n,p)=>n+(p.energyBoosts||0),0);
+  els.connectedCount.textContent = participants.length;
+  els.readyCount.textContent = ready;
+  els.boostCount.textContent = boosts;
+  els.energyScore.textContent = `${Math.round(state.session?.interaction?.energyScore || 0)}%`;
+  const reactions = state.session?.reactions || {};
+  els.reactionFire.textContent = reactions.fire || 0;
+  els.reactionClap.textContent = reactions.clap || 0;
+  els.reactionBoost.textContent = reactions.boost || 0;
+  els.reactionConfetti.textContent = reactions.confetti || 0;
+}
+async function renderQR(){
+  const joinUrl = buildJoinUrl(); els.joinUrlText.textContent = joinUrl; els.qrcode.innerHTML=''; await QRCode.toCanvas(joinUrl, { width:126, margin:1 }, (err, canvas) => { if (!err) els.qrcode.appendChild(canvas); });
+}
+function setCaptureStatus(msg){ els.captureStatusBadge.textContent = msg; els.captureHelp.textContent = msg.includes('Captured') ? 'Captured photo ready. Click Use captured photo to turn it into the mosaic artwork.' : 'Capture a fresh room selfie, then apply it as the mosaic artwork.'; }
+function setCameraDebug(msg){ els.cameraDebugNote.textContent = msg; }
+async function listCameras(){ try { const devices = await navigator.mediaDevices.enumerateDevices(); const cams = devices.filter(d => d.kind === 'videoinput'); els.cameraDeviceSelect.innerHTML = `<option value="">Default camera</option>` + cams.map((d,i)=>`<option value="${d.deviceId}">${escapeHtml(d.label || `Camera ${i+1}`)}</option>`).join(''); } catch (e) { console.error(e); } }
+async function stopCamera(){ if (state.cameraStream) state.cameraStream.getTracks().forEach(t=>t.stop()); state.cameraStream = null; try{ els.captureVideo.pause(); }catch(e){} els.captureVideo.srcObject = null; setCaptureStatus('Camera idle'); setCameraDebug('Camera stopped.'); }
+async function startCamera(){
+  try {
+    await stopCamera();
+    const deviceId = els.cameraDeviceSelect.value;
+    const isLikelyMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    els.captureFallbackImage.style.display = 'none'; els.captureFallbackImage.removeAttribute('src');
+    const constraints = { audio:false, video: deviceId ? { deviceId:{exact:deviceId}, width:{ideal:1600}, height:{ideal:1000} } : isLikelyMobile ? { facingMode:{ideal:state.facingMode}, width:{ideal:1600}, height:{ideal:1000} } : { width:{ideal:1600}, height:{ideal:1000} } };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    state.cameraStream = stream; els.captureVideo.srcObject = stream;
+    await new Promise(resolve => { els.captureVideo.onloadedmetadata = () => resolve(); setTimeout(resolve, 1000); });
+    await els.captureVideo.play();
+    await listCameras();
+    const settings = stream.getVideoTracks()[0]?.getSettings?.() || {};
+    setCaptureStatus(deviceId ? 'Selected camera live' : settings.facingMode === 'user' ? 'Front camera live' : 'Camera live');
+    setCameraDebug(`Live feed active • ${els.captureVideo.videoWidth || settings.width || 0}×${els.captureVideo.videoHeight || settings.height || 0}`);
+  } catch(e) { console.error(e); setCaptureStatus('Camera access blocked or unavailable'); setCameraDebug(e?.message || 'Camera failed'); }
+}
+async function flipCamera(){ state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment'; els.cameraDeviceSelect.value=''; await startCamera(); }
+function capturePhoto(){
+  const video = els.captureVideo; if (!state.cameraStream || !video.videoWidth) { setCaptureStatus('Start camera first'); return; }
+  const canvas = els.captureCanvas, ctx = canvas.getContext('2d'); canvas.width = video.videoWidth || 1600; canvas.height = video.videoHeight || 1000;
+  if (state.facingMode === 'user' && !els.cameraDeviceSelect.value) { ctx.save(); ctx.translate(canvas.width,0); ctx.scale(-1,1); ctx.drawImage(video,0,0,canvas.width,canvas.height); ctx.restore(); } else ctx.drawImage(video,0,0,canvas.width,canvas.height);
+  state.capturedPhotoDataUrl = canvas.toDataURL('image/jpeg',0.9); els.capturedPhotoPreview.src = state.capturedPhotoDataUrl; els.captureFallbackImage.src = state.capturedPhotoDataUrl; els.captureFallbackImage.style.display='block'; setCaptureStatus('Captured photo ready');
+}
+function useCapturedPhoto(){ if (!state.capturedPhotoDataUrl) { setCaptureStatus('Capture a photo first'); return; } state.uploadedArtworkDataUrl = state.capturedPhotoDataUrl; state.uploadedArtworkName = `live-capture-${new Date().toISOString().replace(/[:.]/g,'-')}.jpg`; els.mosaicArtworkSource.value='upload'; updateUploadStatus(); renderMosaicPreview(); setCaptureStatus('Captured photo applied to mosaic'); }
+function setAudioStatus(msg){ els.audioStatus.textContent = msg; }
+els.audioFile.addEventListener('change', event => {
+  const file = event.target.files?.[0]; if (!file) return; if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl);
+  state.audioObjectUrl = URL.createObjectURL(file); state.audioFileName = file.name; state.audioFileType = file.type || 'audio/mpeg'; state.audioDataUrl='';
+  const reader = new FileReader(); reader.onload = async () => { state.audioDataUrl = String(reader.result || ''); setAudioStatus(`${file.name} loaded and ready.`); await saveSetup(); }; reader.onerror = () => setAudioStatus('Loaded on host, but failed to prepare broadcast copy.'); reader.readAsDataURL(file);
+});
+async function startAudioReactiveReveal(){
+  if (!state.audioDataUrl) { setAudioStatus('Upload an MP3 first.'); return; }
+  const startAt = Date.now()+1200;
+  await saveSetup({ phase:'animate', animationStyle:'audio', animationToPhase:els.animationToPhase.value||'reveal', animationStartAt:startAt, animationTargetAt:null,
+    audioReactive:{ enabled:true, level:0, trackName:state.audioFileName || 'Host MP3', startedAt:startAt, ended:false },
+    audioBroadcast: els.audioBroadcastMode.value === 'sync' ? { enabled:true, mode:'sync', trackName:state.audioFileName || 'Host MP3', mimeType:state.audioFileType || 'audio/mpeg', dataUrl:state.audioDataUrl, startedAt:startAt, durationMs:null, hostPositionMs:0, playing:true } : { enabled:false, mode:'visual', trackName:state.audioFileName || 'Host MP3', startedAt:startAt, playing:false }
+  });
+  setAudioStatus(`Broadcasting ${state.audioFileName || 'host track'}.`);
+}
+async function stopAudioReactive(){ await saveSetup({ phase:'lobby', audioReactive:null, audioBroadcast:null, animationStartAt:null, animationTargetAt:null }); setAudioStatus('Audio reactive reveal stopped.'); }
+
+onValue(sessionRef, snap => {
+  const data = snap.val(); if (!data) return; state.session = data;
+  els.sessionName.value = data.sessionName || ''; els.ctaUrl.value = data.ctaUrl || '';
+  els.tileInput.value = data.assignmentMode === 'mosaic' ? els.tileInput.value : (data.tiles || []).join(data.tileSourceMode === 'manual' ? '|' : ' ');
+  els.finalHeadline.value = data.finalHeadline || ''; els.finalSubhead.value = data.finalSubhead || '';
+  els.countdownSeconds.value = data.countdownSeconds || 8; els.animationSeconds.value = data.animationSeconds || 5; els.layoutType.value = data.layoutType || 'message';
+  els.animationToPhase.value = data.animationToPhase || 'reveal';
+  els.mosaicHeadline.value = data.mosaic?.headline || 'NKU'; els.mosaicSubhead.value = data.mosaic?.subhead || 'ITSBAD LIVE'; els.mosaicCols.value = data.mosaic?.cols || 4; els.mosaicRows.value = data.mosaic?.rows || 6; els.mosaicTheme.value = data.mosaic?.theme || 'fusion'; els.mosaicArtworkSource.value = data.mosaic?.artworkType || 'generated'; els.mosaicImageFit.value = data.mosaic?.imageFit || 'cover'; state.uploadedArtworkName = data.mosaic?.uploadedImageName || state.uploadedArtworkName;
+  els.audioFlashMode.value = data.flashConfig?.mode || 'soft'; els.audioFlashColor.value = data.flashConfig?.color || 'white'; els.audioFlashHaptics.value = data.flashConfig?.haptics || 'off';
+  setSegment(document.getElementById('assignmentModeSegment'), els.assignmentMode, data.assignmentMode || 'mosaic'); setSegment(document.getElementById('tileSourceModeSegment'), els.tileSourceMode, data.tileSourceMode || 'manual'); setSegment(document.getElementById('animationStyleSegment'), els.animationStyle, data.animationStyle || 'pulse');
+  updateUploadStatus(); renderMosaicPreview(); renderPhoneWall(); renderMetrics();
+});
+onValue(participantsRef, snap => { state.participants = snap.val() || {}; renderMosaicPreview(); renderPhoneWall(); renderMetrics(); });
+
+els.saveBtn.onclick = () => saveSetup().catch(console.error); els.openLobbyBtn.onclick = () => openLobby().catch(console.error); els.startCountdownBtn.onclick = () => startCountdown().catch(console.error); els.animateBtn.onclick = () => animateReveal().catch(console.error); els.revealBtn.onclick = () => finalReveal().catch(console.error); els.selfieBtn.onclick = () => selfieMoment().catch(console.error); els.resetBtn.onclick = () => resetSession().catch(console.error);
+els.copyLinkBtn.onclick = async () => { try { await navigator.clipboard.writeText(buildJoinUrl()); els.copyLinkBtn.textContent='Copied'; setTimeout(()=>els.copyLinkBtn.textContent='Copy link',1200); } catch(e){ console.error(e); } };
+['input','change'].forEach(evt => { [els.mosaicHeadline, els.mosaicSubhead, els.mosaicCols, els.mosaicRows, els.mosaicTheme, els.assignmentMode, els.mosaicArtworkSource, els.mosaicImageFit, els.tileSourceMode].forEach(el => el.addEventListener(evt, () => { updateUploadStatus(); renderMosaicPreview(); })); });
+els.regenerateArtworkBtn.onclick = () => renderMosaicPreview(); els.clearUploadBtn.onclick = () => { state.uploadedArtworkDataUrl=''; state.uploadedArtworkName=''; els.mosaicImageUpload.value=''; updateUploadStatus(); renderMosaicPreview(); };
+els.mosaicImageUpload.addEventListener('change', event => { const file = event.target.files?.[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => { state.uploadedArtworkDataUrl = String(reader.result || ''); state.uploadedArtworkName = file.name; els.mosaicArtworkSource.value='upload'; updateUploadStatus(); renderMosaicPreview(); }; reader.readAsDataURL(file); });
+els.refreshCameraListBtn.onclick = () => listCameras(); els.startCameraBtn.onclick = () => startCamera(); els.flipCameraBtn.onclick = () => flipCamera(); els.capturePhotoBtn.onclick = () => capturePhoto(); els.useCapturedBtn.onclick = () => useCapturedPhoto(); els.stopCameraBtn.onclick = () => stopCamera();
+els.startAudioReactiveBtn.onclick = () => startAudioReactiveReveal().catch(console.error); els.stopAudioReactiveBtn.onclick = () => stopAudioReactive().catch(console.error);
+window.addEventListener('beforeunload', () => { if (state.cameraStream) state.cameraStream.getTracks().forEach(t=>t.stop()); if (state.audioObjectUrl) URL.revokeObjectURL(state.audioObjectUrl); });
+
+await ensureSession(); await renderQR(); await listCameras(); updateUploadStatus(); renderMosaicPreview(); renderPhoneWall(); renderMetrics();
+</script>
+</body>
+</html>
