@@ -3,154 +3,299 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CrowdVision AI | Crowd Count + Gesture Vote</title>
+  <title>CrowdVision AI | Luxury Edition</title>
+  <meta name="theme-color" content="#111111" />
   <style>
     :root{
-      --bg:#07111f;
-      --bg2:#0d1a2d;
-      --panel:rgba(13,26,45,.84);
-      --panel-strong:rgba(10,19,34,.96);
-      --line:rgba(255,255,255,.1);
-      --text:#f5f7fb;
-      --muted:#b7c3d8;
-      --accent:#7c5cff;
-      --accent2:#16c7ff;
-      --accent3:#70ffa9;
-      --danger:#ff6b81;
-      --warn:#ffd166;
-      --shadow:0 24px 80px rgba(0,0,0,.35);
-      --radius-xl:28px;
-      --radius-lg:20px;
-      --radius-md:14px;
-      --maxw:1380px;
+      --bg:#f3efe7;
+      --ink:#131313;
+      --ink-soft:#47423c;
+      --ink-faint:#7a7167;
+      --panel:rgba(255,255,255,.62);
+      --panel-strong:rgba(255,255,255,.78);
+      --line:rgba(19,19,19,.08);
+      --line-strong:rgba(19,19,19,.16);
+      --gold:#a8854e;
+      --gold-soft:#c6ac7b;
+      --stone:#e8e0d2;
+      --shadow:0 18px 48px rgba(35,27,18,.10);
+      --radius-xl:30px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --maxw:1440px;
     }
+
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--text);
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--ink);
       background:
-        radial-gradient(circle at 15% 20%, rgba(124,92,255,.25), transparent 28%),
-        radial-gradient(circle at 85% 18%, rgba(22,199,255,.16), transparent 24%),
-        radial-gradient(circle at 50% 78%, rgba(112,255,169,.1), transparent 20%),
-        linear-gradient(180deg, #050b16 0%, #081120 45%, #091524 100%);
+        radial-gradient(circle at 10% 12%, rgba(168,133,78,.10), transparent 24%),
+        radial-gradient(circle at 88% 10%, rgba(255,255,255,.55), transparent 20%),
+        linear-gradient(180deg, #f8f5ef 0%, #f1ede6 36%, #ece5da 100%);
       min-height:100vh;
       overflow-x:hidden;
     }
-    a{color:inherit;text-decoration:none}
     button,select,input{font:inherit}
-    .shell{width:min(var(--maxw),calc(100vw - 28px));margin:0 auto}
-    .glow{position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.9;background:
-      radial-gradient(circle at 20% 12%, rgba(124,92,255,.10), transparent 20%),
-      radial-gradient(circle at 80% 10%, rgba(22,199,255,.08), transparent 18%),
-      radial-gradient(circle at 50% 90%, rgba(112,255,169,.06), transparent 22%);filter:blur(18px)}
-    .nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);background:rgba(6,13,24,.72);border-bottom:1px solid var(--line)}
-    .nav-inner{width:min(var(--maxw),calc(100vw - 28px));margin:0 auto;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-    .brand{display:flex;align-items:center;gap:14px;font-weight:800;letter-spacing:.02em}
-    .brand-badge{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;box-shadow:0 10px 30px rgba(124,92,255,.35);font-size:.95rem;font-weight:900}
-    .brand-sub{display:block;font-size:.78rem;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-    .nav-links{display:flex;gap:18px;flex-wrap:wrap;align-items:center;color:var(--muted);font-weight:600;font-size:.94rem}
-    .nav-links a:hover{color:var(--text)}
-    .nav-actions{display:flex;gap:10px;align-items:center}
-    .btn{border:0;border-radius:999px;padding:.9rem 1.1rem;font-weight:800;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;display:inline-flex;align-items:center;gap:10px}
-    .btn:hover{transform:translateY(-2px)}
-    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
-    .btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 12px 34px rgba(124,92,255,.32)}
-    .btn-secondary{color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line)}
-    .btn-danger{color:#fff;background:linear-gradient(135deg,#ff6b81,#ff8f70)}
-    .hero{padding:42px 0 20px}
-    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}
-    .card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow);backdrop-filter:blur(16px)}
-    .card{padding:26px}
-    .hero-tag{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#d7e1f2;border-radius:999px;padding:.5rem .85rem;font-size:.84rem;font-weight:700;letter-spacing:.03em;margin-bottom:16px}
-    .pulse{display:inline-flex;align-items:center;gap:8px}
-    .pulse::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent3);box-shadow:0 0 0 0 rgba(112,255,169,.7);animation:pulse 1.8s infinite}
-    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(112,255,169,.7)}70%{box-shadow:0 0 0 12px rgba(112,255,169,0)}100%{box-shadow:0 0 0 0 rgba(112,255,169,0)}}
-    h1{margin:0;font-size:clamp(2.2rem,6vw,4.4rem);line-height:.95;letter-spacing:-.04em;max-width:11ch}
-    .gradient{background:linear-gradient(135deg,#fff,#8ee7ff 40%,#9e8bff 72%,#7effb0 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .hero p{margin:18px 0 0;max-width:62ch;font-size:1.02rem;color:var(--muted);line-height:1.7}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
-    .hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}
-    .stat{border-radius:18px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-    .stat-label{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;font-weight:700}
-    .stat-value{font-size:1.35rem;font-weight:900;letter-spacing:-.03em}
-    .stage-wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;padding:24px 0 34px}
+    a{color:inherit;text-decoration:none}
+
+    .grain{
+      position:fixed; inset:0; pointer-events:none; opacity:.18; z-index:-2;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="2" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity="0.22"/></svg>');
+    }
+    .ambient{
+      position:fixed; inset:0; pointer-events:none; z-index:-3;
+      background:
+        radial-gradient(circle at 15% 24%, rgba(168,133,78,.10), transparent 26%),
+        radial-gradient(circle at 75% 65%, rgba(255,255,255,.75), transparent 28%),
+        radial-gradient(circle at 92% 18%, rgba(198,172,123,.08), transparent 20%);
+      filter:blur(14px);
+    }
+
+    .shell{width:min(var(--maxw), calc(100vw - 32px)); margin:0 auto}
+
+    .nav{
+      position:sticky; top:0; z-index:50;
+      background:rgba(243,239,231,.72);
+      backdrop-filter: blur(20px) saturate(1.1);
+      border-bottom:1px solid rgba(19,19,19,.06);
+    }
+    .nav-inner{
+      width:min(var(--maxw), calc(100vw - 32px)); margin:0 auto;
+      min-height:76px; display:flex; align-items:center; justify-content:space-between; gap:18px;
+    }
+    .brand{display:flex; align-items:center; gap:14px}
+    .monogram{
+      width:42px; height:42px; border-radius:14px; display:grid; place-items:center;
+      background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(230,220,203,.9));
+      border:1px solid rgba(168,133,78,.22);
+      box-shadow:0 10px 24px rgba(168,133,78,.12), inset 0 1px 0 rgba(255,255,255,.95);
+      font-size:.78rem; font-weight:900; letter-spacing:.18em; color:var(--ink);
+    }
+    .brand-title{font-size:1rem; font-weight:800; letter-spacing:.03em}
+    .brand-sub{display:block; color:var(--ink-faint); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; margin-top:2px}
+    .nav-links{display:flex; gap:20px; align-items:center; color:var(--ink-soft); font-size:.94rem; font-weight:600}
+    .nav-links a:hover{color:var(--ink)}
+    .nav-actions{display:flex; gap:10px; align-items:center}
+
+    .btn{
+      border:0; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, background .18s ease; 
+      display:inline-flex; align-items:center; justify-content:center; gap:10px; font-weight:700;
+      min-height:48px; padding:.86rem 1.15rem; border-radius:999px;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:disabled{opacity:.5; transform:none; cursor:not-allowed}
+    .btn-primary{
+      color:#fff; background:linear-gradient(180deg, #1d1c1a, #111111);
+      box-shadow:0 14px 28px rgba(17,17,17,.16), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .btn-secondary{
+      color:var(--ink); background:rgba(255,255,255,.56); border:1px solid rgba(19,19,19,.10);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+    }
+    .btn-accent{
+      color:#fff; background:linear-gradient(180deg, #b28d59, #9d7a47);
+      box-shadow:0 14px 28px rgba(168,133,78,.20), inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    .hero{padding:54px 0 22px}
+    .hero-grid{display:grid; grid-template-columns:1.06fr .94fr; gap:22px; align-items:stretch}
+    .card{
+      background:var(--panel); border:1px solid rgba(255,255,255,.55); border-radius:var(--radius-xl);
+      box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.72);
+      backdrop-filter:blur(24px) saturate(1.08);
+    }
+    .hero-card{padding:30px 30px 28px; position:relative; overflow:hidden}
+    .hero-card::after{
+      content:""; position:absolute; inset:auto -80px -90px auto; width:280px; height:280px; border-radius:50%;
+      background:radial-gradient(circle, rgba(168,133,78,.16), transparent 62%);
+      filter:blur(6px); pointer-events:none;
+    }
+    .eyebrow{
+      display:inline-flex; align-items:center; gap:10px; padding:.52rem .84rem; border-radius:999px;
+      background:rgba(255,255,255,.58); border:1px solid rgba(19,19,19,.08);
+      color:var(--ink-soft); font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    }
+    .eyebrow::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 6px rgba(168,133,78,.14)}
+    h1{
+      margin:18px 0 0; font-size:clamp(2.5rem, 6.8vw, 5.2rem); line-height:.94; letter-spacing:-.05em;
+      max-width:10.5ch; font-weight:800;
+    }
+    .headline-accent{color:var(--gold)}
+    .hero-copy{margin:20px 0 0; max-width:60ch; color:var(--ink-soft); font-size:1.04rem; line-height:1.75}
+    .hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px}
+    .hero-metrics{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:24px}
+    .metric-chip{
+      background:rgba(255,255,255,.48); border:1px solid rgba(19,19,19,.08); border-radius:20px; padding:14px 16px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.84);
+    }
+    .metric-chip small{display:block; color:var(--ink-faint); font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px}
+    .metric-chip strong{font-size:1.42rem; letter-spacing:-.04em}
+
+    .aside{padding:22px; display:grid; gap:16px}
+    .aside-block{padding:18px 18px 16px; background:rgba(255,255,255,.46); border:1px solid rgba(19,19,19,.08); border-radius:22px}
+    .aside-block h3{margin:0 0 10px; font-size:1rem; letter-spacing:-.02em}
+    .aside-block p{margin:0; color:var(--ink-soft); line-height:1.65}
+    .principle{display:grid; gap:10px; margin-top:14px}
+    .principle-item{padding:12px 0; border-top:1px solid rgba(19,19,19,.08)}
+    .principle-item:first-child{border-top:0; padding-top:0}
+    .principle-item strong{display:block; margin-bottom:4px; font-size:.98rem}
+    .principle-item span{color:var(--ink-soft); line-height:1.6; font-size:.94rem}
+
+    .stage{padding:10px 0 34px}
+    .stage-grid{display:grid; grid-template-columns:1.16fr .84fr; gap:22px}
     .stage-shell{padding:18px}
-    .stage-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
-    .eyebrow{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}
-    .status-chip{display:inline-flex;align-items:center;gap:8px;padding:.55rem .85rem;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:700;color:#e8f2ff;font-size:.88rem}
-    .status-dot{width:9px;height:9px;border-radius:50%;background:var(--warn);box-shadow:0 0 12px rgba(255,209,102,.55)}
-    .status-dot.live{background:var(--accent3);box-shadow:0 0 12px rgba(112,255,169,.7)}
-    .video-stage{position:relative;min-height:540px;border-radius:24px;overflow:hidden;background:linear-gradient(180deg,rgba(12,23,41,.62),rgba(7,16,30,.94));border:1px solid rgba(255,255,255,.10)}
-    video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .stage-top{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px}
+    .stage-title-wrap{display:flex; flex-direction:column; gap:3px}
+    .stage-label{color:var(--ink-faint); font-weight:700; letter-spacing:.14em; text-transform:uppercase; font-size:.73rem}
+    .stage-title{font-size:1.42rem; font-weight:800; letter-spacing:-.04em}
+    .status-pill{
+      display:inline-flex; align-items:center; gap:10px; padding:.6rem .9rem; border-radius:999px;
+      background:rgba(255,255,255,.56); border:1px solid rgba(19,19,19,.08); font-weight:700; color:var(--ink-soft)
+    }
+    .status-dot{width:9px; height:9px; border-radius:50%; background:#b7aa97; box-shadow:0 0 0 6px rgba(183,170,151,.18)}
+    .status-dot.live{background:#2f7a58; box-shadow:0 0 0 6px rgba(47,122,88,.14)}
+
+    .video-stage{
+      position:relative; min-height:600px; overflow:hidden; border-radius:28px;
+      background:linear-gradient(180deg, #191816 0%, #26221d 100%);
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 22px 54px rgba(32,24,18,.18);
+    }
+    .video-stage::before{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), transparent 18%, transparent 82%, rgba(0,0,0,.20)),
+        radial-gradient(circle at 50% 12%, rgba(198,172,123,.12), transparent 26%);
+      z-index:1;
+    }
+    video,canvas{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
     video.mirrored, canvas.mirrored{transform:scaleX(-1)}
-    .scan-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom, rgba(255,255,255,.55), transparent 92%);pointer-events:none}
-    .scan-line{position:absolute;left:6%;right:6%;top:12%;height:2px;border-radius:999px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);box-shadow:0 0 18px rgba(22,199,255,.75);animation:scanMove 4.2s linear infinite;pointer-events:none}
-    @keyframes scanMove{0%{top:14%;opacity:.6}50%{top:74%;opacity:1}100%{top:14%;opacity:.6}}
-    .stage-overlay{position:absolute;left:16px;right:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:end;pointer-events:none}
-    .metric-pills{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{border-radius:999px;padding:.68rem .9rem;background:rgba(8,16,28,.85);border:1px solid rgba(255,255,255,.10);color:#e8f2ff;font-size:.86rem;font-weight:800}
-    .stage-highlight{padding:14px 16px;min-width:240px;border-radius:18px;background:rgba(8,16,28,.88);border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 30px rgba(0,0,0,.26)}
-    .stage-highlight-label{color:var(--muted);font-size:.78rem;letter-spacing:.08em;font-weight:700;text-transform:uppercase;margin-bottom:6px}
-    .stage-highlight-value{font-size:1.65rem;font-weight:900;letter-spacing:-.04em}
-    .controls{display:grid;gap:18px}
+    .reticle{
+      position:absolute; inset:22px; border-radius:22px; border:1px solid rgba(255,255,255,.10); pointer-events:none; z-index:1;
+    }
+    .reticle::before,.reticle::after{content:""; position:absolute; inset:14px; border-radius:18px; border:1px solid rgba(255,255,255,.06)}
+    .scan-beam{
+      position:absolute; left:10%; right:10%; top:18%; height:1px; z-index:1; pointer-events:none;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent);
+      box-shadow:0 0 18px rgba(255,255,255,.18);
+      animation:beam 4.8s linear infinite;
+    }
+    @keyframes beam{0%{top:18%;opacity:.25}50%{top:76%;opacity:.8}100%{top:18%;opacity:.25}}
+    .stage-bottom{
+      position:absolute; left:18px; right:18px; bottom:18px; display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; align-items:end; z-index:2;
+    }
+    .stage-pills{display:flex; gap:10px; flex-wrap:wrap}
+    .glass-pill{
+      padding:.72rem .92rem; border-radius:999px; background:rgba(22,20,18,.58); color:#f7f1e8;
+      border:1px solid rgba(255,255,255,.10); backdrop-filter:blur(14px); font-size:.84rem; font-weight:700;
+    }
+    .headline-panel{
+      min-width:250px; max-width:340px; padding:16px 16px 14px; border-radius:22px;
+      background:rgba(20,18,17,.60); color:#fbf7f0; border:1px solid rgba(255,255,255,.10); backdrop-filter:blur(16px)
+    }
+    .headline-panel small{display:block; color:rgba(255,255,255,.62); font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:6px}
+    .headline-panel strong{display:block; font-size:1.6rem; line-height:1.04; letter-spacing:-.04em}
+
+    .control-stack{display:grid; gap:18px}
     .panel{padding:20px}
-    .panel h3{margin:0 0 14px;font-size:1.02rem;letter-spacing:-.02em}
-    .panel p{margin:0;color:var(--muted);line-height:1.6}
-    .control-group{display:grid;gap:12px;margin-top:14px}
-    .field{display:grid;gap:8px}
-    .field label{font-size:.82rem;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+    .panel-header{display:flex; justify-content:space-between; gap:14px; align-items:flex-end; margin-bottom:14px}
+    .panel h3{margin:0; font-size:1.02rem; letter-spacing:-.02em}
+    .panel p{margin:0; color:var(--ink-soft); line-height:1.6}
+    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .field{display:grid; gap:8px}
+    .field label{font-size:.78rem; color:var(--ink-faint); font-weight:700; letter-spacing:.14em; text-transform:uppercase}
     .field select,.field input[type="range"]{width:100%}
-    .field select{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:.88rem .95rem}
-    .toggles{display:grid;gap:10px;margin-top:10px}
-    .toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#ebf3ff}
-    .toggle small{display:block;color:var(--muted);margin-top:3px}
-    .switch{position:relative;width:54px;height:30px;flex:0 0 auto}
-    .switch input{opacity:0;width:0;height:0;position:absolute}
-    .slider{position:absolute;inset:0;border-radius:999px;background:rgba(255,255,255,.12);transition:.2s ease;border:1px solid rgba(255,255,255,.10)}
-    .slider::before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s ease;box-shadow:0 4px 10px rgba(0,0,0,.25)}
-    .switch input:checked + .slider{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .field select{
+      appearance:none; background:rgba(255,255,255,.64); color:var(--ink); border:1px solid rgba(19,19,19,.10);
+      border-radius:16px; padding:.92rem 1rem; box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+    }
+    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+    .toggle-list{display:grid; gap:10px}
+    .toggle-row{
+      display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 14px; border-radius:18px;
+      background:rgba(255,255,255,.46); border:1px solid rgba(19,19,19,.08)
+    }
+    .toggle-row strong{display:block; margin-bottom:2px}
+    .toggle-row small{display:block; color:var(--ink-faint); line-height:1.4}
+    .switch{position:relative; width:56px; height:32px; flex:0 0 auto}
+    .switch input{opacity:0; width:0; height:0; position:absolute}
+    .slider{position:absolute; inset:0; border-radius:999px; background:#d7cec0; border:1px solid rgba(19,19,19,.08); transition:.2s ease}
+    .slider::before{content:""; position:absolute; width:24px; height:24px; top:3px; left:3px; border-radius:50%; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,.14); transition:.2s ease}
+    .switch input:checked + .slider{background:linear-gradient(180deg, #b28d59, #9d7a47)}
     .switch input:checked + .slider::before{transform:translateX(24px)}
-    .metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .metric-card{padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-    .metric-card-label{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px}
-    .metric-card-value{font-size:1.48rem;font-weight:900;letter-spacing:-.04em}
-    .vote-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
-    .vote-card{padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-    .vote-card h4{margin:0 0 8px;font-size:1rem}
-    .vote-sub{color:var(--muted);font-size:.88rem;margin-bottom:10px}
-    .vote-value{font-size:2rem;font-weight:900;letter-spacing:-.04em}
-    .vote-card.leader{border-color:rgba(112,255,169,.45);box-shadow:0 0 0 1px rgba(112,255,169,.18) inset}
-    .log-list{display:grid;gap:10px;margin-top:14px;max-height:260px;overflow:auto;padding-right:4px}
-    .log-item{display:flex;gap:12px;align-items:start;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-    .log-dot{width:10px;height:10px;border-radius:50%;background:var(--accent3);margin-top:7px;box-shadow:0 0 12px rgba(112,255,169,.7);flex:0 0 auto}
-    .log-text{color:#e8f2ff;font-size:.94rem;line-height:1.5}
-    .log-time{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
-    .hint-list{display:grid;gap:10px}
-    .hint{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--muted);line-height:1.6}
-    .footer{padding:0 0 32px;color:var(--muted);font-size:.94rem}
-    .footer-inner{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
+
+    .stats-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+    .stat-panel{
+      padding:16px; border-radius:20px; background:rgba(255,255,255,.50); border:1px solid rgba(19,19,19,.08)
+    }
+    .stat-panel small{display:block; color:var(--ink-faint); font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:8px}
+    .stat-panel strong{font-size:1.58rem; letter-spacing:-.04em}
+
+    .lower{display:grid; grid-template-columns:.9fr 1.1fr; gap:22px; padding-bottom:36px}
+    .vote-board{padding:20px}
+    .vote-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:14px}
+    .vote-card{
+      padding:18px; border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,.62), rgba(248,245,240,.68));
+      border:1px solid rgba(19,19,19,.08); min-height:154px; display:flex; flex-direction:column; justify-content:space-between;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.84);
+    }
+    .vote-card.leader{border-color:rgba(168,133,78,.46); box-shadow:0 0 0 1px rgba(168,133,78,.16) inset, 0 16px 30px rgba(168,133,78,.12)}
+    .vote-top{display:flex; justify-content:space-between; gap:8px; align-items:flex-start}
+    .vote-top h4{margin:0; font-size:1.02rem}
+    .vote-gesture{color:var(--ink-faint); font-size:.9rem}
+    .vote-badge{padding:.42rem .65rem; border-radius:999px; background:rgba(168,133,78,.10); color:var(--gold); font-size:.74rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase}
+    .vote-value{font-size:2.5rem; font-weight:800; letter-spacing:-.06em}
+
+    .log-panel{padding:20px}
+    .log-list{display:grid; gap:10px; margin-top:14px; max-height:330px; overflow:auto; padding-right:4px}
+    .log-item{
+      display:flex; gap:12px; align-items:flex-start; padding:14px 14px; border-radius:18px; background:rgba(255,255,255,.46); border:1px solid rgba(19,19,19,.08)
+    }
+    .log-dot{width:10px; height:10px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 6px rgba(168,133,78,.14); margin-top:6px; flex:0 0 auto}
+    .log-text{color:var(--ink); line-height:1.55; font-size:.94rem}
+    .log-time{display:block; color:var(--ink-faint); margin-top:4px; font-size:.78rem}
+
+    .footer{padding:0 0 34px; color:var(--ink-faint); font-size:.9rem}
+    .footer-inner{padding-top:18px; display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; border-top:1px solid rgba(19,19,19,.08)}
     .hidden{display:none !important}
-    @media (max-width:1160px){.hero-grid,.stage-wrap{grid-template-columns:1fr}.video-stage{min-height:440px}}
-    @media (max-width:760px){.nav-links{display:none}.card,.panel{padding:18px}.hero-stats,.metric-grid,.vote-grid{grid-template-columns:1fr}.video-stage{min-height:380px}.stage-highlight{min-width:0;width:100%}}
+
+    @media (max-width:1180px){
+      .hero-grid,.stage-grid,.lower{grid-template-columns:1fr}
+      .video-stage{min-height:500px}
+    }
+    @media (max-width:760px){
+      .nav-links{display:none}
+      .nav-inner{min-height:70px}
+      .hero{padding-top:34px}
+      .hero-card,.aside,.panel,.vote-board,.log-panel,.stage-shell{padding:18px}
+      .hero-metrics,.stats-grid,.vote-grid,.grid-2{grid-template-columns:1fr}
+      .video-stage{min-height:390px}
+      .headline-panel{min-width:0; width:100%}
+      .nav-actions .btn-secondary{display:none}
+    }
   </style>
 </head>
 <body>
-  <div class="glow"></div>
+  <div class="ambient"></div>
+  <div class="grain"></div>
+
   <header class="nav">
     <div class="nav-inner">
       <a href="#top" class="brand">
-        <div class="brand-badge">CV</div>
+        <div class="monogram">CV</div>
         <div>
-          CrowdVision AI
-          <span class="brand-sub">Dual-mode live browser vision demo</span>
+          <div class="brand-title">CrowdVision AI</div>
+          <span class="brand-sub">Luxury Edition</span>
         </div>
       </a>
       <nav class="nav-links">
-        <a href="#stage">Live Stage</a>
+        <a href="#stage">Experience</a>
         <a href="#controlsPanel">Controls</a>
-        <a href="#votesPanel">Votes</a>
+        <a href="#voteBoard">Vote Board</a>
+        <a href="#activityLog">Activity</a>
       </nav>
       <div class="nav-actions">
         <button class="btn btn-secondary" id="switchModeTop">Switch Mode</button>
@@ -162,69 +307,86 @@
   <main id="top">
     <section class="hero">
       <div class="shell hero-grid">
-        <div class="card">
-          <div class="hero-tag"><span class="pulse">Now running: Crowd Count + Gesture Vote</span></div>
-          <h1>Launch a <span class="gradient">live audience AI experience</span></h1>
-          <p>
-            CrowdVision AI now lets you switch between two event-friendly camera modes in one page:
-            <strong>Crowd Count</strong> for face-based audience counting and <strong>Gesture Vote</strong>
-            for hands-up voting using thumbs up, peace sign, and open palm.
+        <section class="card hero-card">
+          <div class="eyebrow">Camera intelligence, refined</div>
+          <h1>Not an AI dashboard. A <span class="headline-accent">premium live vision experience.</span></h1>
+          <p class="hero-copy">
+            CrowdVision AI is reimagined as a quieter, more luxurious interface: editorial hierarchy, tactile controls,
+            soft material depth, and focused motion. You still get the working dual-mode build — <strong>Crowd Count</strong>
+            and <strong>Gesture Vote</strong> — but it now feels closer to premium mobility, hospitality, and high-end consumer tech.
           </p>
           <div class="hero-actions">
-            <button class="btn btn-primary" id="startCameraHero">Start CrowdVision AI</button>
-            <button class="btn btn-secondary" id="switchModeHero">Switch to Gesture Vote</button>
+            <button class="btn btn-primary" id="startCameraHero">Begin Experience</button>
+            <button class="btn btn-accent" id="flipCameraHero">Flip Camera</button>
+            <button class="btn btn-secondary" id="switchModeHero">Switch Mode</button>
           </div>
-          <div class="hero-stats">
-            <div class="stat"><div class="stat-label">Modes</div><div class="stat-value">2 live modes</div></div>
-            <div class="stat"><div class="stat-label">Hosting</div><div class="stat-value">GitHub Pages</div></div>
-            <div class="stat"><div class="stat-label">Camera Flow</div><div class="stat-value">Phone ready</div></div>
+          <div class="hero-metrics">
+            <div class="metric-chip"><small>Modes</small><strong>2 live systems</strong></div>
+            <div class="metric-chip"><small>Camera flow</small><strong>Mobile-first</strong></div>
+            <div class="metric-chip"><small>Design language</small><strong>Editorial luxury</strong></div>
           </div>
-        </div>
-        <div class="card">
-          <div class="eyebrow">Best uses</div>
-          <div class="hint-list" style="margin-top:12px;">
-            <div class="hint"><strong style="color:#fff;display:block;margin-bottom:4px;">Crowd Count</strong> Count how many faces are in frame during class, a recruiting booth, or a demo moment.</div>
-            <div class="hint"><strong style="color:#fff;display:block;margin-bottom:4px;">Gesture Vote</strong> Let the room vote without tapping a screen: thumbs up for A, peace sign for B, open palm for C.</div>
-            <div class="hint"><strong style="color:#fff;display:block;margin-bottom:4px;">Switch live</strong> Start with audience count, then flip into voting mode during the same session.</div>
+        </section>
+
+        <aside class="card aside">
+          <div class="aside-block">
+            <h3>Design direction</h3>
+            <p>
+              This version trades neon gradients and exposed “AI” chrome for reduced color noise, clearer hierarchy,
+              material depth, and shorter, more meaningful motion.
+            </p>
           </div>
-        </div>
+          <div class="aside-block">
+            <h3>Why it feels current</h3>
+            <div class="principle">
+              <div class="principle-item"><strong>Editorial restraint</strong><span>More whitespace, stronger typography, fewer decorative effects.</span></div>
+              <div class="principle-item"><strong>Material depth</strong><span>Layered translucency and subtle separation instead of flashy sci-fi panels.</span></div>
+              <div class="principle-item"><strong>Tactile controls</strong><span>Controls look touchable and premium on a phone, not like a developer console.</span></div>
+              <div class="principle-item"><strong>Focused motion</strong><span>Micro-motion is used to guide attention, not overwhelm the experience.</span></div>
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section id="stage">
-      <div class="shell stage-wrap">
-        <div class="card stage-shell">
+    <section class="stage" id="stage">
+      <div class="shell stage-grid">
+        <section class="card stage-shell">
           <div class="stage-top">
-            <div>
-              <div class="eyebrow">Live Stage</div>
-              <div style="font-size:1.3rem;font-weight:900;letter-spacing:-.03em;margin-top:4px;" id="modeTitle">Crowd Count</div>
+            <div class="stage-title-wrap">
+              <span class="stage-label">Live experience</span>
+              <div class="stage-title" id="modeTitle">Crowd Count</div>
             </div>
-            <div class="status-chip"><span class="status-dot" id="statusDot"></span><span id="statusText">Camera idle</span></div>
+            <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Camera idle</span></div>
           </div>
 
           <div class="video-stage">
             <video id="video" playsinline muted></video>
             <canvas id="overlay"></canvas>
-            <div class="scan-grid"></div>
-            <div class="scan-line"></div>
-            <div class="stage-overlay">
-              <div class="metric-pills">
-                <div class="pill" id="pillMode">Mode: Crowd Count</div>
-                <div class="pill" id="pillCurrent">Current Count: 0</div>
-                <div class="pill" id="pillPeak">Peak: 0</div>
+            <div class="reticle"></div>
+            <div class="scan-beam"></div>
+            <div class="stage-bottom">
+              <div class="stage-pills">
+                <div class="glass-pill" id="pillMode">Mode: Crowd Count</div>
+                <div class="glass-pill" id="pillCurrent">Current Count: 0</div>
+                <div class="glass-pill" id="pillPeak">Peak: 0</div>
               </div>
-              <div class="stage-highlight">
-                <div class="stage-highlight-label">Current trigger</div>
-                <div class="stage-highlight-value" id="highlightValue">Waiting to start</div>
+              <div class="headline-panel">
+                <small>Current focus</small>
+                <strong id="highlightValue">Waiting to start</strong>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="controls" id="controlsPanel">
-          <div class="panel">
-            <h3>Session controls</h3>
-            <div class="control-group">
+        <aside class="control-stack" id="controlsPanel">
+          <section class="card panel">
+            <div class="panel-header">
+              <div>
+                <h3>Session controls</h3>
+                <p>Built for touch. Calm enough for projection. Fast enough for live switching.</p>
+              </div>
+            </div>
+            <div class="grid-2">
               <div class="field">
                 <label for="modeSelect">Mode</label>
                 <select id="modeSelect">
@@ -235,83 +397,106 @@
               <div class="field">
                 <label for="cameraSelect">Camera</label>
                 <select id="cameraSelect">
-                  <option value="user">Front / selfie camera</option>
+                  <option value="user">Front camera</option>
                   <option value="environment">Back camera</option>
                 </select>
               </div>
-              <div class="field">
-                <label for="confidenceRange">Minimum confidence</label>
-                <input id="confidenceRange" type="range" min="20" max="90" step="5" value="50" />
-                <div style="color:var(--muted);font-size:.9rem;" id="confidenceLabel">50%</div>
-              </div>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
-                <button class="btn btn-primary" id="startButton">Start Camera</button>
-                <button class="btn btn-secondary" id="stopButton">Stop</button>
-                <button class="btn btn-secondary" id="switchModeButton">Switch Mode</button>
-                <button class="btn btn-danger" id="resetVotesButton">Reset Votes</button>
+            </div>
+            <div class="field" style="margin-top:12px;">
+              <label for="confidenceRange">Minimum confidence</label>
+              <input id="confidenceRange" type="range" min="20" max="90" step="5" value="50" />
+              <div style="color:var(--ink-faint);font-size:.9rem;" id="confidenceLabel">50%</div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" id="startButton">Start Camera</button>
+              <button class="btn btn-accent" id="flipCameraButton">Flip Camera</button>
+              <button class="btn btn-secondary" id="switchModeButton">Switch Mode</button>
+              <button class="btn btn-secondary" id="stopButton">Stop</button>
+            </div>
+          </section>
+
+          <section class="card panel">
+            <div class="panel-header">
+              <div>
+                <h3>Display preferences</h3>
+                <p>Adjust the presentation, not the aesthetic.</p>
               </div>
             </div>
-          </div>
-
-          <div class="panel">
-            <h3>Display toggles</h3>
-            <div class="toggles">
-              <div class="toggle">
-                <div><strong>Mirror preview</strong><small>Helpful when using the front camera while presenting.</small></div>
+            <div class="toggle-list">
+              <div class="toggle-row">
+                <div><strong>Mirror preview</strong><small>Helpful when presenting from the front camera.</small></div>
                 <label class="switch"><input type="checkbox" id="mirrorToggle" checked /><span class="slider"></span></label>
               </div>
-              <div class="toggle">
-                <div><strong>Show boxes / landmarks</strong><small>Draw overlays for faces or hands while detecting.</small></div>
+              <div class="toggle-row">
+                <div><strong>Detection overlays</strong><small>Show face boxes or hand landmarks on the live stage.</small></div>
                 <label class="switch"><input type="checkbox" id="overlayToggle" checked /><span class="slider"></span></label>
               </div>
-              <div class="toggle">
-                <div><strong>Live logging</strong><small>Add session events to the activity feed below.</small></div>
+              <div class="toggle-row">
+                <div><strong>Activity logging</strong><small>Capture meaningful session moments below.</small></div>
                 <label class="switch"><input type="checkbox" id="loggingToggle" checked /><span class="slider"></span></label>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div class="panel">
-            <h3>Session metrics</h3>
-            <div class="metric-grid">
-              <div class="metric-card"><div class="metric-card-label">Current count</div><div class="metric-card-value" id="metricCurrent">0</div></div>
-              <div class="metric-card"><div class="metric-card-label">Peak count</div><div class="metric-card-value" id="metricPeak">0</div></div>
-              <div class="metric-card"><div class="metric-card-label">Active mode</div><div class="metric-card-value" id="metricMode">Crowd</div></div>
-              <div class="metric-card"><div class="metric-card-label">Leader</div><div class="metric-card-value" id="metricLeader">—</div></div>
+          <section class="card panel">
+            <div class="panel-header">
+              <div>
+                <h3>Live metrics</h3>
+                <p>Clear, projection-friendly, and always in the same place.</p>
+              </div>
+              <button class="btn btn-secondary" id="resetVotesButton">Reset Votes</button>
             </div>
-          </div>
-        </div>
+            <div class="stats-grid">
+              <div class="stat-panel"><small>Current count</small><strong id="metricCurrent">0</strong></div>
+              <div class="stat-panel"><small>Peak count</small><strong id="metricPeak">0</strong></div>
+              <div class="stat-panel"><small>Active mode</small><strong id="metricMode">Crowd</strong></div>
+              <div class="stat-panel"><small>Leader</small><strong id="metricLeader">—</strong></div>
+            </div>
+          </section>
+        </aside>
       </div>
     </section>
 
-    <section>
-      <div class="shell stage-wrap" style="padding-top:0;grid-template-columns:.95fr 1.05fr;">
-        <div class="panel" id="votesPanel">
-          <h3>Gesture Vote scoreboard</h3>
-          <p>Use <strong>Thumbs Up</strong> for Option A, <strong>Victory / Peace Sign</strong> for Option B, and <strong>Open Palm</strong> for Option C.</p>
-          <div class="vote-grid">
-            <div class="vote-card" id="voteA"><h4>Option A</h4><div class="vote-sub">Thumbs Up</div><div class="vote-value" id="voteCountA">0</div></div>
-            <div class="vote-card" id="voteB"><h4>Option B</h4><div class="vote-sub">Peace Sign</div><div class="vote-value" id="voteCountB">0</div></div>
-            <div class="vote-card" id="voteC"><h4>Option C</h4><div class="vote-sub">Open Palm</div><div class="vote-value" id="voteCountC">0</div></div>
-          </div>
-          <div class="hint" style="margin-top:12px;">
-            Tip: for the cleanest vote capture, use one hand at a time, hold the gesture steady for a moment, and give the camera decent lighting.
+    <section class="shell lower">
+      <section class="card vote-board" id="voteBoard">
+        <div class="panel-header">
+          <div>
+            <h3>Gesture vote board</h3>
+            <p>Thumbs Up = Option A · Peace Sign = Option B · Open Palm = Option C</p>
           </div>
         </div>
+        <div class="vote-grid">
+          <article class="vote-card" id="voteA">
+            <div class="vote-top"><div><h4>Option A</h4><div class="vote-gesture">Thumbs Up</div></div><div class="vote-badge">Vote</div></div>
+            <div class="vote-value" id="voteCountA">0</div>
+          </article>
+          <article class="vote-card" id="voteB">
+            <div class="vote-top"><div><h4>Option B</h4><div class="vote-gesture">Peace Sign</div></div><div class="vote-badge">Vote</div></div>
+            <div class="vote-value" id="voteCountB">0</div>
+          </article>
+          <article class="vote-card" id="voteC">
+            <div class="vote-top"><div><h4>Option C</h4><div class="vote-gesture">Open Palm</div></div><div class="vote-badge">Vote</div></div>
+            <div class="vote-value" id="voteCountC">0</div>
+          </article>
+        </div>
+      </section>
 
-        <div class="panel">
-          <h3>Activity log</h3>
-          <p>This feed updates as modes change, detections happen, and votes are counted.</p>
-          <div class="log-list" id="logList"></div>
+      <section class="card log-panel" id="activityLog">
+        <div class="panel-header">
+          <div>
+            <h3>Activity</h3>
+            <p>The log is deliberately quieter — fewer, more meaningful updates.</p>
+          </div>
         </div>
-      </div>
+        <div class="log-list" id="logList"></div>
+      </section>
     </section>
   </main>
 
   <footer class="footer">
     <div class="shell footer-inner">
-      <div>CrowdVision AI · Dual-mode V1</div>
-      <div>Built for GitHub Pages, phone demos, and live audience interaction</div>
+      <div>CrowdVision AI · Luxury Edition</div>
+      <div>Dual-mode live browser vision for modern, premium event experiences</div>
     </div>
   </footer>
 
@@ -333,6 +518,12 @@
     document.getElementById('startCameraHero'),
     document.getElementById('startButton')
   ].filter(Boolean);
+
+  const flipButtons = [
+    document.getElementById('flipCameraHero'),
+    document.getElementById('flipCameraButton')
+  ].filter(Boolean);
+
   const stopButton = document.getElementById('stopButton');
   const switchModeButtons = [
     document.getElementById('switchModeTop'),
@@ -392,12 +583,9 @@
     if (!loggingToggle.checked) return;
     const item = document.createElement('div');
     item.className = 'log-item';
-    item.innerHTML = `
-      <div class="log-dot"></div>
-      <div class="log-text">${message}<span class="log-time">${timeLabel}</span></div>
-    `;
+    item.innerHTML = `<div class="log-dot"></div><div class="log-text">${message}<span class="log-time">${timeLabel}</span></div>`;
     logList.prepend(item);
-    while (logList.children.length > 24) logList.removeChild(logList.lastChild);
+    while (logList.children.length > 18) logList.removeChild(logList.lastChild);
   }
 
   function setStatus(text, live = false) {
@@ -586,7 +774,15 @@
     } catch (e) {
       console.warn(e);
     }
-    addLog(`Confidence threshold updated to ${confidenceRange.value}%.`, 'Controls');
+  }
+
+  async function flipCamera() {
+    cameraSelect.value = cameraSelect.value === 'user' ? 'environment' : 'user';
+    addLog(`Camera preference changed to ${cameraSelect.value === 'environment' ? 'back' : 'front'} camera.`, 'Controls');
+    if (running) {
+      addLog('Restarting camera to apply the new lens…', 'Camera');
+      await startCamera();
+    }
   }
 
   function roundRect(context, x, y, width, height, radius, fill, stroke) {
@@ -609,7 +805,7 @@
     metricPeak.textContent = String(peakCount);
     pillCurrent.textContent = `Current Count: ${count}`;
     pillPeak.textContent = `Peak: ${peakCount}`;
-    highlightValue.textContent = count > 0 ? `Detected ${count} face${count === 1 ? '' : 's'}` : 'Looking for faces';
+    highlightValue.textContent = count > 0 ? `${count} face${count === 1 ? '' : 's'} in frame` : 'Looking for faces';
 
     if (count !== lastLoggedCount) {
       addLog(`Crowd Count updated: ${count} face${count === 1 ? '' : 's'} visible.`, 'Crowd');
@@ -627,15 +823,15 @@
       const y = box.originY * scaleY;
       const w = box.width * scaleX;
       const h = box.height * scaleY;
-      ctx.strokeStyle = 'rgba(112,255,169,.92)';
-      ctx.fillStyle = 'rgba(112,255,169,.08)';
-      roundRect(ctx, x, y, w, h, 14, true, true);
-      ctx.fillStyle = 'rgba(7,17,31,.96)';
+      ctx.strokeStyle = 'rgba(198,172,123,.95)';
+      ctx.fillStyle = 'rgba(198,172,123,.10)';
+      roundRect(ctx, x, y, w, h, 18, true, true);
+      ctx.fillStyle = 'rgba(20,18,17,.84)';
       const label = `FACE ${index + 1}`;
-      const labelWidth = Math.max(78, ctx.measureText(label).width + 18);
-      roundRect(ctx, x + 10, Math.max(4, y - 16), labelWidth, 20, 999, true, false);
-      ctx.fillStyle = '#eaf4ff';
-      ctx.fillText(label, x + 18, Math.max(18, y - 2));
+      const labelWidth = Math.max(74, ctx.measureText(label).width + 18);
+      roundRect(ctx, x + 10, Math.max(4, y - 18), labelWidth, 22, 999, true, false);
+      ctx.fillStyle = '#f8f3ea';
+      ctx.fillText(label, x + 18, Math.max(18, y - 3));
     });
   }
 
@@ -646,7 +842,7 @@
     return null;
   }
 
-  function drawLandmarkPoint(x, y, color = '#7c5cff', radius = 4) {
+  function drawLandmarkPoint(x, y, color = '#f3e7cf', radius = 4) {
     ctx.beginPath();
     ctx.fillStyle = color;
     ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -654,8 +850,8 @@
   }
 
   function drawHandConnectors(points) {
-    ctx.strokeStyle = 'rgba(22,199,255,.85)';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(243,231,207,.82)';
+    ctx.lineWidth = 2.5;
     HAND_CONNECTIONS.forEach(([a,b]) => {
       const p1 = points[a], p2 = points[b];
       if (!p1 || !p2) return;
@@ -675,7 +871,7 @@
     metricPeak.textContent = String(peakCount);
     pillCurrent.textContent = `Current Count: ${handCount}`;
     pillPeak.textContent = `Peak: ${peakCount}`;
-    highlightValue.textContent = handCount > 0 ? `Detected ${handCount} hand${handCount === 1 ? '' : 's'}` : 'Looking for vote gestures';
+    highlightValue.textContent = handCount > 0 ? `${handCount} hand${handCount === 1 ? '' : 's'} detected` : 'Looking for vote gestures';
 
     if (handCount !== lastLoggedCount) {
       addLog(`Gesture Vote updated: ${handCount} hand${handCount === 1 ? '' : 's'} visible.`, 'Gesture');
@@ -694,17 +890,17 @@
         const maxX = Math.max(...xs);
         const minY = Math.min(...ys);
         const maxY = Math.max(...ys);
-        ctx.strokeStyle = 'rgba(22,199,255,.92)';
-        ctx.fillStyle = 'rgba(22,199,255,.06)';
-        roundRect(ctx, minX - 12, minY - 12, (maxX - minX) + 24, (maxY - minY) + 24, 14, true, true);
+        ctx.strokeStyle = 'rgba(198,172,123,.95)';
+        ctx.fillStyle = 'rgba(198,172,123,.08)';
+        roundRect(ctx, minX - 12, minY - 12, (maxX - minX) + 24, (maxY - minY) + 24, 18, true, true);
 
         const gestureName = recognized[index]?.[0]?.categoryName || 'Hand';
         const tag = gestureName.replaceAll('_', ' ');
-        ctx.fillStyle = 'rgba(7,17,31,.96)';
-        const labelWidth = Math.max(88, ctx.measureText(tag).width + 18);
-        roundRect(ctx, minX - 2, Math.max(4, minY - 24), labelWidth, 20, 999, true, false);
-        ctx.fillStyle = '#eaf4ff';
-        ctx.fillText(tag, minX + 6, Math.max(18, minY - 10));
+        ctx.fillStyle = 'rgba(20,18,17,.84)';
+        const labelWidth = Math.max(92, ctx.measureText(tag).width + 20);
+        roundRect(ctx, minX - 2, Math.max(4, minY - 24), labelWidth, 22, 999, true, false);
+        ctx.fillStyle = '#f8f3ea';
+        ctx.fillText(tag, minX + 8, Math.max(18, minY - 9));
       });
     }
 
@@ -762,16 +958,19 @@
     currentMode = modeSelect.value;
     setModeUI();
   });
+
   confidenceRange.addEventListener('input', applyThresholds);
   mirrorToggle.addEventListener('change', updateMirror);
   cameraSelect.addEventListener('change', async () => {
     addLog(`Camera preference changed to ${cameraSelect.value === 'environment' ? 'back' : 'front'} camera.`, 'Controls');
     if (running) {
-      addLog('Restarting camera to apply the new lens...', 'Camera');
+      addLog('Restarting camera to apply the new lens…', 'Camera');
       await startCamera();
     }
   });
+
   startButtons.forEach(btn => btn.addEventListener('click', startCamera));
+  flipButtons.forEach(btn => btn.addEventListener('click', flipCamera));
   stopButton.addEventListener('click', stopCamera);
   switchModeButtons.forEach(btn => btn.addEventListener('click', switchMode));
   resetVotesButton.addEventListener('click', resetVotes);
@@ -781,7 +980,7 @@
   applyThresholds();
   updateVoteUI();
   setModeUI();
-  addLog('CrowdVision AI loaded. Buttons are active. Start the camera when you are ready.', 'Ready');
-</script>
+  addLog('CrowdVision AI Luxury Edition loaded. Start the camera when you are ready.', 'Ready');
+  </script>
 </body>
 </html>
