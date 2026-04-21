@@ -1,0 +1,17 @@
+{
+  "name": "worktrail-desktop-companion",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Local-first desktop companion for WorkTrail with active window tracking.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron ."
+  },
+  "dependencies": {
+    "active-win": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0"
+  }
+}

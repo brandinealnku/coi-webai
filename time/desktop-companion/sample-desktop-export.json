@@ -1,0 +1,34 @@
+{
+  "activities": [
+    {
+      "id": "desk-1",
+      "source": "desktop-companion",
+      "title": "Visual Studio Code \u2014 WorkTrail prototype",
+      "app": "Visual Studio Code",
+      "start": "2026-04-20T22:05:00.000Z",
+      "end": "2026-04-20T22:47:00.000Z",
+      "durationMinutes": 42,
+      "notes": "Prototype build session"
+    },
+    {
+      "id": "desk-2",
+      "source": "desktop-companion",
+      "title": "Canva \u2014 digital signage polish",
+      "app": "Canva",
+      "start": "2026-04-20T22:50:00.000Z",
+      "end": "2026-04-20T23:18:00.000Z",
+      "durationMinutes": 28,
+      "notes": "Course marketing work"
+    },
+    {
+      "id": "desk-3",
+      "source": "desktop-companion",
+      "title": "Finder \u2014 project assets",
+      "app": "Finder",
+      "start": "2026-04-20T23:22:00.000Z",
+      "end": "2026-04-20T23:37:00.000Z",
+      "durationMinutes": 15,
+      "notes": "File organization"
+    }
+  ]
+}
