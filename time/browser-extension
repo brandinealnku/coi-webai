@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkTrail Tracker</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 14px; width: 280px; background: #0f172a; color: #e5eefc; }
+    .card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px; }
+    h1 { font-size: 18px; margin: 0 0 8px; }
+    p { font-size: 13px; line-height: 1.4; color: #cbd5e1; }
+    button { width: 100%; margin-top: 10px; border: 0; border-radius: 10px; padding: 10px 12px; font-weight: 700; cursor: pointer; }
+    #toggleBtn { background: #38bdf8; color: #082f49; }
+    #exportBtn { background: #e2e8f0; color: #0f172a; }
+    code { display:block; padding:8px; border-radius:8px; background: rgba(0,0,0,0.25); word-break: break-all; color: #f8fafc; }
+    .muted { font-size: 12px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>WorkTrail Tracker</h1>
+    <p id="statusText">Checking tracker status...</p>
+    <button id="toggleBtn">Pause tracking</button>
+    <button id="exportBtn">Copy extension ID</button>
+    <p class="muted">Paste this extension ID into the WorkTrail dashboard Settings screen to connect your GitHub Pages dashboard to Chrome tracking.</p>
+    <code id="extensionId">Loading...</code>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
