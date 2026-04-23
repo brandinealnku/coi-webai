@@ -133,7 +133,7 @@
     }
 
     .container {
-      width: min(var(--max), calc(100% - 32px));
+      width: min(var(--max), calc(100% - 24px));
       margin: 0 auto;
     }
 
@@ -158,6 +158,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      padding: 14px 0;
     }
 
     .brand {
@@ -182,23 +183,34 @@
 
     .nav-links {
       display: flex;
-      gap: 18px;
+      gap: 14px;
       flex-wrap: wrap;
       align-items: center;
+      justify-content: center;
     }
 
     .nav-links a {
       color: var(--muted);
       text-decoration: none;
-      font-size: 0.96rem;
+      font-size: 0.94rem;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid transparent;
     }
 
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: var(--line);
+      background: rgba(255,255,255,0.05);
+    }
 
     .nav-actions {
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .btn, .chip, .mini-btn {
@@ -218,7 +230,7 @@
     }
 
     .btn.primary {
-      padding: 14px 18px;
+      padding: 15px 18px;
       font-weight: 700;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: white;
@@ -227,23 +239,24 @@
     }
 
     .btn.secondary {
-      padding: 14px 18px;
+      padding: 15px 18px;
       font-weight: 700;
     }
 
     .mini-btn {
-      padding: 10px 12px;
-      font-size: 0.88rem;
+      padding: 11px 13px;
+      font-size: 0.9rem;
       font-weight: 700;
+      min-height: 44px;
     }
 
     .hero {
-      padding: 56px 0 34px;
+      padding: 40px 0 26px;
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
       gap: 22px;
       align-items: stretch;
     }
@@ -261,7 +274,7 @@
     }
 
     .hero-panel {
-      padding: 34px;
+      padding: 30px;
       min-height: 680px;
       display: flex;
       flex-direction: column;
@@ -552,6 +565,7 @@
       gap: 16px;
       align-content: start;
       min-height: 680px;
+      position: relative;
     }
 
     .panel-head {
@@ -607,9 +621,10 @@
     .section p { margin: 6px 0 0; }
 
     .chip {
-      padding: 10px 12px;
-      font-size: 0.9rem;
+      padding: 12px 14px;
+      font-size: 0.92rem;
       font-weight: 700;
+      min-height: 44px;
     }
 
     .chip.active {
@@ -630,12 +645,12 @@
     }
 
     .showcase {
-      padding: 24px 0 8px;
+      padding: 28px 0 10px;
     }
 
     .section-header {
       max-width: 760px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .kicker {
@@ -661,7 +676,7 @@
     }
 
     .use-grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .use-card,
@@ -704,12 +719,12 @@
     }
 
     .proof-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       margin-top: 16px;
     }
 
     .method-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       margin-top: 16px;
     }
 
@@ -717,7 +732,7 @@
       margin: 22px 0 32px;
       padding: 28px;
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
       gap: 20px;
       align-items: center;
     }
@@ -829,24 +844,232 @@
     @keyframes gridSweep { 0% { background-position: 0 0, 0 0; } 100% { background-position: 48px 0, 0 48px; } }
 
     @media (max-width: 1100px) {
-      .hero-grid, .cta, .footer-grid { grid-template-columns: 1fr; }
-      .use-grid { grid-template-columns: repeat(2, 1fr); }
-      .proof-grid, .method-grid { grid-template-columns: 1fr; }
-      .hero-panel, .demo-panel { min-height: auto; }
+      .hero-grid,
+      .cta,
+      .footer-grid,
+      .proof-grid,
+      .method-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .use-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-panel,
+      .demo-panel {
+        min-height: auto;
+      }
+
+      .nav-inner {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: stretch;
+      }
+
+      .nav-actions {
+        justify-content: flex-start;
+      }
     }
 
     @media (max-width: 760px) {
-      .nav-inner { padding: 12px 0; align-items: flex-start; flex-direction: column; }
-      .hero { padding-top: 30px; }
-      .hero-panel, .demo-panel, .use-card, .proof-card, .method, .cta, footer { border-radius: 22px; }
-      .hero-panel { padding: 24px; }
-      .demo-panel { padding: 18px; }
-      .hero-points, .use-grid { grid-template-columns: 1fr; }
-      .hero-footer { grid-template-columns: 1fr; }
-      .orb-wrap { width: 170px; height: 170px; }
-      .orb { width: 132px; }
-      .nav-links { gap: 12px; }
-      h1 { max-width: 12ch; }
+      .container {
+        width: min(var(--max), calc(100% - 20px));
+      }
+
+      .nav {
+        position: sticky;
+      }
+
+      .nav-inner {
+        gap: 12px;
+        padding: 12px 0;
+      }
+
+      .brand {
+        align-items: center;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+      }
+
+      .nav-links {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 10px;
+      }
+
+      .nav-links a {
+        text-align: center;
+        padding: 12px;
+      }
+
+      .nav-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .nav-actions .btn,
+      .nav-actions .mini-btn,
+      .button-row .btn,
+      .cta-actions .btn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .hero {
+        padding-top: 22px;
+      }
+
+      .hero-panel,
+      .demo-panel,
+      .use-card,
+      .proof-card,
+      .method,
+      .cta,
+      footer {
+        border-radius: 22px;
+      }
+
+      .hero-panel {
+        padding: 24px 20px;
+      }
+
+      .demo-panel,
+      .cta,
+      footer,
+      .use-card,
+      .proof-card,
+      .method,
+      .section {
+        padding: 18px;
+      }
+
+      h1 {
+        max-width: 12ch;
+        font-size: clamp(2.45rem, 12vw, 4rem);
+        margin-top: 18px;
+      }
+
+      .lead {
+        font-size: 1rem;
+        line-height: 1.72;
+      }
+
+      .hero-points,
+      .use-grid,
+      .proof-grid,
+      .method-grid,
+      .footer-grid,
+      .hero-footer {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-footer {
+        gap: 16px;
+      }
+
+      .status-card {
+        padding: 16px;
+      }
+
+      .command-output {
+        font-size: 1.05rem;
+        letter-spacing: 0.06em;
+      }
+
+      .wave {
+        height: 46px;
+        gap: 5px;
+      }
+
+      .bar {
+        width: 7px;
+      }
+
+      .orb-wrap {
+        width: 132px;
+        height: 132px;
+        margin: 0 auto;
+      }
+
+      .orb {
+        width: 106px;
+      }
+
+      .hero-banner {
+        top: 16px;
+        right: 16px;
+        font-size: 0.68rem;
+        padding: 8px 10px;
+      }
+
+      .panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .button-row,
+      .cta-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .chip-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .chip {
+        width: 100%;
+      }
+
+      .section-header h2 {
+        font-size: clamp(1.7rem, 8vw, 2.4rem);
+      }
+
+      .kicker,
+      .status-label,
+      .eyebrow {
+        letter-spacing: 0.12em;
+      }
+
+      .toast {
+        width: calc(100vw - 20px);
+        bottom: 16px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav-links,
+      .nav-actions,
+      .chip-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        padding-top: 58px;
+      }
+
+      .hero-banner {
+        left: 16px;
+        right: auto;
+      }
+
+      .stat strong {
+        font-size: 1.08rem;
+      }
+
+      .cta ul,
+      .mini-list {
+        padding-left: 16px;
+      }
     }
   </style>
 </head>
