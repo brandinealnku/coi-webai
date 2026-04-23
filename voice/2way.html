@@ -1094,6 +1094,312 @@
       line-height:1.5;
     }
 
+
+    .demo-quickstart{
+      position:relative;
+      z-index:3;
+      display:grid;
+      gap:10px;
+      margin:18px 0 16px;
+      padding:16px;
+      border-radius:22px;
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .quickstart-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .quickstart-title{
+      font-size:.82rem;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:#dce7ff;
+      font-weight:700;
+    }
+
+    .quickstart-badge{
+      min-height:34px;
+      display:inline-flex;
+      align-items:center;
+      padding:0 12px;
+      border-radius:999px;
+      background:rgba(62,230,167,.14);
+      border:1px solid rgba(62,230,167,.22);
+      color:#eafbf5;
+      font-size:.78rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .quickstart-steps{
+      display:grid;
+      gap:10px;
+    }
+
+    .quickstep{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:12px;
+      align-items:start;
+    }
+
+    .quickstep-num{
+      width:32px;
+      height:32px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.1);
+      font-size:.84rem;
+      font-weight:700;
+      color:#fff;
+    }
+
+    .quickstep strong{
+      display:block;
+      font-size:.95rem;
+      margin-bottom:4px;
+    }
+
+    .quickstep span{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.55;
+    }
+
+    .demo-toolbar{
+      position:sticky;
+      bottom:12px;
+      z-index:6;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+      margin-top:16px;
+      padding:10px;
+      border-radius:20px;
+      background:rgba(9,14,27,.82);
+      border:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(16px);
+      box-shadow:0 18px 40px rgba(0,0,0,.28);
+    }
+
+    .toolbar-btn{
+      min-height:52px;
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-weight:700;
+      text-align:center;
+      transition:transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .toolbar-btn.primary{
+      background:#fff;
+      color:#08111f;
+      border-color:rgba(255,255,255,.18);
+    }
+
+    .toolbar-btn:active{transform:scale(.985)}
+
+    .demo-help{
+      position:relative;
+      z-index:4;
+      margin-top:12px;
+      padding:0;
+      border-radius:22px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+    }
+
+    .demo-help summary{
+      list-style:none;
+      cursor:pointer;
+      min-height:54px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      font-weight:700;
+      color:#eef4ff;
+    }
+
+    .demo-help summary::-webkit-details-marker{display:none}
+    .demo-help summary span{
+      color:var(--muted);
+      font-weight:600;
+      font-size:.92rem;
+    }
+
+    .help-body{
+      padding:0 16px 16px;
+      color:var(--muted);
+      font-size:.94rem;
+      line-height:1.65;
+      display:grid;
+      gap:12px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .help-list{
+      display:grid;
+      gap:10px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .help-list li{
+      padding-left:0;
+    }
+
+    .primary-command-row{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+
+    .primary-command{
+      min-height:58px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      color:var(--text);
+      font-weight:800;
+      letter-spacing:.01em;
+      text-align:left;
+      padding:14px 16px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .primary-command small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.8rem;
+      font-weight:600;
+      letter-spacing:0;
+    }
+
+    .secondary-command-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+
+    .command-chip.secondary{
+      min-height:50px;
+      text-align:center;
+      font-size:.95rem;
+    }
+
+    .fullscreen-toast{
+      position:fixed;
+      left:50%;
+      bottom:92px;
+      transform:translateX(-50%) translateY(10px);
+      z-index:60;
+      width:min(calc(100% - 28px), 420px);
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(10,16,29,.9);
+      border:1px solid rgba(255,255,255,.12);
+      color:#f5f8ff;
+      box-shadow:0 20px 45px rgba(0,0,0,.3);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease, transform .25s ease;
+      font-size:.92rem;
+      line-height:1.5;
+    }
+
+    .fullscreen-toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    .demo-stage.is-fullscreen{
+      min-height:100dvh;
+      border-radius:0;
+      padding-top:28px;
+    }
+
+    .demo-stage.is-fullscreen .demo-toolbar{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      margin:0;
+    }
+
+    .demo-stage.is-fullscreen .state-banner{
+      left:12px;
+      right:12px;
+      bottom:142px;
+    }
+
+    .present-hint{
+      color:var(--muted);
+      font-size:.86rem;
+      line-height:1.5;
+    }
+
+    body.mode-light .demo-quickstart,
+    body.mode-light .demo-toolbar,
+    body.mode-light .demo-help,
+    body.mode-light .fullscreen-toast{
+      background:rgba(8,17,31,.04);
+      border-color:rgba(8,17,31,.08);
+      color:#101828;
+    }
+
+    body.mode-light .quickstart-title,
+    body.mode-light .quickstep strong,
+    body.mode-light .demo-help summary{
+      color:#122033;
+    }
+
+    body.mode-light .toolbar-btn{
+      background:rgba(8,17,31,.04);
+      color:#101828;
+      border-color:rgba(8,17,31,.08);
+    }
+
+    @media (min-width:760px){
+      .demo-toolbar{
+        grid-template-columns:repeat(4, minmax(0,1fr));
+      }
+
+      .quickstart-steps{
+        grid-template-columns:repeat(3, minmax(0,1fr));
+      }
+
+      .quickstep{
+        grid-template-columns:auto 1fr;
+      }
+
+      .primary-command-row{
+        grid-template-columns:repeat(3, minmax(0,1fr));
+      }
+
+      .secondary-command-grid{
+        grid-template-columns:repeat(3, minmax(0,1fr));
+      }
+    }
+
+
     .micdrop-ring{
       position:absolute;
       inset:50% auto auto 50%;
@@ -1277,34 +1583,74 @@
               </p>
             </div>
 
-            <div class="command-panel">
+            
+<div class="command-panel">
+              <div class="demo-quickstart" aria-label="How to use the demo">
+                <div class="quickstart-head">
+                  <div class="quickstart-title">Quick start</div>
+                  <div class="quickstart-badge">Built for first-time users</div>
+                </div>
+                <div class="quickstart-steps">
+                  <div class="quickstep">
+                    <div class="quickstep-num">1</div>
+                    <div><strong>Start with one obvious action</strong><span>Tap “Play guided demo” or say “wake up” to begin without guessing what to do first.</span></div>
+                  </div>
+                  <div class="quickstep">
+                    <div class="quickstep-num">2</div>
+                    <div><strong>Follow the primary sequence</strong><span>Use the larger guided commands first. Secondary commands stay available, but they are visually deprioritized.</span></div>
+                  </div>
+                  <div class="quickstep">
+                    <div class="quickstep-num">3</div>
+                    <div><strong>Go fullscreen for live demos</strong><span>Open presentation mode to reduce distractions and make the experience easier to show on mobile.</span></div>
+                  </div>
+                </div>
+              </div>
+
               <div class="recognition">
                 <div class="recognition-label">Command recognized</div>
-                <div class="recognition-value" id="recognizedText">Awaiting your first command</div>
+                <div class="recognition-value" id="recognizedText">Tap “Play guided demo” to start</div>
               </div>
 
-              <div class="command-grid" role="group" aria-label="Demo commands">
-                <button class="command-chip" data-command="wake up">Wake up</button>
-                <button class="command-chip" data-command="go dark">Go dark</button>
-                <button class="command-chip" data-command="go light">Go light</button>
-                <button class="command-chip" data-command="show grid">Show grid</button>
-                <button class="command-chip" data-command="focus mode">Focus mode</button>
-                <button class="command-chip" data-command="neon mode">Neon mode</button>
-                <button class="command-chip" data-command="launch experience">Launch experience</button>
-                <button class="command-chip" data-command="talk back">Talk back</button>
-                <button class="command-chip" data-command="reset">Reset</button>
+              <div class="primary-command-row" role="group" aria-label="Primary demo sequence">
+                <button class="primary-command" data-command="wake up">Wake up<small>Start the experience</small></button>
+                <button class="primary-command" data-command="launch experience">Launch experience<small>Big reveal</small></button>
+                <button class="primary-command" data-command="talk back">Talk back<small>Mic drop moment</small></button>
               </div>
 
-              <div class="live-bar">
-                <div class="wave" aria-hidden="true"></div>
-                <button class="mic-btn" id="micBtn" aria-label="Start or stop voice recognition">🎙️</button>
+              <div class="secondary-command-grid" role="group" aria-label="Additional commands">
+                <button class="command-chip secondary" data-command="go dark">Go dark</button>
+                <button class="command-chip secondary" data-command="go light">Go light</button>
+                <button class="command-chip secondary" data-command="show grid">Show grid</button>
+                <button class="command-chip secondary" data-command="focus mode">Focus mode</button>
+                <button class="command-chip secondary" data-command="neon mode">Neon mode</button>
+                <button class="command-chip secondary" data-command="reset">Reset</button>
               </div>
+
+              <div class="demo-toolbar" role="toolbar" aria-label="Demo controls">
+                <button class="toolbar-btn primary" id="guidedDemoBtn">Play guided demo</button>
+                <button class="toolbar-btn" id="micBtn" aria-label="Start or stop voice recognition">Start voice</button>
+                <button class="toolbar-btn" id="fullscreenBtn" aria-label="Open or close fullscreen presentation mode">Fullscreen demo</button>
+                <button class="toolbar-btn" id="helpBtn" aria-controls="demoHelp">Show help</button>
+              </div>
+
+              <details class="demo-help" id="demoHelp">
+                <summary>Need help during the demo? <span>Contextual help, not a long tutorial</span></summary>
+                <div class="help-body">
+                  <div>Recommended live sequence: <strong>Wake up → Go dark → Show grid → Focus mode → Neon mode → Launch experience → Talk back</strong>.</div>
+                  <ul class="help-list">
+                    <li><strong>Voice not working?</strong> Use the buttons first. Voice recognition typically works best in Chrome or Edge on HTTPS.</li>
+                    <li><strong>On a phone?</strong> Use fullscreen mode before filming so the page fills more of the device and feels easier to present.</li>
+                    <li><strong>Want a cleaner demo?</strong> Start with the guided demo, then jump to “Talk back” for the signature moment.</li>
+                  </ul>
+                  <div class="present-hint">This help panel stays out of the way until someone asks for it, which keeps the main screen easier to scan.</div>
+                </div>
+              </details>
 
               <p class="demo-footer-note">
-                Testing on stage or on camera? Use the command buttons as a reliable fallback,
-                then switch to voice in Chrome or Edge on HTTPS when you are ready to film.
+                The controls are now grouped by priority so first-time users see an obvious starting point instead of having to decode the whole interface.
               </p>
             </div>
+
 
             <div class="state-banner" id="stateBanner">
               <strong>Luxury dark mode active</strong>
@@ -1500,6 +1846,8 @@
     <a class="secondary" href="mailto:hello@example.com?subject=ITSBAD%20LLC%20Inquiry">Contact</a>
   </div>
 
+  <div class="fullscreen-toast" id="fullscreenToast" aria-live="polite"></div>
+
   <footer class="site-footer">
     <div class="container footer-shell">
       <div><strong>ITSBAD LLC</strong> — Voice-directed WebAI consulting for premium digital experiences.</div>
@@ -1513,9 +1861,15 @@
     const modeChip = document.getElementById('modeChip');
     const stateBanner = document.getElementById('stateBanner');
     const micBtn = document.getElementById('micBtn');
-    const chips = [...document.querySelectorAll('.command-chip')];
+    const chips = [...document.querySelectorAll('.command-chip'), ...document.querySelectorAll('.primary-command')];
     const talkbackCard = document.getElementById('talkbackCard');
     const talkbackText = document.getElementById('talkbackText');
+    const guidedDemoBtn = document.getElementById('guidedDemoBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const demoHelp = document.getElementById('demoHelp');
+    const demoStage = document.getElementById('demoStage');
+    const fullscreenToast = document.getElementById('fullscreenToast');
     let talkbackTimeout;
 
     const stateCopy = {
@@ -1707,6 +2061,68 @@
       } catch (e) {}
     }
 
+
+    function showToast(message) {
+      if (!fullscreenToast) return;
+      fullscreenToast.textContent = message;
+      fullscreenToast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => fullscreenToast.classList.remove('show'), 2600);
+    }
+
+    async function toggleFullscreen() {
+      try {
+        if (!document.fullscreenElement) {
+          if (demoStage.requestFullscreen) {
+            await demoStage.requestFullscreen();
+          } else if (demoStage.webkitRequestFullscreen) {
+            demoStage.webkitRequestFullscreen();
+          }
+          showToast('Presentation mode enabled.');
+        } else {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+          showToast('Presentation mode closed.');
+        }
+      } catch (error) {
+        showToast('Fullscreen was not available in this browser.');
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      const active = !!document.fullscreenElement;
+      demoStage.classList.toggle('is-fullscreen', active);
+      fullscreenBtn.textContent = active ? 'Exit fullscreen' : 'Fullscreen demo';
+    });
+
+    const guidedSequence = [
+      { command: 'wake up', delay: 0 },
+      { command: 'go dark', delay: 900 },
+      { command: 'show grid', delay: 1850 },
+      { command: 'focus mode', delay: 2800 },
+      { command: 'neon mode', delay: 3800 },
+      { command: 'launch experience', delay: 4950 },
+      { command: 'talk back', delay: 6400 }
+    ];
+
+    function playGuidedDemo() {
+      recognizedText.textContent = 'Playing guided demo...';
+      guidedSequence.forEach(step => {
+        setTimeout(() => runCommand(step.command), step.delay);
+      });
+    }
+
+    guidedDemoBtn?.addEventListener('click', playGuidedDemo);
+    fullscreenBtn?.addEventListener('click', toggleFullscreen);
+    helpBtn?.addEventListener('click', () => {
+      const open = !demoHelp.open;
+      demoHelp.open = open;
+      helpBtn.textContent = open ? 'Hide help' : 'Show help';
+    });
+
     chips.forEach((chip) => {
       chip.addEventListener('click', () => runCommand(chip.dataset.command || chip.textContent || ''));
     });
@@ -1716,7 +2132,7 @@
     let listening = false;
 
     function updateMicButton() {
-      micBtn.textContent = listening ? '⏹️' : '🎙️';
+      micBtn.textContent = listening ? 'Stop voice' : 'Start voice';
       micBtn.setAttribute('aria-label', listening ? 'Stop voice recognition' : 'Start voice recognition');
     }
 
@@ -1764,7 +2180,7 @@
       });
     } else {
       micBtn.disabled = true;
-      micBtn.textContent = '—';
+      micBtn.textContent = 'Voice unavailable';
       micBtn.title = 'Speech recognition is not supported in this browser.';
       recognizedText.textContent = 'Voice recognition unavailable in this browser. Use the command buttons instead.';
     }
