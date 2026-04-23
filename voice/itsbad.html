@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ITSBAD LLC | Voice-Directed WebAI Experiences</title>
+  <meta name="description" content="ITSBAD LLC showcase page demonstrating branded voice-command WebAI experiences for consulting, events, marketing, training, recruiting, and future-facing customer experiences." />
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0d1728;
+      --surface: rgba(13, 23, 40, 0.72);
+      --surface-2: rgba(255, 255, 255, 0.05);
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #eff4ff;
+      --muted: #b5c0d6;
+      --accent: #7c8cff;
+      --accent-2: #ff66c4;
+      --accent-3: #59d7ff;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+      --max: 1220px;
+      --hero-scale: 1;
+      --hero-y: 0px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(89, 215, 255, 0.14), transparent 22%),
+        radial-gradient(circle at 85% 12%, rgba(255, 102, 196, 0.12), transparent 22%),
+        linear-gradient(180deg, #07111f 0%, #08101d 30%, #091120 100%);
+      min-height: 100vh;
+      transition: background 400ms ease, color 250ms ease;
+    }
+
+    body.light {
+      --bg: #f5f7fc;
+      --bg-soft: #ffffff;
+      --surface: rgba(255, 255, 255, 0.82);
+      --surface-2: rgba(15, 23, 42, 0.04);
+      --line: rgba(15, 23, 42, 0.08);
+      --text: #0f172a;
+      --muted: #475569;
+      --shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(89, 215, 255, 0.12), transparent 22%),
+        radial-gradient(circle at 85% 12%, rgba(255, 102, 196, 0.1), transparent 22%),
+        linear-gradient(180deg, #eef4ff 0%, #f7f9fd 100%);
+    }
+
+    .ambient, .ambient::before, .ambient::after {
+      position: fixed;
+      content: "";
+      border-radius: 999px;
+      filter: blur(70px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient {
+      width: 22rem;
+      height: 22rem;
+      left: -7rem;
+      top: -5rem;
+      background: rgba(124, 140, 255, 0.18);
+      animation: floaty 16s ease-in-out infinite;
+    }
+
+    .ambient::before {
+      width: 24rem;
+      height: 24rem;
+      right: -78vw;
+      top: 18vh;
+      background: rgba(255, 102, 196, 0.16);
+      animation: floaty 18s ease-in-out infinite reverse;
+    }
+
+    .ambient::after {
+      width: 18rem;
+      height: 18rem;
+      left: 42vw;
+      top: 62vh;
+      background: rgba(89, 215, 255, 0.12);
+      animation: floaty 12s ease-in-out infinite;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.12) 1px, transparent 1px);
+      background-size: 48px 48px;
+      transform: perspective(1000px) rotateX(72deg) scale(1.8) translateY(20%);
+      transform-origin: center top;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.98), transparent 76%);
+      transition: opacity 320ms ease, transform 420ms ease;
+    }
+
+    body.grid-on .grid-overlay {
+      opacity: 0.85;
+      transform: perspective(1000px) rotateX(72deg) scale(1.55) translateY(16%);
+      animation: gridSweep 6s linear infinite;
+    }
+
+    .scan-beam {
+      position: fixed;
+      inset: -10% -30%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.03) 40%, rgba(255,102,196,0.14) 50%, rgba(255,255,255,0.03) 60%, transparent 100%);
+      opacity: 0;
+      transform: translateX(-70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body.grid-on .scan-beam {
+      opacity: 1;
+      animation: scanBeam 2.8s ease-in-out infinite;
+    }
+
+    .site {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(7, 17, 31, 0.55);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    body.light .nav {
+      background: rgba(245, 247, 252, 0.75);
+      border-bottom-color: rgba(15,23,42,0.06);
+    }
+
+    .nav-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 30px rgba(124, 140, 255, 0.28);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.96rem;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn, .chip, .mini-btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      text-decoration: none;
+    }
+
+    .btn:hover, .chip:hover, .mini-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.22);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+    }
+
+    .btn.primary {
+      padding: 14px 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border: none;
+      box-shadow: 0 18px 34px rgba(124, 140, 255, 0.26);
+    }
+
+    .btn.secondary {
+      padding: 14px 18px;
+      font-weight: 700;
+    }
+
+    .mini-btn {
+      padding: 10px 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 56px 0 34px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overflow: hidden;
+      transition: transform 320ms ease, opacity 320ms ease, box-shadow 320ms ease, filter 320ms ease, border-color 320ms ease;
+    }
+
+    .hero-panel {
+      padding: 34px;
+      min-height: 680px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform: translateY(var(--hero-y)) scale(var(--hero-scale));
+    }
+
+    body.focus-mode {
+      --hero-scale: 1.03;
+      --hero-y: -3px;
+    }
+
+    body.focus-mode .hero-panel {
+      z-index: 2;
+      box-shadow:
+        0 44px 110px rgba(0,0,0,0.34),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 80px rgba(255,255,255,0.06);
+    }
+
+    body.focus-mode .demo-panel {
+      opacity: 0.56;
+      transform: scale(0.97);
+      filter: blur(1px);
+    }
+
+    .hero-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(255,102,196,0.16), transparent 24%),
+        radial-gradient(circle at 18% 78%, rgba(89,215,255,0.12), transparent 28%);
+      opacity: 0.9;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      font-size: 0.79rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      position: relative;
+      z-index: 1;
+    }
+
+    .signal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--warning);
+    }
+
+    body.listening .signal-dot {
+      background: var(--success);
+      animation: pulseDot 1.5s infinite;
+    }
+
+    h1 {
+      margin: 22px 0 18px;
+      font-size: clamp(3rem, 6vw, 6.3rem);
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      max-width: 10ch;
+      position: relative;
+      z-index: 1;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 42%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lead {
+      max-width: 62ch;
+      font-size: 1.06rem;
+      line-height: 1.75;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .hero-points {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .stat {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .hero-footer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      position: relative;
+      z-index: 1;
+    }
+
+    .status-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+    }
+
+    .status-label {
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .command-output {
+      font-size: clamp(1.15rem, 2vw, 1.8rem);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      min-height: 1.5em;
+    }
+
+    .wave {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 58px;
+      padding-top: 16px;
+    }
+
+    .bar {
+      width: 8px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      opacity: 0.35;
+      height: 12px;
+    }
+
+    body.listening .bar,
+    body.launch .bar {
+      opacity: 0.98;
+      animation: waveDance 1s infinite ease-in-out;
+    }
+
+    body.listening .bar:nth-child(2), body.launch .bar:nth-child(2) { animation-delay: 0.08s; }
+    body.listening .bar:nth-child(3), body.launch .bar:nth-child(3) { animation-delay: 0.16s; }
+    body.listening .bar:nth-child(4), body.launch .bar:nth-child(4) { animation-delay: 0.24s; }
+    body.listening .bar:nth-child(5), body.launch .bar:nth-child(5) { animation-delay: 0.32s; }
+    body.listening .bar:nth-child(6), body.launch .bar:nth-child(6) { animation-delay: 0.4s; }
+    body.listening .bar:nth-child(7), body.launch .bar:nth-child(7) { animation-delay: 0.48s; }
+
+    .orb-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: grid;
+      place-items: center;
+    }
+
+    .orb-rings, .orb-rings::before, .orb-rings::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      opacity: 0;
+      transform: scale(0.88);
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+
+    .orb-rings::before { inset: -14px; }
+    .orb-rings::after { inset: -28px; }
+
+    .orb {
+      width: 180px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,0.92), rgba(255,255,255,0.08) 24%, transparent 25%),
+        radial-gradient(circle at center, rgba(255,102,196,0.22), rgba(58,59,120,0.3) 45%, rgba(0,0,0,0) 62%),
+        linear-gradient(135deg, rgba(255,102,196,0.4), rgba(58,59,120,0.75));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow:
+        inset 0 0 40px rgba(255,255,255,0.12),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 24px 80px rgba(58,59,120,0.28);
+      animation: floaty 7s ease-in-out infinite;
+      transition: transform 320ms ease, box-shadow 320ms ease, filter 320ms ease;
+    }
+
+    body.neon .orb-rings,
+    body.launch .orb-rings {
+      opacity: 1;
+      transform: scale(1);
+      animation: ringPulse 2.2s ease-in-out infinite;
+    }
+
+    body.launch .orb-rings::before { animation: ringPulse 2.2s ease-in-out infinite 0.25s; }
+    body.launch .orb-rings::after { animation: ringPulse 2.2s ease-in-out infinite 0.5s; }
+
+    body.focus-mode .orb { transform: scale(1.1); }
+
+    body.neon .orb {
+      transform: scale(1.08);
+      box-shadow:
+        inset 0 0 40px rgba(255,255,255,0.16),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 48px rgba(255,102,196,0.42),
+        0 0 100px rgba(149,166,255,0.26);
+      filter: saturate(1.4) brightness(1.08);
+    }
+
+    body.launch .orb {
+      animation: pulseHalo 1.4s ease-in-out infinite;
+      transform: scale(1.16);
+      box-shadow:
+        inset 0 0 46px rgba(255,255,255,0.18),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 70px rgba(255,102,196,0.46),
+        0 0 150px rgba(149,166,255,0.36);
+      filter: saturate(1.55) brightness(1.16);
+    }
+
+    .hero-banner {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: white;
+      background: linear-gradient(135deg, rgba(255,102,196,0.92), rgba(58,59,120,0.92));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(-12px) scale(0.94);
+      transition: opacity 220ms ease, transform 220ms ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    body.grid-on .hero-banner.grid,
+    body.focus-mode .hero-banner.focus,
+    body.neon .hero-banner.neon,
+    body.launch .hero-banner.launch {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .demo-panel {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      min-height: 680px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-head h2,
+    .section h3,
+    .showcase h2,
+    .cta h2 {
+      margin: 0;
+      letter-spacing: -0.03em;
+    }
+
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .button-row,
+    .chip-wrap,
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .section p,
+    .section li,
+    .showcase p,
+    .use-card p,
+    .method p,
+    .cta p,
+    .footer-note,
+    .footer-grid p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .section p { margin: 6px 0 0; }
+
+    .chip {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .chip.active {
+      background: linear-gradient(135deg, rgba(124,140,255,0.28), rgba(255,102,196,0.25));
+      border-color: rgba(255,255,255,0.24);
+      box-shadow: 0 0 18px rgba(255,102,196,0.16);
+    }
+
+    .mini-list {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      font-size: 0.95rem;
+    }
+
+    .footer-note {
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    .showcase {
+      padding: 24px 0 8px;
+    }
+
+    .section-header {
+      max-width: 760px;
+      margin-bottom: 20px;
+    }
+
+    .kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent-3);
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .section-header h2 {
+      font-size: clamp(2rem, 3.2vw, 3.4rem);
+      margin-bottom: 12px;
+    }
+
+    .use-grid,
+    .proof-grid,
+    .method-grid,
+    .footer-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .use-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .use-card,
+    .method,
+    .proof-card,
+    .cta,
+    footer {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .use-card,
+    .proof-card,
+    .method { padding: 22px; }
+
+    .use-card span,
+    .proof-card span,
+    .method span {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(124,140,255,0.22), rgba(255,102,196,0.2));
+      margin-bottom: 14px;
+      font-size: 1.1rem;
+    }
+
+    .use-card h3,
+    .proof-card h3,
+    .method h3 {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+      letter-spacing: -0.02em;
+    }
+
+    .proof-grid {
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 16px;
+    }
+
+    .method-grid {
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 16px;
+    }
+
+    .cta {
+      margin: 22px 0 32px;
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .cta ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    footer {
+      padding: 24px;
+      margin: 0 0 34px;
+    }
+
+    .footer-grid {
+      grid-template-columns: 1.2fr 0.8fr 0.8fr;
+      align-items: start;
+    }
+
+    .footer-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .footer-links {
+      display: grid;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(18px);
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(9,17,36,0.9);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.08);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 220ms ease;
+      z-index: 20;
+      max-width: min(92vw, 700px);
+      text-align: center;
+      font-size: 0.92rem;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    body.neon .hero-panel,
+    body.neon .demo-panel,
+    body.launch .hero-panel,
+    body.launch .demo-panel {
+      border-color: rgba(255,102,196,0.22);
+    }
+
+    body.neon .hero-panel,
+    body.neon .demo-panel {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 34px rgba(255,102,196,0.18),
+        0 0 84px rgba(149,166,255,0.18),
+        var(--shadow);
+    }
+
+    body.launch .hero-panel,
+    body.launch .demo-panel {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.09),
+        0 0 44px rgba(255,102,196,0.22),
+        0 0 120px rgba(149,166,255,0.2),
+        var(--shadow);
+    }
+
+    body.glitch .hero-panel { animation: glitchPulse 260ms linear 2; }
+
+    @keyframes pulseDot {
+      0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.5); }
+      70% { box-shadow: 0 0 0 14px rgba(52,211,153,0); }
+      100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+    }
+
+    @keyframes waveDance { 0%,100% { height: 12px; } 50% { height: 46px; } }
+    @keyframes floaty { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-14px) translateX(10px); } }
+    @keyframes pulseHalo { 0%,100% { transform: scale(1.16); } 50% { transform: scale(1.23); } }
+    @keyframes glitchPulse {
+      0% { transform: translate(0,0); filter: saturate(1); }
+      25% { transform: translate(-3px,1px); filter: hue-rotate(22deg); }
+      50% { transform: translate(2px,-2px); filter: hue-rotate(-12deg); }
+      75% { transform: translate(-1px,1px); }
+      100% { transform: translate(0,0); filter: saturate(1); }
+    }
+    @keyframes ringPulse { 0% { transform: scale(0.9); opacity: 0.8; } 70% { transform: scale(1.14); opacity: 0; } 100% { transform: scale(1.18); opacity: 0; } }
+    @keyframes scanBeam { 0% { transform: translateX(-70%); } 100% { transform: translateX(70%); } }
+    @keyframes gridSweep { 0% { background-position: 0 0, 0 0; } 100% { background-position: 48px 0, 0 48px; } }
+
+    @media (max-width: 1100px) {
+      .hero-grid, .cta, .footer-grid { grid-template-columns: 1fr; }
+      .use-grid { grid-template-columns: repeat(2, 1fr); }
+      .proof-grid, .method-grid { grid-template-columns: 1fr; }
+      .hero-panel, .demo-panel { min-height: auto; }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner { padding: 12px 0; align-items: flex-start; flex-direction: column; }
+      .hero { padding-top: 30px; }
+      .hero-panel, .demo-panel, .use-card, .proof-card, .method, .cta, footer { border-radius: 22px; }
+      .hero-panel { padding: 24px; }
+      .demo-panel { padding: 18px; }
+      .hero-points, .use-grid { grid-template-columns: 1fr; }
+      .hero-footer { grid-template-columns: 1fr; }
+      .orb-wrap { width: 170px; height: 170px; }
+      .orb { width: 132px; }
+      .nav-links { gap: 12px; }
+      h1 { max-width: 12ch; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="scan-beam" aria-hidden="true"></div>
+
+  <div class="site">
+    <nav class="nav">
+      <div class="container nav-inner">
+        <div class="brand">
+          <div class="brand-mark">IB</div>
+          <div>
+            <div>ITSBAD LLC</div>
+            <div style="font-size:.76rem;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Interactive WebAI Consulting</div>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="#demo">Demo</a>
+          <a href="#use-cases">Use Cases</a>
+          <a href="#how-it-works">Approach</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="nav-actions">
+          <button class="mini-btn" id="themeToggleBtn">Toggle theme</button>
+          <a class="btn secondary" href="#contact">Work with ITSBAD</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero container" id="demo">
+        <div class="hero-grid">
+          <section class="card hero-panel" aria-label="Voice-reactive WebAI stage">
+            <div class="hero-glow"></div>
+            <div class="hero-banner grid">Grid online</div>
+            <div class="hero-banner focus">Focus locked</div>
+            <div class="hero-banner neon">Neon active</div>
+            <div class="hero-banner launch">Experience launched</div>
+
+            <div>
+              <div class="eyebrow">
+                <span class="signal-dot"></span>
+                <span id="statusText">Idle • Awaiting command</span>
+              </div>
+
+              <h1>ITSBAD builds <span class="gradient-text">voice-directed web experiences</span> that people remember.</h1>
+
+              <div class="hero-copy">
+                <p class="lead" id="leadText">
+                  This ITSBAD LLC showcase demonstrates how a webpage can respond to spoken commands in real time, turning ordinary pages into interactive brand moments for consultants, campuses, events, recruiting, product storytelling, and customer experience.
+                </p>
+
+                <div class="hero-points">
+                  <div class="stat">
+                    <strong>Scroll-stopping attention</strong>
+                    <span>Designed to create an obvious visual payoff in seconds for LinkedIn videos, client demos, and live presentations.</span>
+                  </div>
+                  <div class="stat">
+                    <strong>Consulting-ready positioning</strong>
+                    <span>Frames voice interaction as a business solution layer, not just a technical novelty.</span>
+                  </div>
+                  <div class="stat">
+                    <strong>Fast to deploy</strong>
+                    <span>Built for the modern web with lightweight deployment, rapid iteration, and high demo value.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-footer">
+              <div class="status-card">
+                <div class="status-label">Command recognized</div>
+                <div class="command-output" id="commandOutput">Waiting for “Wake up”</div>
+                <div class="wave" aria-hidden="true">
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                </div>
+              </div>
+
+              <div class="orb-wrap" aria-hidden="true">
+                <div class="orb-rings"></div>
+                <div class="orb"></div>
+              </div>
+            </div>
+          </section>
+
+          <aside class="card demo-panel" aria-label="Voice controls and business framing">
+            <div class="panel-head">
+              <h2>Interactive ITSBAD demo</h2>
+              <span class="badge" id="supportBadge">Checking support…</span>
+            </div>
+
+            <div class="button-row">
+              <button class="btn primary" id="startListeningBtn">Start listening</button>
+              <button class="btn secondary" id="stopListeningBtn">Stop</button>
+              <button class="btn secondary" id="resetBtn">Reset scene</button>
+            </div>
+
+            <div class="section">
+              <h3>Voice commands to try live</h3>
+              <p>Use the spoken commands below, or tap them as a reliable fallback for live filming, consulting meetings, pitches, or client walkthroughs.</p>
+              <div class="chip-wrap" id="chipWrap">
+                <button class="chip" data-command="wake up">Wake up</button>
+                <button class="chip" data-command="go dark">Go dark</button>
+                <button class="chip" data-command="show grid">Show grid</button>
+                <button class="chip" data-command="focus mode">Focus mode</button>
+                <button class="chip" data-command="neon mode">Neon mode</button>
+                <button class="chip" data-command="glitch">Glitch</button>
+                <button class="chip" data-command="launch experience">Launch experience</button>
+                <button class="chip" data-command="light mode">Light mode</button>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Where ITSBAD can apply this</h3>
+              <ul class="mini-list">
+                <li><strong>Consulting and sales demos:</strong> create a memorable interactive moment during proposals, walkthroughs, and pitches.</li>
+                <li><strong>Event activations:</strong> let attendees trigger branded experiences with simple voice prompts and obvious visual payoff.</li>
+                <li><strong>Training and onboarding:</strong> use voice cues to guide users through steps, scenes, and decision points.</li>
+                <li><strong>Executive storytelling:</strong> turn a webpage into a guided, cinematic narrative for launches, recruiting, or internal showcases.</li>
+              </ul>
+            </div>
+
+            <div class="section">
+              <h3>Why this page is built this way</h3>
+              <p>
+                The interface is intentionally designed with stronger hierarchy, clearer proof points, and business-facing language so it can function as an ITSBAD LLC public showcase page, not only as a testing environment.
+              </p>
+            </div>
+
+            <p class="footer-note">
+              Best in Chrome or Edge over HTTPS. GitHub Pages is a strong fit. If voice permissions are inconsistent, the command chips keep the experience dependable for public demos and social video.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="showcase container" id="use-cases">
+        <div class="section-header">
+          <span class="kicker">ITSBAD solutions</span>
+          <h2>Where voice-directed web experiences can create business value</h2>
+          <p>
+            This concept works best when the goal is not merely to add voice control, but to create a moment of clarity, surprise, efficiency, or brand differentiation that typical webpages do not deliver.
+          </p>
+        </div>
+
+        <div class="use-grid">
+          <article class="use-card">
+            <span>🎤</span>
+            <h3>Interactive consulting presentations</h3>
+            <p>Turn a pitch, workshop, class session, or leadership talk into a guided digital performance where spoken cues move the audience through the experience.</p>
+          </article>
+
+          <article class="use-card">
+            <span>✨</span>
+            <h3>Brand activations and campaign pages</h3>
+            <p>Create marketing pages that react to visitors in a way that feels premium, memorable, and highly shareable on social platforms.</p>
+          </article>
+
+          <article class="use-card">
+            <span>🧭</span>
+            <h3>Hands-free guidance and kiosks</h3>
+            <p>Support onboarding, kiosks, and guided workflows with voice-triggered transitions that reduce friction and improve clarity.</p>
+          </article>
+
+          <article class="use-card">
+            <span>🚀</span>
+            <h3>Product and service storytelling</h3>
+            <p>Introduce features, capabilities, or future-facing concepts through a webpage that visually responds as the story unfolds.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="showcase container">
+        <div class="section-header">
+          <span class="kicker">Why ITSBAD</span>
+          <h2>More than a feature. A branded interaction strategy.</h2>
+          <p>
+            The strongest WebAI experiences are not just functional. They are visible, understandable, and memorable within seconds. That is especially important for public demos, leadership showcases, recruiting, consulting, and LinkedIn-ready content.
+          </p>
+        </div>
+
+        <div class="proof-grid">
+          <article class="proof-card">
+            <span>01</span>
+            <h3>Immediate visual feedback</h3>
+            <p>Every major command creates a visible response that reads clearly on camera and in person.</p>
+          </article>
+
+          <article class="proof-card">
+            <span>02</span>
+            <h3>Clear business framing</h3>
+            <p>The content explains where this kind of interaction design fits in real organizations, client engagements, and audience experiences.</p>
+          </article>
+
+          <article class="proof-card">
+            <span>03</span>
+            <h3>Publishable brand presence</h3>
+            <p>The page uses a more intentional information architecture so it can be shared publicly as an ITSBAD capability page, not hidden as a prototype.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="showcase container" id="how-it-works">
+        <div class="section-header">
+          <span class="kicker">ITSBAD approach</span>
+          <h2>A simple pattern ITSBAD can adapt for client, campus, and event work</h2>
+          <p>
+            This page uses browser-based speech recognition when available, then maps recognized phrases to designed visual states. That makes it flexible enough for branded microsites, learning experiences, trade-show pages, recruiting moments, demo environments, and experimental customer journeys.
+          </p>
+        </div>
+
+        <div class="method-grid">
+          <article class="method">
+            <span>1</span>
+            <h3>Recognize voice input</h3>
+            <p>The page listens for simple commands and shows a clear response state so people know their input was captured.</p>
+          </article>
+
+          <article class="method">
+            <span>2</span>
+            <h3>Trigger designed scenes</h3>
+            <p>Each command activates a designed mode such as grid, focus, neon, or full launch so the interaction feels intentional.</p>
+          </article>
+
+          <article class="method">
+            <span>3</span>
+            <h3>Tell a branded business story</h3>
+            <p>Instead of ending at the effect itself, the layout explains practical scenarios where this style of interaction adds value.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="container" id="contact">
+        <div class="cta">
+          <div>
+            <span class="kicker">Work with ITSBAD</span>
+            <h2>Want ITSBAD to turn this into a branded experience for your organization?</h2>
+            <p>
+              This page can evolve into a customized experience for a company, college, product launch, event, recruitment campaign, executive presentation, or consulting engagement.
+            </p>
+            <ul>
+              <li>Custom brand styling, content strategy, and voice command set</li>
+              <li>Industry-specific scenarios, messaging, and proof points</li>
+              <li>Live event, social-video, and presentation optimization</li>
+              <li>Integration with broader WebAI storytelling and consulting concepts</li>
+            </ul>
+          </div>
+          <div>
+            <div class="cta-actions">
+              <a class="btn primary" href="mailto:hello@example.com?subject=ITSBAD%20LLC%20Voice-Directed%20WebAI%20Demo">Book an ITSBAD demo</a>
+              <a class="btn secondary" href="#demo">Replay the experience</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-title">ITSBAD LLC</div>
+          <p>
+            ITSBAD LLC designs modern interactive web experiences that combine strategy, storytelling, and browser-based AI to create more memorable digital moments.
+          </p>
+        </div>
+        <div>
+          <div class="footer-title">Sections</div>
+          <div class="footer-links">
+            <a href="#demo">Demo</a>
+            <a href="#use-cases">Use Cases</a>
+            <a href="#how-it-works">Approach</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">Best fit</div>
+          <p>Consulting demos, activations, learning experiences, recruiting, product storytelling, and future-facing brand showcases.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const body = document.body;
+    const statusText = document.getElementById('statusText');
+    const commandOutput = document.getElementById('commandOutput');
+    const leadText = document.getElementById('leadText');
+    const supportBadge = document.getElementById('supportBadge');
+    const toast = document.getElementById('toast');
+    const chipWrap = document.getElementById('chipWrap');
+    const startListeningBtn = document.getElementById('startListeningBtn');
+    const stopListeningBtn = document.getElementById('stopListeningBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+    let recognition = null;
+    let isListening = false;
+    let toastTimer = null;
+
+    const commandMap = [
+      { match: ['wake up', 'wake'], action: wakeUp },
+      { match: ['go dark', 'dark mode', 'dark'], action: goDark },
+      { match: ['light mode', 'go light', 'light'], action: goLight },
+      { match: ['show grid', 'grid'], action: showGrid },
+      { match: ['focus mode', 'focus'], action: focusMode },
+      { match: ['neon mode', 'neon'], action: neonMode },
+      { match: ['glitch'], action: glitchMode },
+      { match: ['launch experience', 'launch', 'activate'], action: launchExperience }
+    ];
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function setCommandText(text) {
+      commandOutput.textContent = text;
+    }
+
+    function setStatus(text, listening = false) {
+      statusText.textContent = text;
+      body.classList.toggle('listening', listening);
+      isListening = listening;
+    }
+
+    function clearModeClasses() {
+      body.classList.remove('grid-on', 'focus-mode', 'neon', 'launch', 'glitch');
+    }
+
+    function setActiveChip(command) {
+      document.querySelectorAll('.chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.command === command);
+      });
+    }
+
+    function wakeUp() {
+      clearModeClasses();
+      body.classList.remove('light');
+      setCommandText('WAKE UP');
+      leadText.textContent = 'The interface is now in a live listening state, ready to demonstrate how spoken prompts can direct a browser-based experience in real time.';
+      setActiveChip('wake up');
+    }
+
+    function goDark() {
+      body.classList.remove('light');
+      setCommandText('GO DARK');
+      leadText.textContent = 'Dark mode shifts the page into a higher-drama presentation state that feels more premium for demos, launches, and social video.';
+      setActiveChip('go dark');
+    }
+
+    function goLight() {
+      body.classList.add('light');
+      clearModeClasses();
+      setCommandText('LIGHT MODE');
+      leadText.textContent = 'Light mode restores a brighter editorial look that works well for polished business sites, public sharing, and before-and-after contrast.';
+      setActiveChip('light mode');
+    }
+
+    function showGrid() {
+      body.classList.remove('focus-mode', 'neon', 'launch');
+      body.classList.add('grid-on');
+      setCommandText('SHOW GRID');
+      leadText.textContent = 'The grid scene adds a stronger technical layer, useful for product storytelling, AI demos, innovation showcases, and future-facing visual narratives.';
+      setActiveChip('show grid');
+    }
+
+    function focusMode() {
+      body.classList.remove('neon', 'launch');
+      body.classList.add('focus-mode');
+      setCommandText('FOCUS MODE');
+      leadText.textContent = 'Focus mode pulls attention toward the main message, which is useful when guiding an audience through a key point, feature, or moment in a presentation.';
+      setActiveChip('focus mode');
+    }
+
+    function neonMode() {
+      body.classList.remove('launch');
+      body.classList.add('neon');
+      body.classList.remove('light');
+      setCommandText('NEON MODE');
+      leadText.textContent = 'Neon mode creates a more energized, cinematic state that is ideal for activations, event content, social clips, and standout branded moments.';
+      setActiveChip('neon mode');
+    }
+
+    function glitchMode() {
+      body.classList.add('glitch');
+      setCommandText('GLITCH');
+      leadText.textContent = 'A brief glitch cue adds surprise and contrast, helping the experience feel more dynamic and less like a standard slide or webpage.';
+      setActiveChip('glitch');
+      setTimeout(() => body.classList.remove('glitch'), 700);
+    }
+
+    function launchExperience() {
+      body.classList.remove('light');
+      body.classList.add('launch', 'grid-on', 'focus-mode', 'neon');
+      setCommandText('LAUNCH EXPERIENCE');
+      leadText.textContent = 'This final state intentionally stacks the strongest visual signals so the page reads instantly as a major reveal for live demos, executive showcases, or LinkedIn-ready video.';
+      setActiveChip('launch experience');
+    }
+
+    function processCommand(rawText) {
+      const text = rawText.toLowerCase().trim();
+      let matched = false;
+
+      for (const entry of commandMap) {
+        if (entry.match.some(term => text.includes(term))) {
+          entry.action();
+          showToast(`Command recognized: ${entry.match[0].toUpperCase()}`);
+          matched = true;
+          break;
+        }
+      }
+
+      if (!matched) {
+        setCommandText(`Heard: ${rawText}`);
+        showToast(`No mapped command found for “${rawText}”`);
+      }
+    }
+
+    function resetScene() {
+      body.className = '';
+      setStatus('Idle • Awaiting command', false);
+      setCommandText('Waiting for “Wake up”');
+      leadText.textContent = 'This ITSBAD LLC showcase demonstrates how a webpage can respond to spoken commands in real time, turning ordinary pages into interactive brand moments for consultants, campuses, events, recruiting, product storytelling, and customer experience.';
+      setActiveChip('');
+    }
+
+    function startRecognition() {
+      if (!recognition) {
+        showToast('Speech recognition is not supported in this browser. Use the command chips for the demo.');
+        return;
+      }
+      recognition.start();
+    }
+
+    function stopRecognition() {
+      if (recognition && isListening) {
+        recognition.stop();
+      }
+      setStatus('Idle • Awaiting command', false);
+    }
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        supportBadge.textContent = 'Fallback mode only';
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.continuous = true;
+      recognition.interimResults = false;
+
+      supportBadge.textContent = 'Voice enabled';
+
+      recognition.onstart = () => {
+        setStatus('Listening • Speak a command', true);
+        showToast('Listening… Try “Wake up” or “Launch experience.”');
+      };
+
+      recognition.onend = () => {
+        setStatus('Idle • Awaiting command', false);
+      };
+
+      recognition.onerror = (event) => {
+        setStatus('Idle • Awaiting command', false);
+        showToast(`Speech recognition error: ${event.error}`);
+      };
+
+      recognition.onresult = (event) => {
+        const result = event.results[event.results.length - 1];
+        const transcript = result[0].transcript;
+        processCommand(transcript);
+      };
+    }
+
+    chipWrap.addEventListener('click', (event) => {
+      const chip = event.target.closest('.chip');
+      if (!chip) return;
+      processCommand(chip.dataset.command);
+    });
+
+    startListeningBtn.addEventListener('click', startRecognition);
+    stopListeningBtn.addEventListener('click', stopRecognition);
+    resetBtn.addEventListener('click', resetScene);
+
+    themeToggleBtn.addEventListener('click', () => {
+      body.classList.toggle('light');
+      showToast(body.classList.contains('light') ? 'Light theme enabled' : 'Dark theme enabled');
+    });
+
+    initSpeechRecognition();
+    resetScene();
+  </script>
+</body>
+</html>
