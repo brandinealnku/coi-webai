@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command the Web | Voice Demo</title>
+  <meta name="description" content="A voice-reactive WebAI demo page for GitHub Pages." />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --bg-2: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: rgba(15, 23, 42, 0.08);
+      --panel: rgba(255,255,255,0.7);
+      --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+      --glow: rgba(59, 130, 246, 0.18);
+      --accent: #3a3b78;
+      --accent-2: #ff66c4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    body.dark {
+      --bg: #050816;
+      --bg-2: #091124;
+      --text: #f8fafc;
+      --muted: #b8c2d6;
+      --line: rgba(255,255,255,0.09);
+      --panel: rgba(9,17,36,0.58);
+      --shadow: 0 30px 90px rgba(0,0,0,0.45);
+      --glow: rgba(255, 102, 196, 0.16);
+      --accent: #8ea1ff;
+      --accent-2: #ff66c4;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,102,196,0.09), transparent 24%),
+        radial-gradient(circle at 80% 20%, rgba(58,59,120,0.15), transparent 26%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+      color: var(--text);
+      overflow: hidden;
+      transition: background 500ms ease, color 250ms ease;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      isolation: isolate;
+    }
+
+    .ambient, .ambient::before, .ambient::after {
+      position: absolute;
+      inset: auto;
+      content: "";
+      border-radius: 999px;
+      filter: blur(50px);
+      pointer-events: none;
+      transition: all 500ms ease;
+    }
+
+    .ambient {
+      width: 28rem;
+      height: 28rem;
+      left: -8rem;
+      top: -8rem;
+      background: rgba(255, 102, 196, 0.14);
+      animation: floaty 14s ease-in-out infinite;
+      z-index: -2;
+    }
+    .ambient::before {
+      width: 24rem;
+      height: 24rem;
+      right: -70vw;
+      top: 25vh;
+      background: rgba(58, 59, 120, 0.18);
+      animation: floaty 18s ease-in-out infinite reverse;
+    }
+    .ambient::after {
+      width: 18rem;
+      height: 18rem;
+      left: 35vw;
+      top: 55vh;
+      background: rgba(14, 165, 233, 0.11);
+      animation: floaty 12s ease-in-out infinite;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 42px 42px;
+      opacity: 0;
+      transform: perspective(1000px) rotateX(68deg) scale(1.55) translateY(18%);
+      transform-origin: center top;
+      transition: opacity 400ms ease;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body.grid-on .grid-overlay { opacity: 1; }
+
+    .shell {
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 34px;
+      min-height: 580px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 300ms ease, box-shadow 300ms ease;
+    }
+
+    body.focus-mode .hero {
+      transform: scale(1.018);
+      box-shadow: 0 36px 100px rgba(0,0,0,0.28);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: fit-content;
+    }
+
+    .signal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--warning);
+      box-shadow: 0 0 0 0 rgba(245,158,11,0.45);
+    }
+
+    body.listening .signal-dot {
+      background: var(--success);
+      animation: pulseDot 1.5s infinite;
+    }
+
+    h1 {
+      margin: 20px 0 14px;
+      font-size: clamp(2.6rem, 6vw, 5.7rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 11ch;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 45%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      max-width: 58ch;
+      font-size: 1.04rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 26px;
+    }
+
+    .hero-footer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .status-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    }
+
+    .status-label {
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .command-output {
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      min-height: 1.6em;
+    }
+
+    .wave {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 58px;
+      padding-top: 16px;
+    }
+
+    .bar {
+      width: 8px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      opacity: 0.35;
+      height: 12px;
+      transition: height 180ms ease, opacity 180ms ease;
+    }
+
+    body.listening .bar {
+      opacity: 0.95;
+      animation: waveDance 1s infinite ease-in-out;
+    }
+
+    body.listening .bar:nth-child(2) { animation-delay: 0.08s; }
+    body.listening .bar:nth-child(3) { animation-delay: 0.16s; }
+    body.listening .bar:nth-child(4) { animation-delay: 0.24s; }
+    body.listening .bar:nth-child(5) { animation-delay: 0.32s; }
+    body.listening .bar:nth-child(6) { animation-delay: 0.4s; }
+    body.listening .bar:nth-child(7) { animation-delay: 0.48s; }
+
+    .orb {
+      width: 180px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,0.92), rgba(255,255,255,0.08) 24%, transparent 25%),
+        radial-gradient(circle at center, rgba(255,102,196,0.22), rgba(58,59,120,0.3) 45%, rgba(0,0,0,0) 62%),
+        linear-gradient(135deg, rgba(255,102,196,0.4), rgba(58,59,120,0.75));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow:
+        inset 0 0 40px rgba(255,255,255,0.12),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 24px 80px rgba(58,59,120,0.28);
+      position: relative;
+      animation: floaty 7s ease-in-out infinite;
+    }
+
+    .orb::before,
+    .orb::after {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .orb::after {
+      inset: -12px;
+      border-color: rgba(255,255,255,0.09);
+    }
+
+    body.launch .orb {
+      animation: pulseHalo 1.75s ease-in-out infinite;
+      box-shadow:
+        inset 0 0 40px rgba(255,255,255,0.16),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 60px rgba(255,102,196,0.35),
+        0 0 120px rgba(58,59,120,0.3);
+    }
+
+    .control-panel {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      min-height: 580px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .primary-btn, .ghost-btn, .chip {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .primary-btn:hover, .ghost-btn:hover, .chip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .primary-btn {
+      padding: 14px 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border: none;
+      box-shadow: 0 16px 34px rgba(58,59,120,0.22);
+    }
+
+    .ghost-btn {
+      padding: 12px 16px;
+      font-weight: 600;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .section h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+    }
+
+    .section p {
+      margin: 0;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .chip-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .chip.active {
+      background: linear-gradient(135deg, rgba(58,59,120,0.25), rgba(255,102,196,0.22));
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .mini-list {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
+
+    .footer-note {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(18px);
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(9,17,36,0.88);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.08);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 220ms ease;
+      z-index: 5;
+      max-width: min(92vw, 700px);
+      text-align: center;
+      font-size: 0.92rem;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    body.neon .hero,
+    body.neon .control-panel {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 30px rgba(255,102,196,0.14),
+        0 0 70px rgba(58,59,120,0.18),
+        var(--shadow);
+    }
+
+    body.glitch .hero {
+      animation: glitchPulse 260ms linear 2;
+    }
+
+    @keyframes pulseDot {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.52); }
+      70% { box-shadow: 0 0 0 14px rgba(16,185,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+    }
+
+    @keyframes waveDance {
+      0%, 100% { height: 12px; }
+      50% { height: 46px; }
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-14px) translateX(10px); }
+    }
+
+    @keyframes pulseHalo {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    @keyframes glitchPulse {
+      0% { transform: translate(0,0); filter: saturate(1); }
+      25% { transform: translate(-3px,1px); filter: hue-rotate(22deg); }
+      50% { transform: translate(2px,-2px); filter: hue-rotate(-12deg); }
+      75% { transform: translate(-1px,1px); }
+      100% { transform: translate(0,0); filter: saturate(1); }
+    }
+
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      .stage { padding: 16px; }
+      .shell { grid-template-columns: 1fr; }
+      .hero, .control-panel { min-height: auto; }
+      .hero-footer { grid-template-columns: 1fr; }
+      .orb { width: 130px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="ambient"></div>
+    <div class="grid-overlay" aria-hidden="true"></div>
+
+    <div class="shell">
+      <section class="panel hero" aria-label="Voice demo stage">
+        <div>
+          <div class="eyebrow">
+            <span class="signal-dot"></span>
+            <span id="statusText">Idle • Awaiting command</span>
+          </div>
+
+          <h1>
+            Command the <span class="gradient-text">Web</span>
+          </h1>
+          <p class="lead" id="leadText">
+            A voice-reactive browser experience designed to look cinematic on camera and feel alive in real time.
+          </p>
+        </div>
+
+        <div class="hero-footer">
+          <div class="status-card">
+            <div class="status-label">Command recognized</div>
+            <div class="command-output" id="commandOutput">Waiting for “Wake up”</div>
+            <div class="wave" aria-hidden="true">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </div>
+          </div>
+
+          <div class="orb" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <aside class="panel control-panel" aria-label="Voice controls">
+        <div class="panel-head">
+          <h2>Demo Controls</h2>
+          <span class="badge" id="supportBadge">Checking support…</span>
+        </div>
+
+        <div class="button-row">
+          <button class="primary-btn" id="startListeningBtn">Start listening</button>
+          <button class="ghost-btn" id="stopListeningBtn">Stop</button>
+          <button class="ghost-btn" id="resetBtn">Reset scene</button>
+        </div>
+
+        <div class="section">
+          <h3>Voice commands for your LinkedIn video</h3>
+          <p>Speak these commands in order for a clean visual story. You can also tap them as a filming backup.</p>
+          <div class="chip-wrap" id="chipWrap">
+            <button class="chip" data-command="wake up">Wake up</button>
+            <button class="chip" data-command="go dark">Go dark</button>
+            <button class="chip" data-command="show grid">Show grid</button>
+            <button class="chip" data-command="focus mode">Focus mode</button>
+            <button class="chip" data-command="neon mode">Neon mode</button>
+            <button class="chip" data-command="glitch">Glitch</button>
+            <button class="chip" data-command="launch experience">Launch experience</button>
+            <button class="chip" data-command="light mode">Light mode</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Suggested filming sequence</h3>
+          <ul class="mini-list">
+            <li>Open on the idle page and say “Wake up.”</li>
+            <li>Move quickly through 3–4 commands with clear visual changes.</li>
+            <li>End on “Launch experience” for the biggest final look.</li>
+            <li>Record with your phone at a slight angle so viewers see you speaking and the screen responding.</li>
+          </ul>
+        </div>
+
+        <p class="footer-note">
+          Best in Chrome or Edge over HTTPS. GitHub Pages works well. If speech recognition is inconsistent, use the command chips and the video will still look polished.
+        </p>
+      </aside>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const body = document.body;
+    const statusText = document.getElementById('statusText');
+    const commandOutput = document.getElementById('commandOutput');
+    const leadText = document.getElementById('leadText');
+    const supportBadge = document.getElementById('supportBadge');
+    const toast = document.getElementById('toast');
+    const chipWrap = document.getElementById('chipWrap');
+    const startListeningBtn = document.getElementById('startListeningBtn');
+    const stopListeningBtn = document.getElementById('stopListeningBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let recognition = null;
+    let isListening = false;
+    let toastTimer = null;
+
+    const commandMap = [
+      { match: ['wake up', 'wake'], action: wakeUp },
+      { match: ['go dark', 'dark mode', 'dark'], action: goDark },
+      { match: ['light mode', 'go light', 'light'], action: goLight },
+      { match: ['show grid', 'grid'], action: showGrid },
+      { match: ['focus mode', 'focus'], action: focusMode },
+      { match: ['neon mode', 'neon'], action: neonMode },
+      { match: ['glitch'], action: glitchMode },
+      { match: ['launch experience', 'launch', 'activate'], action: launchExperience }
+    ];
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function setCommandText(text) {
+      commandOutput.textContent = text;
+    }
+
+    function setStatus(text, listening = false) {
+      statusText.textContent = text;
+      body.classList.toggle('listening', listening);
+      isListening = listening;
+    }
+
+    function clearModeClasses() {
+      body.classList.remove('grid-on', 'focus-mode', 'neon', 'launch', 'glitch');
+    }
+
+    function setActiveChip(command) {
+      document.querySelectorAll('.chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.command === command);
+      });
+    }
+
+    function wakeUp() {
+      clearModeClasses();
+      body.classList.remove('dark');
+      setCommandText('WAKE UP');
+      leadText.textContent = 'The interface has entered a live, listening-ready state with cinematic motion and premium visual feedback.';
+      setActiveChip('wake up');
+    }
+
+    function goDark() {
+      body.classList.add('dark');
+      setCommandText('GO DARK');
+      leadText.textContent = 'Luxury dark mode shifts the experience into a premium, high-contrast visual state built for video.';
+      setActiveChip('go dark');
+    }
+
+    function goLight() {
+      body.classList.remove('dark');
+      setCommandText('LIGHT MODE');
+      leadText.textContent = 'Light mode restores the clean editorial look for contrast, pacing, and dramatic before-and-after transitions.';
+      setActiveChip('light mode');
+    }
+
+    function showGrid() {
+      body.classList.add('grid-on');
+      setCommandText('SHOW GRID');
+      leadText.textContent = 'A futuristic depth grid appears to make the browser feel spatial, reactive, and more like an interface layer than a static page.';
+      setActiveChip('show grid');
+    }
+
+    function focusMode() {
+      body.classList.add('focus-mode');
+      setCommandText('FOCUS MODE');
+      leadText.textContent = 'Focus mode tightens the scene, lifts the primary content, and makes the page feel more intelligent and intentional.';
+      setActiveChip('focus mode');
+    }
+
+    function neonMode() {
+      body.classList.add('neon');
+      setCommandText('NEON MODE');
+      leadText.textContent = 'Neon mode brings the energy up with richer glow, color contrast, and a more futuristic presentation layer.';
+      setActiveChip('neon mode');
+    }
+
+    function glitchMode() {
+      body.classList.add('glitch');
+      setCommandText('GLITCH');
+      leadText.textContent = 'A fast glitch pulse adds a moment of surprise that plays especially well in short social video clips.';
+      setActiveChip('glitch');
+      setTimeout(() => body.classList.remove('glitch'), 700);
+    }
+
+    function launchExperience() {
+      body.classList.add('launch', 'dark', 'grid-on', 'focus-mode', 'neon');
+      setCommandText('LAUNCH EXPERIENCE');
+      leadText.textContent = 'This is the signature final state: a voice-directed browser experience designed to stop the scroll and signal what comes next for the web.';
+      setActiveChip('launch experience');
+    }
+
+    function processCommand(rawText) {
+      const text = rawText.toLowerCase().trim();
+      let matched = false;
+
+      for (const entry of commandMap) {
+        if (entry.match.some(term => text.includes(term))) {
+          entry.action();
+          showToast(`Command recognized: ${entry.match[0].toUpperCase()}`);
+          matched = true;
+          break;
+        }
+      }
+
+      if (!matched) {
+        setCommandText(`Heard: ${rawText}`);
+        showToast(`No mapped command found for “${rawText}”`);
+      }
+    }
+
+    function resetScene() {
+      body.className = '';
+      setStatus('Idle • Awaiting command', false);
+      setCommandText('Waiting for “Wake up”');
+      leadText.textContent = 'A voice-reactive browser experience designed to look cinematic on camera and feel alive in real time.';
+      setActiveChip('');
+    }
+
+    function startRecognition() {
+      if (!recognition) {
+        showToast('Speech recognition is not supported in this browser. Use the command chips for the demo.');
+        return;
+      }
+      recognition.start();
+    }
+
+    function stopRecognition() {
+      if (recognition && isListening) {
+        recognition.stop();
+      }
+      setStatus('Idle • Awaiting command', false);
+    }
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        supportBadge.textContent = 'Fallback mode only';
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.continuous = true;
+      recognition.interimResults = false;
+
+      supportBadge.textContent = 'Voice enabled';
+
+      recognition.onstart = () => {
+        setStatus('Listening • Speak a command', true);
+        showToast('Listening… Try “Wake up” or “Launch experience.”');
+      };
+
+      recognition.onend = () => {
+        setStatus('Idle • Awaiting command', false);
+      };
+
+      recognition.onerror = (event) => {
+        setStatus('Idle • Awaiting command', false);
+        showToast(`Speech recognition error: ${event.error}`);
+      };
+
+      recognition.onresult = (event) => {
+        const result = event.results[event.results.length - 1];
+        const transcript = result[0].transcript;
+        processCommand(transcript);
+      };
+    }
+
+    chipWrap.addEventListener('click', (event) => {
+      const chip = event.target.closest('.chip');
+      if (!chip) return;
+      processCommand(chip.dataset.command);
+    });
+
+    startListeningBtn.addEventListener('click', startRecognition);
+    stopListeningBtn.addEventListener('click', stopRecognition);
+    resetBtn.addEventListener('click', resetScene);
+
+    initSpeechRecognition();
+    resetScene();
+  </script>
+</body>
+</html>
