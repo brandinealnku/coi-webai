@@ -189,12 +189,29 @@
     .rail{
       width:100%;
       padding:14px;
-      border-radius:28px;
+      border-radius:30px;
       border:1px solid rgba(255,255,255,.08);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.028));
+      background:
+        radial-gradient(circle at top right, rgba(255,102,196,.1), transparent 26%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.028));
       box-shadow:var(--shadow);
       overflow:hidden;
-      transition:width .28s ease, padding .28s ease;
+      transition:width .28s ease, padding .28s ease, border-color .28s ease, box-shadow .28s ease, transform .28s ease;
+      position:relative;
+    }
+    .rail::before{
+      content:"";
+      position:absolute;
+      inset:0 auto 0 0;
+      width:1px;
+      background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0));
+      opacity:.45;
+      pointer-events:none;
+    }
+    .rail:hover{
+      border-color:rgba(255,255,255,.12);
+      box-shadow:0 30px 90px rgba(0,0,0,.38), 0 0 0 1px rgba(255,255,255,.03);
+      transform:translateY(-1px);
     }
 
     .rail-top{
@@ -217,6 +234,43 @@
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
       color:#fff;font-size:1rem;font-weight:800;
+    }
+
+    .rail-brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:4px 0 14px;
+      padding:12px;
+      border-radius:20px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .rail-brand-mark{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, var(--pink), var(--navy));
+      box-shadow:0 12px 28px rgba(255,102,196,.24);
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.14em;
+      flex:0 0 auto;
+    }
+    .rail-brand-copy strong{
+      display:block;
+      font-size:.86rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .rail-brand-copy span{
+      display:block;
+      color:var(--muted);
+      font-size:.78rem;
+      margin-top:2px;
     }
 
     .rail-summary{
@@ -248,41 +302,95 @@
       color:var(--muted); line-height:1.55; font-size:.9rem;
     }
 
+    .rail-group{
+      margin-top:14px;
+      padding:12px;
+      border-radius:22px;
+      background:rgba(255,255,255,.028);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .rail-group + .rail-group{
+      margin-top:12px;
+    }
+
     .rail-actions,
     .rail-sequence,
     .rail-secondary,
     .rail-toolbar{
       display:grid;
       gap:10px;
-      margin-top:14px;
+      margin-top:0;
     }
 
     .rail-label{
+      display:flex;
+      align-items:center;
+      gap:10px;
       font-size:.74rem;
       letter-spacing:.16em;
       text-transform:uppercase;
       color:#dce7ff;
       font-weight:800;
-      margin-top:4px;
+      margin:0 0 10px;
+    }
+    .rail-icon{
+      width:26px;
+      height:26px;
+      border-radius:10px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:.9rem;
+      flex:0 0 auto;
     }
 
     .sequence-btn,
     .secondary-btn,
     .tool-btn{
+      position:relative;
       width:100%;
-      min-height:50px;
-      padding:12px 14px;
+      min-height:52px;
+      padding:12px 14px 12px 46px;
       border-radius:16px;
-      border:1px solid rgba(255,255,255,.1);
-      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
       color:var(--text);
       font-weight:700;
       text-align:left;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+      overflow:hidden;
     }
-
-    .sequence-btn{
-      min-height:58px;
-      background:linear-gradient(135deg, rgba(255,255,255,.085), rgba(255,255,255,.04));
+    .sequence-btn::before,
+    .secondary-btn::before,
+    .tool-btn::before{
+      content:attr(data-icon);
+      position:absolute;
+      left:12px;
+      top:50%;
+      transform:translateY(-50%);
+      width:24px;
+      height:24px;
+      border-radius:9px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:.82rem;
+      opacity:.95;
+    }
+    .sequence-btn:hover,
+    .secondary-btn:hover,
+    .tool-btn:hover{
+      background:rgba(255,255,255,.06);
+      border-color:rgba(255,255,255,.14);
+      box-shadow:0 12px 24px rgba(0,0,0,.16);
+      transform:translateY(-1px);
+    }
+    .sequence-btn:active,
+    .secondary-btn:active,
+    .tool-btn:active{
+      transform:scale(.988);
     }
     .sequence-btn small,
     .tool-btn small{
@@ -292,6 +400,18 @@
       font-size:.79rem;
       font-weight:600;
     }
+    .sequence-btn.active-state,
+    .secondary-btn.active-state{
+      border-color:rgba(255,255,255,.18);
+      background:linear-gradient(135deg, rgba(255,102,196,.12), rgba(95,212,255,.08));
+      box-shadow:0 16px 32px rgba(0,0,0,.18);
+    }
+
+    .sidebar-divider{
+      height:1px;
+      margin:12px 0 2px;
+      background:linear-gradient(90deg, rgba(255,255,255,.1), rgba(255,255,255,0));
+    }
 
     .tool-row{
       display:grid;
@@ -299,11 +419,9 @@
       gap:10px;
     }
 
-    .left-rail.collapsed .rail{
-      padding:12px;
-    }
     .left-rail.collapsed .rail-summary,
-    .left-rail.collapsed .rail-label,
+    .left-rail.collapsed .rail-group .rail-label,
+    .left-rail.collapsed .sidebar-divider,
     .left-rail.collapsed .rail-status small,
     .left-rail.collapsed .sequence-btn small,
     .left-rail.collapsed .tool-btn small,
@@ -312,28 +430,50 @@
     .left-rail.collapsed .rail-secondary{
       display:none;
     }
+    .left-rail.collapsed .rail{
+      padding:12px;
+    }
+    .left-rail.collapsed .rail-brand{
+      justify-content:center;
+      padding:10px;
+    }
+    .left-rail.collapsed .rail-brand-copy{
+      display:none;
+    }
     .left-rail.collapsed .rail-status{
       margin-top:10px;
       padding:12px;
+      text-align:center;
     }
     .left-rail.collapsed .rail-status strong{
-      font-size:.68rem;
+      font-size:.66rem;
     }
     .left-rail.collapsed .rail-status span{
-      font-size:.9rem;
+      font-size:.88rem;
+    }
+    .left-rail.collapsed .rail-group{
+      padding:10px;
+      border-radius:18px;
     }
     .left-rail.collapsed .tool-row{
       grid-template-columns:1fr;
     }
     .left-rail.collapsed .tool-btn{
-      min-height:44px;
-      text-align:center;
+      min-height:46px;
       padding:10px;
+      text-align:center;
     }
-    .left-rail.collapsed .tool-btn small{display:none}
-    .left-rail.collapsed .tool-btn[data-compact-label]::before{
+    .left-rail.collapsed .tool-btn::before{
+      position:static;
+      transform:none;
+      margin:0 auto;
+    }
+    .left-rail.collapsed .tool-btn[data-compact-label]::after{
       content:attr(data-compact-label);
+      display:block;
       font-weight:800;
+      font-size:.78rem;
+      margin-top:6px;
       letter-spacing:.02em;
     }
     .left-rail.collapsed .tool-btn > span{
@@ -681,17 +821,35 @@
     body.mode-light .state-banner span,
     body.mode-light .insight-card p,
     body.mode-light .section-card p,
-    body.mode-light .case span{
+    body.mode-light .case span,
+    body.mode-light .rail-brand-copy span{
       color:#52607a;
     }
     body.mode-light .rail-status,
     body.mode-light .feature-card,
-    body.mode-light .sequence-btn,
-    body.mode-light .secondary-btn,
-    body.mode-light .tool-btn,
     body.mode-light .status-chip,
     body.mode-light .state-banner{
       background:rgba(8,17,31,.04);
+      border-color:rgba(8,17,31,.08);
+      color:#101828;
+    }
+    body.mode-light .rail-brand,
+    body.mode-light .rail-group{
+      background:rgba(8,17,31,.03);
+      border-color:rgba(8,17,31,.07);
+    }
+    body.mode-light .sequence-btn,
+    body.mode-light .secondary-btn,
+    body.mode-light .tool-btn{
+      background:rgba(8,17,31,.035);
+      border-color:rgba(8,17,31,.07);
+      color:#101828;
+    }
+    body.mode-light .sequence-btn::before,
+    body.mode-light .secondary-btn::before,
+    body.mode-light .tool-btn::before,
+    body.mode-light .rail-icon{
+      background:rgba(8,17,31,.05);
       border-color:rgba(8,17,31,.08);
       color:#101828;
     }
@@ -815,11 +973,19 @@
             <div class="rail">
               <div class="rail-top">
                 <div class="rail-title">Demo controls</div>
-                <button class="rail-toggle" id="railToggle" aria-label="Expand or collapse demo controls">⇤</button>
+                <button class="rail-toggle" id="railToggle" aria-label="Collapse demo controls">⇤</button>
+              </div>
+
+              <div class="rail-brand">
+                <div class="rail-brand-mark">ITS</div>
+                <div class="rail-brand-copy">
+                  <strong>ITSBAD Demo Studio</strong>
+                  <span>Premium voice-directed interface</span>
+                </div>
               </div>
 
               <div class="rail-summary">
-                A slim sticky command rail inspired by presentation tools. Keep it compact while presenting, then expand it when you need more control.
+                A premium sticky sidebar inspired by polished app workspaces. Keep it slim while presenting, then expand it when you need more control.
               </div>
 
               <div class="rail-status">
@@ -828,36 +994,38 @@
                 <small id="stateSummary">The rail keeps controls visible without taking over the main showcase area.</small>
               </div>
 
-              <div class="rail-actions">
-                <div class="rail-label">Fast start</div>
-                <button class="sequence-btn" id="guidedDemoBtn" data-command="guided">
+              <div class="sidebar-divider"></div>
+
+              <div class="rail-group rail-actions">
+                <div class="rail-label"><span class="rail-icon">▶</span>Fast start</div>
+                <button class="sequence-btn" id="guidedDemoBtn" data-command="guided" data-icon="▶">
                   Play guided demo
                   <small>Runs the best sequence from wake up to talk back.</small>
                 </button>
               </div>
 
-              <div class="rail-sequence">
-                <div class="rail-label">Primary sequence</div>
-                <button class="sequence-btn" data-command="wake up">Wake up<small>Start the experience</small></button>
-                <button class="sequence-btn" data-command="launch experience">Launch experience<small>Big reveal</small></button>
-                <button class="sequence-btn" data-command="talk back">Talk back<small>Mic drop moment</small></button>
+              <div class="rail-group rail-sequence">
+                <div class="rail-label"><span class="rail-icon">✦</span>Primary sequence</div>
+                <button class="sequence-btn" data-command="wake up" data-icon="◉">Wake up<small>Start the experience</small></button>
+                <button class="sequence-btn" data-command="launch experience" data-icon="✦">Launch experience<small>Big reveal</small></button>
+                <button class="sequence-btn" data-command="talk back" data-icon="✶">Talk back<small>Mic drop moment</small></button>
               </div>
 
-              <div class="rail-secondary">
-                <div class="rail-label">Extra states</div>
-                <button class="secondary-btn" data-command="go dark">Go dark</button>
-                <button class="secondary-btn" data-command="go light">Go light</button>
-                <button class="secondary-btn" data-command="show grid">Show grid</button>
-                <button class="secondary-btn" data-command="focus mode">Focus mode</button>
-                <button class="secondary-btn" data-command="neon mode">Neon mode</button>
-                <button class="secondary-btn" data-command="reset">Reset</button>
+              <div class="rail-group rail-secondary">
+                <div class="rail-label"><span class="rail-icon">⌘</span>Extra states</div>
+                <button class="secondary-btn" data-command="go dark" data-icon="☾">Go dark</button>
+                <button class="secondary-btn" data-command="go light" data-icon="☀">Go light</button>
+                <button class="secondary-btn" data-command="show grid" data-icon="⌗">Show grid</button>
+                <button class="secondary-btn" data-command="focus mode" data-icon="◎">Focus mode</button>
+                <button class="secondary-btn" data-command="neon mode" data-icon="✺">Neon mode</button>
+                <button class="secondary-btn" data-command="reset" data-icon="↺">Reset</button>
               </div>
 
-              <div class="rail-toolbar">
-                <div class="rail-label">Tools</div>
+              <div class="rail-group rail-toolbar">
+                <div class="rail-label"><span class="rail-icon">⚙</span>Tools</div>
                 <div class="tool-row">
-                  <button class="tool-btn" id="micBtn" data-compact-label="Voice"><span>Start voice</span><small>Use microphone input</small></button>
-                  <button class="tool-btn" id="fullscreenBtn" data-compact-label="Full"><span>Fullscreen</span><small>Presentation mode</small></button>
+                  <button class="tool-btn" id="micBtn" data-compact-label="Voice" data-icon="🎙"><span>Start voice</span><small>Use microphone input</small></button>
+                  <button class="tool-btn" id="fullscreenBtn" data-compact-label="Full" data-icon="⤢"><span>Fullscreen</span><small>Presentation mode</small></button>
                 </div>
               </div>
             </div>
@@ -1110,6 +1278,17 @@
       );
     }
 
+    function clearActiveButtons() {
+      document.querySelectorAll('.sequence-btn, .secondary-btn').forEach(btn => btn.classList.remove('active-state'));
+    }
+
+    function markActive(command) {
+      clearActiveButtons();
+      const match = [...document.querySelectorAll('.sequence-btn, .secondary-btn')]
+        .find(btn => (btn.dataset.command || '').toLowerCase() === command.toLowerCase());
+      if (match) match.classList.add('active-state');
+    }
+
     function setState(key) {
       const copy = stateCopy[key] || stateCopy.idle;
       modeChip.textContent = copy.chip;
@@ -1172,6 +1351,7 @@
 
     function runCommand(commandRaw) {
       const command = commandRaw.toLowerCase().trim();
+      markActive(command);
       recognizedText.textContent = command.toUpperCase();
       hideTalkback();
 
@@ -1280,6 +1460,7 @@
     railToggle.addEventListener('click', () => {
       const collapsed = leftRail.classList.toggle('collapsed');
       railToggle.textContent = collapsed ? '⇥' : '⇤';
+      railToggle.setAttribute('aria-label', collapsed ? 'Expand demo controls' : 'Collapse demo controls');
       showToast(collapsed ? 'Control rail collapsed.' : 'Control rail expanded.');
     });
 
