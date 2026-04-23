@@ -1330,6 +1330,226 @@
       transform:translateX(-50%) translateY(0);
     }
 
+
+    .demo-stage{
+      padding-bottom:190px;
+    }
+
+    .reaction-overlay{
+      position:absolute;
+      inset:16px 16px auto 16px;
+      z-index:5;
+      padding:18px 18px 16px;
+      border-radius:24px;
+      background:linear-gradient(135deg, rgba(8,14,28,.9), rgba(19,25,46,.82));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 24px 60px rgba(0,0,0,.34);
+      display:grid;
+      gap:8px;
+      opacity:0;
+      transform:translateY(-10px) scale(.98);
+      pointer-events:none;
+      transition:opacity .28s ease, transform .28s ease;
+      backdrop-filter:blur(16px);
+    }
+
+    .reaction-overlay.show{
+      opacity:1;
+      transform:translateY(0) scale(1);
+    }
+
+    .reaction-kicker{
+      font-size:.72rem;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:#dce7ff;
+      font-weight:800;
+    }
+
+    .reaction-title{
+      font-size:1.35rem;
+      line-height:1.08;
+      letter-spacing:-.03em;
+      color:#fff;
+      font-weight:800;
+      text-wrap:balance;
+    }
+
+    .reaction-desc{
+      color:rgba(255,255,255,.82);
+      font-size:.94rem;
+      line-height:1.55;
+      text-wrap:balance;
+    }
+
+    .reaction-word{
+      position:absolute;
+      left:18px;
+      right:18px;
+      top:50%;
+      transform:translateY(-50%) scale(.92);
+      z-index:4;
+      text-align:center;
+      font-size:clamp(2.2rem, 10vw, 5.6rem);
+      line-height:.9;
+      letter-spacing:-.08em;
+      font-weight:900;
+      color:#fff;
+      text-shadow:0 0 28px rgba(255,255,255,.12);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .22s ease, transform .22s ease;
+    }
+
+    .reaction-word.show{
+      opacity:.94;
+      transform:translateY(-50%) scale(1);
+    }
+
+    .stage-scrim{
+      position:absolute;
+      inset:0;
+      z-index:2;
+      pointer-events:none;
+      opacity:0;
+      transition:opacity .28s ease;
+      background:radial-gradient(circle at center, rgba(255,255,255,.03), rgba(6,10,18,.42) 58%);
+    }
+
+    .stage-scrim.show{
+      opacity:1;
+    }
+
+    .demo-stage.compact-ui .demo-quickstart,
+    .demo-stage.compact-ui .recognition,
+    .demo-stage.compact-ui .demo-help,
+    .demo-stage.compact-ui .demo-footer-note{
+      display:none !important;
+    }
+
+    .demo-stage.compact-ui .command-panel{
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      z-index:6;
+      margin:0;
+      gap:10px;
+    }
+
+    .demo-stage.compact-ui .primary-command-row{
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:8px;
+    }
+
+    .demo-stage.compact-ui .primary-command{
+      min-height:50px;
+      padding:10px 12px;
+      font-size:.94rem;
+      border-radius:16px;
+    }
+
+    .demo-stage.compact-ui .primary-command small{
+      display:none;
+    }
+
+    .demo-stage.compact-ui .secondary-command-grid{
+      display:none;
+    }
+
+    .demo-stage.compact-ui .demo-toolbar{
+      grid-template-columns:repeat(5, minmax(0,1fr));
+      gap:8px;
+      margin-top:0;
+      padding:8px;
+      border-radius:18px;
+    }
+
+    .demo-stage.compact-ui .toolbar-btn{
+      min-height:46px;
+      padding:10px 8px;
+      font-size:.82rem;
+      border-radius:14px;
+    }
+
+    .demo-stage.compact-ui .state-banner{
+      left:12px;
+      right:12px;
+      bottom:130px;
+      padding:14px 15px;
+    }
+
+    .demo-stage.compact-ui .talkback-card{
+      left:12px;
+      right:12px;
+      top:12px;
+    }
+
+    .demo-stage.compact-ui .reaction-overlay{
+      inset:12px 12px auto 12px;
+    }
+
+    .demo-stage.compact-ui .demo-header{
+      padding-top:118px;
+    }
+
+    .reaction-pulse{
+      position:absolute;
+      inset:50% auto auto 50%;
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      transform:translate(-50%, -50%) scale(0);
+      background:radial-gradient(circle, rgba(255,255,255,.65), rgba(255,255,255,0));
+      opacity:0;
+      z-index:3;
+      pointer-events:none;
+    }
+
+    body.flash-grid .reaction-pulse,
+    body.flash-focus .reaction-pulse,
+    body.flash-neon .reaction-pulse,
+    body.flash-launch .reaction-pulse,
+    body.flash-dark .reaction-pulse,
+    body.flash-light .reaction-pulse,
+    body.flash-wake .reaction-pulse,
+    body.flash-talkback .reaction-pulse{
+      animation:reactionPulse .62s ease-out;
+    }
+
+    @keyframes reactionPulse{
+      0%{transform:translate(-50%, -50%) scale(.2); opacity:.9}
+      100%{transform:translate(-50%, -50%) scale(10); opacity:0}
+    }
+
+    body.mode-light .reaction-overlay{
+      background:linear-gradient(135deg, rgba(255,255,255,.92), rgba(244,248,255,.9));
+      border-color:rgba(8,17,31,.1);
+    }
+    body.mode-light .reaction-kicker,
+    body.mode-light .reaction-title{
+      color:#101828;
+    }
+    body.mode-light .reaction-desc{
+      color:#52607a;
+    }
+
+    body.state-grid .reaction-word{color:#b9ecff;text-shadow:0 0 24px rgba(95,212,255,.28)}
+    body.state-focus .reaction-word{color:#ffffff;text-shadow:0 0 24px rgba(255,255,255,.22)}
+    body.state-neon .reaction-word{color:#ffd6ef;text-shadow:0 0 30px rgba(255,102,196,.36), 0 0 48px rgba(95,212,255,.2)}
+    body.state-launch .reaction-word{color:#ffffff;text-shadow:0 0 36px rgba(255,102,196,.38), 0 0 60px rgba(95,212,255,.24)}
+    body.state-talkback .reaction-word{color:#ffffff;text-shadow:0 0 36px rgba(255,102,196,.38), 0 0 60px rgba(95,212,255,.24)}
+
+    @media (max-width:759px){
+      .demo-stage{
+        min-height:760px;
+      }
+      .command-panel{
+        gap:10px;
+      }
+    }
+
+
     .demo-stage.is-fullscreen{
       min-height:100dvh;
       border-radius:0;
@@ -1379,7 +1599,7 @@
 
     @media (min-width:760px){
       .demo-toolbar{
-        grid-template-columns:repeat(4, minmax(0,1fr));
+        grid-template-columns:repeat(5, minmax(0,1fr));
       }
 
       .quickstart-steps{
@@ -1565,6 +1785,14 @@
             </div>
 
             <div class="micdrop-ring" aria-hidden="true"></div>
+            <div class="stage-scrim" id="stageScrim" aria-hidden="true"></div>
+            <div class="reaction-pulse" aria-hidden="true"></div>
+            <div class="reaction-overlay" id="reactionOverlay" aria-live="polite">
+              <div class="reaction-kicker">Live reaction</div>
+              <div class="reaction-title" id="reactionTitle">Ready for a stronger visual demo</div>
+              <div class="reaction-desc" id="reactionDesc">Command reactions now surface as large on-screen moments so they are easier to see without fullscreen.</div>
+            </div>
+            <div class="reaction-word" id="reactionWord" aria-hidden="true">READY</div>
 
             <div class="orb one" aria-hidden="true"></div>
             <div class="orb two" aria-hidden="true"></div>
@@ -1630,6 +1858,7 @@
                 <button class="toolbar-btn primary" id="guidedDemoBtn">Play guided demo</button>
                 <button class="toolbar-btn" id="micBtn" aria-label="Start or stop voice recognition">Start voice</button>
                 <button class="toolbar-btn" id="fullscreenBtn" aria-label="Open or close fullscreen presentation mode">Fullscreen demo</button>
+                <button class="toolbar-btn" id="compactBtn" aria-label="Toggle compact demo controls">Focus layout</button>
                 <button class="toolbar-btn" id="helpBtn" aria-controls="demoHelp">Show help</button>
               </div>
 
@@ -1870,6 +2099,12 @@
     const demoHelp = document.getElementById('demoHelp');
     const demoStage = document.getElementById('demoStage');
     const fullscreenToast = document.getElementById('fullscreenToast');
+    const compactBtn = document.getElementById('compactBtn');
+    const stageScrim = document.getElementById('stageScrim');
+    const reactionOverlay = document.getElementById('reactionOverlay');
+    const reactionTitle = document.getElementById('reactionTitle');
+    const reactionDesc = document.getElementById('reactionDesc');
+    const reactionWord = document.getElementById('reactionWord');
     let talkbackTimeout;
 
     const stateCopy = {
@@ -1925,6 +2160,19 @@
       }
     };
 
+
+    const reactionCopy = {
+      wake: { word: 'AWAKE', title: 'Experience awakened', desc: 'The interface is live and ready for the guided sequence.' },
+      light: { word: 'LIGHT', title: 'Light mode activated', desc: 'A brighter editorial presentation state has taken over the page.' },
+      dark: { word: 'DARK', title: 'Dark mode activated', desc: 'The premium cinematic base state is now active.' },
+      grid: { word: 'GRID', title: 'Spatial grid revealed', desc: 'A stronger perspective grid has been pushed forward so it reads clearly on camera.' },
+      focus: { word: 'FOCUS', title: 'Focus mode engaged', desc: 'The layout now emphasizes the main message and minimizes visual competition.' },
+      neon: { word: 'NEON', title: 'Neon mode engaged', desc: 'Glow, contrast, and color intensity have all been increased for a bolder reveal.' },
+      launch: { word: 'LAUNCH', title: 'Launch sequence active', desc: 'This is the big visual payoff, with multiple effects stacked together.' },
+      talkback: { word: 'RESPOND', title: 'The page talks back', desc: 'The experience has shifted from reactive to conversational.' },
+      reset: { word: 'RESET', title: 'Experience reset', desc: 'The page has returned to its base state for another run.' }
+    };
+
     function clearStates() {
       body.classList.remove(
         'state-dark',
@@ -1934,7 +2182,15 @@
         'state-launch',
         'state-talkback',
         'mode-light',
-        'mode-dark'
+        'mode-dark',
+        'flash-grid',
+        'flash-focus',
+        'flash-neon',
+        'flash-launch',
+        'flash-dark',
+        'flash-light',
+        'flash-wake',
+        'flash-talkback'
       );
     }
 
@@ -1953,6 +2209,29 @@
       }, 4200);
     }
 
+    function showReaction(key) {
+      const reaction = reactionCopy[key];
+      if (!reaction) return;
+      reactionTitle.textContent = reaction.title;
+      reactionDesc.textContent = reaction.desc;
+      reactionWord.textContent = reaction.word;
+      reactionOverlay.classList.add('show');
+      reactionWord.classList.add('show');
+      stageScrim.classList.add('show');
+      clearTimeout(showReaction._t);
+      showReaction._t = setTimeout(() => {
+        reactionOverlay.classList.remove('show');
+        reactionWord.classList.remove('show');
+        stageScrim.classList.remove('show');
+      }, key === 'talkback' ? 3800 : 1700);
+    }
+
+    function flashBody(key) {
+      const cls = `flash-${key}`;
+      body.classList.add(cls);
+      setTimeout(() => body.classList.remove(cls), 700);
+    }
+
     function setState(key) {
       const copy = stateCopy[key] || stateCopy.idle;
       modeChip.textContent = copy.chip;
@@ -1969,6 +2248,8 @@
         clearStates();
         body.classList.add('mode-dark');
         setState('wake');
+        showReaction('wake');
+        flashBody('wake');
         return;
       }
 
@@ -1976,6 +2257,8 @@
         clearStates();
         body.classList.add('mode-light');
         setState('light');
+        showReaction('light');
+        flashBody('light');
         return;
       }
 
@@ -1983,6 +2266,8 @@
         clearStates();
         body.classList.add('mode-dark');
         setState('dark');
+        showReaction('dark');
+        flashBody('dark');
         return;
       }
 
@@ -1990,6 +2275,8 @@
         clearStates();
         body.classList.add('mode-dark', 'state-grid');
         setState('grid');
+        showReaction('grid');
+        flashBody('grid');
         return;
       }
 
@@ -1997,6 +2284,8 @@
         clearStates();
         body.classList.add('mode-dark', 'state-focus');
         setState('focus');
+        showReaction('focus');
+        flashBody('focus');
         return;
       }
 
@@ -2004,6 +2293,8 @@
         clearStates();
         body.classList.add('mode-dark', 'state-neon');
         setState('neon');
+        showReaction('neon');
+        flashBody('neon');
         return;
       }
 
@@ -2011,6 +2302,8 @@
         clearStates();
         body.classList.add('mode-dark', 'state-launch');
         setState('launch');
+        showReaction('launch');
+        flashBody('launch');
         return;
       }
 
@@ -2018,6 +2311,8 @@
         clearStates();
         body.classList.add('mode-dark', 'state-talkback');
         setState('talkback');
+        showReaction('talkback');
+        flashBody('talkback');
         showTalkback(
           'You are not watching the future of the web. You are hearing it respond.',
           'That one line is the mic drop: the page shifts from obeying commands to speaking as part of the brand experience.'
@@ -2034,12 +2329,15 @@
         }
         hideTalkback();
         setState('reset');
+        showReaction('reset');
         return;
       }
 
       if (command.includes('showcase')) {
         document.getElementById('use-cases')?.scrollIntoView({ behavior: 'smooth' });
         setState('wake');
+        showReaction('wake');
+        flashBody('wake');
         return;
       }
 
@@ -2117,6 +2415,11 @@
 
     guidedDemoBtn?.addEventListener('click', playGuidedDemo);
     fullscreenBtn?.addEventListener('click', toggleFullscreen);
+    compactBtn?.addEventListener('click', () => {
+      const compact = demoStage.classList.toggle('compact-ui');
+      compactBtn.textContent = compact ? 'Expanded layout' : 'Focus layout';
+      showToast(compact ? 'Focused layout enabled. Reactions should be easier to see.' : 'Expanded layout restored.');
+    });
     helpBtn?.addEventListener('click', () => {
       const open = !demoHelp.open;
       demoHelp.open = open;
