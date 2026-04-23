@@ -12,7 +12,7 @@
       --text: #0f172a;
       --muted: #475569;
       --line: rgba(15, 23, 42, 0.08);
-      --panel: rgba(255,255,255,0.7);
+      --panel: rgba(255,255,255,0.72);
       --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
       --glow: rgba(59, 130, 246, 0.18);
       --accent: #3a3b78;
@@ -20,18 +20,20 @@
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
+      --hero-scale: 1;
+      --hero-y: 0px;
     }
 
     body.dark {
-      --bg: #050816;
+      --bg: #040814;
       --bg-2: #091124;
       --text: #f8fafc;
-      --muted: #b8c2d6;
+      --muted: #c1cce2;
       --line: rgba(255,255,255,0.09);
       --panel: rgba(9,17,36,0.58);
       --shadow: 0 30px 90px rgba(0,0,0,0.45);
-      --glow: rgba(255, 102, 196, 0.16);
-      --accent: #8ea1ff;
+      --glow: rgba(255, 102, 196, 0.18);
+      --accent: #95a6ff;
       --accent-2: #ff66c4;
     }
 
@@ -41,8 +43,8 @@
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at 20% 10%, rgba(255,102,196,0.09), transparent 24%),
-        radial-gradient(circle at 80% 20%, rgba(58,59,120,0.15), transparent 26%),
+        radial-gradient(circle at 20% 10%, rgba(255,102,196,0.10), transparent 24%),
+        radial-gradient(circle at 80% 20%, rgba(58,59,120,0.16), transparent 26%),
         linear-gradient(180deg, var(--bg), var(--bg-2));
       color: var(--text);
       overflow: hidden;
@@ -63,7 +65,7 @@
       inset: auto;
       content: "";
       border-radius: 999px;
-      filter: blur(50px);
+      filter: blur(58px);
       pointer-events: none;
       transition: all 500ms ease;
     }
@@ -75,7 +77,7 @@
       top: -8rem;
       background: rgba(255, 102, 196, 0.14);
       animation: floaty 14s ease-in-out infinite;
-      z-index: -2;
+      z-index: -4;
     }
     .ambient::before {
       width: 24rem;
@@ -98,26 +100,46 @@
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
-      background-size: 42px 42px;
+        linear-gradient(to right, rgba(255,255,255,0.16) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.16) 1px, transparent 1px);
+      background-size: 44px 44px;
       opacity: 0;
-      transform: perspective(1000px) rotateX(68deg) scale(1.55) translateY(18%);
+      transform: perspective(1000px) rotateX(72deg) scale(1.8) translateY(22%);
       transform-origin: center top;
-      transition: opacity 400ms ease;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent 70%);
+      transition: opacity 350ms ease, transform 450ms ease;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.98), transparent 75%);
       pointer-events: none;
-      z-index: -1;
+      z-index: -3;
     }
 
-    body.grid-on .grid-overlay { opacity: 1; }
+    body.grid-on .grid-overlay {
+      opacity: 0.95;
+      transform: perspective(1000px) rotateX(72deg) scale(1.55) translateY(16%);
+      animation: gridSweep 5s linear infinite;
+    }
+
+    .scan-beam {
+      position: absolute;
+      inset: -10% -30%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.03) 38%, rgba(255,102,196,0.16) 50%, rgba(255,255,255,0.03) 62%, transparent 100%);
+      opacity: 0;
+      transform: translateX(-70%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    body.grid-on .scan-beam {
+      opacity: 1;
+      animation: scanBeam 2.8s ease-in-out infinite;
+    }
 
     .shell {
-      width: min(1100px, 100%);
+      width: min(1120px, 100%);
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
       gap: 20px;
       align-items: stretch;
+      transition: transform 350ms ease, filter 350ms ease;
     }
 
     .panel {
@@ -129,6 +151,19 @@
       border-radius: 28px;
       box-shadow: var(--shadow);
       overflow: hidden;
+      transition: transform 350ms ease, box-shadow 350ms ease, border-color 350ms ease, background 350ms ease, opacity 350ms ease, filter 350ms ease;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,102,196,0.18), transparent 22%),
+        radial-gradient(circle at 20% 80%, rgba(58,59,120,0.18), transparent 28%);
+      opacity: 0.55;
+      pointer-events: none;
+      transition: opacity 300ms ease, transform 350ms ease;
     }
 
     .hero {
@@ -137,12 +172,32 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 300ms ease, box-shadow 300ms ease;
+      transform: translateY(var(--hero-y)) scale(var(--hero-scale));
+    }
+
+    body.focus-mode {
+      --hero-scale: 1.06;
+      --hero-y: -4px;
     }
 
     body.focus-mode .hero {
-      transform: scale(1.018);
-      box-shadow: 0 36px 100px rgba(0,0,0,0.28);
+      z-index: 2;
+      box-shadow:
+        0 44px 120px rgba(0,0,0,0.34),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 80px rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    body.focus-mode .control-panel {
+      opacity: 0.52;
+      transform: scale(0.96);
+      filter: blur(1px);
+    }
+
+    body.focus-mode .hero::before {
+      opacity: 0.9;
+      transform: scale(1.06);
     }
 
     .eyebrow {
@@ -158,6 +213,8 @@
       text-transform: uppercase;
       color: var(--muted);
       width: fit-content;
+      position: relative;
+      z-index: 1;
     }
 
     .signal-dot {
@@ -175,10 +232,18 @@
 
     h1 {
       margin: 20px 0 14px;
-      font-size: clamp(2.6rem, 6vw, 5.7rem);
-      line-height: 0.95;
-      letter-spacing: -0.04em;
+      font-size: clamp(2.8rem, 6vw, 6rem);
+      line-height: 0.92;
+      letter-spacing: -0.045em;
       max-width: 11ch;
+      position: relative;
+      z-index: 1;
+      transition: transform 350ms ease, text-shadow 350ms ease, letter-spacing 350ms ease;
+    }
+
+    body.focus-mode h1 {
+      transform: scale(1.03);
+      letter-spacing: -0.05em;
     }
 
     .gradient-text {
@@ -194,6 +259,14 @@
       line-height: 1.7;
       color: var(--muted);
       margin-bottom: 26px;
+      position: relative;
+      z-index: 1;
+      transition: transform 300ms ease, color 300ms ease;
+    }
+
+    body.focus-mode .lead {
+      transform: translateY(2px);
+      color: color-mix(in srgb, var(--text) 78%, var(--muted) 22%);
     }
 
     .hero-footer {
@@ -201,13 +274,22 @@
       grid-template-columns: 1fr auto;
       gap: 16px;
       align-items: end;
+      position: relative;
+      z-index: 1;
     }
 
     .status-card {
       border: 1px solid var(--line);
       border-radius: 22px;
       padding: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+      transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+    }
+
+    body.neon .status-card,
+    body.launch .status-card {
+      border-color: rgba(255,102,196,0.34);
+      box-shadow: 0 0 28px rgba(255,102,196,0.18);
     }
 
     .status-label {
@@ -219,10 +301,17 @@
     }
 
     .command-output {
-      font-size: clamp(1.1rem, 2vw, 1.6rem);
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-size: clamp(1.1rem, 2vw, 1.7rem);
+      font-weight: 800;
+      letter-spacing: 0.08em;
       min-height: 1.6em;
+      transition: transform 220ms ease, text-shadow 220ms ease;
+    }
+
+    body.neon .command-output,
+    body.launch .command-output {
+      text-shadow: 0 0 14px rgba(255,102,196,0.55), 0 0 28px rgba(149,166,255,0.35);
+      transform: scale(1.02);
     }
 
     .wave {
@@ -242,17 +331,58 @@
       transition: height 180ms ease, opacity 180ms ease;
     }
 
-    body.listening .bar {
-      opacity: 0.95;
+    body.listening .bar,
+    body.launch .bar {
+      opacity: 0.98;
       animation: waveDance 1s infinite ease-in-out;
     }
 
-    body.listening .bar:nth-child(2) { animation-delay: 0.08s; }
-    body.listening .bar:nth-child(3) { animation-delay: 0.16s; }
-    body.listening .bar:nth-child(4) { animation-delay: 0.24s; }
-    body.listening .bar:nth-child(5) { animation-delay: 0.32s; }
-    body.listening .bar:nth-child(6) { animation-delay: 0.4s; }
-    body.listening .bar:nth-child(7) { animation-delay: 0.48s; }
+    body.listening .bar:nth-child(2),
+    body.launch .bar:nth-child(2) { animation-delay: 0.08s; }
+    body.listening .bar:nth-child(3),
+    body.launch .bar:nth-child(3) { animation-delay: 0.16s; }
+    body.listening .bar:nth-child(4),
+    body.launch .bar:nth-child(4) { animation-delay: 0.24s; }
+    body.listening .bar:nth-child(5),
+    body.launch .bar:nth-child(5) { animation-delay: 0.32s; }
+    body.listening .bar:nth-child(6),
+    body.launch .bar:nth-child(6) { animation-delay: 0.4s; }
+    body.listening .bar:nth-child(7),
+    body.launch .bar:nth-child(7) { animation-delay: 0.48s; }
+
+    .orb-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: grid;
+      place-items: center;
+    }
+
+    .orb-rings,
+    .orb-rings::before,
+    .orb-rings::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+
+    .orb-rings::before { inset: -14px; }
+    .orb-rings::after { inset: -28px; }
+
+    body.neon .orb-rings,
+    body.launch .orb-rings {
+      opacity: 1;
+      transform: scale(1);
+      animation: ringPulse 2.2s ease-in-out infinite;
+    }
+
+    body.launch .orb-rings::before { animation: ringPulse 2.2s ease-in-out infinite 0.25s; }
+    body.launch .orb-rings::after { animation: ringPulse 2.2s ease-in-out infinite 0.5s; }
 
     .orb {
       width: 180px;
@@ -269,6 +399,7 @@
         0 24px 80px rgba(58,59,120,0.28);
       position: relative;
       animation: floaty 7s ease-in-out infinite;
+      transition: transform 350ms ease, box-shadow 350ms ease, filter 350ms ease;
     }
 
     .orb::before,
@@ -285,13 +416,59 @@
       border-color: rgba(255,255,255,0.09);
     }
 
-    body.launch .orb {
-      animation: pulseHalo 1.75s ease-in-out infinite;
+    body.focus-mode .orb {
+      transform: scale(1.12);
+      filter: saturate(1.1);
+    }
+
+    body.neon .orb {
+      transform: scale(1.08);
       box-shadow:
         inset 0 0 40px rgba(255,255,255,0.16),
         0 0 0 1px rgba(255,255,255,0.08),
-        0 0 60px rgba(255,102,196,0.35),
-        0 0 120px rgba(58,59,120,0.3);
+        0 0 48px rgba(255,102,196,0.42),
+        0 0 100px rgba(149,166,255,0.26);
+      filter: saturate(1.45) brightness(1.08);
+    }
+
+    body.launch .orb {
+      animation: pulseHalo 1.4s ease-in-out infinite;
+      transform: scale(1.16);
+      box-shadow:
+        inset 0 0 46px rgba(255,255,255,0.18),
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 70px rgba(255,102,196,0.46),
+        0 0 150px rgba(149,166,255,0.36);
+      filter: saturate(1.55) brightness(1.16);
+    }
+
+    .hero-banner {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: white;
+      background: linear-gradient(135deg, rgba(255,102,196,0.92), rgba(58,59,120,0.92));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(-12px) scale(0.94);
+      transition: opacity 220ms ease, transform 220ms ease;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    body.grid-on .hero-banner.grid,
+    body.focus-mode .hero-banner.focus,
+    body.neon .hero-banner.neon,
+    body.launch .hero-banner.launch {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     .control-panel {
@@ -329,12 +506,13 @@
       color: var(--text);
       border-radius: 16px;
       cursor: pointer;
-      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
     .primary-btn:hover, .ghost-btn:hover, .chip:hover {
       transform: translateY(-1px);
       border-color: rgba(255,255,255,0.2);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
 
     .primary-btn {
@@ -386,12 +564,13 @@
     .chip {
       padding: 10px 12px;
       font-size: 0.9rem;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .chip.active {
-      background: linear-gradient(135deg, rgba(58,59,120,0.25), rgba(255,102,196,0.22));
-      border-color: rgba(255,255,255,0.2);
+      background: linear-gradient(135deg, rgba(58,59,120,0.32), rgba(255,102,196,0.28));
+      border-color: rgba(255,255,255,0.24);
+      box-shadow: 0 0 18px rgba(255,102,196,0.16);
     }
 
     .mini-list {
@@ -415,13 +594,13 @@
       transform: translateX(-50%) translateY(18px);
       padding: 12px 16px;
       border-radius: 14px;
-      background: rgba(9,17,36,0.88);
+      background: rgba(9,17,36,0.9);
       color: white;
       border: 1px solid rgba(255,255,255,0.08);
       opacity: 0;
       pointer-events: none;
       transition: all 220ms ease;
-      z-index: 5;
+      z-index: 8;
       max-width: min(92vw, 700px);
       text-align: center;
       font-size: 0.92rem;
@@ -432,13 +611,34 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    body.neon {
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,102,196,0.16), transparent 24%),
+        radial-gradient(circle at 80% 20%, rgba(149,166,255,0.22), transparent 26%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+    }
+
     body.neon .hero,
     body.neon .control-panel {
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.08),
-        0 0 30px rgba(255,102,196,0.14),
-        0 0 70px rgba(58,59,120,0.18),
+        0 0 34px rgba(255,102,196,0.20),
+        0 0 84px rgba(149,166,255,0.20),
         var(--shadow);
+      border-color: rgba(255,102,196,0.28);
+    }
+
+    body.launch .hero,
+    body.launch .control-panel {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.10),
+        0 0 44px rgba(255,102,196,0.25),
+        0 0 120px rgba(149,166,255,0.22),
+        var(--shadow);
+    }
+
+    body.launch h1 {
+      text-shadow: 0 0 18px rgba(255,102,196,0.22), 0 0 40px rgba(149,166,255,0.18);
     }
 
     body.glitch .hero {
@@ -462,8 +662,8 @@
     }
 
     @keyframes pulseHalo {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
+      0%, 100% { transform: scale(1.16); }
+      50% { transform: scale(1.23); }
     }
 
     @keyframes glitchPulse {
@@ -474,12 +674,29 @@
       100% { transform: translate(0,0); filter: saturate(1); }
     }
 
+    @keyframes ringPulse {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      70% { transform: scale(1.14); opacity: 0; }
+      100% { transform: scale(1.18); opacity: 0; }
+    }
+
+    @keyframes scanBeam {
+      0% { transform: translateX(-70%); }
+      100% { transform: translateX(70%); }
+    }
+
+    @keyframes gridSweep {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 44px 0, 0 44px; }
+    }
+
     @media (max-width: 900px) {
       body { overflow: auto; }
       .stage { padding: 16px; }
       .shell { grid-template-columns: 1fr; }
       .hero, .control-panel { min-height: auto; }
       .hero-footer { grid-template-columns: 1fr; }
+      .orb-wrap { width: 160px; height: 160px; }
       .orb { width: 130px; }
     }
   </style>
@@ -488,9 +705,15 @@
   <div class="stage">
     <div class="ambient"></div>
     <div class="grid-overlay" aria-hidden="true"></div>
+    <div class="scan-beam" aria-hidden="true"></div>
 
     <div class="shell">
       <section class="panel hero" aria-label="Voice demo stage">
+        <div class="hero-banner grid">Grid online</div>
+        <div class="hero-banner focus">Focus locked</div>
+        <div class="hero-banner neon">Neon active</div>
+        <div class="hero-banner launch">Experience launched</div>
+
         <div>
           <div class="eyebrow">
             <span class="signal-dot"></span>
@@ -520,7 +743,10 @@
             </div>
           </div>
 
-          <div class="orb" aria-hidden="true"></div>
+          <div class="orb-wrap" aria-hidden="true">
+            <div class="orb-rings"></div>
+            <div class="orb"></div>
+          </div>
         </div>
       </section>
 
@@ -552,12 +778,12 @@
         </div>
 
         <div class="section">
-          <h3>Suggested filming sequence</h3>
+          <h3>Why these states now read better on video</h3>
           <ul class="mini-list">
-            <li>Open on the idle page and say “Wake up.”</li>
-            <li>Move quickly through 3–4 commands with clear visual changes.</li>
-            <li>End on “Launch experience” for the biggest final look.</li>
-            <li>Record with your phone at a slight angle so viewers see you speaking and the screen responding.</li>
+            <li><strong>Show grid</strong> now adds a bright perspective grid plus a sweeping scan beam.</li>
+            <li><strong>Focus mode</strong> enlarges the hero panel and dims the side panel.</li>
+            <li><strong>Neon mode</strong> now lights the entire interface and pulses the orb.</li>
+            <li><strong>Launch experience</strong> stacks the best effects into one unmistakable final state.</li>
           </ul>
         </div>
 
@@ -641,36 +867,40 @@
 
     function goLight() {
       body.classList.remove('dark');
+      clearModeClasses();
       setCommandText('LIGHT MODE');
       leadText.textContent = 'Light mode restores the clean editorial look for contrast, pacing, and dramatic before-and-after transitions.';
       setActiveChip('light mode');
     }
 
     function showGrid() {
+      body.classList.remove('focus-mode', 'neon', 'launch');
       body.classList.add('grid-on');
       setCommandText('SHOW GRID');
-      leadText.textContent = 'A futuristic depth grid appears to make the browser feel spatial, reactive, and more like an interface layer than a static page.';
+      leadText.textContent = 'A perspective grid and scan beam now sweep across the page so the change is obvious even in a quick phone-shot demo.';
       setActiveChip('show grid');
     }
 
     function focusMode() {
+      body.classList.remove('neon', 'launch');
       body.classList.add('focus-mode');
       setCommandText('FOCUS MODE');
-      leadText.textContent = 'Focus mode tightens the scene, lifts the primary content, and makes the page feel more intelligent and intentional.';
+      leadText.textContent = 'Focus mode now pushes the hero panel forward, scales it up, and fades the controls back so the visual hierarchy is unmistakable.';
       setActiveChip('focus mode');
     }
 
     function neonMode() {
-      body.classList.add('neon');
+      body.classList.remove('launch');
+      body.classList.add('neon', 'dark');
       setCommandText('NEON MODE');
-      leadText.textContent = 'Neon mode brings the energy up with richer glow, color contrast, and a more futuristic presentation layer.';
+      leadText.textContent = 'Neon mode now energizes the full interface with stronger glow, brighter highlights, pulsing rings, and a much more visible futuristic mood.';
       setActiveChip('neon mode');
     }
 
     function glitchMode() {
       body.classList.add('glitch');
       setCommandText('GLITCH');
-      leadText.textContent = 'A fast glitch pulse adds a moment of surprise that plays especially well in short social video clips.';
+      leadText.textContent = 'A fast glitch pulse adds a quick surprise moment that plays especially well in short social video clips.';
       setActiveChip('glitch');
       setTimeout(() => body.classList.remove('glitch'), 700);
     }
@@ -678,7 +908,7 @@
     function launchExperience() {
       body.classList.add('launch', 'dark', 'grid-on', 'focus-mode', 'neon');
       setCommandText('LAUNCH EXPERIENCE');
-      leadText.textContent = 'This is the signature final state: a voice-directed browser experience designed to stop the scroll and signal what comes next for the web.';
+      leadText.textContent = 'This final state intentionally stacks the strongest effects so the ending reads instantly as the big reveal in your LinkedIn video.';
       setActiveChip('launch experience');
     }
 
