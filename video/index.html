@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LogoLens AI V2 | OCR + Reference Matching</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">WebAI · TensorFlow.js · No Custom Training V2</p>
+      <h1>LogoLens AI</h1>
+      <p class="subtitle">Upload a classroom demo video, scan for students, crop shirt regions, use OCR to read visible apparel text, and optionally compare crops to uploaded reference logos like Ohio State, NKU, UC, Nike, and Adidas.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">Step 1</p><h2>Upload video + optional reference logos</h2></div>
+        <span id="modelStatus" class="pill">Loading AI model...</span>
+      </div>
+      <div class="controls">
+        <div><label for="videoUpload">Video file</label><input id="videoUpload" type="file" accept="video/*" /></div>
+        <div><label for="referenceUpload">Reference logos/images</label><input id="referenceUpload" type="file" accept="image/*" multiple /></div>
+        <div><label for="sampleRate">Frame sample rate</label><select id="sampleRate"><option value="0.5">Every 0.5 seconds</option><option value="1" selected>Every 1 second</option><option value="2">Every 2 seconds</option><option value="3">Every 3 seconds</option></select></div>
+        <div><label for="confidenceThreshold">Person confidence</label><select id="confidenceThreshold"><option value="0.35">35% - more captures</option><option value="0.45" selected>45% - balanced</option><option value="0.60">60% - stricter</option></select></div>
+        <div><label>&nbsp;</label><button id="analyzeBtn" disabled>Analyze Video</button></div>
+      </div>
+      <p id="status" class="status">Upload a video after the TensorFlow model loads.</p>
+    </section>
+
+    <section class="grid">
+      <div class="panel video-panel">
+        <div class="section-heading compact"><h2>Video Preview</h2><span class="pill dark">Yellow boxes = detected people</span></div>
+        <div class="video-wrap"><video id="video" controls muted playsinline></video><canvas id="overlay"></canvas></div>
+      </div>
+      <aside class="panel">
+        <p class="eyebrow">Live Stats</p>
+        <div class="stats">
+          <div class="stat"><strong id="framesScanned">0</strong><span>Frames scanned</span></div>
+          <div class="stat"><strong id="peopleDetected">0</strong><span>People detected</span></div>
+          <div class="stat"><strong id="shirtCaptures">0</strong><span>Shirt crops</span></div>
+          <div class="stat"><strong id="textHits">0</strong><span>OCR text hits</span></div>
+        </div>
+        <div class="callout"><strong>Detection strategy:</strong><p>V2 does not train a custom model. It uses TensorFlow.js to find people, OCR to read apparel text, and simple image similarity to compare shirt crops to uploaded reference logos.</p></div>
+      </aside>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">Step 2</p><h2>Review detected shirt/logo candidates</h2></div>
+        <div class="button-row"><button id="downloadCsvBtn" disabled>Download CSV</button><button id="downloadJsonBtn" disabled>Download JSON</button></div>
+      </div>
+      <div class="keyword-box"><label for="keywordInput">OCR keywords to flag</label><input id="keywordInput" value="ohio state, buckeyes, osu, nku, northern kentucky, uc, cincinnati, miami, nike, adidas, jordan, champion" /></div>
+      <div id="referenceList" class="reference-list"></div>
+      <div id="results" class="results"></div>
+    </section>
+  </main>
+  <footer><p>LogoLens AI V2 · TensorFlow.js + Tesseract.js · GitHub Pages friendly · Runs in the browser</p></footer>
+  <script src="app.js"></script>
+</body>
+</html>
