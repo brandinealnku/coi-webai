@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>LogoLens Safe Promo Blur</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">WebAI · TensorFlow.js · Promo-Safe Video Tool</p>
+      <h1>LogoLens Safe Promo Blur</h1>
+      <p class="subtitle">
+        Upload a student video, let TensorFlow detect people, automatically blur likely shirt/sweatshirt text areas,
+        preview the result, and export a social-media-safe version.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Step 1</p>
+          <h2>Upload video</h2>
+        </div>
+        <span id="modelStatus" class="pill">Loading TensorFlow...</span>
+      </div>
+
+      <div class="controls">
+        <div>
+          <label for="videoUpload">Video file</label>
+          <input id="videoUpload" type="file" accept="video/*" />
+        </div>
+
+        <div>
+          <label for="confidence">Person detection confidence</label>
+          <select id="confidence">
+            <option value="0.30">30% - more aggressive</option>
+            <option value="0.40" selected>40% - balanced</option>
+            <option value="0.55">55% - stricter</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="detectEvery">Run detection</label>
+          <select id="detectEvery">
+            <option value="3">Every 3 frames</option>
+            <option value="5" selected>Every 5 frames</option>
+            <option value="10">Every 10 frames</option>
+            <option value="15">Every 15 frames</option>
+          </select>
+        </div>
+
+        <div>
+          <label>&nbsp;</label>
+          <button id="previewBtn" disabled>Preview Blur</button>
+        </div>
+
+        <div>
+          <label>&nbsp;</label>
+          <button id="exportBtn" disabled>Export Blurred Video</button>
+        </div>
+      </div>
+
+      <div class="sliders">
+        <div>
+          <label for="blurStrength">Blur strength: <span id="blurStrengthValue">18</span></label>
+          <input id="blurStrength" type="range" min="6" max="40" value="18" />
+        </div>
+
+        <div>
+          <label for="torsoTop">Blur starts lower from top of person: <span id="torsoTopValue">22%</span></label>
+          <input id="torsoTop" type="range" min="10" max="45" value="22" />
+        </div>
+
+        <div>
+          <label for="torsoHeight">Blur region height: <span id="torsoHeightValue">42%</span></label>
+          <input id="torsoHeight" type="range" min="20" max="70" value="42" />
+        </div>
+
+        <div>
+          <label for="torsoWidth">Blur region width: <span id="torsoWidthValue">88%</span></label>
+          <input id="torsoWidth" type="range" min="45" max="100" value="88" />
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="pauseBtn" class="secondary" disabled>Pause Preview</button>
+        <button id="snapshotBtn" class="secondary" disabled>Save Review Snapshot</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+      </div>
+
+      <p id="status" class="status">
+        This version does not need to read or identify logos. It blurs the clothing region so competitor text/logos are hidden before social posting.
+      </p>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="panel">
+        <div class="section-heading compact">
+          <h2>Original Video</h2>
+          <span class="pill dark">Source</span>
+        </div>
+        <video id="sourceVideo" controls muted playsinline></video>
+      </div>
+
+      <div class="panel">
+        <div class="section-heading compact">
+          <h2>Blurred Preview / Export Canvas</h2>
+          <span class="pill dark">Processed output</span>
+        </div>
+        <canvas id="outputCanvas"></canvas>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Review Dashboard</p>
+          <h2>Blur Summary</h2>
+        </div>
+        <button id="downloadSummaryBtn" disabled>Download Summary CSV</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <strong id="framesProcessed">0</strong>
+          <span>Frames processed</span>
+        </div>
+        <div class="stat">
+          <strong id="peopleDetected">0</strong>
+          <span>People detections</span>
+        </div>
+        <div class="stat">
+          <strong id="blurRegions">0</strong>
+          <span>Blur regions applied</span>
+        </div>
+        <div class="stat">
+          <strong id="lastTimestamp">00:00</strong>
+          <span>Latest processed time</span>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Recommended social workflow:</strong>
+        <p>
+          Preview the blur first. Adjust the sliders until shirt/sweatshirt text is covered but faces remain visible.
+          Then export. The browser exports a WEBM file, which can be uploaded to Canva, CapCut, Adobe Express, or converted to MP4.
+        </p>
+      </div>
+
+      <div id="snapshots" class="snapshots"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>LogoLens Safe Promo Blur · Runs in browser · GitHub Pages ready · No backend required</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
