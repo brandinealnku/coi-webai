@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>LogoLens Dashboard | Student Apparel Scanner</title>
+
+  <!-- TensorFlow.js + COCO-SSD for person detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3"></script>
+
+  <!-- Tesseract.js for reading visible shirt/sweatshirt text -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">WebAI · TensorFlow.js · OCR Dashboard</p>
+      <h1>LogoLens Dashboard</h1>
+      <p class="subtitle">
+        Upload a classroom or event video. The page detects students, crops likely clothing regions,
+        reads visible apparel text, and creates a review dashboard showing what students appear to be wearing.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Step 1</p>
+          <h2>Upload student video</h2>
+        </div>
+        <span id="modelStatus" class="pill">Loading AI + OCR...</span>
+      </div>
+
+      <div class="controls">
+        <div>
+          <label for="videoUpload">Video file</label>
+          <input id="videoUpload" type="file" accept="video/*" />
+        </div>
+
+        <div>
+          <label for="sampleRate">Frame sample rate</label>
+          <select id="sampleRate">
+            <option value="0.5">Every 0.5 seconds</option>
+            <option value="1" selected>Every 1 second</option>
+            <option value="2">Every 2 seconds</option>
+            <option value="3">Every 3 seconds</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="personConfidence">Person confidence</label>
+          <select id="personConfidence">
+            <option value="0.35">35% - more captures</option>
+            <option value="0.45" selected>45% - balanced</option>
+            <option value="0.60">60% - stricter</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="maxCrops">Max crops to OCR</label>
+          <select id="maxCrops">
+            <option value="25">25 crops</option>
+            <option value="50" selected>50 crops</option>
+            <option value="100">100 crops</option>
+            <option value="200">200 crops</option>
+          </select>
+        </div>
+
+        <div>
+          <label>&nbsp;</label>
+          <button id="analyzeBtn" disabled>Analyze Video</button>
+        </div>
+      </div>
+
+      <div class="keyword-wrap">
+        <label for="keywordInput">Text/brand keywords to flag</label>
+        <textarea id="keywordInput" rows="3">ohio state, buckeyes, osu, columbia, nku, northern kentucky, uc, cincinnati, miami, nike, adidas, jordan, champion, under armour, puma, new balance, carhartt, lululemon</textarea>
+      </div>
+
+      <p id="status" class="status">Upload a video after the AI model loads.</p>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="panel video-panel">
+        <div class="section-heading compact">
+          <h2>Video Preview</h2>
+          <span class="pill dark">Yellow boxes = detected students</span>
+        </div>
+
+        <div class="video-wrap">
+          <video id="video" controls muted playsinline></video>
+          <canvas id="overlay"></canvas>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <p class="eyebrow">Scan Stats</p>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="framesScanned">0</strong>
+            <span>Frames scanned</span>
+          </div>
+          <div class="stat">
+            <strong id="peopleDetected">0</strong>
+            <span>Students/persons detected</span>
+          </div>
+          <div class="stat">
+            <strong id="cropsCreated">0</strong>
+            <span>Clothing crops</span>
+          </div>
+          <div class="stat">
+            <strong id="keywordHits">0</strong>
+            <span>Keyword hits</span>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>How it works:</strong>
+          <p>
+            TensorFlow finds people. The browser crops likely shirt/sweatshirt areas. Tesseract OCR reads visible text.
+            The dashboard groups repeated text like Ohio State or Columbia for review.
+          </p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Step 2</p>
+          <h2>Detected Apparel Summary</h2>
+        </div>
+
+        <div class="button-row">
+          <button id="downloadCsvBtn" disabled>Download CSV</button>
+          <button id="downloadJsonBtn" disabled>Download JSON</button>
+          <button id="printBtn" disabled>Print Dashboard</button>
+        </div>
+      </div>
+
+      <div id="summaryNarrative" class="summary-narrative">
+        Results will appear here after analysis.
+      </div>
+
+      <div id="summaryCards" class="summary-cards"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Step 3</p>
+          <h2>Evidence Review Cards</h2>
+        </div>
+        <span class="pill dark">Review, relabel, and export</span>
+      </div>
+
+      <div id="evidenceCards" class="evidence-grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      LogoLens Dashboard · GitHub Pages ready · Browser-only prototype · No backend required
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
