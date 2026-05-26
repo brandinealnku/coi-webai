@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LogoLens AI | Classroom Apparel Scanner</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">WebAI · TensorFlow.js · Classroom Video Intelligence</p>
+      <h1>LogoLens AI</h1>
+      <p class="subtitle">
+        Inspired by a real classroom WebAI demo video where a student appeared in an Ohio State sweatshirt.
+        Upload a video, scan frames, capture shirt/logo regions, and build a labeled dataset for future brand
+        and university logo detection.
+      </p>
+      <div class="hero-actions">
+        <a class="ghost-button" href="#scanner">Start scanning</a>
+        <a class="ghost-button secondary" href="#workflow">How this works</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="scanner" class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Step 1</p>
+          <h2>Upload classroom/event video</h2>
+        </div>
+        <span id="modelStatus" class="pill">Loading AI model...</span>
+      </div>
+      <div class="controls">
+        <div>
+          <label for="videoUpload">Video file</label>
+          <input id="videoUpload" type="file" accept="video/*" />
+        </div>
+        <div>
+          <label for="sampleRate">Frame sample rate</label>
+          <select id="sampleRate">
+            <option value="0.5">Every 0.5 seconds</option>
+            <option value="1" selected>Every 1 second</option>
+            <option value="2">Every 2 seconds</option>
+            <option value="3">Every 3 seconds</option>
+          </select>
+        </div>
+        <div>
+          <label for="confidenceThreshold">Person confidence</label>
+          <select id="confidenceThreshold">
+            <option value="0.35">35% - more captures</option>
+            <option value="0.45" selected>45% - balanced</option>
+            <option value="0.60">60% - stricter</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="analyzeBtn" disabled>Analyze Video</button>
+        </div>
+      </div>
+      <p id="status" class="status">Upload a video after the model loads.</p>
+    </section>
+
+    <section class="video-grid">
+      <div class="panel video-panel">
+        <div class="section-heading compact">
+          <h2>Video Preview</h2>
+          <span class="pill dark">Bounding boxes show detected people</span>
+        </div>
+        <div class="video-wrap">
+          <video id="video" controls muted playsinline></video>
+          <canvas id="overlay"></canvas>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <p class="eyebrow">Live Stats</p>
+        <div class="stats">
+          <div class="stat"><strong id="framesScanned">0</strong><span>Frames scanned</span></div>
+          <div class="stat"><strong id="peopleDetected">0</strong><span>People detected</span></div>
+          <div class="stat"><strong id="shirtCaptures">0</strong><span>Shirt/logo candidates</span></div>
+          <div class="stat"><strong id="avgConfidence">0%</strong><span>Avg. person confidence</span></div>
+        </div>
+        <div class="callout">
+          <strong>What this version is doing:</strong>
+          <p>
+            This version captures likely shirt areas from detected students. You can label each capture as OSU,
+            NKU, Nike, Adidas, Unknown, etc. Those labels become training data for a future custom logo model.
+          </p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Step 2</p>
+          <h2>Review + label shirt/logo candidates</h2>
+        </div>
+        <div class="button-row">
+          <button id="downloadCsvBtn" disabled>Download CSV</button>
+          <button id="downloadJsonBtn" disabled>Download JSON</button>
+        </div>
+      </div>
+      <div class="label-helper">
+        <span>Quick label ideas:</span>
+        <code>Ohio State</code><code>NKU</code><code>UC</code><code>Miami</code><code>Nike</code><code>Adidas</code><code>Unknown</code>
+      </div>
+      <div id="results" class="results"></div>
+    </section>
+
+    <section id="workflow" class="panel workflow">
+      <p class="eyebrow">Recommended Build Path</p>
+      <h2>How this becomes real logo detection</h2>
+      <div class="workflow-grid">
+        <article><span class="step-number">01</span><h3>Capture shirt regions</h3><p>Use this page to extract shirt/logo candidate images from your uploaded classroom demo videos.</p></article>
+        <article><span class="step-number">02</span><h3>Label examples</h3><p>Label examples like Ohio State, NKU, UC, Nike, Adidas, Unknown, or Other University.</p></article>
+        <article><span class="step-number">03</span><h3>Train model</h3><p>Use Teachable Machine or TensorFlow transfer learning to train a custom image classifier.</p></article>
+        <article><span class="step-number">04</span><h3>Deploy V3</h3><p>Replace manual labels with model predictions like “Ohio State sweatshirt — 91% confidence.”</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>LogoLens AI · Built for GitHub Pages · No backend required · Runs locally in the browser</p></footer>
+  <script src="app.js"></script>
+</body>
+</html>
