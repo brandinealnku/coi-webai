@@ -1,479 +1,616 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Brandi Neal LinkedIn Banner</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-  :root {
-    --navy: #071c2f;
-    --navy-mid: #0b3553;
-    --navy-light: #0f5266;
-    --blue: #2ca8ff;
-    --teal: #42dec7;
-    --white: #f7fbff;
-    --muted: #c8d8e6;
-    --line: rgba(160, 214, 241, 0.25);
-  }
+  <title>Brandi Neal LinkedIn Banner</title>
 
-  * {
-    box-sizing: border-box;
-  }
+  <style>
+    :root {
+      --navy-dark: #061a2c;
+      --navy: #0a3150;
+      --teal-dark: #0e5662;
+      --blue: #36a9ff;
+      --teal: #43e0ca;
+      --white: #f8fbff;
+      --soft-white: #dbe8f2;
+    }
 
-  html,
-  body {
-    margin: 0;
-    min-height: 100%;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  body {
-    display: grid;
-    place-items: center;
-    min-height: 100vh;
-    padding: 28px;
-    background: #e9eef3;
-    color: #102033;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
-  .page {
-    width: min(100%, 1584px);
-  }
-
-  .banner {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 1;
-    overflow: hidden;
-    isolation: isolate;
-    background:
-      radial-gradient(circle at 86% 20%, rgba(44, 168, 255, 0.20), transparent 26%),
-      radial-gradient(circle at 96% 84%, rgba(66, 222, 199, 0.18), transparent 29%),
-      linear-gradient(112deg, var(--navy) 0%, var(--navy-mid) 66%, var(--navy-light) 100%);
-    box-shadow: 0 22px 50px rgba(7, 28, 47, 0.22);
-  }
-
-  /* LinkedIn profile photos overlap the lower-left portion of the banner.
-     Critical text is intentionally placed farther right. */
-  .photo-safe-zone {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 35%;
-    height: 74%;
-    z-index: -1;
-    background:
-      radial-gradient(circle at 10% 100%, rgba(255, 255, 255, 0.045), transparent 65%);
-  }
-
-  .content {
-    position: absolute;
-    left: 36.5%;
-    right: 5%;
-    top: 12%;
-    bottom: 11%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .eyebrow {
-    margin: 0 0 10px;
-    color: var(--teal);
-    font-size: clamp(13px, 1.12vw, 18px);
-    font-weight: 800;
-    letter-spacing: 0.17em;
-    text-transform: uppercase;
-  }
-
-  h1 {
-    max-width: 930px;
-    margin: 0;
-    color: var(--white);
-    font-size: clamp(36px, 4.35vw, 69px);
-    line-height: 0.98;
-    letter-spacing: -0.045em;
-    font-weight: 850;
-  }
-
-  h1 .accent {
-    color: var(--blue);
-  }
-
-  .supporting-line {
-    margin: 16px 0 0;
-    color: var(--muted);
-    font-size: clamp(16px, 1.55vw, 24px);
-    line-height: 1.3;
-    font-weight: 600;
-  }
-
-  .credibility {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px 16px;
-    margin-top: 22px;
-    color: var(--white);
-    font-size: clamp(11px, 1vw, 16px);
-    font-weight: 750;
-    letter-spacing: 0.015em;
-  }
-
-  .credibility span {
-    white-space: nowrap;
-  }
-
-  .credibility i {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--teal);
-    box-shadow: 0 0 12px rgba(66, 222, 199, 0.9);
-  }
-
-  .visual {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    pointer-events: none;
-  }
-
-  .ring {
-    position: absolute;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-  }
-
-  .ring.one {
-    width: 440px;
-    height: 440px;
-    right: -75px;
-    top: -135px;
-  }
-
-  .ring.two {
-    width: 275px;
-    height: 275px;
-    right: 52px;
-    top: -8px;
-    border-color: rgba(66, 222, 199, 0.22);
-  }
-
-  .ring.three {
-    width: 155px;
-    height: 155px;
-    right: 174px;
-    top: 92px;
-    border-color: rgba(44, 168, 255, 0.24);
-  }
-
-  .node {
-    position: absolute;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--blue);
-    box-shadow: 0 0 18px rgba(44, 168, 255, 0.9);
-  }
-
-  .node.teal {
-    background: var(--teal);
-    box-shadow: 0 0 18px rgba(66, 222, 199, 0.9);
-  }
-
-  .edge {
-    position: absolute;
-    height: 1px;
-    transform-origin: left center;
-    background:
-      linear-gradient(
-        90deg,
-        rgba(44, 168, 255, 0.06),
-        rgba(44, 168, 255, 0.76),
-        rgba(66, 222, 199, 0.22)
-      );
-  }
-
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    margin-top: 16px;
-  }
-
-  .instructions {
-    max-width: 980px;
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  button {
-    border: 0;
-    border-radius: 10px;
-    padding: 12px 18px;
-    background: var(--navy);
-    color: #ffffff;
-    font: 700 14px Arial, Helvetica, sans-serif;
-    cursor: pointer;
-  }
-
-  button:hover,
-  button:focus-visible {
-    background: #123f65;
-    outline: 3px solid rgba(44, 168, 255, 0.3);
-    outline-offset: 2px;
-  }
-
-  @media (max-width: 850px) {
+    html,
     body {
-      padding: 12px;
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 24px;
+      background: #e7edf3;
+      color: #102033;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .page {
+      width: min(100%, 1584px);
+    }
+
+    /*
+      LinkedIn banner dimensions:
+      1584 × 396 pixels
+    */
+    .banner {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 1;
+      overflow: hidden;
+      isolation: isolate;
+
+      background:
+        radial-gradient(
+          circle at 54% 48%,
+          rgba(54, 169, 255, 0.16),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 94% 78%,
+          rgba(67, 224, 202, 0.15),
+          transparent 30%
+        ),
+        linear-gradient(
+          112deg,
+          var(--navy-dark) 0%,
+          var(--navy) 67%,
+          var(--teal-dark) 100%
+        );
+
+      box-shadow: 0 22px 50px rgba(6, 26, 44, 0.22);
+    }
+
+    /*
+      LinkedIn's profile photo overlaps the lower-left area.
+      Important text starts farther to the right.
+    */
+    .profile-photo-safe-zone {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 34%;
+      height: 76%;
+      z-index: -1;
+
+      background:
+        radial-gradient(
+          circle at 12% 100%,
+          rgba(255, 255, 255, 0.04),
+          transparent 66%
+        );
     }
 
     .content {
-      left: 33%;
-      right: 3%;
-      top: 8%;
-      bottom: 8%;
+      position: absolute;
+      left: 36.5%;
+      right: 5%;
+      top: 10%;
+      bottom: 10%;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .eyebrow {
-      margin-bottom: 5px;
+      margin: 0 0 12px;
+
+      color: var(--teal);
+      font-size: clamp(16px, 1.35vw, 22px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 930px;
+      margin: 0;
+
+      color: var(--white);
+      font-size: clamp(54px, 5.8vw, 92px);
+      font-weight: 900;
+      line-height: 0.91;
+      letter-spacing: -0.055em;
+    }
+
+    h1 .accent {
+      display: block;
+      color: var(--blue);
     }
 
     .supporting-line {
-      margin-top: 8px;
+      margin: 24px 0 0;
+
+      color: var(--soft-white);
+      font-size: clamp(20px, 2.1vw, 32px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
     }
 
-    .credibility {
-      margin-top: 10px;
-      gap: 5px 10px;
+    /*
+      Decorative network is intentionally faint so it does
+      not compete with the typography.
+    */
+    .visual {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
     }
-  }
-</style>
+
+    .node {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 18px rgba(54, 169, 255, 0.75);
+    }
+
+    .node.teal {
+      background: var(--teal);
+      box-shadow: 0 0 18px rgba(67, 224, 202, 0.75);
+    }
+
+    .edge {
+      position: absolute;
+      height: 1px;
+      transform-origin: left center;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(54, 169, 255, 0.05),
+          rgba(54, 169, 255, 0.4),
+          rgba(67, 224, 202, 0.16)
+        );
+    }
+
+    .ring {
+      position: absolute;
+      border: 1px solid rgba(185, 224, 244, 0.14);
+      border-radius: 50%;
+    }
+
+    .ring.one {
+      width: 420px;
+      height: 420px;
+      right: -85px;
+      top: -140px;
+    }
+
+    .ring.two {
+      width: 245px;
+      height: 245px;
+      right: 58px;
+      top: 12px;
+      border-color: rgba(67, 224, 202, 0.17);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+
+      margin-top: 16px;
+    }
+
+    .instructions {
+      max-width: 980px;
+      margin: 0;
+
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+
+      background: var(--navy-dark);
+      color: #ffffff;
+
+      font: 700 14px Arial, Helvetica, sans-serif;
+      cursor: pointer;
+    }
+
+    button:hover,
+    button:focus-visible {
+      background: #13466e;
+      outline: 3px solid rgba(54, 169, 255, 0.3);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 850px) {
+      body {
+        padding: 12px;
+      }
+
+      .content {
+        left: 33%;
+        right: 3%;
+        top: 7%;
+        bottom: 7%;
+      }
+
+      .eyebrow {
+        margin-bottom: 6px;
+      }
+
+      .supporting-line {
+        margin-top: 10px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-<main class="page">
-  <section
-    class="banner"
-    aria-label="LinkedIn banner for an enterprise AI transformation leader"
-  >
-    <div class="photo-safe-zone" aria-hidden="true"></div>
+  <main class="page">
 
-    <div class="visual" aria-hidden="true">
-      <div class="ring one"></div>
-      <div class="ring two"></div>
-      <div class="ring three"></div>
+    <section
+      class="banner"
+      aria-label="LinkedIn banner for an enterprise AI transformation leader"
+    >
+      <div
+        class="profile-photo-safe-zone"
+        aria-hidden="true"
+      ></div>
 
-      <span class="node" style="left:68%; top:18%;"></span>
-      <span class="node teal" style="left:79%; top:29%;"></span>
-      <span class="node" style="left:90%; top:15%;"></span>
-      <span class="node teal" style="left:73%; top:73%;"></span>
-      <span class="node" style="left:86%; top:66%;"></span>
-      <span class="node teal" style="left:95%; top:82%;"></span>
-      <span class="node" style="left:63%; top:49%;"></span>
+      <div
+        class="visual"
+        aria-hidden="true"
+      >
+        <div class="ring one"></div>
+        <div class="ring two"></div>
 
-      <span class="edge" style="left:63.4%; top:50%; width:126px; transform:rotate(-36deg);"></span>
-      <span class="edge" style="left:68.4%; top:19%; width:182px; transform:rotate(11deg);"></span>
-      <span class="edge" style="left:79.4%; top:30%; width:168px; transform:rotate(-18deg);"></span>
-      <span class="edge" style="left:73.4%; top:74%; width:202px; transform:rotate(-8deg);"></span>
-      <span class="edge" style="left:86.4%; top:67%; width:145px; transform:rotate(28deg);"></span>
-      <span class="edge" style="left:63.4%; top:50%; width:202px; transform:rotate(43deg);"></span>
-    </div>
+        <span
+          class="node"
+          style="left: 73%; top: 18%;"
+        ></span>
 
-    <div class="content">
-      <p class="eyebrow">Enterprise AI Transformation</p>
+        <span
+          class="node teal"
+          style="left: 82%; top: 31%;"
+        ></span>
 
-      <h1>
-        Building AI that
-        <span class="accent">people actually use.</span>
-      </h1>
+        <span
+          class="node"
+          style="left: 92%; top: 16%;"
+        ></span>
 
-      <p class="supporting-line">
-        AI Strategy&nbsp; • &nbsp;Product Innovation&nbsp; • &nbsp;Organizational Change
+        <span
+          class="node teal"
+          style="left: 77%; top: 75%;"
+        ></span>
+
+        <span
+          class="node"
+          style="left: 89%; top: 65%;"
+        ></span>
+
+        <span
+          class="node teal"
+          style="left: 96%; top: 82%;"
+        ></span>
+
+        <span
+          class="edge"
+          style="
+            left: 73.4%;
+            top: 19%;
+            width: 150px;
+            transform: rotate(14deg);
+          "
+        ></span>
+
+        <span
+          class="edge"
+          style="
+            left: 82.4%;
+            top: 32%;
+            width: 160px;
+            transform: rotate(-20deg);
+          "
+        ></span>
+
+        <span
+          class="edge"
+          style="
+            left: 77.4%;
+            top: 76%;
+            width: 190px;
+            transform: rotate(-9deg);
+          "
+        ></span>
+
+        <span
+          class="edge"
+          style="
+            left: 89.4%;
+            top: 66%;
+            width: 120px;
+            transform: rotate(28deg);
+          "
+        ></span>
+      </div>
+
+      <div class="content">
+
+        <p class="eyebrow">
+          Enterprise AI Transformation
+        </p>
+
+        <h1>
+          Building AI that
+          <span class="accent">
+            people actually use.
+          </span>
+        </h1>
+
+        <p class="supporting-line">
+          Strategy&nbsp; • &nbsp;Products&nbsp; • &nbsp;Adoption
+        </p>
+
+      </div>
+    </section>
+
+    <div class="controls">
+
+      <p class="instructions">
+        Open this file in Chrome at 100% zoom, then select
+        <strong>Save banner as PNG</strong>. The exported image is exactly
+        <strong>1584 × 396 pixels</strong>.
       </p>
 
-      <div class="credibility" aria-label="Professional positioning">
-        <span>Fortune 500 Experience</span>
-        <i aria-hidden="true"></i>
-        <span>Responsible AI</span>
-        <i aria-hidden="true"></i>
-        <span>Workforce Adoption</span>
-        <i aria-hidden="true"></i>
-        <span>Executive Technology Leadership</span>
-      </div>
+      <button
+        type="button"
+        onclick="downloadBanner()"
+      >
+        Save banner as PNG
+      </button>
+
     </div>
-  </section>
+  </main>
 
-  <div class="controls">
-    <p class="instructions">
-      Open this file in Chrome at 100% zoom and select
-      <strong>Save banner as PNG</strong>. The exported image is exactly
-      <strong>1584 × 396 pixels</strong>.
-    </p>
+  <script>
+    "use strict";
 
-    <button type="button" onclick="downloadBanner()">
-      Save banner as PNG
-    </button>
-  </div>
-</main>
-
-<script>
-"use strict";
-
-function drawNode(ctx, x, y, color) {
-  ctx.save();
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 16;
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.arc(x, y, 5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function downloadBanner() {
-  const width = 1584;
-  const height = 396;
-
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-
-  const ctx = canvas.getContext("2d");
-
-  if (!ctx) {
-    alert("Your browser could not create the image. Please try Chrome or Edge.");
-    return;
-  }
-
-  const background = ctx.createLinearGradient(0, 0, width, height);
-  background.addColorStop(0, "#071c2f");
-  background.addColorStop(0.66, "#0b3553");
-  background.addColorStop(1, "#0f5266");
-
-  ctx.fillStyle = background;
-  ctx.fillRect(0, 0, width, height);
-
-  const blueGlow = ctx.createRadialGradient(1320, 62, 0, 1320, 62, 350);
-  blueGlow.addColorStop(0, "rgba(44,168,255,0.20)");
-  blueGlow.addColorStop(1, "rgba(44,168,255,0)");
-
-  ctx.fillStyle = blueGlow;
-  ctx.fillRect(0, 0, width, height);
-
-  const tealGlow = ctx.createRadialGradient(1490, 330, 0, 1490, 330, 370);
-  tealGlow.addColorStop(0, "rgba(66,222,199,0.18)");
-  tealGlow.addColorStop(1, "rgba(66,222,199,0)");
-
-  ctx.fillStyle = tealGlow;
-  ctx.fillRect(0, 0, width, height);
-
-  const nodes = [
-    [1075, 72, "#2ca8ff"],
-    [1255, 116, "#42dec7"],
-    [1428, 58, "#2ca8ff"],
-    [1155, 289, "#42dec7"],
-    [1365, 262, "#2ca8ff"],
-    [1500, 325, "#42dec7"],
-    [995, 194, "#2ca8ff"]
-  ];
-
-  const edges = [
-    [6, 0],
-    [0, 1],
-    [1, 2],
-    [3, 4],
-    [4, 5],
-    [6, 3]
-  ];
-
-  ctx.lineWidth = 1.35;
-
-  edges.forEach(([from, to]) => {
-    const edgeGradient = ctx.createLinearGradient(
-      nodes[from][0],
-      nodes[from][1],
-      nodes[to][0],
-      nodes[to][1]
-    );
-
-    edgeGradient.addColorStop(0, "rgba(44,168,255,0.08)");
-    edgeGradient.addColorStop(0.55, "rgba(44,168,255,0.72)");
-    edgeGradient.addColorStop(1, "rgba(66,222,199,0.24)");
-
-    ctx.strokeStyle = edgeGradient;
-    ctx.beginPath();
-    ctx.moveTo(nodes[from][0], nodes[from][1]);
-    ctx.lineTo(nodes[to][0], nodes[to][1]);
-    ctx.stroke();
-  });
-
-  nodes.forEach(([x, y, color]) => drawNode(ctx, x, y, color));
-
-  const left = 578;
-
-  ctx.fillStyle = "#42dec7";
-  ctx.font = "800 19px Arial";
-  ctx.fillText("ENTERPRISE AI TRANSFORMATION", left, 76);
-
-  ctx.fillStyle = "#f7fbff";
-  ctx.font = "800 61px Arial";
-  ctx.fillText("Building AI that", left, 145);
-
-  ctx.fillStyle = "#2ca8ff";
-  ctx.fillText("people actually use.", left, 204);
-
-  ctx.fillStyle = "#c8d8e6";
-  ctx.font = "600 22px Arial";
-  ctx.fillText(
-    "AI Strategy  •  Product Innovation  •  Organizational Change",
-    left,
-    253
-  );
-
-  const labels = [
-    "Fortune 500 Experience",
-    "Responsible AI",
-    "Workforce Adoption",
-    "Executive Technology Leadership"
-  ];
-
-  ctx.font = "700 15px Arial";
-
-  let x = left;
-  const y = 339;
-
-  labels.forEach((label, index) => {
-    ctx.fillStyle = "#f7fbff";
-    ctx.fillText(label, x, y);
-
-    x += ctx.measureText(label).width + 17;
-
-    if (index < labels.length - 1) {
+    function drawNode(ctx, x, y, color) {
       ctx.save();
-      ctx.fillStyle = "#42dec7";
-      ctx.shadowColor = "#42dec7";
-      ctx.shadowBlur = 10;
+
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 16;
+      ctx.fillStyle = color;
+
       ctx.beginPath();
-      ctx.arc(x + 2, y - 5, 3, 0, Math.PI * 2);
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.fill();
+
       ctx.restore();
-
-      x += 19;
     }
-  });
 
-  const download = document.createElement("a");
-  download.download = "Brandi_Neal_LinkedIn_Banner.png";
-  download.href = canvas.toDataURL("image/png");
-  download.click();
-}
-</script>
+    function downloadBanner() {
+      const width = 1584;
+      const height = 396;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        alert(
+          "Your browser could not create the image. Please try Chrome or Edge."
+        );
+        return;
+      }
+
+      /*
+        Background
+      */
+      const background = ctx.createLinearGradient(
+        0,
+        0,
+        width,
+        height
+      );
+
+      background.addColorStop(0, "#061a2c");
+      background.addColorStop(0.67, "#0a3150");
+      background.addColorStop(1, "#0e5662");
+
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, width, height);
+
+      /*
+        Light glow behind the headline
+      */
+      const headlineGlow = ctx.createRadialGradient(
+        850,
+        190,
+        0,
+        850,
+        190,
+        470
+      );
+
+      headlineGlow.addColorStop(
+        0,
+        "rgba(54,169,255,0.15)"
+      );
+
+      headlineGlow.addColorStop(
+        1,
+        "rgba(54,169,255,0)"
+      );
+
+      ctx.fillStyle = headlineGlow;
+      ctx.fillRect(0, 0, width, height);
+
+      /*
+        Right-side teal glow
+      */
+      const tealGlow = ctx.createRadialGradient(
+        1490,
+        325,
+        0,
+        1490,
+        325,
+        350
+      );
+
+      tealGlow.addColorStop(
+        0,
+        "rgba(67,224,202,0.17)"
+      );
+
+      tealGlow.addColorStop(
+        1,
+        "rgba(67,224,202,0)"
+      );
+
+      ctx.fillStyle = tealGlow;
+      ctx.fillRect(0, 0, width, height);
+
+      /*
+        Subtle network
+      */
+      const nodes = [
+        [1155, 70, "#36a9ff"],
+        [1295, 122, "#43e0ca"],
+        [1455, 62, "#36a9ff"],
+        [1220, 297, "#43e0ca"],
+        [1410, 257, "#36a9ff"],
+        [1515, 325, "#43e0ca"]
+      ];
+
+      const edges = [
+        [0, 1],
+        [1, 2],
+        [3, 4],
+        [4, 5]
+      ];
+
+      ctx.lineWidth = 1.25;
+
+      edges.forEach(([from, to]) => {
+        const edgeGradient =
+          ctx.createLinearGradient(
+            nodes[from][0],
+            nodes[from][1],
+            nodes[to][0],
+            nodes[to][1]
+          );
+
+        edgeGradient.addColorStop(
+          0,
+          "rgba(54,169,255,0.05)"
+        );
+
+        edgeGradient.addColorStop(
+          0.55,
+          "rgba(54,169,255,0.42)"
+        );
+
+        edgeGradient.addColorStop(
+          1,
+          "rgba(67,224,202,0.17)"
+        );
+
+        ctx.strokeStyle = edgeGradient;
+
+        ctx.beginPath();
+        ctx.moveTo(
+          nodes[from][0],
+          nodes[from][1]
+        );
+
+        ctx.lineTo(
+          nodes[to][0],
+          nodes[to][1]
+        );
+
+        ctx.stroke();
+      });
+
+      nodes.forEach(([x, y, color]) => {
+        drawNode(ctx, x, y, color);
+      });
+
+      /*
+        Text
+      */
+      const left = 578;
+
+      ctx.fillStyle = "#43e0ca";
+      ctx.font = "800 22px Arial";
+
+      ctx.fillText(
+        "ENTERPRISE AI TRANSFORMATION",
+        left,
+        76
+      );
+
+      ctx.fillStyle = "#f8fbff";
+      ctx.font = "900 76px Arial";
+
+      ctx.fillText(
+        "Building AI that",
+        left,
+        163
+      );
+
+      ctx.fillStyle = "#36a9ff";
+
+      ctx.fillText(
+        "people actually use.",
+        left,
+        235
+      );
+
+      ctx.fillStyle = "#dbe8f2";
+      ctx.font = "700 31px Arial";
+
+      ctx.fillText(
+        "Strategy  •  Products  •  Adoption",
+        left,
+        307
+      );
+
+      /*
+        Download image
+      */
+      const download =
+        document.createElement("a");
+
+      download.download =
+        "Brandi_Neal_LinkedIn_Banner.png";
+
+      download.href =
+        canvas.toDataURL("image/png");
+
+      download.click();
+    }
+  </script>
 </body>
 </html>
