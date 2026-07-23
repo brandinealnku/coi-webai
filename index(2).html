@@ -1,40 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta
-    name="description"
-    content="Brandi Neal, EdD — Enterprise AI and Transformation Executive specializing in AI strategy, product innovation, intelligent automation, and workforce adoption."
-  />
-  <title>Brandi Neal, EdD | Executive AI Transformation Resume</title>
-<style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Brandi Neal, EdD — Enterprise AI Transformation, Product Innovation, and Workforce Adoption Executive">
+  <title>Brandi Neal, EdD | Enterprise AI Transformation Executive</title>
+
+  <style>
     :root {
       --ink: #111827;
-      --charcoal: #263244;
-      --muted: #5f6b7a;
-      --line: #d9dee7;
+      --slate: #334155;
+      --muted: #64748b;
+      --accent: #1d4ed8;
+      --line: #d8dee8;
       --soft: #f6f8fb;
-      --accent: #4285f4;
       --paper: #ffffff;
-      --screen: #e9edf2;
+      --screen: #e9eef5;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      background: var(--screen);
-    }
-
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       color: var(--ink);
       background: var(--screen);
       font-family: Aptos, "Segoe UI", Calibri, Arial, sans-serif;
-      font-size: 10pt;
-      line-height: 1.36;
+      font-size: 9.4pt;
+      line-height: 1.3;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
@@ -48,25 +41,25 @@
     a:focus-visible {
       color: var(--accent);
       text-decoration: underline;
-      text-underline-offset: 3px;
+      text-underline-offset: 2px;
     }
 
     .toolbar {
       position: sticky;
       top: 0;
-      z-index: 20;
+      z-index: 50;
       display: flex;
       justify-content: center;
       gap: 10px;
-      padding: 11px;
-      background: rgba(17, 24, 39, 0.96);
-      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.18);
+      padding: 10px;
+      background: rgba(17, 24, 39, 0.97);
+      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.16);
     }
 
     .toolbar button {
-      border: 1px solid rgba(255, 255, 255, 0.34);
+      border: 1px solid rgba(255,255,255,.34);
       border-radius: 6px;
-      padding: 8px 15px;
+      padding: 8px 14px;
       color: #fff;
       background: transparent;
       font: inherit;
@@ -81,16 +74,18 @@
 
     .resume {
       width: 8.5in;
-      margin: 26px auto;
+      margin: 24px auto 30px;
     }
 
     .page {
       position: relative;
       width: 8.5in;
       height: 11in;
-      padding: 0.48in 0.62in 0.44in;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 0.43in 0.58in 0.31in;
       background: var(--paper);
-      box-shadow: 0 16px 40px rgba(17, 24, 39, 0.14);
+      box-shadow: 0 16px 42px rgba(15, 23, 42, 0.14);
       overflow: hidden;
     }
 
@@ -106,138 +101,144 @@
       background: var(--accent);
     }
 
-    .hero {
+    .masthead {
       padding-top: 2px;
-      padding-bottom: 13px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--line);
     }
 
     .name {
       margin: 0;
-      color: var(--ink);
-      font-family: Aptos Display, "Segoe UI", Arial, sans-serif;
-      font-size: 26pt;
-      line-height: 1;
-      letter-spacing: -0.6px;
+      font-size: 25pt;
+      line-height: .98;
+      letter-spacing: -.55px;
       font-weight: 800;
     }
 
-    .headline {
-      margin: 7px 0 0;
+    .executive-title {
+      margin: 6px 0 0;
       color: var(--accent);
-      font-family: Aptos Display, "Segoe UI", Arial, sans-serif;
-      font-size: 11pt;
-      line-height: 1.25;
-      font-weight: 700;
+      font-size: 11.1pt;
+      line-height: 1.16;
+      font-weight: 800;
     }
 
-    .subheadline {
-      margin: 4px 0 0;
-      color: var(--charcoal);
-      font-size: 9.15pt;
-      line-height: 1.3;
-      font-weight: 600;
+    .positioning {
+      margin: 3px 0 0;
+      color: var(--slate);
+      font-size: 8.9pt;
+      line-height: 1.23;
+      font-weight: 650;
     }
 
-    .contact-line {
-      margin-top: 9px;
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px 8px;
+      margin-top: 7px;
       color: var(--muted);
-      font-size: 8.8pt;
-      line-height: 1.25;
+      font-size: 7.85pt;
+      line-height: 1.18;
     }
 
-    .contact-line span + span::before {
-      content: " • ";
+    .contact span:not(:last-child)::after {
+      content: "•";
+      margin-left: 8px;
       color: var(--accent);
-      padding: 0 4px;
-      font-weight: 700;
+      font-weight: 800;
+    }
+
+    .page-main {
+      min-height: 0;
+      padding-top: 10px;
     }
 
     .section {
-      margin-top: 14px;
+      margin-top: 9px;
       break-inside: avoid;
       page-break-inside: avoid;
     }
 
-    .section-heading {
+    .section:first-child {
+      margin-top: 0;
+    }
+
+    .section-title {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin: 0 0 7px;
-      color: var(--charcoal);
-      font-family: Aptos Display, "Segoe UI", Arial, sans-serif;
-      font-size: 9.1pt;
-      line-height: 1.15;
-      letter-spacing: 1px;
+      gap: 9px;
+      margin: 0 0 5px;
+      color: var(--slate);
+      font-size: 8.15pt;
+      line-height: 1.1;
       text-transform: uppercase;
+      letter-spacing: .95px;
       font-weight: 800;
     }
 
-    .section-heading::after {
+    .section-title::after {
       content: "";
       flex: 1;
       height: 1px;
       background: var(--line);
     }
 
-    p {
+    .value-proposition {
       margin: 0;
+      color: #253349;
+      font-size: 9.7pt;
+      line-height: 1.38;
     }
 
-    .profile {
-      color: #273448;
-      font-size: 10.1pt;
-      line-height: 1.42;
+    .outcomes {
+      margin: 0;
+      padding: 0;
+      list-style: none;
     }
 
-    .metrics {
+    .outcomes li {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px 13px;
-      margin-top: 7px;
+      grid-template-columns: 1.15in 1fr;
+      gap: 10px;
+      margin: 0;
+      padding: 5px 0;
+      border-bottom: 1px solid #e7ebf1;
     }
 
-    .metric {
-      min-height: 56px;
-      padding: 9px 10px 8px;
-      border-top: 3px solid var(--accent);
-      background: var(--soft);
+    .outcomes li:last-child {
+      border-bottom: 0;
     }
 
-    .metric strong {
-      display: block;
-      color: var(--ink);
-      font-family: Aptos Display, "Segoe UI", Arial, sans-serif;
-      font-size: 13.5pt;
-      line-height: 1.05;
+    .outcomes strong {
+      color: var(--accent);
+      font-size: 10.6pt;
+      line-height: 1.1;
       font-weight: 800;
     }
 
-    .metric span {
-      display: block;
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 8.1pt;
-      line-height: 1.18;
-      text-transform: uppercase;
-      letter-spacing: 0.25px;
-      font-weight: 700;
-    }
-
-    .capabilities {
-      color: #304056;
-      font-size: 9.25pt;
-      line-height: 1.52;
+    .outcomes span {
+      color: #334155;
+      font-size: 8.5pt;
+      line-height: 1.25;
       font-weight: 600;
     }
 
-    .capabilities .dot {
+    .keywords {
+      margin: 0;
+      color: #314158;
+      font-size: 8.55pt;
+      line-height: 1.43;
+      font-weight: 650;
+    }
+
+    .keywords .dot {
+      padding: 0 4px;
       color: var(--accent);
-      padding: 0 5px;
+      font-weight: 800;
     }
 
     .role {
-      margin-top: 12px;
+      margin-top: 8px;
       break-inside: avoid;
       page-break-inside: avoid;
     }
@@ -246,180 +247,158 @@
       margin-top: 0;
     }
 
-    .role-heading {
+    .role-head {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 14px;
+      gap: 12px;
       align-items: baseline;
     }
 
     .role-title {
+      margin: 0;
       color: var(--ink);
-      font-family: Aptos Display, "Segoe UI", Arial, sans-serif;
-      font-size: 9.35pt;
-      line-height: 1.2;
-      font-weight: 800;
+      font-size: 8.7pt;
+      line-height: 1.18;
       text-transform: uppercase;
-      letter-spacing: 0.15px;
+      letter-spacing: .12px;
+      font-weight: 800;
     }
 
-    .role-date {
+    .date {
       color: var(--muted);
-      font-size: 8.35pt;
-      font-weight: 700;
+      font-size: 7.75pt;
+      line-height: 1.1;
+      font-weight: 750;
       white-space: nowrap;
     }
 
     .organization {
-      margin-top: 2px;
+      margin: 1px 0 0;
       color: var(--accent);
-      font-size: 8.85pt;
-      line-height: 1.2;
-      font-weight: 700;
+      font-size: 8.15pt;
+      line-height: 1.16;
+      font-weight: 750;
     }
 
-    .role-summary {
-      margin-top: 5px;
-      color: #344154;
-      font-size: 9.15pt;
-      line-height: 1.34;
-      font-weight: 600;
+    .scope {
+      margin: 3px 0 0;
+      color: #475569;
+      font-size: 8.25pt;
+      line-height: 1.24;
+      font-style: italic;
     }
 
-    ul {
-      margin: 5px 0 0 17px;
+    ul.bullets {
+      margin: 4px 0 0 15px;
       padding: 0;
     }
 
-    li {
-      margin: 0 0 3.5px;
+    ul.bullets li {
+      margin: 0 0 2.4px;
       padding-left: 2px;
+      line-height: 1.26;
     }
 
-    li::marker {
+    ul.bullets li::marker {
       color: var(--accent);
     }
 
-    .enterprise-callout {
-      margin-top: 13px;
-      padding: 10px 12px;
-      border-left: 4px solid var(--accent);
+    .signature {
+      margin-top: 6px;
+      padding: 7px 9px;
+      border-left: 3px solid var(--accent);
       background: var(--soft);
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
-
-    .enterprise-callout strong {
-      display: block;
-      color: var(--charcoal);
-      font-family: Aptos Display, "Segoe UI", Arial, sans-serif;
-      font-size: 8.8pt;
-      line-height: 1.2;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .enterprise-callout p {
-      margin-top: 4px;
       color: #334155;
-      font-size: 9.15pt;
-      line-height: 1.35;
+      font-size: 8.2pt;
+      line-height: 1.27;
     }
 
-    .case-study {
-      margin-top: 9px;
-      padding: 9px 0 10px;
+    .signature strong {
+      color: var(--ink);
+    }
+
+    .initiative {
+      display: grid;
+      grid-template-columns: 1.42in 1fr;
+      gap: 11px;
+      padding: 6px 0;
       border-bottom: 1px solid var(--line);
       break-inside: avoid;
       page-break-inside: avoid;
     }
 
-    .case-study:first-of-type {
-      margin-top: 0;
-    }
-
-    .case-study:last-of-type {
+    .initiative:last-child {
       border-bottom: 0;
     }
 
-    .case-title {
+    .initiative h3 {
       margin: 0;
-      color: var(--charcoal);
-      font-family: Aptos Display, "Segoe UI", Arial, sans-serif;
-      font-size: 9pt;
+      color: var(--slate);
+      font-size: 8.25pt;
       line-height: 1.2;
       font-weight: 800;
     }
 
-    .case-line {
-      margin-top: 3px;
+    .initiative p {
+      margin: 0;
       color: #334155;
-      font-size: 8.8pt;
-      line-height: 1.34;
+      font-size: 8.05pt;
+      line-height: 1.25;
     }
 
-    .case-line strong {
+    .initiative strong {
       color: var(--ink);
-      font-weight: 700;
     }
 
     .credentials {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px 26px;
-      margin-top: 5px;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 18px;
     }
 
-    .credential-block {
-      break-inside: avoid;
-      page-break-inside: avoid;
+    .credential {
+      margin-bottom: 5px;
     }
 
-    .detail-item {
-      margin-bottom: 6px;
+    .credential:last-child {
+      margin-bottom: 0;
     }
 
-    .detail-item strong {
+    .credential strong {
       display: block;
-      color: var(--charcoal);
-      font-size: 8.75pt;
+      color: var(--slate);
+      font-size: 8.05pt;
+      line-height: 1.16;
+    }
+
+    .credential span,
+    .credential p {
+      display: block;
+      margin: 1px 0 0;
+      color: var(--muted);
+      font-size: 7.65pt;
       line-height: 1.22;
     }
 
-    .detail-item span {
-      display: block;
-      color: var(--muted);
-      font-size: 8.25pt;
-      line-height: 1.28;
-    }
-
-    .research {
-      color: #334155;
-      font-size: 8.45pt;
-      line-height: 1.34;
-    }
-
     .footer {
-      position: absolute;
-      right: 0.62in;
-      bottom: 0.18in;
-      left: 0.62in;
       display: flex;
       justify-content: space-between;
-      padding-top: 5px;
-      border-top: 1px solid #e4e8ef;
-      color: #7b8492;
-      font-size: 7.15pt;
+      gap: 12px;
+      padding-top: 6px;
+      border-top: 1px solid var(--line);
+      color: #778292;
+      font-size: 6.85pt;
+      line-height: 1.1;
     }
 
-    .note {
+    .print-note {
       width: 8.5in;
-      margin: 14px auto 30px;
-      padding: 12px 15px;
-      color: #374151;
+      margin: 13px auto 0;
+      padding: 10px 13px;
+      color: #334155;
       background: #fff;
-      box-shadow: 0 8px 22px rgba(17, 24, 39, 0.08);
-      font-size: 9pt;
+      box-shadow: 0 8px 24px rgba(15,23,42,.08);
+      font-size: 8.5pt;
     }
 
     @page {
@@ -428,20 +407,15 @@
     }
 
     @media print {
-      html,
-      body {
+      html, body {
         width: 8.5in;
         background: #fff;
-      }
-
-      body {
-        margin: 0;
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
       }
 
       .toolbar,
-      .note {
+      .print-note {
         display: none !important;
       }
 
@@ -463,16 +437,11 @@
         break-after: auto;
         page-break-after: auto;
       }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
     }
 
     @media screen and (max-width: 900px) {
       .resume,
-      .note {
+      .print-note {
         width: min(100%, 8.5in);
       }
 
@@ -485,323 +454,283 @@
 
     @media screen and (max-width: 680px) {
       .page {
-        padding: 30px 24px 46px;
+        padding: 28px 22px 38px;
       }
 
-      .metrics,
-      .credentials {
+      .role-head,
+      .credentials,
+      .initiative,
+      .outcomes li {
         grid-template-columns: 1fr;
+        gap: 2px;
       }
 
-      .contact-line span {
+      .contact {
         display: block;
       }
 
-      .contact-line span + span::before {
-        content: "";
-        padding: 0;
+      .contact span {
+        display: block;
+        margin-top: 2px;
       }
 
-      .role-heading {
-        grid-template-columns: 1fr;
-        gap: 2px;
+      .contact span::after {
+        content: "" !important;
+        margin: 0 !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <!-- GitHub Pages deployment:
-       Save this file as index.html in the publishing folder.
-       This package also includes .nojekyll to disable Jekyll processing. -->
   <div class="toolbar" aria-label="Resume actions">
     <button class="primary" type="button" onclick="window.print()">Print / Save as PDF</button>
     <button type="button" onclick="if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }">Full Screen</button>
   </div>
 
-  <main class="resume" aria-label="Brandi Neal two-page executive narrative resume">
+  <main class="resume" aria-label="Brandi Neal executive resume">
 
-    <!-- PAGE 1: WHO BRANDI IS AND WHY SHE IS DIFFERENT -->
+    <!-- PAGE 1: EXECUTIVE VALUE AND ENTERPRISE SCALE -->
     <section class="page" aria-labelledby="resume-name">
-      <header class="hero">
+      <header class="masthead">
         <h1 class="name" id="resume-name">Brandi Neal, EdD</h1>
-        <p class="headline">Enterprise AI & Transformation Executive</p>
-        <p class="subheadline">
-          AI Strategy • Product Innovation • Intelligent Automation • Workforce Adoption
+        <p class="executive-title">Enterprise AI Transformation & Product Executive</p>
+        <p class="positioning">
+          Building AI products, operating models, and organizational capabilities that move enterprises from experimentation to adoption and measurable value
         </p>
-        <p class="contact-line">
-          <span>Cincinnati, OH Metropolitan Area</span>
+        <div class="contact">
+          <span>Cincinnati, Ohio Metropolitan Area</span>
           <span>Open to Remote Executive Leadership</span>
           <span><a href="mailto:brandineal@icloud.com">brandineal@icloud.com</a></span>
           <span><a href="https://www.linkedin.com/in/brandi-neal" target="_blank" rel="noopener">linkedin.com/in/brandi-neal</a></span>
-        </p>
+        </div>
       </header>
 
-      <section class="section" aria-labelledby="profile-heading">
-        <h2 class="section-heading" id="profile-heading">Executive Profile</h2>
-        <p class="profile">
-          AI transformation executive with 18+ years of experience turning emerging technology into scalable
-          enterprise products, operating models, and workforce capabilities. Led Fortune 500 transformation
-          supporting 600,000+ employees and built AI-powered platforms integrating LLMs, APIs, cloud services,
-          governance, automation, and human-centered design. Combines enterprise technology leadership, product
-          strategy, organizational change, and higher education innovation to move organizations from AI
-          experimentation to measurable adoption and value.
-        </p>
-      </section>
-
-      <section class="section" aria-labelledby="metrics-heading">
-        <h2 class="section-heading" id="metrics-heading">Career Metrics</h2>
-        <div class="metrics" role="list" aria-label="Career metrics">
-          <div class="metric" role="listitem">
-            <strong>600,000+</strong>
-            <span>Employees Supported</span>
-          </div>
-          <div class="metric" role="listitem">
-            <strong>22</strong>
-            <span>Cross-Functional Professionals Led</span>
-          </div>
-          <div class="metric" role="listitem">
-            <strong>18+</strong>
-            <span>Years in Technology Leadership</span>
-          </div>
-          <div class="metric" role="listitem">
-            <strong>Fortune 500</strong>
-            <span>Enterprise Transformation</span>
-          </div>
-          <div class="metric" role="listitem">
-            <strong>AI Platforms</strong>
-            <span>Products, Automation & Governance</span>
-          </div>
-          <div class="metric" role="listitem">
-            <strong>Azure + GCP</strong>
-            <span>Cloud Modernization</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" aria-labelledby="capabilities-heading">
-        <h2 class="section-heading" id="capabilities-heading">Leadership Capabilities</h2>
-        <p class="capabilities">
-          Enterprise AI Strategy<span class="dot">•</span>
-          Product Strategy<span class="dot">•</span>
-          AI Adoption<span class="dot">•</span>
-          Intelligent Automation<span class="dot">•</span>
-          Platform Strategy<span class="dot">•</span>
-          Enterprise Architecture<span class="dot">•</span>
-          Technical Program Leadership<span class="dot">•</span>
-          Organizational Change<span class="dot">•</span>
-          Cloud Transformation<span class="dot">•</span>
-          AI Governance<span class="dot">•</span>
-          Executive Communications<span class="dot">•</span>
-          Workforce Enablement
-        </p>
-      </section>
-
-      <section class="section" aria-labelledby="current-leadership-heading">
-        <h2 class="section-heading" id="current-leadership-heading">Current Leadership</h2>
-
-        <article class="role">
-          <div class="role-heading">
-            <div class="role-title">Visiting Assistant Teaching Professor</div>
-            <div class="role-date">2025–Present</div>
-          </div>
-          <div class="organization">Northern Kentucky University</div>
-          <p class="role-summary">
-            Lead strategic AI initiatives spanning product development, curriculum innovation, enterprise automation,
-            workforce readiness, and industry engagement.
+      <div class="page-main">
+        <section class="section" aria-labelledby="executive-value">
+          <h2 class="section-title" id="executive-value">Executive Value Proposition</h2>
+          <p class="value-proposition">
+            Enterprise technology and AI leader with 18+ years of experience translating complex business needs
+            into scalable products, platforms, operating models, and workforce capabilities. Combines Fortune 500
+            transformation leadership, hands-on AI product development, cloud modernization, organizational change,
+            consulting, and higher education innovation. Trusted to align executives, technical teams, and business
+            stakeholders around strategy, governance, adoption, and execution.
           </p>
-          <ul>
-            <li>Designed and launched one of the university’s first AI-native General Education programs, establishing a scalable framework for responsible AI education across academic disciplines.</li>
-            <li>Built an AI-powered curriculum and quality-assurance platform using Google Apps Script, APIs, Gemini, Google Workspace, and Canvas LMS to automate content development, reporting, accessibility validation, and lifecycle management.</li>
-            <li>Productized and licensed a complete AI Literacy ecosystem—including a 15-week Canvas course, automation framework, implementation guides, faculty training, and QA evidence—creating a repeatable model for institutional adoption.</li>
-            <li>Created the AI Native Studio operating model connecting paid student teams with sponsored enterprise AI projects, industry mentors, and real-world product development from discovery through deployment and knowledge transfer.</li>
-            <li>Partner with university executives, faculty, and regional organizations to advance AI adoption, curriculum modernization, workforce innovation, employer engagement, and program visibility.</li>
+        </section>
+
+        <section class="section" aria-labelledby="selected-impact">
+          <h2 class="section-title" id="selected-impact">Selected Enterprise Impact</h2>
+          <ul class="outcomes">
+            <li><strong>600,000+</strong><span>Employee records migrated through enterprise HR modernization, aligning technology delivery, readiness, training, communications, and adoption.</span></li>
+            <li><strong>22-person team</strong><span>Cross-functional technical and business organization led across product, engineering, operations, communications, learning, and change.</span></li>
+            <li><strong>AI ecosystem</strong><span>Licensable AI Literacy product, automation platform, implementation framework, quality controls, evidence reporting, and faculty enablement.</span></li>
+            <li><strong>AI Studio</strong><span>Client-sponsored operating model connecting paid student teams, industry mentors, enterprise use cases, product delivery, and knowledge transfer.</span></li>
           </ul>
-        </article>
+        </section>
 
-        <article class="role">
-          <div class="role-heading">
-            <div class="role-title">Founder & Principal AI Transformation Consultant</div>
-            <div class="role-date">2023–Present</div>
-          </div>
-          <div class="organization">ITSBAD LLC</div>
-          <p class="role-summary">
-            Advise organizations on enterprise AI strategy, intelligent automation, workflow modernization,
-            digital product innovation, and adoption.
+        <section class="section" aria-labelledby="leadership-expertise">
+          <h2 class="section-title" id="leadership-expertise">Leadership Expertise</h2>
+          <p class="keywords">
+            Enterprise AI Strategy<span class="dot">•</span>
+            AI Product Strategy<span class="dot">•</span>
+            Intelligent Automation<span class="dot">•</span>
+            AI Adoption & Governance<span class="dot">•</span>
+            Enterprise Platforms<span class="dot">•</span>
+            Technical Program Leadership<span class="dot">•</span>
+            Cloud Transformation<span class="dot">•</span>
+            Organizational Change<span class="dot">•</span>
+            Workforce Enablement<span class="dot">•</span>
+            Executive Communications<span class="dot">•</span>
+            Cross-Functional Leadership
           </p>
-          <ul>
-            <li>Design AI-enabled business applications integrating LLMs, APIs, cloud services, low-code platforms, and intelligent automation.</li>
-            <li>Translate ambiguous operational challenges into product roadmaps, governance practices, scalable workflows, and measurable implementation plans.</li>
-            <li>Build reusable automation frameworks that reduce manual work, strengthen consistency, improve visibility, and support sustainable adoption.</li>
-          </ul>
-        </article>
+        </section>
 
-        <div class="enterprise-callout">
-          <strong>Enterprise Leadership Foundation</strong>
-          <p>
-            At Kroger Technology & Digital, led cloud, HR technology, workforce adoption, and organizational
-            transformation supporting more than 600,000 employees and a 22-person cross-functional organization.
-            Full experience begins on Page 2.
-          </p>
-        </div>
-      </section>
+        <section class="section" aria-labelledby="experience-page-one">
+          <h2 class="section-title" id="experience-page-one">Leadership Experience</h2>
 
-      <div class="footer">
-        <span>Brandi Neal, EdD | Enterprise AI & Transformation Executive</span>
-        <span>Page 1 of 2</span>
+          <article class="role">
+            <div class="role-head">
+              <h3 class="role-title">Visiting Assistant Teaching Professor | AI Strategy & Innovation</h3>
+              <span class="date">2025–Present</span>
+            </div>
+            <p class="organization">Northern Kentucky University</p>
+            <p class="scope">Lead AI product development, enterprise automation, curriculum innovation, workforce readiness, and industry engagement.</p>
+            <ul class="bullets">
+              <li>Designed and launched one of the university’s first AI-native General Education programs, creating a scalable institutional framework for responsible AI literacy across disciplines.</li>
+              <li>Built an AI-powered curriculum and quality-assurance platform integrating Gemini, Google Apps Script, Canvas APIs, Google Workspace, automated reporting, accessibility validation, and content lifecycle management.</li>
+              <li>Productized and licensed a complete AI Literacy ecosystem—including a 15-week course, automation framework, implementation guides, faculty training, governance practices, and QA evidence.</li>
+              <li>Created the AI Native Studio operating model connecting paid student teams with sponsored enterprise AI projects, industry coaching, and product development from discovery through deployment.</li>
+            </ul>
+          </article>
+
+          <article class="role">
+            <div class="role-head">
+              <h3 class="role-title">Founder & Principal AI Transformation Consultant</h3>
+              <span class="date">2023–Present</span>
+            </div>
+            <p class="organization">ITSBAD LLC</p>
+            <p class="scope">Advise organizations on enterprise AI strategy, intelligent automation, workflow modernization, product innovation, and adoption.</p>
+            <ul class="bullets">
+              <li>Design AI-enabled business applications integrating LLMs, APIs, cloud services, low-code platforms, and intelligent automation.</li>
+              <li>Translate ambiguous operational challenges into product roadmaps, governance practices, scalable workflows, and measurable implementation plans.</li>
+              <li>Develop reusable automation frameworks that reduce manual effort, improve visibility, strengthen consistency, and support sustainable adoption.</li>
+            </ul>
+          </article>
+
+          <article class="role">
+            <div class="role-head">
+              <h3 class="role-title">Senior Program Manager | Technology Transformation & Organizational Change</h3>
+              <span class="date">2021–2023</span>
+            </div>
+            <p class="organization">Kroger Technology & Digital</p>
+            <p class="scope">Led enterprise HR technology, cloud modernization, workforce adoption, digital workplace, and organizational transformation.</p>
+            <ul class="bullets">
+              <li>Directed migration of more than 600,000 employee records as part of enterprise HR modernization, integrating delivery, readiness, communications, training, and adoption.</li>
+              <li>Led a 22-person cross-functional organization spanning product, engineering, operations, communications, learning, and change workstreams.</li>
+              <li>Designed executive reporting architecture that improved visibility into readiness, risk, dependencies, decisions, and adoption.</li>
+              <li>Supported Azure and Google Cloud migration initiatives while building onboarding and workflow automation that improved coordination and the employee experience.</li>
+            </ul>
+          </article>
+        </section>
       </div>
+
+      <footer class="footer">
+        <span>Brandi Neal, EdD | Enterprise AI Transformation & Product Executive</span>
+        <span>Page 1 of 2</span>
+      </footer>
     </section>
 
-    <!-- PAGE 2: PROOF THAT SHE HAS BUILT, LED, AND SCALED IT -->
-    <section class="page" aria-label="Executive resume page two">
+    <!-- PAGE 2: PROOF OF EXECUTION, PRODUCTS, AND CREDENTIALS -->
+    <section class="page" aria-label="Brandi Neal executive resume page two">
+      <header class="masthead">
+        <p class="executive-title" style="margin-top:0;">Evidence of Execution, Product Leadership & Enterprise Adoption</p>
+        <p class="positioning">AI Platforms • Cloud & Workforce Modernization • Organizational Change • Responsible Adoption</p>
+      </header>
 
-      <section class="section" aria-labelledby="enterprise-experience-heading" style="margin-top: 2px;">
-        <h2 class="section-heading" id="enterprise-experience-heading">Enterprise Leadership at Scale</h2>
+      <div class="page-main">
+        <section class="section" aria-labelledby="earlier-enterprise-experience">
+          <h2 class="section-title" id="earlier-enterprise-experience">Additional Enterprise Experience</h2>
 
-        <article class="role">
-          <div class="role-heading">
-            <div class="role-title">Senior Program Manager | Organizational Change & Technology Transformation</div>
-            <div class="role-date">2021–2023</div>
-          </div>
-          <div class="organization">Kroger Technology & Digital</div>
-          <p class="role-summary">
-            Led enterprise transformation across HR technology, cloud modernization, digital workplace,
-            workforce adoption, and organizational change.
-          </p>
-          <ul>
-            <li>Directed migration of more than 600,000 employee records as part of enterprise HR modernization, aligning technology delivery, readiness, communications, training, and workforce adoption.</li>
-            <li>Led a 22-person cross-functional organization spanning technical and business workstreams, coordinating product, engineering, operations, communications, learning, and change activities.</li>
-            <li>Designed executive reporting architecture that improved leadership visibility into transformation readiness, risks, dependencies, decisions, and adoption.</li>
-            <li>Supported Azure and Google Cloud migration initiatives across business units, connecting platform modernization with stakeholder alignment and operating-model change.</li>
-            <li>Built automation and onboarding solutions that reduced manual coordination, improved operational visibility, and strengthened the employee and technology-team experience.</li>
-          </ul>
-        </article>
-      </section>
+          <article class="role">
+            <div class="role-head">
+              <h3 class="role-title">SAP Change Management Consultant</h3>
+              <span class="date">2021</span>
+            </div>
+            <p class="organization">LSI Consulting</p>
+            <ul class="bullets">
+              <li>Led SAP change, workforce enablement, software adoption, and digital transformation initiatives for U.S. Air Force Air University and State of Nevada programs.</li>
+              <li>Developed stakeholder, communications, training, readiness, and adoption strategies in complex public-sector and security-sensitive environments; held a U.S. Secret clearance.</li>
+            </ul>
+          </article>
 
-      <section class="section" aria-labelledby="earlier-experience-heading">
-        <h2 class="section-heading" id="earlier-experience-heading">Earlier Enterprise Experience</h2>
+          <article class="role">
+            <div class="role-head">
+              <h3 class="role-title">Lecturer & Senior Enterprise Applications Developer</h3>
+              <span class="date">2011–2020</span>
+            </div>
+            <p class="organization">Northern Kentucky University</p>
+            <ul class="bullets">
+              <li>Designed and supported SAP, SharePoint, analytics, web, and enterprise application solutions while teaching information systems, programming, analytics, and web technologies.</li>
+              <li>Translated complex platforms into scalable processes, learning experiences, and business capabilities for technical and nontechnical stakeholders.</li>
+            </ul>
+          </article>
 
-        <article class="role">
-          <div class="role-heading">
-            <div class="role-title">SAP Consultant</div>
-            <div class="role-date">2021</div>
-          </div>
-          <div class="organization">LSI Consulting</div>
-          <ul>
-            <li>Led SAP change, workforce enablement, software adoption, and digital transformation initiatives for U.S. Air Force Air University and State of Nevada programs.</li>
-            <li>Developed stakeholder, communications, training, readiness, and adoption strategies in complex public-sector and security-sensitive environments; held a U.S. Secret clearance.</li>
-          </ul>
-        </article>
+          <article class="role">
+            <div class="role-head">
+              <h3 class="role-title">Applications Engineer</h3>
+              <span class="date">Earlier Career</span>
+            </div>
+            <p class="organization">Humana</p>
+            <ul class="bullets">
+              <li>Engineered SharePoint, SQL, web, and enterprise application solutions supporting healthcare operations.</li>
+              <li>Partnered with business stakeholders to improve workflow efficiency, data access, usability, reliability, and system performance.</li>
+            </ul>
+          </article>
+        </section>
 
-        <article class="role">
-          <div class="role-heading">
-            <div class="role-title">Lecturer & Senior ERP Developer</div>
-            <div class="role-date">2011–2020</div>
-          </div>
-          <div class="organization">Northern Kentucky University</div>
-          <ul>
-            <li>Designed and supported SAP, SharePoint, analytics, web, and enterprise application solutions while teaching information systems, programming, analytics, and web technologies.</li>
-            <li>Translated complex platforms into scalable processes, learning experiences, and business capabilities for technical and nontechnical stakeholders.</li>
-          </ul>
-        </article>
+        <section class="section" aria-labelledby="signature-initiatives">
+          <h2 class="section-title" id="signature-initiatives">Signature AI & Transformation Initiatives</h2>
 
-        <article class="role">
-          <div class="role-heading">
-            <div class="role-title">Applications Engineer</div>
-            <div class="role-date">Earlier Career</div>
-          </div>
-          <div class="organization">Humana</div>
-          <ul>
-            <li>Engineered SharePoint, SQL, web, and enterprise application solutions supporting healthcare operations.</li>
-            <li>Partnered with business stakeholders to improve workflow efficiency, data access, usability, reliability, and system performance.</li>
-          </ul>
-        </article>
-      </section>
+          <article class="initiative">
+            <h3>Enterprise AI Curriculum Platform</h3>
+            <p><strong>Built:</strong> A productized AI curriculum ecosystem integrating LLMs, APIs, automation, Canvas LMS, Google Workspace, quality assurance, accessibility, governance, and evidence reporting. <strong>Business value:</strong> Converted complex course development into a repeatable, licensable institutional operating model.</p>
+          </article>
 
-      <section class="section" aria-labelledby="case-studies-heading">
-        <h2 class="section-heading" id="case-studies-heading">Selected Transformation Case Studies</h2>
+          <article class="initiative">
+            <h3>AI Native Studio</h3>
+            <p><strong>Built:</strong> A client-sponsored AI product studio covering discovery, design, prototype, build, test, deployment, industry coaching, and knowledge transfer. <strong>Business value:</strong> Created a repeatable university–industry collaboration model and experiential AI talent pipeline.</p>
+          </article>
 
-        <article class="case-study">
-          <h3 class="case-title">AI Curriculum Product & Automation Platform</h3>
-          <p class="case-line"><strong>Challenge:</strong> Scale AI curriculum development, quality, governance, accessibility, and reporting without creating unsustainable manual work.</p>
-          <p class="case-line"><strong>Solution:</strong> Integrated Gemini, Google Apps Script, Canvas APIs, Google Workspace, reusable content patterns, automated QA, and evidence reporting.</p>
-          <p class="case-line"><strong>Value:</strong> Produced a licensable AI Literacy ecosystem and repeatable institutional operating model for curriculum delivery and lifecycle management.</p>
-        </article>
+          <article class="initiative">
+            <h3>Enterprise Workforce Transformation</h3>
+            <p><strong>Led:</strong> Cross-functional delivery, organizational readiness, executive reporting, workforce enablement, cloud migration support, onboarding, and workflow automation. <strong>Business value:</strong> Improved transformation visibility, operational coordination, and employee adoption at Fortune 500 scale.</p>
+          </article>
 
-        <article class="case-study">
-          <h3 class="case-title">AI Native Studio</h3>
-          <p class="case-line"><strong>Challenge:</strong> Connect AI education with authentic enterprise product development and workforce readiness.</p>
-          <p class="case-line"><strong>Solution:</strong> Created a client-sponsored studio model covering discovery, design, prototyping, build, testing, deployment, coaching, and knowledge transfer.</p>
-          <p class="case-line"><strong>Value:</strong> Established a repeatable university–industry AI collaboration model and experiential talent pipeline.</p>
-        </article>
+          <article class="initiative">
+            <h3>Intelligent Workflow Automation</h3>
+            <p><strong>Built:</strong> Reusable automation and content-engineering frameworks connecting APIs, AI services, cloud tools, business rules, and human review. <strong>Business value:</strong> Reduced manual effort while improving consistency, transparency, and scalability.</p>
+          </article>
+        </section>
 
-        <article class="case-study">
-          <h3 class="case-title">Enterprise Transformation at Scale</h3>
-          <p class="case-line"><strong>Challenge:</strong> Modernize workforce technology and cloud-enabled operations for an organization serving more than 600,000 employees.</p>
-          <p class="case-line"><strong>Solution:</strong> Led cross-functional delivery, adoption, executive reporting, cloud migration support, workforce enablement, and workflow automation.</p>
-          <p class="case-line"><strong>Value:</strong> Improved transformation readiness, leadership visibility, operational coordination, and employee adoption.</p>
-        </article>
-      </section>
+        <section class="section" aria-labelledby="education-credentials">
+          <h2 class="section-title" id="education-credentials">Education, Credentials & Recognition</h2>
 
-      <section class="section" aria-labelledby="credentials-heading">
-        <h2 class="section-heading" id="credentials-heading">Credentials & Recognition</h2>
+          <div class="credentials">
+            <div>
+              <div class="credential">
+                <strong>Doctor of Education, Educational Leadership</strong>
+                <span>Northern Kentucky University</span>
+                <span>Dissertation: Web Analytics: Analyzing Users of a University Website</span>
+              </div>
 
-        <div class="credentials">
-          <div class="credential-block">
-            <div class="detail-item">
-              <strong>Doctor of Education, Educational Leadership</strong>
-              <span>Northern Kentucky University</span>
-              <span>Dissertation: Web Analytics: Analyzing Users of a University Website</span>
+              <div class="credential">
+                <strong>Master of Science, Business Informatics</strong>
+                <span>Northern Kentucky University</span>
+              </div>
+
+              <div class="credential">
+                <strong>Bachelor of Arts, Studio Art / Graphic Design</strong>
+                <span>Morehead State University</span>
+              </div>
+
+              <div class="credential">
+                <strong>Certifications</strong>
+                <span>Google Cloud Digital Leader • Google AppSheet Foundations • Google AppSheet Automation</span>
+              </div>
             </div>
 
-            <div class="detail-item">
-              <strong>Master of Science, Business Informatics</strong>
-              <span>Northern Kentucky University</span>
-            </div>
+            <div>
+              <div class="credential">
+                <strong>Selected Recognition</strong>
+                <span>Kroger Living Our Purpose Awards, 2022 & 2023 • Kroger Program Manager Award • Four-Time Student Recognition of Teaching Excellence • NCWIT Grant Recipient • International Conference Best Paper Award</span>
+              </div>
 
-            <div class="detail-item">
-              <strong>Bachelor of Arts, Studio Art / Graphic Design</strong>
-              <span>Morehead State University</span>
-            </div>
-
-            <div class="detail-item">
-              <strong>Certifications</strong>
-              <span>Google Cloud Digital Leader • Google AppSheet Foundations • Google AppSheet Automation</span>
+              <div class="credential">
+                <strong>Research & Thought Leadership</strong>
+                <p>Published researcher and conference presenter in artificial intelligence, analytics, enterprise collaboration, technology adoption, higher education innovation, and digital transformation.</p>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div class="credential-block">
-            <div class="detail-item">
-              <strong>Selected Recognition</strong>
-              <span>Kroger Living Our Purpose Award, 2022 & 2023</span>
-              <span>Kroger Program Manager Award</span>
-              <span>Four-Time Student Recognition of Teaching Excellence</span>
-              <span>NCWIT Grant Recipient</span>
-              <span>International Conference Best Paper Award</span>
-            </div>
-
-            <div class="detail-item">
-              <strong>Research & Thought Leadership</strong>
-              <p class="research">
-                Published researcher and conference presenter in artificial intelligence, analytics,
-                enterprise collaboration, technology adoption, higher education innovation, and digital transformation.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="footer">
-        <span>Brandi Neal, EdD | AI Strategy • Product Innovation • Intelligent Automation</span>
-        <span>Page 2 of 2</span>
+        <aside class="signature">
+          <strong>Leadership proposition:</strong> Brings the rare ability to connect AI strategy, technical architecture,
+          product execution, workforce adoption, and executive communication—helping organizations turn promising AI
+          experiments into governed, scalable, human-centered business capabilities.
+        </aside>
       </div>
+
+      <footer class="footer">
+        <span>Brandi Neal, EdD | AI Strategy • Product Innovation • Enterprise Adoption</span>
+        <span>Page 2 of 2</span>
+      </footer>
     </section>
   </main>
 
-  <aside class="note">
-    <strong>Save as PDF:</strong> Open this file in Chrome and choose <em>Print</em> → <em>Save as PDF</em>.
-    Select <em>Letter</em>, set <em>Margins</em> to <em>None</em>, use <em>Scale: 100%</em>, and enable
-    <em>Background graphics</em>. Confirm that the preview shows exactly two pages before saving.
+  <aside class="print-note">
+    <strong>PDF export:</strong> In Chrome, choose Print → Save as PDF. Use Letter, Margins: None,
+    Scale: 100%, Background graphics: Enabled, and browser Headers and footers: Disabled.
+    Confirm that the preview shows exactly two pages.
   </aside>
 </body>
 </html>
