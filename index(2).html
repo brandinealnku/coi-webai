@@ -381,14 +381,71 @@
     }
 
     .footer {
+      position: relative;
+      z-index: 5;
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      padding-top: 6px;
+      min-height: 0.24in;
+      padding-top: 7px;
       border-top: 1px solid var(--line);
       color: #778292;
+      background: var(--paper);
       font-size: 6.85pt;
       line-height: 1.1;
+    }
+
+    /* Page 1 is intentionally more compact so browser print rounding
+       cannot push the final line into the footer area. */
+    .page-one .page-main {
+      padding-top: 8px;
+      font-size: 8.85pt;
+    }
+
+    .page-one .section {
+      margin-top: 7px;
+    }
+
+    .page-one .section-title {
+      margin-bottom: 4px;
+    }
+
+    .page-one .value-proposition {
+      font-size: 9.25pt;
+      line-height: 1.32;
+    }
+
+    .page-one .outcomes li {
+      padding: 4px 0;
+    }
+
+    .page-one .outcomes span {
+      font-size: 8.15pt;
+      line-height: 1.2;
+    }
+
+    .page-one .keywords {
+      font-size: 8.2pt;
+      line-height: 1.36;
+    }
+
+    .page-one .role {
+      margin-top: 6px;
+    }
+
+    .page-one .scope {
+      margin-top: 2px;
+      font-size: 8pt;
+      line-height: 1.18;
+    }
+
+    .page-one ul.bullets {
+      margin-top: 3px;
+    }
+
+    .page-one ul.bullets li {
+      margin-bottom: 1.8px;
+      line-height: 1.20;
     }
 
     .print-note {
@@ -426,7 +483,7 @@
 
       .page {
         width: 8.5in;
-        height: 11in;
+        height: 10.99in;
         margin: 0 !important;
         box-shadow: none;
         break-after: page;
@@ -491,7 +548,7 @@
   <main class="resume" aria-label="Brandi Neal executive resume">
 
     <!-- PAGE 1: EXECUTIVE VALUE AND ENTERPRISE SCALE -->
-    <section class="page" aria-labelledby="resume-name">
+    <section class="page page-one" aria-labelledby="resume-name">
       <header class="masthead">
         <h1 class="name" id="resume-name">Brandi Neal, EdD</h1>
         <p class="executive-title">Enterprise AI Transformation & Product Executive</p>
@@ -556,9 +613,8 @@
             <p class="organization">Northern Kentucky University</p>
             <p class="scope">Lead AI product development, enterprise automation, curriculum innovation, workforce readiness, and industry engagement.</p>
             <ul class="bullets">
-              <li>Designed and launched one of the university’s first AI-native General Education programs, creating a scalable institutional framework for responsible AI literacy across disciplines.</li>
-              <li>Built an AI-powered curriculum and quality-assurance platform integrating Gemini, Google Apps Script, Canvas APIs, Google Workspace, automated reporting, accessibility validation, and content lifecycle management.</li>
-              <li>Productized and licensed a complete AI Literacy ecosystem—including a 15-week course, automation framework, implementation guides, faculty training, governance practices, and QA evidence.</li>
+              <li>Designed and launched one of the university’s first AI-native General Education programs, creating a scalable framework for responsible AI literacy across disciplines.</li>
+              <li>Built and licensed an AI-powered curriculum ecosystem integrating Gemini, Apps Script, Canvas APIs, Google Workspace, automated QA, accessibility validation, governance, reporting, and faculty enablement.</li>
               <li>Created the AI Native Studio operating model connecting paid student teams with sponsored enterprise AI projects, industry coaching, and product development from discovery through deployment.</li>
             </ul>
           </article>
@@ -572,8 +628,7 @@
             <p class="scope">Advise organizations on enterprise AI strategy, intelligent automation, workflow modernization, product innovation, and adoption.</p>
             <ul class="bullets">
               <li>Design AI-enabled business applications integrating LLMs, APIs, cloud services, low-code platforms, and intelligent automation.</li>
-              <li>Translate ambiguous operational challenges into product roadmaps, governance practices, scalable workflows, and measurable implementation plans.</li>
-              <li>Develop reusable automation frameworks that reduce manual effort, improve visibility, strengthen consistency, and support sustainable adoption.</li>
+              <li>Translate ambiguous operational challenges into product roadmaps, governance practices, scalable workflows, and reusable automation frameworks.</li>
             </ul>
           </article>
 
@@ -585,10 +640,9 @@
             <p class="organization">Kroger Technology & Digital</p>
             <p class="scope">Led enterprise HR technology, cloud modernization, workforce adoption, digital workplace, and organizational transformation.</p>
             <ul class="bullets">
-              <li>Directed migration of more than 600,000 employee records as part of enterprise HR modernization, integrating delivery, readiness, communications, training, and adoption.</li>
-              <li>Led a 22-person cross-functional organization spanning product, engineering, operations, communications, learning, and change workstreams.</li>
-              <li>Designed executive reporting architecture that improved visibility into readiness, risk, dependencies, decisions, and adoption.</li>
-              <li>Supported Azure and Google Cloud migration initiatives while building onboarding and workflow automation that improved coordination and the employee experience.</li>
+              <li>Directed migration of more than 600,000 employee records through enterprise HR modernization, integrating delivery, readiness, communications, training, and adoption.</li>
+              <li>Led a 22-person cross-functional organization across product, engineering, operations, communications, learning, and change.</li>
+              <li>Improved executive visibility and operational coordination through transformation reporting, Azure and Google Cloud migration support, onboarding, and workflow automation.</li>
             </ul>
           </article>
         </section>
