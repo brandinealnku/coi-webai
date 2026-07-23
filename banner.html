@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Brandi Neal LinkedIn Banner</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Brandi Neal — LinkedIn Banner</title>
 <style>
   :root {
-    --navy: #0b1f33;
-    --navy-2: #102c49;
-    --teal: #16b8a6;
-    --cyan: #4cc9f0;
+    --ink: #071b2d;
+    --ink-2: #0c2f4d;
+    --blue: #2ba8ff;
+    --teal: #39d8c1;
     --white: #f8fbff;
-    --muted: #c9d8e8;
+    --soft: #c8d8e8;
+    --line: rgba(195, 223, 242, 0.22);
   }
 
   * { box-sizing: border-box; }
 
+  html, body { margin: 0; }
+
   body {
-    margin: 0;
     min-height: 100vh;
+    padding: 28px;
     display: grid;
     place-items: center;
-    gap: 20px;
-    padding: 28px;
-    background: #e9eef4;
+    background: #e8eef4;
+    color: #102033;
     font-family: Arial, Helvetica, sans-serif;
-    color: #172033;
   }
 
-  .shell {
+  .page {
     width: min(100%, 1584px);
   }
 
@@ -37,91 +38,127 @@
     width: 100%;
     aspect-ratio: 4 / 1;
     overflow: hidden;
+    isolation: isolate;
     background:
-      radial-gradient(circle at 78% 20%, rgba(76, 201, 240, .18), transparent 24%),
-      radial-gradient(circle at 93% 80%, rgba(22, 184, 166, .18), transparent 26%),
-      linear-gradient(115deg, var(--navy) 0%, var(--navy-2) 62%, #0d3850 100%);
-    box-shadow: 0 22px 48px rgba(12, 31, 51, .20);
+      radial-gradient(circle at 84% 14%, rgba(43,168,255,.22), transparent 25%),
+      radial-gradient(circle at 93% 82%, rgba(57,216,193,.20), transparent 27%),
+      linear-gradient(112deg, var(--ink) 0%, var(--ink-2) 66%, #0b4258 100%);
+    box-shadow: 0 22px 50px rgba(7,27,45,.20);
   }
 
-  .banner::before {
-    content: "";
+  /* LinkedIn's profile photo overlaps the lower-left area.
+     Keep all critical words well to the right of that zone. */
+  .profile-photo-zone {
     position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(90deg, rgba(11,31,51,.98) 0%, rgba(11,31,51,.90) 35%, rgba(11,31,51,.32) 72%, rgba(11,31,51,.12) 100%);
+    left: 0;
+    bottom: 0;
+    width: 34%;
+    height: 72%;
+    background: linear-gradient(135deg, rgba(255,255,255,.035), transparent 65%);
+    z-index: -1;
   }
 
-  .safe-zone {
+  .content {
     position: absolute;
-    left: 37%;
-    right: 5.5%;
-    top: 14%;
+    left: 36.5%;
+    right: 5%;
+    top: 13%;
     bottom: 12%;
-    z-index: 3;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
 
-  .eyebrow {
-    margin: 0 0 12px;
-    color: var(--cyan);
-    font-size: clamp(13px, 1.25vw, 20px);
-    font-weight: 700;
-    letter-spacing: .14em;
+  .kicker {
+    margin: 0 0 10px;
+    color: var(--teal);
+    font-size: clamp(13px, 1.18vw, 19px);
+    font-weight: 800;
+    letter-spacing: .16em;
     text-transform: uppercase;
   }
 
   h1 {
+    max-width: 900px;
     margin: 0;
     color: var(--white);
-    font-size: clamp(34px, 4.15vw, 66px);
+    font-size: clamp(35px, 4.15vw, 66px);
     line-height: .98;
-    letter-spacing: -.035em;
-    font-weight: 800;
+    letter-spacing: -.045em;
+    font-weight: 850;
   }
 
-  .subtitle {
-    margin: 13px 0 0;
-    color: var(--white);
-    font-size: clamp(20px, 2.25vw, 36px);
-    line-height: 1.08;
-    font-weight: 700;
+  .accent {
+    color: var(--blue);
   }
 
-  .statement {
-    max-width: 860px;
-    margin: 15px 0 0;
-    color: var(--muted);
-    font-size: clamp(14px, 1.45vw, 23px);
-    line-height: 1.35;
+  .positioning {
+    max-width: 930px;
+    margin: 16px 0 0;
+    color: var(--soft);
+    font-size: clamp(15px, 1.48vw, 23px);
+    line-height: 1.34;
     font-weight: 500;
   }
 
-  .pill-row {
+  .proof {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 19px;
-  }
-
-  .pill {
-    padding: 7px 12px;
-    border: 1px solid rgba(201,216,232,.28);
-    border-radius: 999px;
-    color: #edf7ff;
-    background: rgba(255,255,255,.055);
-    font-size: clamp(11px, 1.05vw, 16px);
-    font-weight: 700;
+    align-items: center;
+    gap: 11px 17px;
+    margin-top: 21px;
+    color: var(--white);
+    font-size: clamp(11px, 1.02vw, 16px);
+    font-weight: 750;
     letter-spacing: .015em;
   }
 
-  .network {
+  .proof span {
+    white-space: nowrap;
+  }
+
+  .proof i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 12px rgba(57,216,193,.9);
+  }
+
+  .visual {
     position: absolute;
     inset: 0;
-    z-index: 1;
-    opacity: .66;
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  .ring {
+    position: absolute;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+  }
+
+  .ring.one {
+    width: 440px;
+    height: 440px;
+    right: -70px;
+    top: -130px;
+  }
+
+  .ring.two {
+    width: 270px;
+    height: 270px;
+    right: 55px;
+    top: -5px;
+    border-color: rgba(57,216,193,.22);
+  }
+
+  .ring.three {
+    width: 150px;
+    height: 150px;
+    right: 175px;
+    top: 95px;
+    border-color: rgba(43,168,255,.25);
   }
 
   .node {
@@ -129,260 +166,266 @@
     width: 9px;
     height: 9px;
     border-radius: 50%;
-    background: var(--cyan);
-    box-shadow: 0 0 18px rgba(76, 201, 240, .85);
+    background: var(--blue);
+    box-shadow: 0 0 18px rgba(43,168,255,.9);
   }
 
   .node.teal {
     background: var(--teal);
-    box-shadow: 0 0 18px rgba(22, 184, 166, .85);
+    box-shadow: 0 0 18px rgba(57,216,193,.9);
   }
 
-  .line {
+  .edge {
     position: absolute;
     height: 1px;
     transform-origin: left center;
-    background: linear-gradient(90deg, rgba(76,201,240,.05), rgba(76,201,240,.7), rgba(22,184,166,.2));
-  }
-
-  .orbit {
-    position: absolute;
-    right: -50px;
-    top: -105px;
-    width: 430px;
-    height: 430px;
-    border: 1px solid rgba(76,201,240,.19);
-    border-radius: 50%;
-  }
-
-  .orbit.two {
-    right: 64px;
-    top: -15px;
-    width: 260px;
-    height: 260px;
-    border-color: rgba(22,184,166,.22);
-  }
-
-  .profile-safe-note {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 36%;
-    height: 66%;
-    z-index: 2;
-    background: radial-gradient(circle at 18% 95%, rgba(255,255,255,.045), transparent 68%);
+    background: linear-gradient(90deg, rgba(43,168,255,.06), rgba(43,168,255,.75), rgba(57,216,193,.22));
   }
 
   .controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    gap: 14px;
     margin-top: 16px;
   }
 
   .instructions {
     margin: 0;
+    max-width: 980px;
     font-size: 14px;
-    line-height: 1.45;
+    line-height: 1.48;
   }
 
   button {
     border: 0;
     border-radius: 10px;
-    background: #0b1f33;
-    color: white;
     padding: 12px 18px;
-    font-weight: 700;
+    background: var(--ink);
+    color: white;
+    font: 700 14px Arial, Helvetica, sans-serif;
     cursor: pointer;
   }
 
-  button:hover { background: #143a5d; }
+  button:hover,
+  button:focus-visible {
+    background: #123f65;
+    outline: 3px solid rgba(43,168,255,.30);
+    outline-offset: 2px;
+  }
 
   @media (max-width: 850px) {
     body { padding: 12px; }
-    .safe-zone { left: 33%; right: 3.5%; }
-    .pill-row { margin-top: 10px; gap: 5px; }
-    .pill { padding: 4px 7px; }
-    .statement { margin-top: 8px; }
-    .eyebrow { margin-bottom: 5px; }
-    .subtitle { margin-top: 6px; }
+    .content { left: 33%; right: 3%; top: 8%; bottom: 8%; }
+    .kicker { margin-bottom: 5px; }
+    .positioning { margin-top: 7px; }
+    .proof { margin-top: 9px; gap: 5px 10px; }
   }
 </style>
 </head>
 <body>
-  <main class="shell">
-    <section id="banner" class="banner" aria-label="LinkedIn banner for Dr. Brandi Neal">
-      <div class="profile-safe-note" aria-hidden="true"></div>
+<main class="page">
+  <section class="banner" aria-label="LinkedIn banner positioning Dr. Brandi Neal as an enterprise AI transformation leader">
+    <div class="profile-photo-zone" aria-hidden="true"></div>
 
-      <div class="network" aria-hidden="true">
-        <div class="orbit"></div>
-        <div class="orbit two"></div>
+    <div class="visual" aria-hidden="true">
+      <div class="ring one"></div>
+      <div class="ring two"></div>
+      <div class="ring three"></div>
 
-        <span class="node" style="left:70%;top:17%;"></span>
-        <span class="node teal" style="left:82%;top:27%;"></span>
-        <span class="node" style="left:91%;top:14%;"></span>
-        <span class="node teal" style="left:74%;top:72%;"></span>
-        <span class="node" style="left:87%;top:67%;"></span>
-        <span class="node teal" style="left:95%;top:82%;"></span>
-        <span class="node" style="left:64%;top:48%;"></span>
+      <span class="node" style="left:68%;top:18%;"></span>
+      <span class="node teal" style="left:79%;top:29%;"></span>
+      <span class="node" style="left:90%;top:15%;"></span>
+      <span class="node teal" style="left:73%;top:73%;"></span>
+      <span class="node" style="left:86%;top:66%;"></span>
+      <span class="node teal" style="left:95%;top:82%;"></span>
+      <span class="node" style="left:63%;top:49%;"></span>
 
-        <span class="line" style="left:64.5%;top:49%;width:125px;transform:rotate(-35deg);"></span>
-        <span class="line" style="left:70.4%;top:18%;width:195px;transform:rotate(12deg);"></span>
-        <span class="line" style="left:82.4%;top:28%;width:155px;transform:rotate(-18deg);"></span>
-        <span class="line" style="left:74.3%;top:73%;width:210px;transform:rotate(-7deg);"></span>
-        <span class="line" style="left:87.4%;top:68%;width:140px;transform:rotate(27deg);"></span>
-        <span class="line" style="left:64.4%;top:49%;width:205px;transform:rotate(42deg);"></span>
-      </div>
-
-      <div class="safe-zone">
-        <p class="eyebrow">Strategy → Product → Adoption</p>
-        <h1>Dr. Brandi Neal, EdD</h1>
-        <p class="subtitle">Enterprise AI Transformation Leader</p>
-        <p class="statement">Turning AI strategy into responsible products, scalable capabilities, and measurable organizational transformation.</p>
-        <div class="pill-row" aria-label="Core expertise">
-          <span class="pill">AI Strategy</span>
-          <span class="pill">Product Innovation</span>
-          <span class="pill">Digital Transformation</span>
-          <span class="pill">Workforce Adoption</span>
-        </div>
-      </div>
-    </section>
-
-    <div class="controls">
-      <p class="instructions">
-        Open this file in Chrome at 100% zoom, then click <strong>Save banner as PNG</strong>.
-        The exported image is exactly <strong>1584 × 396 px</strong>.
-      </p>
-      <button type="button" onclick="downloadBanner()">Save banner as PNG</button>
+      <span class="edge" style="left:63.4%;top:50%;width:126px;transform:rotate(-36deg);"></span>
+      <span class="edge" style="left:68.4%;top:19%;width:182px;transform:rotate(11deg);"></span>
+      <span class="edge" style="left:79.4%;top:30%;width:168px;transform:rotate(-18deg);"></span>
+      <span class="edge" style="left:73.4%;top:74%;width:202px;transform:rotate(-8deg);"></span>
+      <span class="edge" style="left:86.4%;top:67%;width:145px;transform:rotate(28deg);"></span>
+      <span class="edge" style="left:63.4%;top:50%;width:202px;transform:rotate(43deg);"></span>
     </div>
-  </main>
+
+    <div class="content">
+      <p class="kicker">Enterprise AI Transformation</p>
+      <h1>From AI ambition to <span class="accent">enterprise adoption.</span></h1>
+      <p class="positioning">
+        I connect strategy, product innovation, responsible implementation, and workforce change to turn AI investment into organizational capability.
+      </p>
+      <div class="proof" aria-label="Leadership experience">
+        <span>Fortune 500 Transformation</span><i aria-hidden="true"></i>
+        <span>AI Product Innovation</span><i aria-hidden="true"></i>
+        <span>Workforce Adoption</span><i aria-hidden="true"></i>
+        <span>Executive Technology Leadership</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <p class="instructions">
+      Open this file in Chrome at 100% zoom and select <strong>Save banner as PNG</strong>.
+      The exported file is exactly <strong>1584 × 396 pixels</strong>. Review the uploaded
+      banner on both desktop and mobile before saving it to your profile.
+    </p>
+    <button type="button" onclick="downloadBanner()">Save banner as PNG</button>
+  </div>
+</main>
 
 <script>
-function downloadBanner() {
-  const width = 1584;
-  const height = 396;
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-
-  const gradient = ctx.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, '#0b1f33');
-  gradient.addColorStop(0.62, '#102c49');
-  gradient.addColorStop(1, '#0d3850');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-
-  const glow1 = ctx.createRadialGradient(1230, 70, 0, 1230, 70, 340);
-  glow1.addColorStop(0, 'rgba(76,201,240,0.18)');
-  glow1.addColorStop(1, 'rgba(76,201,240,0)');
-  ctx.fillStyle = glow1;
-  ctx.fillRect(0, 0, width, height);
-
-  const glow2 = ctx.createRadialGradient(1470, 330, 0, 1470, 330, 360);
-  glow2.addColorStop(0, 'rgba(22,184,166,0.18)');
-  glow2.addColorStop(1, 'rgba(22,184,166,0)');
-  ctx.fillStyle = glow2;
-  ctx.fillRect(0, 0, width, height);
-
-  // Network lines and nodes
-  const nodes = [
-    [1110, 68, '#4cc9f0'], [1300, 108, '#16b8a6'], [1440, 56, '#4cc9f0'],
-    [1170, 286, '#16b8a6'], [1375, 268, '#4cc9f0'], [1500, 325, '#16b8a6'],
-    [1015, 190, '#4cc9f0']
-  ];
-  const edges = [[6,0],[0,1],[1,2],[3,4],[4,5],[6,3]];
-  ctx.lineWidth = 1.4;
-  edges.forEach(([a,b]) => {
-    const grad = ctx.createLinearGradient(nodes[a][0],nodes[a][1],nodes[b][0],nodes[b][1]);
-    grad.addColorStop(0,'rgba(76,201,240,.12)');
-    grad.addColorStop(.55,'rgba(76,201,240,.68)');
-    grad.addColorStop(1,'rgba(22,184,166,.25)');
-    ctx.strokeStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(nodes[a][0], nodes[a][1]);
-    ctx.lineTo(nodes[b][0], nodes[b][1]);
-    ctx.stroke();
-  });
-  nodes.forEach(([x,y,color]) => {
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 16;
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(x,y,5,0,Math.PI*2);
-    ctx.fill();
-  });
-  ctx.shadowBlur = 0;
-
-  const left = 585;
-
-  ctx.fillStyle = '#4cc9f0';
-  ctx.font = '700 20px Arial';
-  ctx.fillText('STRATEGY  →  PRODUCT  →  ADOPTION', left, 78);
-
-  ctx.fillStyle = '#f8fbff';
-  ctx.font = '800 61px Arial';
-  ctx.fillText('Dr. Brandi Neal, EdD', left, 145);
-
-  ctx.font = '700 35px Arial';
-  ctx.fillText('Enterprise AI Transformation Leader', left, 195);
-
-  ctx.fillStyle = '#c9d8e8';
-  ctx.font = '500 22px Arial';
-  wrapText(ctx,
-    'Turning AI strategy into responsible products, scalable capabilities, and measurable organizational transformation.',
-    left, 237, 885, 29
-  );
-
-  const pills = ['AI Strategy', 'Product Innovation', 'Digital Transformation', 'Workforce Adoption'];
-  let x = left;
-  const y = 326;
-  ctx.font = '700 16px Arial';
-
-  pills.forEach(label => {
-    const w = ctx.measureText(label).width + 28;
-    roundRect(ctx, x, y, w, 38, 19);
-    ctx.fillStyle = 'rgba(255,255,255,.055)';
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(201,216,232,.30)';
-    ctx.stroke();
-    ctx.fillStyle = '#edf7ff';
-    ctx.fillText(label, x + 14, y + 25);
-    x += w + 12;
-  });
-
-  const link = document.createElement('a');
-  link.download = 'Brandi_Neal_LinkedIn_Banner.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-}
+"use strict";
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(' ');
-  let line = '';
-  for (let i = 0; i < words.length; i++) {
-    const testLine = line + words[i] + ' ';
-    if (ctx.measureText(testLine).width > maxWidth && i > 0) {
+  const words = text.split(" ");
+  let line = "";
+
+  words.forEach((word, index) => {
+    const testLine = line + word + " ";
+    if (ctx.measureText(testLine).width > maxWidth && index > 0) {
       ctx.fillText(line.trim(), x, y);
-      line = words[i] + ' ';
+      line = word + " ";
       y += lineHeight;
     } else {
       line = testLine;
     }
-  }
+  });
+
   ctx.fillText(line.trim(), x, y);
 }
 
-function roundRect(ctx, x, y, width, height, radius) {
+function drawNode(ctx, x, y, color) {
+  ctx.save();
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 16;
+  ctx.fillStyle = color;
   ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.arcTo(x + width, y, x + width, y + height, radius);
-  ctx.arcTo(x + width, y + height, x, y + height, radius);
-  ctx.arcTo(x, y + height, x, y, radius);
-  ctx.arcTo(x, y, x + width, y, radius);
-  ctx.closePath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function downloadBanner() {
+  const width = 1584;
+  const height = 396;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    alert("Your browser could not create the banner image. Please try Chrome or Edge.");
+    return;
+  }
+
+  const background = ctx.createLinearGradient(0, 0, width, height);
+  background.addColorStop(0, "#071b2d");
+  background.addColorStop(0.66, "#0c2f4d");
+  background.addColorStop(1, "#0b4258");
+  ctx.fillStyle = background;
+  ctx.fillRect(0, 0, width, height);
+
+  const blueGlow = ctx.createRadialGradient(1320, 55, 0, 1320, 55, 340);
+  blueGlow.addColorStop(0, "rgba(43,168,255,0.22)");
+  blueGlow.addColorStop(1, "rgba(43,168,255,0)");
+  ctx.fillStyle = blueGlow;
+  ctx.fillRect(0, 0, width, height);
+
+  const tealGlow = ctx.createRadialGradient(1480, 330, 0, 1480, 330, 360);
+  tealGlow.addColorStop(0, "rgba(57,216,193,0.20)");
+  tealGlow.addColorStop(1, "rgba(57,216,193,0)");
+  ctx.fillStyle = tealGlow;
+  ctx.fillRect(0, 0, width, height);
+
+  const nodes = [
+    [1075, 72, "#2ba8ff"],
+    [1255, 116, "#39d8c1"],
+    [1428, 58, "#2ba8ff"],
+    [1155, 289, "#39d8c1"],
+    [1365, 262, "#2ba8ff"],
+    [1500, 325, "#39d8c1"],
+    [995, 194, "#2ba8ff"]
+  ];
+
+  const edges = [[6,0], [0,1], [1,2], [3,4], [4,5], [6,3]];
+  ctx.lineWidth = 1.35;
+
+  edges.forEach(([from, to]) => {
+    const edge = ctx.createLinearGradient(
+      nodes[from][0], nodes[from][1],
+      nodes[to][0], nodes[to][1]
+    );
+    edge.addColorStop(0, "rgba(43,168,255,0.08)");
+    edge.addColorStop(0.55, "rgba(43,168,255,0.72)");
+    edge.addColorStop(1, "rgba(57,216,193,0.24)");
+    ctx.strokeStyle = edge;
+    ctx.beginPath();
+    ctx.moveTo(nodes[from][0], nodes[from][1]);
+    ctx.lineTo(nodes[to][0], nodes[to][1]);
+    ctx.stroke();
+  });
+
+  nodes.forEach(([x, y, color]) => drawNode(ctx, x, y, color));
+
+  const left = 578;
+
+  ctx.fillStyle = "#39d8c1";
+  ctx.font = "800 19px Arial";
+  ctx.fillText("ENTERPRISE AI TRANSFORMATION", left, 73);
+
+  ctx.fillStyle = "#f8fbff";
+  ctx.font = "800 59px Arial";
+  ctx.fillText("From AI ambition to", left, 139);
+
+  ctx.fillStyle = "#2ba8ff";
+  ctx.fillText("enterprise adoption.", left, 196);
+
+  ctx.fillStyle = "#c8d8e8";
+  ctx.font = "500 21px Arial";
+  wrapText(
+    ctx,
+    "I connect strategy, product innovation, responsible implementation, and workforce change to turn AI investment into organizational capability.",
+    left,
+    239,
+    880,
+    28
+  );
+
+  const labels = [
+    "Fortune 500 Transformation",
+    "AI Product Innovation",
+    "Workforce Adoption",
+    "Executive Technology Leadership"
+  ];
+
+  ctx.font = "700 15px Arial";
+  let x = left;
+  const y = 342;
+
+  labels.forEach((label, index) => {
+    ctx.fillStyle = "#f8fbff";
+    ctx.fillText(label, x, y);
+    x += ctx.measureText(label).width + 17;
+
+    if (index < labels.length - 1) {
+      ctx.save();
+      ctx.fillStyle = "#39d8c1";
+      ctx.shadowColor = "#39d8c1";
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(x + 2, y - 5, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      x += 19;
+    }
+  });
+
+  const download = document.createElement("a");
+  download.download = "Brandi_Neal_LinkedIn_Banner.png";
+  download.href = canvas.toDataURL("image/png");
+  download.click();
 }
 </script>
 </body>
