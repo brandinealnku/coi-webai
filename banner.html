@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Brandi Neal LinkedIn Banner</title>
 
   <style>
@@ -17,8 +16,7 @@
       --blue: #4aa8ff;
 
       --white: #f8fbff;
-      --muted: #cad6e3;
-      --muted-2: #9fb0c2;
+      --muted: #d2dce7;
     }
 
     * {
@@ -35,7 +33,6 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-
       padding: 24px;
 
       background: #e8edf3;
@@ -55,7 +52,7 @@
 
     /*
       LINKEDIN BANNER
-      Exact export dimensions: 1584 × 396
+      Exact export size: 1584 × 396
     */
 
     .banner {
@@ -69,14 +66,14 @@
 
       background:
         radial-gradient(
-          circle at 58% 44%,
+          circle at 58% 42%,
           rgba(74, 168, 255, 0.07),
-          transparent 30%
+          transparent 31%
         ),
         radial-gradient(
-          circle at 92% 35%,
+          circle at 92% 34%,
           rgba(139, 118, 255, 0.09),
-          transparent 23%
+          transparent 25%
         ),
         linear-gradient(
           112deg,
@@ -91,57 +88,54 @@
     }
 
     /*
-      The profile image covers part of the lower-left
-      area on LinkedIn, but not the entire left third.
-
-      We keep the bottom-left visually quiet while still
-      allowing the headline to begin much farther left
-      than the previous version.
+      LinkedIn profile photo overlaps the lower-left.
+      This area intentionally contains no important text.
     */
 
-    .profile-photo-zone {
+    .photo-safe-area {
       position: absolute;
 
       left: 0;
       bottom: 0;
 
       width: 27%;
-      height: 64%;
+      height: 66%;
+
+      z-index: -1;
 
       background:
         radial-gradient(
-          circle at 10% 100%,
-          rgba(255, 255, 255, 0.035),
-          transparent 66%
+          circle at 12% 100%,
+          rgba(255,255,255,0.035),
+          transparent 65%
         );
-
-      z-index: -1;
     }
 
     /*
-      MAIN CONTENT
+      PRIMARY CONTENT
 
-      Larger usable width prevents awkward wrapping.
+      Slightly farther right than the previous version
+      to create more visual breathing room from the photo.
     */
 
     .content {
       position: absolute;
 
-      left: 27%;
+      left: 29%;
       right: 24%;
 
-      top: 11%;
-      bottom: 10%;
+      top: 13%;
+      bottom: 12%;
+
+      z-index: 3;
 
       display: flex;
       flex-direction: column;
       justify-content: center;
-
-      z-index: 2;
     }
 
     .eyebrow {
-      margin: 0 0 11px;
+      margin: 0 0 12px;
 
       color: var(--pink);
 
@@ -150,20 +144,22 @@
 
       font-weight: 800;
 
+      line-height: 1;
+
       letter-spacing: 0.17em;
 
       text-transform: uppercase;
     }
 
     h1 {
-      max-width: 930px;
+      max-width: 910px;
 
       margin: 0;
 
       color: var(--white);
 
       font-size:
-        clamp(44px, 4.2vw, 58px);
+        clamp(43px, 4.05vw, 57px);
 
       font-weight: 850;
 
@@ -177,52 +173,39 @@
     }
 
     .personality-line {
-      margin: 18px 0 0;
+      margin: 22px 0 0;
 
       color: var(--muted);
 
       font-size:
-        clamp(20px, 1.9vw, 27px);
+        clamp(22px, 2vw, 29px);
 
-      line-height: 1.18;
+      font-weight: 650;
 
-      font-weight: 700;
-    }
+      line-height: 1.15;
 
-    .professional-anchor {
-      margin: 17px 0 0;
-
-      color: var(--muted-2);
-
-      font-size:
-        clamp(14px, 1.25vw, 18px);
-
-      line-height: 1.2;
-
-      font-weight: 700;
-
-      letter-spacing: 0.02em;
+      letter-spacing: -0.01em;
     }
 
     /*
-      ITSBAD-INSPIRED KEYBOARD MOTIF
+      ITSBAD KEYBOARD / DESIGN MOTIF
 
-      This sits entirely in the far-right portion of
-      the banner and behaves like a watermark.
+      Entirely confined to the far-right side.
+      Designed as a watermark, not a competing illustration.
     */
 
     .keyboard-mark {
       position: absolute;
 
-      right: -1.5%;
-      top: 11%;
+      right: -2%;
+      top: 12%;
 
       width: 24%;
-      height: 78%;
+      height: 73%;
 
       z-index: 1;
 
-      opacity: 0.32;
+      opacity: 0.31;
 
       transform:
         perspective(700px)
@@ -248,59 +231,68 @@
         rgba(255, 255, 255, 0.012);
     }
 
-    .key.pink {
-      border-color:
-        rgba(255, 61, 154, 0.42);
-
-      background:
-        rgba(255, 61, 154, 0.028);
-
-      box-shadow:
-        0 0 22px
-        rgba(255, 61, 154, 0.045);
-    }
-
     .key.blue {
       border-color:
-        rgba(74, 168, 255, 0.30);
+        rgba(74, 168, 255, 0.32);
     }
 
     .key.violet {
       border-color:
-        rgba(139, 118, 255, 0.30);
+        rgba(139, 118, 255, 0.32);
     }
 
     /*
-      Tiny ITSBAD maker's mark
+      Slightly stronger pink key to visually connect
+      the motif to "real-world friction."
+    */
+
+    .key.pink {
+      border-color:
+        rgba(255, 61, 154, 0.65);
+
+      background:
+        rgba(255, 61, 154, 0.045);
+
+      box-shadow:
+        0 0 26px
+        rgba(255, 61, 154, 0.08);
+    }
+
+    /*
+      ITSBAD MAKER'S MARK
+
+      More visible than the prior version,
+      but still subtle enough to feel like a signature.
     */
 
     .maker-mark {
       position: absolute;
 
-      right: 4.3%;
+      right: 4.5%;
       bottom: 8%;
 
       display: flex;
       align-items: center;
-      gap: 9px;
 
-      z-index: 3;
+      gap: 10px;
+
+      z-index: 4;
 
       color:
-        rgba(248, 251, 255, 0.56);
+        rgba(248, 251, 255, 0.75);
 
       font-size:
-        clamp(10px, 0.95vw, 14px);
+        clamp(11px, 1vw, 15px);
 
       font-weight: 800;
 
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
 
       text-transform: uppercase;
     }
 
     .maker-line {
-      width: 24px;
+      width: 26px;
       height: 3px;
 
       border-radius: 99px;
@@ -330,7 +322,7 @@
     }
 
     .instructions {
-      max-width: 960px;
+      max-width: 980px;
 
       margin: 0;
 
@@ -372,17 +364,23 @@
       outline-offset: 2px;
     }
 
+    /*
+      Responsive preview only.
+      Export stays at 1584 × 396.
+    */
+
     @media (max-width: 850px) {
+
       body {
         padding: 12px;
       }
 
       .content {
-        left: 24%;
-        right: 22%;
+        left: 27%;
+        right: 23%;
 
-        top: 8%;
-        bottom: 8%;
+        top: 10%;
+        bottom: 10%;
       }
 
       .eyebrow {
@@ -393,12 +391,8 @@
         margin-top: 8px;
       }
 
-      .professional-anchor {
-        margin-top: 7px;
-      }
-
       .keyboard-mark {
-        right: -5%;
+        right: -6%;
       }
 
       .maker-mark {
@@ -418,13 +412,13 @@
     >
 
       <div
-        class="profile-photo-zone"
+        class="photo-safe-area"
         aria-hidden="true"
       ></div>
 
 
       <!--
-        SUBTLE ITSBAD KEYBOARD MOTIF
+        ITSBAD KEYBOARD-INSPIRED WATERMARK
       -->
 
       <div
@@ -434,56 +428,56 @@
 
         <div
           class="key"
-          style="left: 0; top: 18px;"
+          style="left:0; top:18px;"
         ></div>
 
         <div
           class="key blue"
-          style="left: 72px; top: 10px;"
+          style="left:72px; top:10px;"
         ></div>
 
         <div
           class="key"
-          style="left: 144px; top: 2px;"
+          style="left:144px; top:2px;"
         ></div>
 
 
         <div
           class="key violet"
-          style="left: 28px; top: 90px;"
+          style="left:28px; top:90px;"
         ></div>
 
         <div
           class="key pink"
-          style="left: 100px; top: 82px;"
+          style="left:100px; top:82px;"
         ></div>
 
         <div
           class="key"
-          style="left: 172px; top: 74px;"
+          style="left:172px; top:74px;"
         ></div>
 
 
         <div
           class="key"
-          style="left: 56px; top: 162px;"
+          style="left:56px; top:162px;"
         ></div>
 
         <div
           class="key blue"
-          style="left: 128px; top: 154px;"
+          style="left:128px; top:154px;"
         ></div>
 
         <div
-          class="key pink"
-          style="left: 200px; top: 146px;"
+          class="key"
+          style="left:200px; top:146px;"
         ></div>
 
       </div>
 
 
       <!--
-        PRIMARY MESSAGE
+        PRIMARY PERSONAL BRAND MESSAGE
       -->
 
       <div class="content">
@@ -503,12 +497,6 @@
 
         <p class="personality-line">
           Because some things shouldn’t be this hard.
-        </p>
-
-        <p class="professional-anchor">
-          AI Strategy&nbsp;&nbsp;•&nbsp;&nbsp;
-          Product Innovation&nbsp;&nbsp;•&nbsp;&nbsp;
-          Digital Transformation
         </p>
 
       </div>
@@ -542,7 +530,7 @@
       <p class="instructions">
         Open this file in Chrome at 100% zoom and select
         <strong>Save banner as PNG</strong>.
-        The exported image is exactly
+        The exported banner is exactly
         <strong>1584 × 396 pixels</strong>.
       </p>
 
@@ -561,6 +549,10 @@
   <script>
     "use strict";
 
+
+    /*
+      DRAW ROUNDED KEY
+    */
 
     function roundedRect(
       ctx,
@@ -618,7 +610,8 @@
       ctx,
       x,
       y,
-      borderColor
+      borderColor,
+      fillColor = "rgba(255,255,255,0.012)"
     ) {
 
       roundedRect(
@@ -631,7 +624,7 @@
       );
 
       ctx.fillStyle =
-        "rgba(255,255,255,0.012)";
+        fillColor;
 
       ctx.fill();
 
@@ -643,6 +636,10 @@
       ctx.stroke();
     }
 
+
+    /*
+      EXPORT BANNER
+    */
 
     function downloadBanner() {
 
@@ -716,17 +713,17 @@
 
 
       /*
-        SUBTLE CENTRAL LIGHT
+        SUBTLE BLUE LIGHT
       */
 
       const light =
         ctx.createRadialGradient(
           900,
-          170,
+          165,
           0,
           900,
-          170,
-          460
+          165,
+          470
         );
 
 
@@ -758,93 +755,117 @@
         KEYBOARD MOTIF
       */
 
-      const keyStartX = 1270;
+      const keyStartX = 1265;
 
 
       const keys = [
 
-        [
-          keyStartX,
-          64,
-          "rgba(202,214,227,0.17)"
-        ],
+        {
+          x: keyStartX,
+          y: 64,
+          border:
+            "rgba(202,214,227,0.17)"
+        },
 
-        [
-          keyStartX + 72,
-          56,
-          "rgba(74,168,255,0.30)"
-        ],
+        {
+          x: keyStartX + 72,
+          y: 56,
+          border:
+            "rgba(74,168,255,0.32)"
+        },
 
-        [
-          keyStartX + 144,
-          48,
-          "rgba(202,214,227,0.17)"
-        ],
-
-
-        [
-          keyStartX + 28,
-          136,
-          "rgba(139,118,255,0.30)"
-        ],
-
-        [
-          keyStartX + 100,
-          128,
-          "rgba(255,61,154,0.42)"
-        ],
-
-        [
-          keyStartX + 172,
-          120,
-          "rgba(202,214,227,0.17)"
-        ],
+        {
+          x: keyStartX + 144,
+          y: 48,
+          border:
+            "rgba(202,214,227,0.17)"
+        },
 
 
-        [
-          keyStartX + 56,
-          208,
-          "rgba(202,214,227,0.17)"
-        ],
+        {
+          x: keyStartX + 28,
+          y: 136,
+          border:
+            "rgba(139,118,255,0.32)"
+        },
 
-        [
-          keyStartX + 128,
-          200,
-          "rgba(74,168,255,0.30)"
-        ],
+        {
+          x: keyStartX + 100,
+          y: 128,
+          border:
+            "rgba(255,61,154,0.65)",
+          fill:
+            "rgba(255,61,154,0.045)"
+        },
 
-        [
-          keyStartX + 200,
-          192,
-          "rgba(255,61,154,0.42)"
-        ]
+        {
+          x: keyStartX + 172,
+          y: 120,
+          border:
+            "rgba(202,214,227,0.17)"
+        },
+
+
+        {
+          x: keyStartX + 56,
+          y: 208,
+          border:
+            "rgba(202,214,227,0.17)"
+        },
+
+        {
+          x: keyStartX + 128,
+          y: 200,
+          border:
+            "rgba(74,168,255,0.32)"
+        },
+
+        {
+          x: keyStartX + 200,
+          y: 192,
+          border:
+            "rgba(202,214,227,0.17)"
+        }
 
       ];
 
 
-      ctx.globalAlpha = 0.32;
+      ctx.globalAlpha =
+        0.34;
 
 
       keys.forEach(
-        ([x, y, color]) =>
+        key => {
+
           drawKey(
             ctx,
-            x,
-            y,
-            color
-          )
+            key.x,
+            key.y,
+            key.border,
+            key.fill
+          );
+
+        }
       );
 
 
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha =
+        1;
 
 
       /*
-        TYPOGRAPHY
+        TEXT POSITION
+
+        Moved slightly right to leave deliberate
+        separation from the LinkedIn profile photo.
       */
 
-      const left = 428;
+      const left = 460;
 
+
+      /*
+        EYEBROW
+      */
 
       ctx.fillStyle =
         "#ff3d9a";
@@ -857,33 +878,33 @@
       ctx.fillText(
         "AI  •  PRODUCT  •  TRANSFORMATION",
         left,
-        68
+        75
       );
 
+
+      /*
+        HERO
+      */
 
       ctx.fillStyle =
         "#f8fbff";
 
 
       ctx.font =
-        "850 56px Arial";
+        "850 57px Arial";
 
 
       ctx.fillText(
         "I build useful technology",
         left,
-        137
+        145
       );
-
-
-      ctx.fillStyle =
-        "#f8fbff";
 
 
       ctx.fillText(
         "for",
         left,
-        195
+        203
       );
 
 
@@ -898,7 +919,7 @@
       ctx.fillText(
         "real-world friction.",
         left + prefixWidth,
-        195
+        203
       );
 
 
@@ -907,36 +928,17 @@
       */
 
       ctx.fillStyle =
-        "#cad6e3";
+        "#d2dce7";
 
 
       ctx.font =
-        "700 26px Arial";
+        "650 29px Arial";
 
 
       ctx.fillText(
         "Because some things shouldn’t be this hard.",
         left,
-        248
-      );
-
-
-      /*
-        PROFESSIONAL ANCHOR
-      */
-
-      ctx.fillStyle =
-        "#9fb0c2";
-
-
-      ctx.font =
-        "700 18px Arial";
-
-
-      ctx.fillText(
-        "AI Strategy  •  Product Innovation  •  Digital Transformation",
-        left,
-        291
+        261
       );
 
 
@@ -944,15 +946,19 @@
         ITSBAD MAKER'S MARK
       */
 
-      const markX = 1370;
-      const markY = 351;
+      const markX =
+        1360;
+
+
+      const markY =
+        348;
 
 
       const markGradient =
         ctx.createLinearGradient(
           markX,
           markY,
-          markX + 25,
+          markX + 26,
           markY
         );
 
@@ -976,22 +982,22 @@
       ctx.fillRect(
         markX,
         markY - 4,
-        24,
+        26,
         3
       );
 
 
       ctx.fillStyle =
-        "rgba(248,251,255,0.56)";
+        "rgba(248,251,255,0.75)";
 
 
       ctx.font =
-        "800 13px Arial";
+        "800 14px Arial";
 
 
       ctx.fillText(
         "ITSBAD / LABS",
-        markX + 34,
+        markX + 36,
         markY
       );
 
