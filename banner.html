@@ -1,994 +1,1020 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Brandi Neal LinkedIn Banner</title>
-
-<style>
-  :root {
-    --navy: #07111f;
-    --navy-2: #0b1d32;
-    --navy-3: #102a46;
-
-    --pink: #ff3d9a;
-    --violet: #8776ff;
-    --blue: #45a8ff;
-
-    --white: #f8fbff;
-    --muted: #cbd7e5;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  html,
-  body {
-    margin: 0;
-    min-height: 100%;
-  }
-
-  body {
-    min-height: 100vh;
-
-    display: grid;
-    place-items: center;
-
-    padding: 24px;
-
-    background: #e8edf2;
-
-    font-family:
-      Inter,
-      Arial,
-      Helvetica,
-      sans-serif;
-  }
-
-  .page {
-    width: min(100%, 1584px);
-  }
-
-  /*
-    LINKEDIN BACKGROUND IMAGE
-    1584 × 396
-  */
-
-  .banner {
-    position: relative;
-
-    width: 100%;
-    aspect-ratio: 4 / 1;
-
-    overflow: hidden;
-    isolation: isolate;
-
-    background:
-      radial-gradient(
-        circle at 70% 40%,
-        rgba(69, 168, 255, 0.08),
-        transparent 31%
-      ),
-      radial-gradient(
-        circle at 92% 25%,
-        rgba(135, 118, 255, 0.10),
-        transparent 24%
-      ),
-      linear-gradient(
-        112deg,
-        var(--navy) 0%,
-        var(--navy-2) 62%,
-        var(--navy-3) 100%
-      );
-
-    box-shadow:
-      0 20px 50px
-      rgba(7, 17, 31, 0.22);
-  }
-
-  /*
-    Keep this area visually quiet because
-    LinkedIn's profile photo overlaps it.
-  */
-
-  .profile-photo-zone {
-    position: absolute;
-
-    left: 0;
-    bottom: 0;
-
-    width: 34%;
-    height: 78%;
-
-    background:
-      radial-gradient(
-        circle at 15% 100%,
-        rgba(255,255,255,0.035),
-        transparent 64%
-      );
-
-    z-index: -1;
-  }
-
-  /*
-    MAIN CONTENT
-  */
-
-  .content {
-    position: absolute;
-
-    left: 36.5%;
-    right: 4.5%;
-
-    top: 10%;
-    bottom: 10%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .eyebrow {
-    margin: 0 0 12px;
-
-    color: var(--pink);
-
-    font-size:
-      clamp(16px, 1.35vw, 22px);
-
-    font-weight: 800;
-
-    letter-spacing: 0.15em;
-
-    text-transform: uppercase;
-  }
-
-  h1 {
-    max-width: 930px;
-
-    margin: 0;
-
-    color: var(--white);
-
-    font-size:
-      clamp(46px, 5.15vw, 82px);
-
-    font-weight: 900;
-
-    line-height: 0.96;
-
-    letter-spacing: -0.052em;
-  }
-
-  h1 .accent {
-    color: var(--pink);
-  }
-
-  .supporting-line {
-    margin: 22px 0 0;
-
-    color: var(--muted);
-
-    font-size:
-      clamp(19px, 1.8vw, 28px);
-
-    line-height: 1.2;
-
-    font-weight: 700;
-  }
-
-  .signature {
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    margin-top: 22px;
-
-    color: rgba(248,251,255,0.86);
-
-    font-size:
-      clamp(14px, 1.15vw, 18px);
-
-    font-weight: 700;
-
-    letter-spacing: 0.025em;
-  }
-
-  .signature-mark {
-    width: 25px;
-    height: 4px;
-
-    border-radius: 999px;
-
-    background:
-      linear-gradient(
-        90deg,
-        var(--pink),
-        var(--violet)
-      );
-  }
-
-  /*
-    ITSBAD-inspired keyboard/grid motif.
-    Intentionally subtle rather than
-    generic neural-network imagery.
-  */
-
-  .visual {
-    position: absolute;
-
-    right: 3%;
-    top: 10%;
-
-    width: 29%;
-    height: 80%;
-
-    z-index: -2;
-
-    opacity: 0.50;
-
-    transform:
-      perspective(700px)
-      rotateY(-10deg)
-      rotateZ(-4deg);
-  }
-
-  .key {
-    position: absolute;
-
-    width: 58px;
-    height: 58px;
-
-    border:
-      1px solid
-      rgba(203,215,229,0.16);
-
-    border-radius: 10px;
-
-    background:
-      rgba(255,255,255,0.018);
-
-    box-shadow:
-      inset 0 0 0 1px
-      rgba(255,255,255,0.01);
-  }
-
-  .key.accent {
-    border-color:
-      rgba(255,61,154,0.42);
-
-    background:
-      rgba(255,61,154,0.05);
-
-    box-shadow:
-      0 0 28px
-      rgba(255,61,154,0.06);
-  }
-
-  .key.blue {
-    border-color:
-      rgba(69,168,255,0.34);
-  }
-
-  .key.violet {
-    border-color:
-      rgba(135,118,255,0.34);
-  }
-
-  .brand-line {
-    position: absolute;
-
-    right: -6%;
-
-    top: 51%;
-
-    width: 390px;
-    height: 1px;
-
-    transform: rotate(-22deg);
-
-    background:
-      linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,61,154,0.3),
-        rgba(135,118,255,0.2),
-        transparent
-      );
-  }
-
-  /*
-    CONTROLS
-  */
-
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 14px;
-
-    margin-top: 16px;
-  }
-
-  .instructions {
-    max-width: 960px;
-
-    margin: 0;
-
-    color: #142336;
-
-    font-size: 14px;
-
-    line-height: 1.5;
-  }
-
-  button {
-    border: 0;
-
-    border-radius: 9px;
-
-    padding: 12px 18px;
-
-    background: var(--navy);
-
-    color: #fff;
-
-    font:
-      700 14px
-      Arial,
-      Helvetica,
-      sans-serif;
-
-    cursor: pointer;
-  }
-
-  button:hover,
-  button:focus-visible {
-    background: #152e4b;
-
-    outline:
-      3px solid
-      rgba(255,61,154,0.22);
-
-    outline-offset: 2px;
-  }
-
-  @media (max-width: 850px) {
-
-    body {
-      padding: 12px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Brandi Neal LinkedIn Banner</title>
+
+  <style>
+    :root {
+      --navy-950: #06111f;
+      --navy-900: #0a1a2c;
+      --navy-800: #102a44;
+
+      --pink: #ff3d9a;
+      --violet: #8b76ff;
+      --blue: #4aa8ff;
+
+      --white: #f8fbff;
+      --muted: #cad6e3;
+      --muted-2: #9fb0c2;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+
+      padding: 24px;
+
+      background: #e8edf3;
+
+      font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      color: #102033;
+    }
+
+    .page {
+      width: min(100%, 1584px);
+    }
+
+    /*
+      LINKEDIN BANNER
+      Exact export dimensions: 1584 × 396
+    */
+
+    .banner {
+      position: relative;
+
+      width: 100%;
+      aspect-ratio: 4 / 1;
+
+      overflow: hidden;
+      isolation: isolate;
+
+      background:
+        radial-gradient(
+          circle at 58% 44%,
+          rgba(74, 168, 255, 0.07),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 92% 35%,
+          rgba(139, 118, 255, 0.09),
+          transparent 23%
+        ),
+        linear-gradient(
+          112deg,
+          var(--navy-950) 0%,
+          var(--navy-900) 64%,
+          var(--navy-800) 100%
+        );
+
+      box-shadow:
+        0 22px 50px
+        rgba(6, 17, 31, 0.22);
+    }
+
+    /*
+      The profile image covers part of the lower-left
+      area on LinkedIn, but not the entire left third.
+
+      We keep the bottom-left visually quiet while still
+      allowing the headline to begin much farther left
+      than the previous version.
+    */
+
+    .profile-photo-zone {
+      position: absolute;
+
+      left: 0;
+      bottom: 0;
+
+      width: 27%;
+      height: 64%;
+
+      background:
+        radial-gradient(
+          circle at 10% 100%,
+          rgba(255, 255, 255, 0.035),
+          transparent 66%
+        );
+
+      z-index: -1;
+    }
+
+    /*
+      MAIN CONTENT
+
+      Larger usable width prevents awkward wrapping.
+    */
+
     .content {
-      left: 33%;
-      right: 3%;
+      position: absolute;
+
+      left: 27%;
+      right: 24%;
+
+      top: 11%;
+      bottom: 10%;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      z-index: 2;
     }
 
     .eyebrow {
-      margin-bottom: 5px;
+      margin: 0 0 11px;
+
+      color: var(--pink);
+
+      font-size:
+        clamp(15px, 1.2vw, 19px);
+
+      font-weight: 800;
+
+      letter-spacing: 0.17em;
+
+      text-transform: uppercase;
     }
 
-    .supporting-line {
-      margin-top: 9px;
+    h1 {
+      max-width: 930px;
+
+      margin: 0;
+
+      color: var(--white);
+
+      font-size:
+        clamp(44px, 4.2vw, 58px);
+
+      font-weight: 850;
+
+      line-height: 0.98;
+
+      letter-spacing: -0.038em;
     }
 
-    .signature {
-      margin-top: 8px;
+    h1 .accent {
+      color: var(--pink);
     }
-  }
-</style>
+
+    .personality-line {
+      margin: 18px 0 0;
+
+      color: var(--muted);
+
+      font-size:
+        clamp(20px, 1.9vw, 27px);
+
+      line-height: 1.18;
+
+      font-weight: 700;
+    }
+
+    .professional-anchor {
+      margin: 17px 0 0;
+
+      color: var(--muted-2);
+
+      font-size:
+        clamp(14px, 1.25vw, 18px);
+
+      line-height: 1.2;
+
+      font-weight: 700;
+
+      letter-spacing: 0.02em;
+    }
+
+    /*
+      ITSBAD-INSPIRED KEYBOARD MOTIF
+
+      This sits entirely in the far-right portion of
+      the banner and behaves like a watermark.
+    */
+
+    .keyboard-mark {
+      position: absolute;
+
+      right: -1.5%;
+      top: 11%;
+
+      width: 24%;
+      height: 78%;
+
+      z-index: 1;
+
+      opacity: 0.32;
+
+      transform:
+        perspective(700px)
+        rotateY(-9deg)
+        rotateZ(-3deg);
+
+      pointer-events: none;
+    }
+
+    .key {
+      position: absolute;
+
+      width: 60px;
+      height: 60px;
+
+      border:
+        1px solid
+        rgba(202, 214, 227, 0.17);
+
+      border-radius: 11px;
+
+      background:
+        rgba(255, 255, 255, 0.012);
+    }
+
+    .key.pink {
+      border-color:
+        rgba(255, 61, 154, 0.42);
+
+      background:
+        rgba(255, 61, 154, 0.028);
+
+      box-shadow:
+        0 0 22px
+        rgba(255, 61, 154, 0.045);
+    }
+
+    .key.blue {
+      border-color:
+        rgba(74, 168, 255, 0.30);
+    }
+
+    .key.violet {
+      border-color:
+        rgba(139, 118, 255, 0.30);
+    }
+
+    /*
+      Tiny ITSBAD maker's mark
+    */
+
+    .maker-mark {
+      position: absolute;
+
+      right: 4.3%;
+      bottom: 8%;
+
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      z-index: 3;
+
+      color:
+        rgba(248, 251, 255, 0.56);
+
+      font-size:
+        clamp(10px, 0.95vw, 14px);
+
+      font-weight: 800;
+
+      letter-spacing: 0.16em;
+
+      text-transform: uppercase;
+    }
+
+    .maker-line {
+      width: 24px;
+      height: 3px;
+
+      border-radius: 99px;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--pink),
+          var(--violet)
+        );
+    }
+
+    /*
+      PAGE CONTROLS
+    */
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 14px;
+
+      margin-top: 16px;
+    }
+
+    .instructions {
+      max-width: 960px;
+
+      margin: 0;
+
+      color: #142336;
+
+      font-size: 14px;
+
+      line-height: 1.5;
+    }
+
+    button {
+      border: 0;
+
+      border-radius: 10px;
+
+      padding: 12px 18px;
+
+      background: var(--navy-950);
+
+      color: #fff;
+
+      font:
+        700 14px
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      cursor: pointer;
+    }
+
+    button:hover,
+    button:focus-visible {
+      background: #173654;
+
+      outline:
+        3px solid
+        rgba(255, 61, 154, 0.24);
+
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 850px) {
+      body {
+        padding: 12px;
+      }
+
+      .content {
+        left: 24%;
+        right: 22%;
+
+        top: 8%;
+        bottom: 8%;
+      }
+
+      .eyebrow {
+        margin-bottom: 5px;
+      }
+
+      .personality-line {
+        margin-top: 8px;
+      }
+
+      .professional-anchor {
+        margin-top: 7px;
+      }
+
+      .keyboard-mark {
+        right: -5%;
+      }
+
+      .maker-mark {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<main class="page">
+  <main class="page">
 
-<section
-  class="banner"
-  aria-label="LinkedIn banner for Brandi Neal"
->
+    <section
+      class="banner"
+      aria-label="LinkedIn banner for Brandi Neal"
+    >
 
-  <div
-    class="profile-photo-zone"
-    aria-hidden="true">
-  </div>
+      <div
+        class="profile-photo-zone"
+        aria-hidden="true"
+      ></div>
 
 
-  <!--
-    Subtle ITSBAD keyboard-inspired geometry
-  -->
+      <!--
+        SUBTLE ITSBAD KEYBOARD MOTIF
+      -->
 
-  <div
-    class="visual"
-    aria-hidden="true"
-  >
+      <div
+        class="keyboard-mark"
+        aria-hidden="true"
+      >
 
-    <div
-      class="key"
-      style="left:0; top:18px;">
+        <div
+          class="key"
+          style="left: 0; top: 18px;"
+        ></div>
+
+        <div
+          class="key blue"
+          style="left: 72px; top: 10px;"
+        ></div>
+
+        <div
+          class="key"
+          style="left: 144px; top: 2px;"
+        ></div>
+
+
+        <div
+          class="key violet"
+          style="left: 28px; top: 90px;"
+        ></div>
+
+        <div
+          class="key pink"
+          style="left: 100px; top: 82px;"
+        ></div>
+
+        <div
+          class="key"
+          style="left: 172px; top: 74px;"
+        ></div>
+
+
+        <div
+          class="key"
+          style="left: 56px; top: 162px;"
+        ></div>
+
+        <div
+          class="key blue"
+          style="left: 128px; top: 154px;"
+        ></div>
+
+        <div
+          class="key pink"
+          style="left: 200px; top: 146px;"
+        ></div>
+
+      </div>
+
+
+      <!--
+        PRIMARY MESSAGE
+      -->
+
+      <div class="content">
+
+        <p class="eyebrow">
+          AI • Product • Transformation
+        </p>
+
+        <h1>
+          I build useful technology
+          <br>
+          for
+          <span class="accent">
+            real-world friction.
+          </span>
+        </h1>
+
+        <p class="personality-line">
+          Because some things shouldn’t be this hard.
+        </p>
+
+        <p class="professional-anchor">
+          AI Strategy&nbsp;&nbsp;•&nbsp;&nbsp;
+          Product Innovation&nbsp;&nbsp;•&nbsp;&nbsp;
+          Digital Transformation
+        </p>
+
+      </div>
+
+
+      <!--
+        QUIET ITSBAD SIGNATURE
+      -->
+
+      <div
+        class="maker-mark"
+        aria-label="ITSBAD Labs"
+      >
+
+        <span
+          class="maker-line"
+          aria-hidden="true"
+        ></span>
+
+        <span>
+          ITSBAD / LABS
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <div class="controls">
+
+      <p class="instructions">
+        Open this file in Chrome at 100% zoom and select
+        <strong>Save banner as PNG</strong>.
+        The exported image is exactly
+        <strong>1584 × 396 pixels</strong>.
+      </p>
+
+      <button
+        type="button"
+        onclick="downloadBanner()"
+      >
+        Save banner as PNG
+      </button>
+
     </div>
 
-    <div
-      class="key blue"
-      style="left:70px; top:10px;">
-    </div>
+  </main>
 
-    <div
-      class="key"
-      style="left:140px; top:2px;">
-    </div>
 
-    <div
-      class="key violet"
-      style="left:210px; top:-6px;">
-    </div>
+  <script>
+    "use strict";
 
 
-    <div
-      class="key"
-      style="left:28px; top:88px;">
-    </div>
-
-    <div
-      class="key accent"
-      style="left:98px; top:80px;">
-    </div>
-
-    <div
-      class="key"
-      style="left:168px; top:72px;">
-    </div>
-
-    <div
-      class="key blue"
-      style="left:238px; top:64px;">
-    </div>
-
-
-    <div
-      class="key violet"
-      style="left:56px; top:158px;">
-    </div>
-
-    <div
-      class="key"
-      style="left:126px; top:150px;">
-    </div>
-
-    <div
-      class="key accent"
-      style="left:196px; top:142px;">
-    </div>
-
-    <div
-      class="key"
-      style="left:266px; top:134px;">
-    </div>
-
-  </div>
-
-
-  <div
-    class="brand-line"
-    aria-hidden="true">
-  </div>
-
-
-  <!--
-    PRIMARY MESSAGE
-  -->
-
-  <div class="content">
-
-    <p class="eyebrow">
-      AI • Product • Transformation
-    </p>
-
-
-    <h1>
-      I build useful technology
-      for things that
-      <span class="accent">
-        shouldn’t be this hard.
-      </span>
-    </h1>
-
-
-    <p class="supporting-line">
-      Strategy • AI Products • Digital Transformation • Workforce Adoption
-    </p>
-
-
-    <div class="signature">
-
-      <span
-        class="signature-mark"
-        aria-hidden="true">
-      </span>
-
-      <span>
-        Founder, ITSBAD Labs
-      </span>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<div class="controls">
-
-  <p class="instructions">
-
-    Open this file in Chrome at 100% zoom
-    and select
-    <strong>Save banner as PNG</strong>.
-
-    The exported image is exactly
-    <strong>1584 × 396 pixels</strong>.
-
-  </p>
-
-
-  <button
-    type="button"
-    onclick="downloadBanner()"
-  >
-    Save banner as PNG
-  </button>
-
-</div>
-
-</main>
-
-
-<script>
-
-"use strict";
-
-
-function roundedRect(
-  ctx,
-  x,
-  y,
-  width,
-  height,
-  radius
-) {
-
-  ctx.beginPath();
-
-  ctx.moveTo(
-    x + radius,
-    y
-  );
-
-  ctx.arcTo(
-    x + width,
-    y,
-    x + width,
-    y + height,
-    radius
-  );
-
-  ctx.arcTo(
-    x + width,
-    y + height,
-    x,
-    y + height,
-    radius
-  );
-
-  ctx.arcTo(
-    x,
-    y + height,
-    x,
-    y,
-    radius
-  );
-
-  ctx.arcTo(
-    x,
-    y,
-    x + width,
-    y,
-    radius
-  );
-
-  ctx.closePath();
-}
-
-
-function drawKey(
-  ctx,
-  x,
-  y,
-  borderColor
-) {
-
-  roundedRect(
-    ctx,
-    x,
-    y,
-    58,
-    58,
-    10
-  );
-
-  ctx.fillStyle =
-    "rgba(255,255,255,0.018)";
-
-  ctx.fill();
-
-  ctx.strokeStyle =
-    borderColor;
-
-  ctx.lineWidth = 1;
-
-  ctx.stroke();
-}
-
-
-function downloadBanner() {
-
-  const width = 1584;
-  const height = 396;
-
-
-  const canvas =
-    document.createElement("canvas");
-
-
-  canvas.width = width;
-  canvas.height = height;
-
-
-  const ctx =
-    canvas.getContext("2d");
-
-
-  if (!ctx) {
-
-    alert(
-      "Your browser could not create the image. Please try Chrome or Edge."
-    );
-
-    return;
-  }
-
-
-  /*
-    BACKGROUND
-  */
-
-  const background =
-    ctx.createLinearGradient(
-      0,
-      0,
+    function roundedRect(
+      ctx,
+      x,
+      y,
       width,
-      height
-    );
+      height,
+      radius
+    ) {
+
+      ctx.beginPath();
+
+      ctx.moveTo(
+        x + radius,
+        y
+      );
+
+      ctx.arcTo(
+        x + width,
+        y,
+        x + width,
+        y + height,
+        radius
+      );
+
+      ctx.arcTo(
+        x + width,
+        y + height,
+        x,
+        y + height,
+        radius
+      );
+
+      ctx.arcTo(
+        x,
+        y + height,
+        x,
+        y,
+        radius
+      );
+
+      ctx.arcTo(
+        x,
+        y,
+        x + width,
+        y,
+        radius
+      );
+
+      ctx.closePath();
+    }
 
 
-  background.addColorStop(
-    0,
-    "#07111f"
-  );
+    function drawKey(
+      ctx,
+      x,
+      y,
+      borderColor
+    ) {
 
-
-  background.addColorStop(
-    0.62,
-    "#0b1d32"
-  );
-
-
-  background.addColorStop(
-    1,
-    "#102a46"
-  );
-
-
-  ctx.fillStyle =
-    background;
-
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-
-  /*
-    SUBTLE LIGHT
-  */
-
-  const glow =
-    ctx.createRadialGradient(
-      1020,
-      180,
-      0,
-      1020,
-      180,
-      480
-    );
-
-
-  glow.addColorStop(
-    0,
-    "rgba(69,168,255,0.08)"
-  );
-
-
-  glow.addColorStop(
-    1,
-    "rgba(69,168,255,0)"
-  );
-
-
-  ctx.fillStyle =
-    glow;
-
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-
-  /*
-    KEYBOARD-INSPIRED GEOMETRY
-  */
-
-  const keyStartX = 1200;
-
-
-  const keys = [
-
-    [
-      keyStartX,
-      62,
-      "rgba(203,215,229,0.16)"
-    ],
-
-    [
-      keyStartX + 70,
-      54,
-      "rgba(69,168,255,0.34)"
-    ],
-
-    [
-      keyStartX + 140,
-      46,
-      "rgba(203,215,229,0.16)"
-    ],
-
-    [
-      keyStartX + 210,
-      38,
-      "rgba(135,118,255,0.34)"
-    ],
-
-
-    [
-      keyStartX + 28,
-      132,
-      "rgba(203,215,229,0.16)"
-    ],
-
-    [
-      keyStartX + 98,
-      124,
-      "rgba(255,61,154,0.42)"
-    ],
-
-    [
-      keyStartX + 168,
-      116,
-      "rgba(203,215,229,0.16)"
-    ],
-
-    [
-      keyStartX + 238,
-      108,
-      "rgba(69,168,255,0.34)"
-    ],
-
-
-    [
-      keyStartX + 56,
-      202,
-      "rgba(135,118,255,0.34)"
-    ],
-
-    [
-      keyStartX + 126,
-      194,
-      "rgba(203,215,229,0.16)"
-    ],
-
-    [
-      keyStartX + 196,
-      186,
-      "rgba(255,61,154,0.42)"
-    ],
-
-    [
-      keyStartX + 266,
-      178,
-      "rgba(203,215,229,0.16)"
-    ]
-
-  ];
-
-
-  keys.forEach(
-    ([x, y, color]) =>
-      drawKey(
+      roundedRect(
         ctx,
         x,
         y,
-        color
-      )
-  );
+        60,
+        60,
+        11
+      );
+
+      ctx.fillStyle =
+        "rgba(255,255,255,0.012)";
+
+      ctx.fill();
+
+      ctx.strokeStyle =
+        borderColor;
+
+      ctx.lineWidth = 1;
+
+      ctx.stroke();
+    }
 
 
-  /*
-    TEXT
-  */
+    function downloadBanner() {
 
-  const left = 578;
-
-
-  ctx.fillStyle =
-    "#ff3d9a";
+      const width = 1584;
+      const height = 396;
 
 
-  ctx.font =
-    "800 21px Arial";
+      const canvas =
+        document.createElement("canvas");
 
 
-  ctx.fillText(
-    "AI  •  PRODUCT  •  TRANSFORMATION",
-    left,
-    64
-  );
+      canvas.width = width;
+      canvas.height = height;
 
 
-  ctx.fillStyle =
-    "#f8fbff";
+      const ctx =
+        canvas.getContext("2d");
 
 
-  ctx.font =
-    "900 58px Arial";
+      if (!ctx) {
+
+        alert(
+          "Your browser could not create the image. Please try Chrome or Edge."
+        );
+
+        return;
+      }
 
 
-  ctx.fillText(
-    "I build useful technology",
-    left,
-    130
-  );
+      /*
+        BACKGROUND
+      */
+
+      const background =
+        ctx.createLinearGradient(
+          0,
+          0,
+          width,
+          height
+        );
 
 
-  ctx.fillText(
-    "for things that",
-    left,
-    188
-  );
+      background.addColorStop(
+        0,
+        "#06111f"
+      );
 
 
-  ctx.fillStyle =
-    "#ff3d9a";
+      background.addColorStop(
+        0.64,
+        "#0a1a2c"
+      );
 
 
-  ctx.fillText(
-    "shouldn’t be this hard.",
-    left,
-    246
-  );
+      background.addColorStop(
+        1,
+        "#102a44"
+      );
 
 
-  ctx.fillStyle =
-    "#cbd7e5";
+      ctx.fillStyle =
+        background;
 
 
-  ctx.font =
-    "700 23px Arial";
+      ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+      );
 
 
-  ctx.fillText(
-    "Strategy  •  AI Products  •  Digital Transformation  •  Workforce Adoption",
-    left,
-    298
-  );
+      /*
+        SUBTLE CENTRAL LIGHT
+      */
+
+      const light =
+        ctx.createRadialGradient(
+          900,
+          170,
+          0,
+          900,
+          170,
+          460
+        );
 
 
-  /*
-    ITSBAD LABS SIGNATURE
-  */
-
-  const signatureY = 345;
-
-
-  const signatureGradient =
-    ctx.createLinearGradient(
-      left,
-      signatureY,
-      left + 26,
-      signatureY
-    );
+      light.addColorStop(
+        0,
+        "rgba(74,168,255,0.07)"
+      );
 
 
-  signatureGradient.addColorStop(
-    0,
-    "#ff3d9a"
-  );
+      light.addColorStop(
+        1,
+        "rgba(74,168,255,0)"
+      );
 
 
-  signatureGradient.addColorStop(
-    1,
-    "#8776ff"
-  );
+      ctx.fillStyle =
+        light;
 
 
-  ctx.fillStyle =
-    signatureGradient;
+      ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+      );
 
 
-  ctx.fillRect(
-    left,
-    signatureY - 4,
-    26,
-    4
-  );
+      /*
+        KEYBOARD MOTIF
+      */
+
+      const keyStartX = 1270;
 
 
-  ctx.fillStyle =
-    "rgba(248,251,255,0.86)";
+      const keys = [
+
+        [
+          keyStartX,
+          64,
+          "rgba(202,214,227,0.17)"
+        ],
+
+        [
+          keyStartX + 72,
+          56,
+          "rgba(74,168,255,0.30)"
+        ],
+
+        [
+          keyStartX + 144,
+          48,
+          "rgba(202,214,227,0.17)"
+        ],
 
 
-  ctx.font =
-    "700 17px Arial";
+        [
+          keyStartX + 28,
+          136,
+          "rgba(139,118,255,0.30)"
+        ],
+
+        [
+          keyStartX + 100,
+          128,
+          "rgba(255,61,154,0.42)"
+        ],
+
+        [
+          keyStartX + 172,
+          120,
+          "rgba(202,214,227,0.17)"
+        ],
 
 
-  ctx.fillText(
-    "Founder, ITSBAD Labs",
-    left + 38,
-    signatureY
-  );
+        [
+          keyStartX + 56,
+          208,
+          "rgba(202,214,227,0.17)"
+        ],
+
+        [
+          keyStartX + 128,
+          200,
+          "rgba(74,168,255,0.30)"
+        ],
+
+        [
+          keyStartX + 200,
+          192,
+          "rgba(255,61,154,0.42)"
+        ]
+
+      ];
 
 
-  /*
-    DOWNLOAD
-  */
-
-  const download =
-    document.createElement("a");
+      ctx.globalAlpha = 0.32;
 
 
-  download.download =
-    "Brandi_Neal_LinkedIn_Banner.png";
+      keys.forEach(
+        ([x, y, color]) =>
+          drawKey(
+            ctx,
+            x,
+            y,
+            color
+          )
+      );
 
 
-  download.href =
-    canvas.toDataURL("image/png");
+      ctx.globalAlpha = 1;
 
 
-  download.click();
+      /*
+        TYPOGRAPHY
+      */
 
-}
+      const left = 428;
 
-</script>
+
+      ctx.fillStyle =
+        "#ff3d9a";
+
+
+      ctx.font =
+        "800 18px Arial";
+
+
+      ctx.fillText(
+        "AI  •  PRODUCT  •  TRANSFORMATION",
+        left,
+        68
+      );
+
+
+      ctx.fillStyle =
+        "#f8fbff";
+
+
+      ctx.font =
+        "850 56px Arial";
+
+
+      ctx.fillText(
+        "I build useful technology",
+        left,
+        137
+      );
+
+
+      ctx.fillStyle =
+        "#f8fbff";
+
+
+      ctx.fillText(
+        "for",
+        left,
+        195
+      );
+
+
+      const prefixWidth =
+        ctx.measureText("for ").width;
+
+
+      ctx.fillStyle =
+        "#ff3d9a";
+
+
+      ctx.fillText(
+        "real-world friction.",
+        left + prefixWidth,
+        195
+      );
+
+
+      /*
+        PERSONALITY LINE
+      */
+
+      ctx.fillStyle =
+        "#cad6e3";
+
+
+      ctx.font =
+        "700 26px Arial";
+
+
+      ctx.fillText(
+        "Because some things shouldn’t be this hard.",
+        left,
+        248
+      );
+
+
+      /*
+        PROFESSIONAL ANCHOR
+      */
+
+      ctx.fillStyle =
+        "#9fb0c2";
+
+
+      ctx.font =
+        "700 18px Arial";
+
+
+      ctx.fillText(
+        "AI Strategy  •  Product Innovation  •  Digital Transformation",
+        left,
+        291
+      );
+
+
+      /*
+        ITSBAD MAKER'S MARK
+      */
+
+      const markX = 1370;
+      const markY = 351;
+
+
+      const markGradient =
+        ctx.createLinearGradient(
+          markX,
+          markY,
+          markX + 25,
+          markY
+        );
+
+
+      markGradient.addColorStop(
+        0,
+        "#ff3d9a"
+      );
+
+
+      markGradient.addColorStop(
+        1,
+        "#8b76ff"
+      );
+
+
+      ctx.fillStyle =
+        markGradient;
+
+
+      ctx.fillRect(
+        markX,
+        markY - 4,
+        24,
+        3
+      );
+
+
+      ctx.fillStyle =
+        "rgba(248,251,255,0.56)";
+
+
+      ctx.font =
+        "800 13px Arial";
+
+
+      ctx.fillText(
+        "ITSBAD / LABS",
+        markX + 34,
+        markY
+      );
+
+
+      /*
+        DOWNLOAD
+      */
+
+      const download =
+        document.createElement("a");
+
+
+      download.download =
+        "Brandi_Neal_LinkedIn_Banner.png";
+
+
+      download.href =
+        canvas.toDataURL("image/png");
+
+
+      download.click();
+    }
+  </script>
 
 </body>
 </html>
