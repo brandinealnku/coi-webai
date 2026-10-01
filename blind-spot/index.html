@@ -645,28 +645,35 @@
     function drawPredictions(preds){
       resizeOverlay();
       octx.clearRect(0,0,overlay.width,overlay.height);
-      octx.save();
-      if(facingMode === "user"){
-        octx.translate(overlay.width,0);
-        octx.scale(-1,1);
-      }
       octx.lineWidth=Math.max(3,overlay.width/360);
       octx.font=`700 ${Math.max(18,overlay.width/42)}px ui-monospace, monospace`;
+
       preds.forEach((p,i)=>{
-        const [x,y,w,h]=p.bbox;
+        const [rawX,y,w,h]=p.bbox;
+        // The selfie video is mirrored with CSS. Mirror only the box coordinates
+        // so labels remain readable instead of being flipped backward.
+        const x = facingMode === "user"
+          ? overlay.width - rawX - w
+          : rawX;
+
         const uncertain=p.score<.68;
         const line=uncertain?"#FF66C4":"#5FD4FF";
         octx.strokeStyle=line;
         octx.fillStyle="#07111F";
         octx.strokeRect(x,y,w,h);
+
         const label=`${String(i+1).padStart(2,"0")} ${p.class.toUpperCase()}${uncertain?"?":""} ${Math.round(p.score*100)}%`;
         const tw=octx.measureText(label).width+18;
         const th=Math.max(28,overlay.width/28);
-        octx.fillRect(x,Math.max(0,y-th),tw,th);
+
+        // Keep the label on-canvas when the detected box sits near the right edge.
+        const labelX=Math.min(Math.max(0,x),Math.max(0,overlay.width-tw));
+        const labelY=Math.max(0,y-th);
+
+        octx.fillRect(labelX,labelY,tw,th);
         octx.fillStyle=line;
-        octx.fillText(label,x+8,Math.max(th-8,y-8));
+        octx.fillText(label,labelX+8,labelY+th-8);
       });
-      octx.restore();
     }
 
     function record(preds){
