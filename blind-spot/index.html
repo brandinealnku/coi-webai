@@ -183,6 +183,53 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   .restart-reveal{width:100%}
 }
 
+
+/* Interpretation reveal */
+.wow-reveal{padding:0}
+.reveal-topline{
+  display:flex;justify-content:space-between;gap:18px;align-items:center;
+  padding:12px 0 16px;font:800 .65rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#AEBBD0
+}
+.guess-warning{color:var(--pink)}
+.wow-grid{display:grid;grid-template-columns:.8fr 1.2fr;border:1px solid #42506A}
+.wow-panel{padding:clamp(24px,4vw,42px)}
+.saw-panel{border-right:1px solid #42506A}
+.guess-panel{background:#0B1728}
+.guess-panel .kicker{color:var(--pink)}
+.guess-panel blockquote{
+  margin:0;font:500 clamp(2rem,4vw,4rem)/1.04 var(--serif);letter-spacing:-.04em;color:#fff
+}
+.guess-note{margin:20px 0 0;color:#AEBBD0;font:.74rem/1.5 var(--mono);max-width:58ch}
+.reality-block{padding:26px 0;border-bottom:1px solid #42506A}
+.reality-block label{
+  display:block;margin-bottom:10px;color:#fff;font:900 .7rem var(--mono);letter-spacing:.13em;text-transform:uppercase
+}
+.reality-entry{display:grid;grid-template-columns:1fr auto;gap:12px}
+.reality-entry input{
+  min-height:56px;border:1px solid #56657D;background:#0B1728;color:#fff;padding:0 15px;font-size:1rem
+}
+.reality-entry input::placeholder{color:#8190A8}
+.reveal-skip{color:#AEBBD0;margin-top:10px;font:700 .72rem var(--mono)}
+.comparison{
+  margin-top:26px;padding:clamp(24px,4vw,38px);border:1px solid #42506A;border-left:6px solid var(--pink);background:#0B1728
+}
+.comparison-label{color:var(--pink);font:900 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.actual-quote{margin:16px 0 26px;font:500 clamp(1.5rem,3vw,2.7rem)/1.12 var(--serif);color:#fff}
+.comparison h2{font-size:clamp(2.8rem,5.5vw,5.6rem);margin:0;color:#fff}
+.comparison h2 strong{color:var(--blue);font-weight:500}
+.comparison p{color:#AEBBD0;margin:16px 0 0}
+.reveal-footer{
+  padding-top:26px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px
+}
+.reveal-thesis-line{margin:0;color:#fff;font:500 clamp(1.8rem,3.8vw,3.8rem)/1 var(--serif);letter-spacing:-.04em}
+.reveal-thesis-line strong{color:var(--blue);font-weight:500}
+@media(max-width:800px){
+  .wow-grid{grid-template-columns:1fr}.saw-panel{border-right:0;border-bottom:1px solid #42506A}
+  .reality-entry{grid-template-columns:1fr}.reality-entry .cta{width:100%}
+  .reveal-footer{align-items:stretch;flex-direction:column}.restart-reveal{width:100%}
+  .reveal-topline{align-items:flex-start;flex-direction:column}
+}
+
 </style>
 </head>
 <body>
@@ -242,25 +289,43 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
 </section>
 
 <section id="reveal" class="stage">
-  <div class="reveal-wrap compact-reveal">
-    <div class="reveal-grid compact-grid">
-      <div class="reveal-col compact-col">
+  <div class="reveal-wrap wow-reveal">
+    <div class="reveal-topline">
+      <span>FROZEN / MACHINE INTERPRETATION</span>
+      <span class="guess-warning">A plausible guess — not a fact</span>
+    </div>
+
+    <div class="wow-grid">
+      <div class="wow-panel saw-panel">
         <div class="kicker">AI saw</div>
         <div id="revealSeen" class="reveal-list compact-list"></div>
       </div>
-      <div class="reveal-col compact-col">
-        <div class="kicker">AI missed</div>
-        <div class="miss compact-miss">
-          <div class="miss-item">why you are here</div>
-          <div class="miss-item">what you are working on</div>
-          <div class="miss-item">which object matters most</div>
-          <div class="miss-item">what any of it means to you</div>
-        </div>
+
+      <div class="wow-panel guess-panel">
+        <div class="kicker">AI guessed</div>
+        <blockquote id="sceneGuess">“A scene could be interpreted several ways.”</blockquote>
+        <p class="guess-note">The model has labels. This story is only one possible interpretation of them.</p>
       </div>
     </div>
 
-    <div class="thesis compact-thesis">
-      <h2>The machine had <strong>data.</strong><br>You had <strong>context.</strong></h2>
+    <div class="reality-block" id="realityBlock">
+      <label for="actualContext">What was actually happening?</label>
+      <div class="reality-entry">
+        <input id="actualContext" maxlength="180" placeholder="I was testing an AI experience for my students.">
+        <button class="cta" id="compareBtn" type="button">Show the gap →</button>
+      </div>
+      <button class="text-link reveal-skip" id="skipCompare" type="button">Skip this</button>
+    </div>
+
+    <div class="comparison" id="comparison" hidden>
+      <div class="comparison-label">Actually</div>
+      <div class="actual-quote" id="actualQuote"></div>
+      <h2>Same pixels.<br><strong>Different reality.</strong></h2>
+      <p>The machine recognized patterns. You supplied the meaning.</p>
+    </div>
+
+    <div class="reveal-footer">
+      <p class="reveal-thesis-line">The machine had <strong>data.</strong> You had <strong>context.</strong></p>
       <button class="secondary restart-reveal" id="againBtn" type="button">Run it again</button>
     </div>
   </div>
@@ -274,7 +339,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   <div class="dialog">
     <div class="dialog-head"><h3 id="howTitle">How this works</h3><button class="close" id="closeDialog" aria-label="Close">×</button></div>
     <p><strong>Camera:</strong> permission is requested only after you choose to begin. The camera feed stays in the page and is analyzed with a browser-loaded COCO-SSD object-detection model. This page does not intentionally record or upload camera frames.</p>
-    <p><strong>What AI does:</strong> it detects visible object categories and reports confidence. It does not identify who you are or infer sensitive personal traits.</p>
+    <p><strong>What AI does:</strong> it detects visible object categories and reports confidence. After you freeze the scene, this prototype creates one deliberately limited, plausible interpretation from those labels to demonstrate how easily recognition can be mistaken for understanding. The interpretation is not presented as fact.</p><p><strong>What it does not do:</strong> it does not identify who you are or infer sensitive personal traits such as health, race, age, emotion, personality, or identity.</p>
     <p><strong>Don't want camera access?</strong> The “choose an object instead” path preserves the same core idea without using a sensor.</p>
   </div>
 </dialog>
@@ -311,6 +376,10 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   const cameraMessage=document.getElementById("cameraMessage");
   const scanError=document.getElementById("scanError");
   const revealSeen=document.getElementById("revealSeen");
+  const sceneGuess=document.getElementById("sceneGuess");
+  const actualContext=document.getElementById("actualContext");
+  const comparison=document.getElementById("comparison");
+  const actualQuote=document.getElementById("actualQuote");
   const howDialog=document.getElementById("howDialog");
   const manualDialog=document.getElementById("manualDialog");
   const voiceDialog=document.getElementById("voiceDialog");
@@ -375,12 +444,37 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     if(!items.length){objectsEl.innerHTML='<div class="empty">Looking for visible objects…</div>';return}
     objectsEl.innerHTML=items.map((x,i)=>`<div class="object-row"><span class="idx">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label)}</span><span class="conf">${Math.round(x.score*100)}%</span></div>`).join("");
   }
+  function makeSceneGuess(labels){
+    const set=new Set(labels.map(x=>x.toLowerCase()));
+    const has=(...xs)=>xs.some(x=>set.has(x));
+    let guess="This looks like an ordinary moment in a room — but the labels do not explain what is actually happening.";
+    if(has("person") && has("tv")) guess="A person appears to be spending time near a television — perhaps watching something or relaxing.";
+    else if(has("person") && has("laptop")) guess="A person appears to be working, studying, or using a computer.";
+    else if(has("person") && has("book")) guess="A person appears to be reading, studying, or working with a book.";
+    else if(has("laptop","keyboard","mouse") && has("cup","bottle")) guess="This could be a work or study setup with a drink nearby.";
+    else if(has("couch","chair") && has("tv")) guess="This could be a living space arranged for watching television or relaxing.";
+    else if(has("dining table") && has("cup","bottle","fork","knife","bowl")) guess="This could be a meal, a break, or simply objects left on a table.";
+    else if(has("dog","cat")) guess="A pet appears to be part of this scene, but the model cannot know its role or relationship to you.";
+    else if(has("book")) guess="A book is visible, which could suggest reading, studying, teaching, decorating, or something else entirely.";
+    else if(has("laptop")) guess="A laptop is visible, which could suggest work, study, entertainment, testing, or something else entirely.";
+    return guess;
+  }
+
   function reveal(){
     stopCamera();
-    const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,6);
-    revealSeen.innerHTML=items.length?items.map((x,i)=>`<div class="reveal-item"><span class="num">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label.toUpperCase())}</span><span>${Math.round(x.score*100)}%</span></div>`).join(""):'<div class="reveal-item"><span class="num">01</span><span>OBJECT</span><span>SUPPLIED</span></div>';
+    const items=[...best.values()].sort((a,b)=>(b.score??0)-(a.score??0)).slice(0,6);
+    revealSeen.innerHTML=items.length?items.map((x,i)=>{
+      const confidence=x.score==null?"SUPPLIED":Math.round(x.score*100)+"%";
+      return `<div class="reveal-item"><span class="num">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label.toUpperCase())}</span><span>${confidence}</span></div>`;
+    }).join(""):'<div class="reveal-item"><span class="num">01</span><span>OBJECT</span><span>SUPPLIED</span></div>';
+    const labels=items.map(x=>x.label);
+    sceneGuess.textContent="“"+makeSceneGuess(labels)+"”";
+    actualContext.value="";
+    comparison.hidden=true;
+    actualQuote.textContent="";
     show("reveal");
   }
+
   function chooseManual(label){
     best=new Map([[label,{label,score:null,bbox:null}]]);
     manualDialog.close(); reveal();
@@ -416,7 +510,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     try{recognition.start()}catch(e){voiceState.textContent="Voice couldn't start. Choose an object instead."}
   }
   function reset(){
-    stopCamera();best.clear();ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
+    stopCamera();best.clear();if(actualContext)actualContext.value="";if(comparison)comparison.hidden=true;ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
   }
   choices.forEach(label=>{
     const b=document.createElement("button");b.className="secondary";b.type="button";b.textContent=label;
@@ -428,6 +522,14 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   document.getElementById("manualIntro").addEventListener("click",()=>manualDialog.showModal());
   document.getElementById("voiceScan").addEventListener("click",openVoice);
   document.getElementById("manualScan").addEventListener("click",()=>{stopCamera();manualDialog.showModal()});
+  document.getElementById("compareBtn").addEventListener("click",()=>{
+    const text=actualContext.value.trim();
+    if(!text){actualContext.focus();return}
+    actualQuote.textContent="“"+text+"”";
+    comparison.hidden=false;
+    comparison.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+  });
+  document.getElementById("skipCompare").addEventListener("click",()=>{comparison.hidden=true});
   document.getElementById("againBtn").addEventListener("click",reset);
   document.getElementById("howBtn").addEventListener("click",()=>howDialog.showModal());
     document.getElementById("closeDialog").addEventListener("click",()=>howDialog.close());
