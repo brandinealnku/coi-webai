@@ -282,7 +282,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
         <h3>Show the machine your world.</h3>
         <p class="lead">Point your camera at a few ordinary things. When you’re ready, freeze what AI sees.</p>
       </div>
-      <div id="objects" class="objects"><div class="empty">Preparing object detection…</div></div>
+      <div class="small" style="margin-top:14px">Percentages show the model’s confidence in its label—not the probability that the label is correct.</div><div id="objects" class="objects"><div class="empty">Preparing object detection…</div></div>
       <div id="scanError" class="error" hidden>Camera isn't available here. You can still complete the experience without it.</div>
       <div class="scan-actions">
         <button class="cta" id="freezeBtn" type="button" disabled>Freeze what AI sees →</button>
@@ -301,7 +301,8 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
 
     <div class="wow-grid">
       <div class="wow-panel saw-panel">
-        <div class="kicker">AI saw</div>
+        <div class="kicker">AI labeled</div>
+        <div class="small" style="color:#AEBBD0;margin-bottom:12px">Confidence reflects how strongly the model matched a known category. It can still be wrong.</div>
         <div id="revealSeen" class="reveal-list compact-list"></div>
       </div>
 
@@ -315,7 +316,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     <div class="comparison" id="comparison">
       <div class="comparison-label">The blind spot</div>
       <h2>Same pixels.<br><strong>Different reality.</strong></h2>
-      <p>The model can recognize patterns and build a plausible story. It still cannot know what this moment actually means.</p>
+      <p>The model can recognize patterns and build a plausible story. High confidence does not guarantee a correct label—and a correct label still does not equal understanding.</p>
     </div>
 
     <div class="reveal-footer">
@@ -426,14 +427,14 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     ctx.lineWidth=Math.max(3,w/260);ctx.font=`700 ${Math.max(17,w/42)}px ui-monospace,monospace`;ctx.textBaseline="top";
     preds.forEach(p=>{
       const [rawX,y,bw,bh]=p.bbox;const x=w-rawX-bw;ctx.strokeStyle="#5FD4FF";ctx.strokeRect(x,y,bw,bh);
-      const text=`${p.class.toUpperCase()} ${Math.round(p.score*100)}%`;const tw=ctx.measureText(text).width+16;const ty=Math.max(0,y-30);
+      const text=`${p.class.toUpperCase()} · CONF ${Math.round(p.score*100)}%`;const tw=ctx.measureText(text).width+16;const ty=Math.max(0,y-30);
       ctx.fillStyle="rgba(7,17,31,.9)";ctx.fillRect(Math.max(0,x),ty,tw,30);ctx.fillStyle="#5FD4FF";ctx.fillText(text,Math.max(0,x)+8,ty+5);
     });
   }
   function renderObjects(){
     const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,6);
     if(!items.length){objectsEl.innerHTML='<div class="empty">Looking for visible objects…</div>';return}
-    objectsEl.innerHTML=items.map((x,i)=>`<div class="object-row"><span class="idx">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label)}</span><span class="conf">${Math.round(x.score*100)}%</span></div>`).join("");
+    objectsEl.innerHTML=items.map((x,i)=>`<div class="object-row"><span class="idx">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label)}</span><span class="conf">model confidence ${Math.round(x.score*100)}%</span></div>`).join("");
   }
   function makeSceneGuess(labels){
     const set=new Set(labels.map(x=>x.toLowerCase()));
@@ -455,7 +456,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     stopCamera();
     const items=[...best.values()].sort((a,b)=>(b.score??0)-(a.score??0)).slice(0,6);
     revealSeen.innerHTML=items.length?items.map((x,i)=>{
-      const confidence=x.score==null?"SUPPLIED":Math.round(x.score*100)+"%";
+      const confidence=x.score==null?"SUPPLIED":"model confidence "+Math.round(x.score*100)+"%";
       return `<div class="reveal-item"><span class="num">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label.toUpperCase())}</span><span>${confidence}</span></div>`;
     }).join(""):'<div class="reveal-item"><span class="num">01</span><span>OBJECT</span><span>SUPPLIED</span></div>';
     const labels=items.map(x=>x.label);
