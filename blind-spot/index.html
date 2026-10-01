@@ -3,19 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b0b0b">
-  <title>AI Blind Spot — What does the machine miss?</title>
+  <meta name="theme-color" content="#07111F">
+  <title>AI Blind Spot — What does the machine miss?</title>\n  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <meta name="description" content="A browser-based AI literacy experiment about observation, inference, and human context.">
   <style>
     :root{
-      --ink:#0b0b0b;
-      --paper:#f3efe6;
-      --white:#fff;
-      --signal:#ff5138;
-      --acid:#c6ff4a;
-      --muted:#77736d;
-      --line:#c9c2b7;
-      --soft:#e9e4da;
+      --ink:#07111F;
+      --ink-2:#0B1728;
+      --navy:#3A3B78;
+      --paper:#F7F8FC;
+      --paper-2:#EEF1F7;
+      --white:#FFFFFF;
+      --signal:#FF66C4;
+      --acid:#5FD4FF;
+      --violet:#8A7DFF;
+      --muted:#5B667A;
+      --line:#DCE1EA;
+      --soft:#EEF1F7;
+      --labs-pink:#FF66C4;
+      --labs-blue:#5FD4FF;
       --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
       --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       --serif:Georgia,"Times New Roman",serif;
@@ -37,9 +43,9 @@
       color:#fff;
       border-bottom:6px solid var(--signal);
     }
-    .mark{font:900 1.4rem/1 var(--mono);letter-spacing:-.08em}
+    .brand-logo{display:block;width:86px;height:auto}
     .mast-title{text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:900}
-    .mast-note{font:.68rem/1 var(--mono);color:#c7c7c7}
+    .mast-note{font:.68rem/1 var(--mono);color:#AEBBD0}
     .stage{display:none;min-height:calc(100vh - 76px)}
     .stage.active{display:grid}
     .eyebrow{
@@ -81,7 +87,7 @@
       border-bottom:6px solid var(--signal);
       align-self:flex-start;
     }
-    .cta:hover{background:#272727}
+    .cta:hover{background:#0B1728}
     .secondary-btn{
       border:2px solid var(--ink);
       background:#fff;
@@ -152,10 +158,11 @@
       overflow:hidden;
       background:#050505;
       min-height:calc(100vh - 76px);
-      border-right:1px solid #333;
+      border-right:1px solid #3A3B78;
     }
     #video,#overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
     #video{transform:scaleX(-1)}
+    .vision.rear-camera #video{transform:none}
     #overlay{pointer-events:none}
     .scan-line{
       position:absolute;left:0;right:0;top:0;height:2px;background:var(--acid);
@@ -165,9 +172,21 @@
     @keyframes scan{from{transform:translateY(0)}to{transform:translateY(calc(100vh - 78px))}}
     .scan-head{
       position:absolute;left:18px;right:18px;top:18px;z-index:4;
-      display:flex;justify-content:space-between;gap:12px;
+      display:flex;justify-content:space-between;gap:12px;align-items:center;
       font:800 .67rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#fff
     }
+    .scan-tools{display:flex;gap:8px;align-items:center}
+    .camera-toggle{
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(7,17,31,.82);
+      color:#fff;
+      min-height:34px;
+      padding:0 10px;
+      font:800 .63rem var(--mono);
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .camera-toggle:hover{border-color:var(--labs-pink, #FF66C4);color:#FF66C4}
     .live{color:var(--acid)}
     .machine-status{
       position:absolute;left:18px;bottom:18px;z-index:4;
@@ -180,7 +199,7 @@
     }
     .machine-status strong{color:var(--acid)}
     .camera-error{
-      display:none;position:absolute;inset:0;z-index:6;padding:44px;background:#111;color:#fff;
+      display:none;position:absolute;inset:0;z-index:6;padding:44px;background:#07111F;color:#fff;
       align-items:center;justify-content:center
     }
     .camera-error.show{display:flex}
@@ -234,11 +253,11 @@
     .confidence-left h2{color:#fff}
     .confidence-left p{color:#c7c7c7}
     .frozen{
-      margin-top:24px;border:1px solid #444;background:#222;aspect-ratio:4/3;position:relative;overflow:hidden
+      margin-top:24px;border:1px solid #444;background:#0B1728;aspect-ratio:4/3;position:relative;overflow:hidden
     }
     .frozen img{width:100%;height:100%;object-fit:cover;display:block}
     .frozen .frame-label{
-      position:absolute;left:12px;bottom:12px;background:#111;color:var(--acid);
+      position:absolute;left:12px;bottom:12px;background:#07111F;color:var(--acid);
       font:800 .65rem var(--mono);padding:7px 9px
     }
     .confidence-right{
@@ -276,9 +295,9 @@
     .reveal-list{display:grid}
     .reveal-row{
       display:grid;grid-template-columns:42px 1fr auto;gap:12px;
-      padding:13px 0;border-top:1px solid #333;font:.9rem var(--mono);align-items:center
+      padding:13px 0;border-top:1px solid #3A3B78;font:.9rem var(--mono);align-items:center
     }
-    .reveal-row:last-child{border-bottom:1px solid #333}
+    .reveal-row:last-child{border-bottom:1px solid #3A3B78}
     .reveal-row .state{font-size:.68rem;color:#888}
     .reveal-col:first-child .reveal-row .num{color:var(--acid)}
     .reveal-col:last-child .reveal-row .num{color:var(--signal)}
@@ -326,7 +345,7 @@
       #intro,.share-layout,#confidence,#reflection{grid-template-columns:1fr}
       .intro-panel{min-height:340px}
       .scan-layout{grid-template-columns:1fr}
-      .vision{min-height:55vh;border-right:0;border-bottom:1px solid #333}
+      .vision{min-height:55vh;border-right:0;border-bottom:1px solid #3A3B78}
       .console{max-height:none}
       .reveal-grid{grid-template-columns:1fr}
       .reveal-col:first-child{border-right:0;border-bottom:1px solid #444}
@@ -355,9 +374,9 @@
 <body>
   <div class="app">
     <header class="mast">
-      <div class="mark">[ ]</div>
+      <img class="brand-logo" src="assets/itsbad-labs-logo.svg" alt="ITSBAD Labs">
       <div class="mast-title">AI Blind Spot</div>
-      <div class="mast-note">browser experiment / local only</div>
+      <div class="mast-note">LAB EXPERIMENT / LOCAL ONLY</div>
     </header>
 
     <main>
@@ -370,7 +389,7 @@
           <p class="fine">No image is uploaded. No identity, emotion, age, personality, race, gender, health, or other sensitive trait is analyzed. Object detection runs in your browser.</p>
         </div>
         <aside class="intro-panel" aria-hidden="true">
-          <div class="panel-label">Experiment 01 / visual evidence</div>
+          <div class="panel-label">LAB SIGNAL / EXPERIMENT 01</div>
           <div class="manifesto">
             <p>The model gets <strong>pixels</strong>.<br>You live the <strong>context</strong>.</p>
           </div>
@@ -384,13 +403,16 @@
 
       <section id="scan" class="stage">
         <div class="scan-layout">
-          <div class="vision">
+          <div id="vision" class="vision">
             <video id="video" autoplay playsinline muted aria-hidden="true"></video>
             <canvas id="overlay" aria-label="Live object detection overlay"></canvas>
             <div class="scan-line" aria-hidden="true"></div>
             <div class="scan-head">
               <span>Machine observation</span>
-              <span class="live">● local model</span>
+              <div class="scan-tools">
+                <button id="cameraToggle" class="camera-toggle" type="button" aria-label="Switch camera">Scan room ↻</button>
+                <span class="live">● local model</span>
+              </div>
             </div>
             <div class="machine-status">
               <strong>MODE:</strong> detect visible objects only · no identity or trait inference
@@ -523,7 +545,7 @@
               <button id="shareBtn" class="action share" type="button">Share</button>
             </div>
             <button id="restartBtn" class="restart" type="button">Run it again</button>
-            <div class="footer-note">Built as an AI literacy experiment by ITSBAD Labs. The card contains your own text and a local camera still; nothing is sent to a server by this page.</div>
+            <div class="footer-note">Built by ITSBAD Labs — technology for things that shouldn’t be this hard. The card contains your own text and a local camera still; nothing is sent to a server by this page.</div>
           </aside>
         </div>
       </section>
@@ -542,6 +564,8 @@
 
     const stages = [...document.querySelectorAll(".stage")];
     const video = document.getElementById("video");
+    const vision = document.getElementById("vision");
+    const cameraToggle = document.getElementById("cameraToggle");
     const overlay = document.getElementById("overlay");
     const octx = overlay.getContext("2d");
     const observationsEl = document.getElementById("observations");
@@ -567,6 +591,8 @@
     let capturedFrameUrl = "";
     let lastCardUrl = null;
     let perceivedUnderstanding = 50;
+    let facingMode = "user";
+    let switchingCamera = false;
 
     function showStage(id){
       stages.forEach(s => s.classList.toggle("active", s.id === id));
@@ -584,9 +610,15 @@
       if(!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unsupported");
       stream = await navigator.mediaDevices.getUserMedia({
         audio:false,
-        video:{facingMode:"user",width:{ideal:1280},height:{ideal:960}}
+        video:{
+          facingMode:{ideal:facingMode},
+          width:{ideal:1280},
+          height:{ideal:960}
+        }
       });
       video.srcObject = stream;
+      vision.classList.toggle("rear-camera", facingMode === "environment");
+      cameraToggle.textContent = facingMode === "environment" ? "Selfie view ↻" : "Scan room ↻";
       await new Promise((resolve,reject)=>{
         const timeout=setTimeout(()=>reject(new Error("Camera timeout")),6000);
         video.onloadedmetadata=async()=>{
@@ -614,16 +646,18 @@
       resizeOverlay();
       octx.clearRect(0,0,overlay.width,overlay.height);
       octx.save();
-      octx.translate(overlay.width,0);
-      octx.scale(-1,1);
+      if(facingMode === "user"){
+        octx.translate(overlay.width,0);
+        octx.scale(-1,1);
+      }
       octx.lineWidth=Math.max(3,overlay.width/360);
       octx.font=`700 ${Math.max(18,overlay.width/42)}px ui-monospace, monospace`;
       preds.forEach((p,i)=>{
         const [x,y,w,h]=p.bbox;
         const uncertain=p.score<.68;
-        const line=uncertain?"#ff5138":"#c6ff4a";
+        const line=uncertain?"#FF66C4":"#5FD4FF";
         octx.strokeStyle=line;
-        octx.fillStyle="#111";
+        octx.fillStyle="#07111F";
         octx.strokeRect(x,y,w,h);
         const label=`${String(i+1).padStart(2,"0")} ${p.class.toUpperCase()}${uncertain?"?":""} ${Math.round(p.score*100)}%`;
         const tw=octx.measureText(label).width+18;
@@ -695,10 +729,41 @@
       c.width=video.videoWidth;
       c.height=video.videoHeight;
       const cctx=c.getContext("2d");
-      cctx.translate(c.width,0);
-      cctx.scale(-1,1);
+      if(facingMode === "user"){
+        cctx.translate(c.width,0);
+        cctx.scale(-1,1);
+      }
       cctx.drawImage(video,0,0,c.width,c.height);
       return c;
+    }
+
+    async function switchCamera(){
+      if(switchingCamera || !stream) return;
+      switchingCamera = true;
+      const previousMode = facingMode;
+      facingMode = facingMode === "user" ? "environment" : "user";
+      cameraToggle.disabled = true;
+      cameraToggle.textContent = "Switching…";
+      try{
+        stopCamera();
+        await startCamera();
+        capturedFrame = null;
+        capturedFrameUrl = "";
+      }catch(err){
+        console.warn("Camera switch failed:", err);
+        facingMode = previousMode;
+        try{
+          stopCamera();
+          await startCamera();
+        }catch(recoveryErr){
+          console.warn("Camera recovery failed:", recoveryErr);
+          cameraError.classList.add("show");
+        }
+      }finally{
+        cameraToggle.disabled = false;
+        cameraToggle.textContent = facingMode === "environment" ? "Selfie view ↻" : "Scan room ↻";
+        switchingCamera = false;
+      }
     }
 
     async function beginScan(){
@@ -831,16 +896,25 @@
       shareCanvas.width=W;
       shareCanvas.height=H;
 
-      sctx.fillStyle="#f3efe6";
+      sctx.fillStyle="#F7F8FC";
       sctx.fillRect(0,0,W,H);
 
       // Header
-      sctx.fillStyle="#0b0b0b";
+      sctx.fillStyle="#07111F";
       sctx.fillRect(0,0,W,132);
       sctx.fillStyle="#fff";
       sctx.font="900 30px ui-monospace, monospace";
-      sctx.fillText("[ ] AI BLIND SPOT",54,58);
-      sctx.fillStyle="#ff5138";
+      sctx.fillText("ITSBAD LABS / AI BLIND SPOT",54,58);
+      const keys=["I","T","S","B","A","D"];
+      keys.forEach((key,i)=>{
+        const x=54+i*34;
+        sctx.fillStyle="#FF66C4";
+        sctx.fillRect(x,82,28,24);
+        sctx.fillStyle="#07111F";
+        sctx.font="900 13px ui-monospace, monospace";
+        sctx.fillText(key,x+9,99);
+      });
+      sctx.fillStyle="#FF66C4";
       sctx.fillRect(0,124,W,8);
       sctx.fillStyle="#c8c8c8";
       sctx.font="700 17px ui-monospace, monospace";
@@ -849,24 +923,24 @@
       sctx.textAlign="left";
 
       // Big share headline
-      sctx.fillStyle="#0b0b0b";
+      sctx.fillStyle="#07111F";
       sctx.font="500 70px Georgia,serif";
       const topHeadline=`AI SAW ${count} ${count===1?"THING":"THINGS"}.`;
       sctx.fillText(topHeadline,54,220);
-      sctx.fillStyle="#ff5138";
+      sctx.fillStyle="#FF66C4";
       sctx.font="500 75px Georgia,serif";
       sctx.fillText("IT MISSED THE MOST IMPORTANT ONE.",54,300);
 
       // Photo
       const photoY=342,photoH=430;
-      sctx.fillStyle="#222";
+      sctx.fillStyle="#0B1728";
       sctx.fillRect(0,photoY,W,photoH);
       if(capturedFrame){
         drawCover(sctx,capturedFrame,0,photoY,W,photoH);
       }else{
         sctx.fillStyle="#2d2d2d";
         sctx.fillRect(0,photoY,W,photoH);
-        sctx.fillStyle="#c6ff4a";
+        sctx.fillStyle="#5FD4FF";
         sctx.font="700 30px ui-monospace, monospace";
         sctx.fillText("SIMULATED OBSERVATION",54,photoY+70);
       }
@@ -874,7 +948,7 @@
       // Machine strip
       sctx.fillStyle="rgba(11,11,11,.92)";
       sctx.fillRect(0,photoY+photoH-102,W,102);
-      sctx.fillStyle="#c6ff4a";
+      sctx.fillStyle="#5FD4FF";
       sctx.font="800 18px ui-monospace, monospace";
       sctx.fillText("THE MACHINE SAW",54,photoY+photoH-65);
       sctx.fillStyle="#fff";
@@ -883,7 +957,7 @@
       wrapText(sctx,seen.toUpperCase(),54,photoY+photoH-29,W-108,30,2);
 
       // Context
-      sctx.fillStyle="#0b0b0b";
+      sctx.fillStyle="#07111F";
       sctx.font="900 18px ui-monospace, monospace";
       sctx.fillText("THE HUMAN CONTEXT WAS",54,846);
 
@@ -891,21 +965,21 @@
       wrapText(sctx,"\""+context+"\"",54,918,W-108,60,4);
 
       // Confidence / gap
-      sctx.fillStyle="#0b0b0b";
+      sctx.fillStyle="#07111F";
       sctx.fillRect(54,1138,W-108,2);
       sctx.font="800 18px ui-monospace, monospace";
-      sctx.fillStyle="#77736d";
+      sctx.fillStyle="#5B667A";
       sctx.fillText(`I ESTIMATED ${perceivedUnderstanding}% UNDERSTANDING`,54,1180);
-      sctx.fillStyle="#ff5138";
+      sctx.fillStyle="#FF66C4";
       sctx.fillText("THE MODEL HAD OBJECT LABELS.",54,1217);
 
-      sctx.fillStyle="#0b0b0b";
+      sctx.fillStyle="#07111F";
       sctx.font="500 44px Georgia,serif";
       sctx.fillText("The gap was context.",54,1280);
 
       sctx.fillStyle="#666";
       sctx.font="700 16px ui-monospace, monospace";
-      sctx.fillText("AI Blind Spot · ITSBAD Labs",54,1325);
+      sctx.fillText("ITSBAD LABS · AI BLIND SPOT",54,1325);
       sctx.textAlign="right";
       sctx.fillText("What did the machine miss?",W-54,1325);
       sctx.textAlign="left";
@@ -956,6 +1030,9 @@
       contextInput.value="";
       charCount.textContent="0 / 160";
       perceivedUnderstanding=50;
+      facingMode="user";
+      vision.classList.remove("rear-camera");
+      cameraToggle.textContent="Scan room ↻";
       confidenceSlider.value="50";
       confidenceValue.textContent="50%";
       octx.clearRect(0,0,overlay.width,overlay.height);
@@ -969,6 +1046,7 @@
     });
 
     document.getElementById("startBtn").addEventListener("click",beginScan);
+    cameraToggle.addEventListener("click",switchCamera);
     document.getElementById("stopBtn").addEventListener("click",finishScan);
     document.getElementById("fallbackBtn").addEventListener("click",useFallback);
     document.getElementById("revealBtn").addEventListener("click",renderReveal);
