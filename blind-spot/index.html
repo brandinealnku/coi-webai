@@ -308,6 +308,50 @@
     .reveal-thesis h2{color:#fff;margin:0}
     .reveal-thesis strong{color:var(--acid);font-weight:500}
     .reveal-next{white-space:nowrap}
+    .reveal-context{
+      width:min(100%,1180px);
+      margin:26px auto 0;
+      border-top:1px solid #444;
+      padding-top:22px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:16px;
+      align-items:end;
+    }
+    .reveal-context-copy{min-width:0}
+    .reveal-context label{
+      display:block;
+      margin:0 0 8px;
+      color:#fff;
+      font:800 .69rem var(--mono);
+      letter-spacing:.13em;
+      text-transform:uppercase;
+    }
+    .reveal-context-note{
+      margin:0 0 12px;
+      color:#aebbd0;
+      font:.78rem/1.45 var(--mono);
+    }
+    .reveal-context input{
+      width:100%;
+      min-height:52px;
+      border:1px solid #56657d;
+      border-radius:0;
+      background:#0B1728;
+      color:#fff;
+      padding:0 14px;
+      font-size:.98rem;
+    }
+    .reveal-context input::placeholder{color:#7f8fa8}
+    .reveal-context-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:8px;
+      font:.68rem var(--mono);
+      color:#7f8fa8;
+    }
+    .reveal-context .cta{margin:0}
 
     /* REFLECTION */
     #reflection{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
@@ -342,7 +386,7 @@
     .footer-note{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font:.73rem/1.45 var(--mono);color:var(--muted)}
 
     @media(max-width:900px){
-      #intro,.share-layout,#confidence,#reflection{grid-template-columns:1fr}
+      #intro,.share-layout,#confidence{grid-template-columns:1fr}
       .intro-panel{min-height:340px}
       .scan-layout{grid-template-columns:1fr}
       .vision{min-height:55vh;border-right:0;border-bottom:1px solid #3A3B78}
@@ -350,11 +394,13 @@
       .reveal-grid{grid-template-columns:1fr}
       .reveal-col:first-child{border-right:0;border-bottom:1px solid #444}
       .reveal-thesis{grid-template-columns:1fr}
+      .reveal-context{grid-template-columns:1fr}
+      .reveal-context .cta{width:100%}
     }
     @media(max-width:560px){
       .mast{grid-template-columns:auto 1fr;min-height:64px;padding-inline:14px}
       .mast-note{display:none}
-      .intro-copy,.reflect-left,.reflect-right,.confidence-left,.confidence-right,.share-actions{padding:34px 20px}
+      .intro-copy,.confidence-left,.confidence-right,.share-actions{padding:34px 20px}
       h1{font-size:clamp(3.5rem,17vw,5.5rem)}
       .intro-panel{padding:24px 20px}
       .vision{min-height:48vh}
@@ -507,27 +553,23 @@
               </div>
             </div>
           </div>
+
           <div class="reveal-thesis">
             <h2>The machine had <strong>data.</strong><br>You had <strong>context.</strong></h2>
-            <button id="contextBtn" class="cta reveal-next" type="button">Put the human back in →</button>
           </div>
-        </div>
-      </section>
 
-      <section id="reflection" class="stage">
-        <div class="reflect-left">
-          <p class="eyebrow">What the machine could report</p>
-          <h2 id="reflectionHeading">It detected things. It did not know your reasons.</h2>
-          <div id="machineList" class="machine-list"></div>
-        </div>
-        <div class="reflect-right">
-          <p class="eyebrow">Human context</p>
-          <h3>What is the most important thing AI missed about this moment?</h3>
-          <p class="lead">One sentence is enough. This is the part the camera could not infer from pixels.</p>
-          <label for="contextInput">The machine could not know that…</label>
-          <textarea id="contextInput" maxlength="160" placeholder="I’m preparing a class about AI literacy."></textarea>
-          <div class="charrow"><span>Keep it human. Keep it specific.</span><span id="charCount">0 / 160</span></div>
-          <button id="makeCardBtn" class="cta" type="button">Make my blind spot card →</button>
+          <div class="reveal-context">
+            <div class="reveal-context-copy">
+              <label for="contextInput">What did the machine miss? <span style="color:#7f8fa8;font-weight:700;">Optional</span></label>
+              <p class="reveal-context-note">Add one sentence if you want your share card to include the context AI could not see.</p>
+              <input id="contextInput" type="text" maxlength="120" placeholder="I was preparing a class about AI literacy.">
+              <div class="reveal-context-meta">
+                <span>Human context, not another prediction.</span>
+                <span id="charCount">0 / 120</span>
+              </div>
+            </div>
+            <button id="makeCardBtn" class="cta reveal-next" type="button">Create my blind spot →</button>
+          </div>
         </div>
       </section>
 
@@ -854,21 +896,6 @@
       showStage("reveal");
     }
 
-    function renderReflection(){
-      const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,MAX_OBJECTS);
-      const machineList=document.getElementById("machineList");
-      if(!items.length){
-        machineList.innerHTML='<div class="machine-item"><span>00</span><span>No confident object detections.</span></div>';
-      }else{
-        machineList.innerHTML=items.map((item,i)=>`
-          <div class="machine-item"><span>${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(item.label)}</span></div>`).join("");
-      }
-      document.getElementById("reflectionHeading").textContent=
-        `You estimated ${perceivedUnderstanding}% understanding. The model only had object labels.`;
-      showStage("reflection");
-      setTimeout(()=>contextInput.focus(),250);
-    }
-
     function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=4){
       const words=String(text).split(/\s+/);
       const lines=[];
@@ -898,7 +925,7 @@
     }
 
     function buildCard(){
-      const context=contextInput.value.trim() || "The most important part of this moment was invisible to the model.";
+      const context=contextInput.value.trim() || "Why this moment mattered.";
       const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,6);
       const labels=items.map(i=>i.label);
       const count=labels.length;
@@ -968,12 +995,13 @@
       wrapText(sctx,seen.toUpperCase(),54,photoY+photoH-29,W-108,30,2);
 
       // Context
+      const hasHumanContext = contextInput.value.trim().length > 0;
       sctx.fillStyle="#07111F";
       sctx.font="900 18px ui-monospace, monospace";
-      sctx.fillText("THE HUMAN CONTEXT WAS",54,846);
+      sctx.fillText(hasHumanContext ? "THE HUMAN CONTEXT WAS" : "WHAT THE MACHINE COULD NOT KNOW",54,846);
 
       sctx.font="500 51px Georgia,serif";
-      wrapText(sctx,"\""+context+"\"",54,918,W-108,60,4);
+      wrapText(sctx,hasHumanContext ? "\"" + context + "\"" : context,54,918,W-108,60,4);
 
       // Confidence / gap
       sctx.fillStyle="#07111F";
@@ -1039,7 +1067,7 @@
       capturedFrameUrl="";
       lastCardUrl=null;
       contextInput.value="";
-      charCount.textContent="0 / 160";
+      charCount.textContent="0 / 120";
       perceivedUnderstanding=50;
       facingMode="user";
       vision.classList.remove("rear-camera");
@@ -1061,12 +1089,11 @@
     document.getElementById("stopBtn").addEventListener("click",finishScan);
     document.getElementById("fallbackBtn").addEventListener("click",useFallback);
     document.getElementById("revealBtn").addEventListener("click",renderReveal);
-    document.getElementById("contextBtn").addEventListener("click",renderReflection);
     document.getElementById("makeCardBtn").addEventListener("click",buildCard);
     document.getElementById("saveBtn").addEventListener("click",saveCard);
     document.getElementById("shareBtn").addEventListener("click",shareCard);
     document.getElementById("restartBtn").addEventListener("click",reset);
-    contextInput.addEventListener("input",()=>charCount.textContent=`${contextInput.value.length} / 160`);
+    contextInput.addEventListener("input",()=>charCount.textContent=`${contextInput.value.length} / 120`);
     window.addEventListener("pagehide",stopCamera);
   })();
   </script>
