@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <title>AI Blind Spot — What does the machine miss?</title>
+  <meta name="description" content="A 60-second browser AI experiment about observation, inference, and human context.">
+  <style>
+    :root{
+      --ink:#111111;
+      --paper:#f5f1e8;
+      --white:#ffffff;
+      --signal:#e94b35;
+      --muted:#6b6b66;
+      --line:#bcb7ad;
+      --green:#b8ff63;
+      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --serif:Georgia,"Times New Roman",serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans)}
+    body{min-height:100vh}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .app{min-height:100vh}
+    .mast{
+      min-height:72px;
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:18px;
+      padding:0 22px;
+      background:var(--ink);
+      color:#fff;
+      border-bottom:7px solid var(--signal);
+    }
+    .mark{font-family:var(--mono);font-weight:900;letter-spacing:-.08em;font-size:1.45rem}
+    .mast-title{text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:900}
+    .mast-note{font-family:var(--mono);font-size:.68rem;color:#ccc}
+    .stage{display:none;min-height:calc(100vh - 79px)}
+    .stage.active{display:grid}
+    #intro{grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr)}
+    .intro-copy{
+      padding:clamp(42px,7vw,88px);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      border-right:1px solid var(--line);
+    }
+    .eyebrow{
+      margin:0 0 18px;
+      font:800 .72rem/1 var(--mono);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--signal);
+    }
+    h1,h2,h3,p{margin-top:0}
+    h1{
+      font:500 clamp(4rem,8vw,7.6rem)/.88 var(--serif);
+      letter-spacing:-.06em;
+      max-width:900px;
+      margin-bottom:26px;
+    }
+    h2{font:500 clamp(2.8rem,5vw,5.2rem)/.95 var(--serif);letter-spacing:-.045em;margin-bottom:20px}
+    h3{font:700 clamp(1.5rem,2.4vw,2.2rem)/1.05 var(--sans);letter-spacing:-.025em}
+    .lead{font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.55;max-width:700px;color:#41413e}
+    .cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      align-self:flex-start;
+      border:0;
+      background:var(--ink);
+      color:#fff;
+      min-height:54px;
+      padding:0 22px;
+      font-weight:900;
+      border-bottom:6px solid var(--signal);
+      margin-top:14px;
+    }
+    .cta:hover{background:#292929}
+    .fine{font:500 .76rem/1.45 var(--mono);color:var(--muted);max-width:680px;margin:14px 0 0}
+    .intro-panel{
+      background:var(--ink);
+      color:#fff;
+      padding:32px;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:24px;
+    }
+    .intro-panel .label{font:800 .68rem var(--mono);text-transform:uppercase;letter-spacing:.15em;color:var(--green)}
+    .manifesto{align-self:center;border-top:1px solid #444;border-bottom:1px solid #444;padding:28px 0}
+    .manifesto p{font:500 clamp(1.7rem,3vw,2.8rem)/1.05 var(--serif);margin:0}
+    .manifesto strong{color:var(--green);font-weight:500}
+    .rules{display:grid;gap:8px;font:.76rem/1.4 var(--mono);color:#bbb}
+    .rule{display:grid;grid-template-columns:28px 1fr;gap:10px}
+    .rule b{color:#fff}
+    .scan-layout{
+      width:100%;
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);
+      min-height:calc(100vh - 79px);
+    }
+    .vision{
+      position:relative;
+      background:#050505;
+      min-height:calc(100vh - 79px);
+      overflow:hidden;
+      border-right:1px solid #333;
+    }
+    #video,#overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    #video{transform:scaleX(-1)}
+    #overlay{pointer-events:none}
+    .scan-head{
+      position:absolute;
+      left:18px;right:18px;top:18px;
+      z-index:3;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font:800 .68rem var(--mono);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#fff;
+    }
+    .live{color:var(--green)}
+    .scan-line{
+      position:absolute;
+      left:0;right:0;top:0;
+      height:2px;
+      background:var(--green);
+      box-shadow:0 0 18px rgba(184,255,99,.7);
+      animation:scan 2.6s linear infinite;
+      z-index:2;
+      opacity:.8;
+    }
+    @keyframes scan{from{transform:translateY(0)}to{transform:translateY(calc(100vh - 82px))}}
+    .camera-error{
+      display:none;position:absolute;inset:0;z-index:5;padding:44px;
+      background:#111;color:#fff;align-items:center;justify-content:center;
+    }
+    .camera-error.show{display:flex}
+    .console{
+      background:#fff;
+      padding:34px 32px;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      overflow:auto;
+      max-height:calc(100vh - 79px);
+    }
+    .timer-row{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+    .timer-big{font:500 clamp(3.2rem,6vw,5rem)/.85 var(--serif)}
+    .timer-label{font:800 .66rem var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+    .obs-block{padding:24px 0;border-bottom:1px solid var(--line)}
+    .obs-title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+    .obs-title strong{font:900 .74rem var(--mono);letter-spacing:.13em;text-transform:uppercase}
+    .count{font:700 .7rem var(--mono);color:var(--signal)}
+    .observations{display:grid;gap:0;border-top:1px solid var(--line)}
+    .observation{
+      display:grid;
+      grid-template-columns:42px 1fr auto;
+      gap:10px;
+      padding:11px 0;
+      border-bottom:1px solid var(--line);
+      font:.85rem var(--mono);
+      align-items:center;
+    }
+    .idx{color:var(--signal)}
+    .conf{color:var(--muted);font-size:.72rem}
+    .empty{font:.82rem/1.5 var(--mono);color:var(--muted);padding:16px 0}
+    .limits{display:grid;gap:10px;margin-top:12px}
+    .limit{display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:.92rem;line-height:1.35}
+    .limit::before{content:"×";font-family:var(--mono);color:var(--signal);font-weight:900}
+    .stop-btn{
+      margin-top:auto;
+      border:2px solid var(--ink);
+      background:#fff;
+      color:var(--ink);
+      min-height:48px;
+      font-weight:900;
+    }
+    .stop-btn:hover{background:var(--ink);color:#fff}
+    #reflection{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+    .reflect-left{
+      background:var(--ink);color:#fff;padding:clamp(36px,6vw,72px);
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    .reflect-left .eyebrow{color:var(--green)}
+    .machine-list{margin-top:24px;border-top:1px solid #444}
+    .machine-item{display:grid;grid-template-columns:42px 1fr;padding:12px 0;border-bottom:1px solid #444;font:.85rem var(--mono)}
+    .machine-item span:first-child{color:var(--green)}
+    .reflect-right{padding:clamp(36px,6vw,72px);display:flex;flex-direction:column;justify-content:center}
+    label{display:block;font-weight:900;margin:24px 0 10px}
+    textarea{
+      width:100%;min-height:132px;resize:vertical;border:2px solid var(--ink);border-radius:0;
+      background:#fff;padding:16px;font-size:1rem;line-height:1.45;color:var(--ink)
+    }
+    .charrow{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font:.7rem var(--mono);color:var(--muted)}
+    .share-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.65fr);min-height:calc(100vh - 79px)}
+    .share-preview{background:#1b1b1b;padding:28px;display:flex;align-items:center;justify-content:center}
+    #shareCanvas{width:min(100%,540px);height:auto;background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.22)}
+    .share-actions{padding:40px 34px;display:flex;flex-direction:column;justify-content:center}
+    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+    .action{
+      min-height:50px;border:2px solid var(--ink);background:#fff;color:var(--ink);font-weight:900
+    }
+    .action.primary{background:var(--ink);color:#fff}
+    .action.share{display:none}
+    .action.share.available{display:block}
+    .restart{border:0;background:transparent;text-decoration:underline;font-weight:800;margin-top:16px;align-self:flex-start;padding:0}
+    .footer-note{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font:.73rem/1.45 var(--mono);color:var(--muted)}
+    @media(max-width:900px){
+      #intro,.share-layout{grid-template-columns:1fr}
+      .intro-panel{min-height:340px}
+      .scan-layout{grid-template-columns:1fr}
+      .vision{min-height:55vh;border-right:0;border-bottom:1px solid #333}
+      .console{max-height:none}
+      #reflection{grid-template-columns:1fr}
+    }
+    @media(max-width:560px){
+      .mast{grid-template-columns:auto 1fr;min-height:64px;padding-inline:14px}
+      .mast-note{display:none}
+      .intro-copy,.reflect-left,.reflect-right,.share-actions{padding:34px 20px}
+      h1{font-size:clamp(3.5rem,17vw,5.5rem)}
+      .intro-panel{padding:24px 20px}
+      .vision{min-height:48vh}
+      .console{padding:26px 20px}
+      .action-grid{grid-template-columns:1fr}
+      .share-preview{padding:16px}
+    }
+    @media(prefers-reduced-motion:reduce){.scan-line{animation:none}.cta{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="mast">
+      <div class="mark">[ ]</div>
+      <div class="mast-title">AI Blind Spot</div>
+      <div class="mast-note">browser experiment / local only</div>
+    </header>
+
+    <main>
+      <section id="intro" class="stage active">
+        <div class="intro-copy">
+          <p class="eyebrow">Observation ≠ understanding</p>
+          <h1>What does AI get wrong about you?</h1>
+          <p class="lead">Give your browser 12 seconds. It will identify visible objects in your camera frame — and then show you everything those detections still cannot explain.</p>
+          <button id="startBtn" class="cta" type="button">Let the machine look →</button>
+          <p class="fine">No image is uploaded. No identity, emotion, age, personality, race, gender, health, or other sensitive trait is analyzed. Object detection runs in your browser.</p>
+        </div>
+        <aside class="intro-panel" aria-hidden="true">
+          <div class="label">Experiment 01 / visual evidence</div>
+          <div class="manifesto">
+            <p>A model can <strong>detect</strong>.<br>That does not mean it <strong>understands</strong>.</p>
+          </div>
+          <div class="rules">
+            <div class="rule"><b>01</b><span>Observe what is visibly present.</span></div>
+            <div class="rule"><b>02</b><span>Separate detection from interpretation.</span></div>
+            <div class="rule"><b>03</b><span>Ask the human what context is missing.</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="scan" class="stage">
+        <div class="scan-layout">
+          <div class="vision">
+            <video id="video" autoplay playsinline muted aria-hidden="true"></video>
+            <canvas id="overlay" aria-label="Live object detection overlay"></canvas>
+            <div class="scan-line" aria-hidden="true"></div>
+            <div class="scan-head">
+              <span>Machine observation</span>
+              <span class="live">● local model</span>
+            </div>
+            <div id="cameraError" class="camera-error">
+              <div>
+                <h3>Camera unavailable.</h3>
+                <p>You can still see the experiment with a simulated observation set.</p>
+                <button id="fallbackBtn" class="cta" type="button">Use simulated observations →</button>
+              </div>
+            </div>
+          </div>
+          <aside class="console">
+            <div class="timer-row">
+              <div>
+                <div class="timer-label">Seconds remaining</div>
+                <div id="timer" class="timer-big">12</div>
+              </div>
+              <div class="timer-label">Do nothing.<br>Just be visible.</div>
+            </div>
+
+            <div class="obs-block">
+              <div class="obs-title"><strong>AI sees</strong><span id="observationCount" class="count">0 objects</span></div>
+              <div id="observations" class="observations">
+                <div class="empty">Loading the local vision model…</div>
+              </div>
+            </div>
+
+            <div class="obs-block">
+              <div class="obs-title"><strong>AI cannot know</strong></div>
+              <div class="limits">
+                <div class="limit">why you are here</div>
+                <div class="limit">what you are thinking</div>
+                <div class="limit">what matters to you</div>
+                <div class="limit">your expertise or intentions</div>
+              </div>
+            </div>
+
+            <button id="stopBtn" class="stop-btn" type="button">I’ve seen enough →</button>
+          </aside>
+        </div>
+      </section>
+
+      <section id="reflection" class="stage">
+        <div class="reflect-left">
+          <p class="eyebrow">The machine saw evidence</p>
+          <h2>Now add the context it could never see.</h2>
+          <div id="machineList" class="machine-list"></div>
+        </div>
+        <div class="reflect-right">
+          <p class="eyebrow">Human context</p>
+          <h3>What is the most important thing AI missed about this moment?</h3>
+          <p class="lead">One sentence is enough. This is the part the camera cannot infer from pixels.</p>
+          <label for="contextInput">The machine could not know that…</label>
+          <textarea id="contextInput" maxlength="160" placeholder="I’m preparing a class about AI literacy."></textarea>
+          <div class="charrow"><span>Keep it human. Keep it specific.</span><span id="charCount">0 / 160</span></div>
+          <button id="makeCardBtn" class="cta" type="button">Show me the gap →</button>
+        </div>
+      </section>
+
+      <section id="share" class="stage">
+        <div class="share-layout">
+          <div class="share-preview">
+            <canvas id="shareCanvas" width="1080" height="1350" aria-label="AI Blind Spot share card"></canvas>
+          </div>
+          <aside class="share-actions">
+            <p class="eyebrow">Your blind spot</p>
+            <h2>Observation is not understanding.</h2>
+            <p class="lead">The most interesting part of the experiment is the gap between what the model could detect and what only you could explain.</p>
+            <div class="action-grid">
+              <button id="saveBtn" class="action primary" type="button">Save share card</button>
+              <button id="shareBtn" class="action share" type="button">Share</button>
+            </div>
+            <button id="restartBtn" class="restart" type="button">Run it again</button>
+            <div class="footer-note">Built as an AI literacy experiment by ITSBAD Labs. The card contains your own text and a local camera still; nothing is sent to a server by this page.</div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+  <script>
+  (() => {
+    "use strict";
+
+    const SCAN_SECONDS = 12;
+    const MAX_OBJECTS = 8;
+    const MIN_SCORE = 0.52;
+
+    const stages = [...document.querySelectorAll(".stage")];
+    const video = document.getElementById("video");
+    const overlay = document.getElementById("overlay");
+    const octx = overlay.getContext("2d");
+    const observationsEl = document.getElementById("observations");
+    const observationCountEl = document.getElementById("observationCount");
+    const timerEl = document.getElementById("timer");
+    const cameraError = document.getElementById("cameraError");
+    const contextInput = document.getElementById("contextInput");
+    const charCount = document.getElementById("charCount");
+    const shareCanvas = document.getElementById("shareCanvas");
+    const sctx = shareCanvas.getContext("2d");
+
+    let model = null;
+    let stream = null;
+    let running = false;
+    let countdownId = null;
+    let frameId = null;
+    let secondsLeft = SCAN_SECONDS;
+    let best = new Map();
+    let capturedFrame = null;
+    let lastCardUrl = null;
+
+    function showStage(id){
+      stages.forEach(s => s.classList.toggle("active", s.id === id));
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    async function loadModel(){
+      if(model) return model;
+      observationsEl.innerHTML = '<div class="empty">Loading the local vision model…</div>';
+      model = await cocoSsd.load({base:"lite_mobilenet_v2"});
+      return model;
+    }
+
+    async function startCamera(){
+      if(!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unsupported");
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio:false,
+        video:{facingMode:"user",width:{ideal:1280},height:{ideal:960}}
+      });
+      video.srcObject = stream;
+      await new Promise((resolve,reject)=>{
+        const timeout=setTimeout(()=>reject(new Error("Camera timeout")),6000);
+        video.onloadedmetadata=async()=>{
+          clearTimeout(timeout);
+          try{await video.play();resolve();}catch(err){reject(err);}
+        };
+      });
+    }
+
+    function stopCamera(){
+      if(stream){
+        stream.getTracks().forEach(t=>t.stop());
+        stream=null;
+      }
+      video.srcObject=null;
+    }
+
+    function resizeOverlay(){
+      if(!video.videoWidth || !video.videoHeight) return;
+      overlay.width=video.videoWidth;
+      overlay.height=video.videoHeight;
+    }
+
+    function drawPredictions(preds){
+      resizeOverlay();
+      octx.clearRect(0,0,overlay.width,overlay.height);
+      octx.save();
+      octx.translate(overlay.width,0);
+      octx.scale(-1,1);
+      octx.lineWidth=Math.max(3,overlay.width/360);
+      octx.font=`700 ${Math.max(18,overlay.width/42)}px ui-monospace, monospace`;
+      preds.forEach(p=>{
+        const [x,y,w,h]=p.bbox;
+        octx.strokeStyle="#b8ff63";
+        octx.fillStyle="#111";
+        octx.strokeRect(x,y,w,h);
+        const label=`${p.class.toUpperCase()}  ${Math.round(p.score*100)}%`;
+        const tw=octx.measureText(label).width+18;
+        const th=Math.max(28,overlay.width/28);
+        octx.fillRect(x,Math.max(0,y-th),tw,th);
+        octx.fillStyle="#b8ff63";
+        octx.fillText(label,x+8,Math.max(th-8,y-8));
+      });
+      octx.restore();
+    }
+
+    function record(preds){
+      preds.filter(p=>p.score>=MIN_SCORE).forEach(p=>{
+        const key=p.class;
+        const current=best.get(key);
+        if(!current || p.score>current.score){
+          best.set(key,{label:p.class,score:p.score,bbox:p.bbox});
+        }
+      });
+      renderObservations();
+    }
+
+    function renderObservations(){
+      const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,MAX_OBJECTS);
+      observationCountEl.textContent=`${items.length} ${items.length===1?"object":"objects"}`;
+      if(!items.length){
+        observationsEl.innerHTML='<div class="empty">Looking for visible objects…</div>';
+        return;
+      }
+      observationsEl.innerHTML=items.map((item,i)=>`
+        <div class="observation">
+          <span class="idx">${String(i+1).padStart(2,"0")}</span>
+          <span>${escapeHtml(item.label)}</span>
+          <span class="conf">${Math.round(item.score*100)}%</span>
+        </div>`).join("");
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
+    }
+
+    async function detectLoop(){
+      if(!running || !model || video.readyState<2) return;
+      try{
+        const preds=await model.detect(video,12);
+        const safePreds=preds.filter(p=>p.score>=MIN_SCORE);
+        record(safePreds);
+        drawPredictions(safePreds);
+      }catch(err){
+        console.warn("Detection error:",err);
+      }
+      if(running) frameId=requestAnimationFrame(detectLoop);
+    }
+
+    function startCountdown(){
+      secondsLeft=SCAN_SECONDS;
+      timerEl.textContent=String(secondsLeft);
+      countdownId=setInterval(()=>{
+        secondsLeft-=1;
+        timerEl.textContent=String(Math.max(0,secondsLeft));
+        if(secondsLeft<=0) finishScan();
+      },1000);
+    }
+
+    function captureStill(){
+      if(!video.videoWidth || !video.videoHeight) return null;
+      const c=document.createElement("canvas");
+      c.width=video.videoWidth;
+      c.height=video.videoHeight;
+      const cctx=c.getContext("2d");
+      cctx.translate(c.width,0);
+      cctx.scale(-1,1);
+      cctx.drawImage(video,0,0,c.width,c.height);
+      return c;
+    }
+
+    async function beginScan(){
+      showStage("scan");
+      cameraError.classList.remove("show");
+      best.clear();
+      renderObservations();
+      try{
+        await Promise.all([loadModel(),startCamera()]);
+        capturedFrame=null;
+        running=true;
+        startCountdown();
+        detectLoop();
+      }catch(err){
+        console.warn(err);
+        running=false;
+        cameraError.classList.add("show");
+        observationsEl.innerHTML='<div class="empty">Camera access is unavailable.</div>';
+      }
+    }
+
+    function finishScan(){
+      if(!running && !cameraError.classList.contains("show")) return;
+      running=false;
+      clearInterval(countdownId);
+      cancelAnimationFrame(frameId);
+      capturedFrame=captureStill();
+      stopCamera();
+      renderReflection();
+      showStage("reflection");
+    }
+
+    function useFallback(){
+      running=false;
+      clearInterval(countdownId);
+      best=new Map([
+        ["person",{label:"person",score:.96}],
+        ["laptop",{label:"laptop",score:.88}],
+        ["cup",{label:"cup",score:.81}],
+        ["chair",{label:"chair",score:.76}]
+      ]);
+      renderReflection();
+      showStage("reflection");
+    }
+
+    function renderReflection(){
+      const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,MAX_OBJECTS);
+      const machineList=document.getElementById("machineList");
+      if(!items.length){
+        machineList.innerHTML='<div class="machine-item"><span>00</span><span>No confident object detections.</span></div>';
+      }else{
+        machineList.innerHTML=items.map((item,i)=>`
+          <div class="machine-item"><span>${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(item.label)}</span></div>`).join("");
+      }
+      contextInput.focus();
+    }
+
+    function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=4){
+      const words=String(text).split(/\s+/);
+      const lines=[];
+      let line="";
+      for(const word of words){
+        const test=line?line+" "+word:word;
+        if(ctx.measureText(test).width>maxWidth && line){
+          lines.push(line);
+          line=word;
+          if(lines.length===maxLines-1) break;
+        }else{
+          line=test;
+        }
+      }
+      if(line && lines.length<maxLines) lines.push(line);
+      lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
+      return lines.length;
+    }
+
+    function drawCover(ctx,img,x,y,w,h){
+      const sw=img.width,sh=img.height;
+      if(!sw||!sh) return;
+      const scale=Math.max(w/sw,h/sh);
+      const cw=w/scale,ch=h/scale;
+      const sx=(sw-cw)/2,sy=(sh-ch)/2;
+      ctx.drawImage(img,sx,sy,cw,ch,x,y,w,h);
+    }
+
+    function buildCard(){
+      const context=contextInput.value.trim() || "The most important part of this moment was invisible to the model.";
+      const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,6);
+      const labels=items.map(i=>i.label);
+
+      const W=1080,H=1350;
+      shareCanvas.width=W;
+      shareCanvas.height=H;
+      sctx.fillStyle="#f5f1e8";
+      sctx.fillRect(0,0,W,H);
+
+      // Masthead
+      sctx.fillStyle="#111";
+      sctx.fillRect(0,0,W,134);
+      sctx.fillStyle="#fff";
+      sctx.font="900 30px ui-monospace, monospace";
+      sctx.fillText("[ ] AI BLIND SPOT",56,62);
+      sctx.fillStyle="#e94b35";
+      sctx.fillRect(0,126,W,8);
+      sctx.fillStyle="#ccc";
+      sctx.font="700 17px ui-monospace, monospace";
+      sctx.textAlign="right";
+      sctx.fillText("OBSERVATION ≠ UNDERSTANDING",W-56,62);
+      sctx.textAlign="left";
+
+      // Photo
+      const photoY=134,photoH=530;
+      sctx.fillStyle="#222";
+      sctx.fillRect(0,photoY,W,photoH);
+      if(capturedFrame){
+        drawCover(sctx,capturedFrame,0,photoY,W,photoH);
+      }else{
+        sctx.fillStyle="#333";
+        sctx.fillRect(0,photoY,W,photoH);
+        sctx.fillStyle="#b8ff63";
+        sctx.font="500 120px Georgia,serif";
+        sctx.fillText("NO CAMERA",56,photoY+280);
+      }
+
+      // Detected object strip
+      sctx.fillStyle="rgba(17,17,17,.9)";
+      sctx.fillRect(0,photoY+photoH-94,W,94);
+      sctx.fillStyle="#b8ff63";
+      sctx.font="800 20px ui-monospace, monospace";
+      sctx.fillText("THE MACHINE SAW",56,photoY+photoH-58);
+      sctx.fillStyle="#fff";
+      sctx.font="700 25px ui-monospace, monospace";
+      const seen=labels.length?labels.join(" · "):"no confident object detections";
+      wrapText(sctx,seen.toUpperCase(),56,photoY+photoH-23,W-112,31,2);
+
+      // Human context
+      sctx.fillStyle="#111";
+      sctx.font="900 20px ui-monospace, monospace";
+      sctx.fillText("THE HUMAN CONTEXT WAS",56,738);
+      sctx.fillStyle="#111";
+      sctx.font="500 58px Georgia,serif";
+      wrapText(sctx,"\""+context+"\"",56,816,W-112,68,4);
+
+      // The gap
+      sctx.fillStyle="#e94b35";
+      sctx.fillRect(56,1094,968,3);
+      sctx.fillStyle="#e94b35";
+      sctx.font="900 20px ui-monospace, monospace";
+      sctx.fillText("THE GAP",56,1140);
+      sctx.fillStyle="#111";
+      sctx.font="500 55px Georgia,serif";
+      sctx.fillText("Observation is not understanding.",56,1210);
+
+      sctx.fillStyle="#666";
+      sctx.font="700 17px ui-monospace, monospace";
+      sctx.fillText("AI Blind Spot · ITSBAD Labs",56,1300);
+      sctx.textAlign="right";
+      sctx.fillText("What did the machine miss?",W-56,1300);
+      sctx.textAlign="left";
+
+      lastCardUrl=shareCanvas.toDataURL("image/png");
+      showStage("share");
+
+      const shareBtn=document.getElementById("shareBtn");
+      if(navigator.share) shareBtn.classList.add("available");
+    }
+
+    function saveCard(){
+      if(!lastCardUrl) return;
+      const a=document.createElement("a");
+      a.href=lastCardUrl;
+      a.download="ai-blind-spot.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    async function shareCard(){
+      if(!lastCardUrl||!navigator.share) return;
+      try{
+        const blob=await (await fetch(lastCardUrl)).blob();
+        const file=new File([blob],"ai-blind-spot.png",{type:"image/png"});
+        if(!navigator.canShare || navigator.canShare({files:[file]})){
+          await navigator.share({
+            title:"AI Blind Spot",
+            text:"AI saw the evidence. It missed the context. What would it miss about you?",
+            files:[file]
+          });
+        }
+      }catch(err){
+        if(err?.name!=="AbortError") console.warn(err);
+      }
+    }
+
+    function reset(){
+      running=false;
+      clearInterval(countdownId);
+      cancelAnimationFrame(frameId);
+      stopCamera();
+      best.clear();
+      capturedFrame=null;
+      lastCardUrl=null;
+      contextInput.value="";
+      charCount.textContent="0 / 160";
+      octx.clearRect(0,0,overlay.width,overlay.height);
+      document.getElementById("shareBtn").classList.remove("available");
+      showStage("intro");
+    }
+
+    document.getElementById("startBtn").addEventListener("click",beginScan);
+    document.getElementById("stopBtn").addEventListener("click",finishScan);
+    document.getElementById("fallbackBtn").addEventListener("click",useFallback);
+    document.getElementById("makeCardBtn").addEventListener("click",buildCard);
+    document.getElementById("saveBtn").addEventListener("click",saveCard);
+    document.getElementById("shareBtn").addEventListener("click",shareCard);
+    document.getElementById("restartBtn").addEventListener("click",reset);
+    contextInput.addEventListener("input",()=>charCount.textContent=`${contextInput.value.length} / 160`);
+    window.addEventListener("pagehide",stopCamera);
+  })();
+  </script>
+</body>
+</html>
