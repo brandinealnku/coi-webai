@@ -230,6 +230,10 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   .reveal-topline{align-items:flex-start;flex-direction:column}
 }
 
+
+/* Simplified interpretation ending */
+.comparison{margin-top:26px}
+
 </style>
 </head>
 <body>
@@ -308,20 +312,10 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
       </div>
     </div>
 
-    <div class="reality-block" id="realityBlock">
-      <label for="actualContext">What was actually happening?</label>
-      <div class="reality-entry">
-        <input id="actualContext" maxlength="180" placeholder="I was testing an AI experience for my students.">
-        <button class="cta" id="compareBtn" type="button">Show the gap →</button>
-      </div>
-      <button class="text-link reveal-skip" id="skipCompare" type="button">Skip this</button>
-    </div>
-
-    <div class="comparison" id="comparison" hidden>
-      <div class="comparison-label">Actually</div>
-      <div class="actual-quote" id="actualQuote"></div>
+    <div class="comparison" id="comparison">
+      <div class="comparison-label">The blind spot</div>
       <h2>Same pixels.<br><strong>Different reality.</strong></h2>
-      <p>The machine recognized patterns. You supplied the meaning.</p>
+      <p>The model can recognize patterns and build a plausible story. It still cannot know what this moment actually means.</p>
     </div>
 
     <div class="reveal-footer">
@@ -377,9 +371,6 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   const scanError=document.getElementById("scanError");
   const revealSeen=document.getElementById("revealSeen");
   const sceneGuess=document.getElementById("sceneGuess");
-  const actualContext=document.getElementById("actualContext");
-  const comparison=document.getElementById("comparison");
-  const actualQuote=document.getElementById("actualQuote");
   const howDialog=document.getElementById("howDialog");
   const manualDialog=document.getElementById("manualDialog");
   const voiceDialog=document.getElementById("voiceDialog");
@@ -469,9 +460,6 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     }).join(""):'<div class="reveal-item"><span class="num">01</span><span>OBJECT</span><span>SUPPLIED</span></div>';
     const labels=items.map(x=>x.label);
     sceneGuess.textContent="“"+makeSceneGuess(labels)+"”";
-    actualContext.value="";
-    comparison.hidden=true;
-    actualQuote.textContent="";
     show("reveal");
   }
 
@@ -510,7 +498,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     try{recognition.start()}catch(e){voiceState.textContent="Voice couldn't start. Choose an object instead."}
   }
   function reset(){
-    stopCamera();best.clear();if(actualContext)actualContext.value="";if(comparison)comparison.hidden=true;ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
+    stopCamera();best.clear();ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
   }
   choices.forEach(label=>{
     const b=document.createElement("button");b.className="secondary";b.type="button";b.textContent=label;
@@ -522,14 +510,6 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   document.getElementById("manualIntro").addEventListener("click",()=>manualDialog.showModal());
   document.getElementById("voiceScan").addEventListener("click",openVoice);
   document.getElementById("manualScan").addEventListener("click",()=>{stopCamera();manualDialog.showModal()});
-  document.getElementById("compareBtn").addEventListener("click",()=>{
-    const text=actualContext.value.trim();
-    if(!text){actualContext.focus();return}
-    actualQuote.textContent="“"+text+"”";
-    comparison.hidden=false;
-    comparison.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
-  });
-  document.getElementById("skipCompare").addEventListener("click",()=>{comparison.hidden=true});
   document.getElementById("againBtn").addEventListener("click",reset);
   document.getElementById("howBtn").addEventListener("click",()=>howDialog.showModal());
     document.getElementById("closeDialog").addEventListener("click",()=>howDialog.close());
