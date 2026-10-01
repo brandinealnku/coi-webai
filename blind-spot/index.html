@@ -161,6 +161,28 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   .camera-message{max-width:calc(100% - 36px)}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Reveal simplification */
+.compact-reveal{padding-top:10px;padding-bottom:10px}
+.compact-grid{min-height:0}
+.compact-col{padding:clamp(22px,3vw,34px)}
+.compact-list .reveal-item{padding:10px 0}
+.compact-miss{gap:9px}
+.compact-miss .miss-item{font-size:.98rem}
+.compact-thesis{
+  padding-top:24px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:22px
+}
+.compact-thesis h2{margin:0}
+.restart-reveal{flex:0 0 auto;min-width:180px}
+@media(max-width:760px){
+  .compact-thesis{align-items:stretch;flex-direction:column}
+  .restart-reveal{width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -220,15 +242,15 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
 </section>
 
 <section id="reveal" class="stage">
-  <div class="reveal-wrap">
-    <div class="reveal-grid">
-      <div class="reveal-col">
+  <div class="reveal-wrap compact-reveal">
+    <div class="reveal-grid compact-grid">
+      <div class="reveal-col compact-col">
         <div class="kicker">AI saw</div>
-        <div id="revealSeen" class="reveal-list"></div>
+        <div id="revealSeen" class="reveal-list compact-list"></div>
       </div>
-      <div class="reveal-col">
+      <div class="reveal-col compact-col">
         <div class="kicker">AI missed</div>
-        <div class="miss">
+        <div class="miss compact-miss">
           <div class="miss-item">why you are here</div>
           <div class="miss-item">what you are working on</div>
           <div class="miss-item">which object matters most</div>
@@ -237,21 +259,9 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
       </div>
     </div>
 
-    <div class="thesis">
+    <div class="thesis compact-thesis">
       <h2>The machine had <strong>data.</strong><br>You had <strong>context.</strong></h2>
-    </div>
-
-    <div class="context" id="contextBlock">
-      <div>
-        <label for="contextInput">What did the machine miss? <span style="color:#8190A8">Optional</span></label>
-        <p>Add one sentence if you want to put the human meaning back in.</p>
-        <input id="contextInput" maxlength="140" placeholder="I was preparing a class about AI literacy.">
-        <div id="contextResult" class="card-context" style="margin-top:16px;display:none"></div>
-      </div>
-      <div style="display:grid;gap:10px">
-        <button class="cta" id="createBtn" type="button">Add my context</button>
-        <button class="secondary" id="againBtn" type="button">Run it again</button>
-      </div>
+      <button class="secondary restart-reveal" id="againBtn" type="button">Run it again</button>
     </div>
   </div>
 </section>
@@ -301,7 +311,6 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   const cameraMessage=document.getElementById("cameraMessage");
   const scanError=document.getElementById("scanError");
   const revealSeen=document.getElementById("revealSeen");
-  const contextInput=document.getElementById("contextInput");
   const howDialog=document.getElementById("howDialog");
   const manualDialog=document.getElementById("manualDialog");
   const voiceDialog=document.getElementById("voiceDialog");
@@ -406,19 +415,8 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     };
     try{recognition.start()}catch(e){voiceState.textContent="Voice couldn't start. Choose an object instead."}
   }
-  function buildFinal(){
-    const c=contextInput.value.trim();
-    const result=document.getElementById("contextResult");
-    if(!c){
-      result.style.display="none";
-      return;
-    }
-    result.innerHTML=escapeHtml(c)+'<br><em>The machine could not know that.</em>';
-    result.style.display="block";
-    document.getElementById("createBtn").textContent="Context added";
-  }
   function reset(){
-    stopCamera();best.clear();contextInput.value="";const cr=document.getElementById("contextResult");if(cr){cr.style.display="none";cr.innerHTML=""}const cb=document.getElementById("createBtn");if(cb)cb.textContent="Add my context";ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
+    stopCamera();best.clear();ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
   }
   choices.forEach(label=>{
     const b=document.createElement("button");b.className="secondary";b.type="button";b.textContent=label;
@@ -430,7 +428,6 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   document.getElementById("manualIntro").addEventListener("click",()=>manualDialog.showModal());
   document.getElementById("voiceScan").addEventListener("click",openVoice);
   document.getElementById("manualScan").addEventListener("click",()=>{stopCamera();manualDialog.showModal()});
-  document.getElementById("createBtn").addEventListener("click",buildFinal);
   document.getElementById("againBtn").addEventListener("click",reset);
   document.getElementById("howBtn").addEventListener("click",()=>howDialog.showModal());
     document.getElementById("closeDialog").addEventListener("click",()=>howDialog.close());
