@@ -295,19 +295,19 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
 <section id="reveal" class="stage">
   <div class="reveal-wrap wow-reveal">
     <div class="reveal-topline">
-      <span>FROZEN / MACHINE INTERPRETATION</span>
+      <span id="revealModeLabel">FROZEN / MACHINE INTERPRETATION</span>
       <span class="guess-warning">A plausible guess — not a fact</span>
     </div>
 
     <div class="wow-grid">
       <div class="wow-panel saw-panel">
-        <div class="kicker">AI labeled</div>
-        <div class="small" style="color:#AEBBD0;margin-bottom:12px">Confidence reflects how strongly the model matched a known category. It can still be wrong.</div>
+        <div class="kicker" id="inputKicker">AI labeled</div>
+        <div class="small" id="inputExplainer" style="color:#AEBBD0;margin-bottom:12px">Confidence reflects how strongly the model matched a known category. It can still be wrong.</div>
         <div id="revealSeen" class="reveal-list compact-list"></div>
       </div>
 
       <div class="wow-panel guess-panel">
-        <div class="kicker">AI guessed</div>
+        <div class="kicker" id="guessKicker">AI guessed</div>
         <blockquote id="sceneGuess">“A scene could be interpreted several ways.”</blockquote>
         <p class="guess-note">The model has labels. This story is only one possible interpretation of them.</p>
       </div>
@@ -315,12 +315,12 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
 
     <div class="comparison" id="comparison">
       <div class="comparison-label">The blind spot</div>
-      <h2>Same pixels.<br><strong>Different reality.</strong></h2>
-      <p>The model can recognize patterns and build a plausible story. High confidence does not guarantee a correct label—and a correct label still does not equal understanding.</p>
+      <h2 id="blindSpotHeadline">Same pixels.<br><strong>Different reality.</strong></h2>
+      <p id="blindSpotCopy">The model can recognize patterns and build a plausible story. High confidence does not guarantee a correct label—and a correct label still does not equal understanding.</p>
     </div>
 
     <div class="reveal-footer">
-      <p class="reveal-thesis-line">The machine had <strong>data.</strong> You had <strong>context.</strong></p>
+      <p class="reveal-thesis-line" id="revealThesis">The machine had <strong>data.</strong> You had <strong>context.</strong></p>
       <button class="secondary restart-reveal" id="againBtn" type="button">Run it again</button>
     </div>
   </div>
@@ -371,6 +371,12 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   const cameraMessage=document.getElementById("cameraMessage");
   const scanError=document.getElementById("scanError");
   const revealSeen=document.getElementById("revealSeen");
+  const revealModeLabel=document.getElementById("revealModeLabel");
+  const inputKicker=document.getElementById("inputKicker");
+  const inputExplainer=document.getElementById("inputExplainer");
+  const blindSpotHeadline=document.getElementById("blindSpotHeadline");
+  const blindSpotCopy=document.getElementById("blindSpotCopy");
+  const revealThesis=document.getElementById("revealThesis");
   const sceneGuess=document.getElementById("sceneGuess");
   const howDialog=document.getElementById("howDialog");
   const manualDialog=document.getElementById("manualDialog");
@@ -381,6 +387,8 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   const choices=["chair","phone","book","cup","plant","backpack","laptop","dog"];
   let stream=null,model=null,running=false,timer=null;
   let best=new Map();
+  let interactionMode="camera";
+  let lastVoiceTranscript="";
 
   function show(id){
     stages.forEach(s=>s.classList.toggle("active",s.id===id));
@@ -395,6 +403,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   }
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
   async function start(){
+    interactionMode="camera"; lastVoiceTranscript="";
     show("scan"); best.clear(); renderObjects(); scanError.hidden=true; freezeBtn.disabled=true;
     cameraMessage.textContent="Waiting for camera permission…";
     try{
@@ -452,19 +461,55 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     return guess;
   }
 
+  function applyRevealLanguage(){
+    if(interactionMode==="voice"){
+      revealModeLabel.textContent="HEARD / MACHINE INTERPRETATION";
+      inputKicker.textContent="AI heard";
+      inputExplainer.textContent="Speech recognition turned what you said into a label. It can capture words without knowing why you said them or what they mean in context.";
+      blindSpotHeadline.innerHTML='Same words.<br><strong>Different meaning.</strong>';
+      blindSpotCopy.textContent="The system can recognize speech and build a plausible interpretation. Hearing the words still does not mean understanding the situation behind them.";
+      revealThesis.innerHTML='The machine had <strong>words.</strong> You had <strong>context.</strong>';
+      return;
+    }
+    if(interactionMode==="manual"){
+      revealModeLabel.textContent="SUPPLIED / MACHINE INTERPRETATION";
+      inputKicker.textContent="You supplied";
+      inputExplainer.textContent="You gave the system a label directly. Even a perfectly correct label still leaves out purpose, history, relationships, and meaning.";
+      blindSpotHeadline.innerHTML='Same label.<br><strong>Different meaning.</strong>';
+      blindSpotCopy.textContent="A label can be correct and still be incomplete. Knowing what something is does not explain what it means in this moment.";
+      revealThesis.innerHTML='The machine had <strong>a label.</strong> You had <strong>context.</strong>';
+      return;
+    }
+    revealModeLabel.textContent="FROZEN / MACHINE INTERPRETATION";
+    inputKicker.textContent="AI labeled";
+    inputExplainer.textContent="Confidence reflects how strongly the model matched a known category. It can still be wrong.";
+    blindSpotHeadline.innerHTML='Same pixels.<br><strong>Different reality.</strong>';
+    blindSpotCopy.textContent="The model can recognize patterns and build a plausible story. High confidence does not guarantee a correct label—and a correct label still does not equal understanding.";
+    revealThesis.innerHTML='The machine had <strong>data.</strong> You had <strong>context.</strong>';
+  }
+
   function reveal(){
     stopCamera();
+    applyRevealLanguage();
     const items=[...best.values()].sort((a,b)=>(b.score??0)-(a.score??0)).slice(0,6);
     revealSeen.innerHTML=items.length?items.map((x,i)=>{
-      const confidence=x.score==null?"SUPPLIED":"model confidence "+Math.round(x.score*100)+"%";
+      const confidence=x.score==null?(interactionMode==="voice"?"SPEECH INPUT":"SUPPLIED"):"model confidence "+Math.round(x.score*100)+"%";
       return `<div class="reveal-item"><span class="num">${String(i+1).padStart(2,"0")}</span><span>${escapeHtml(x.label.toUpperCase())}</span><span>${confidence}</span></div>`;
     }).join(""):'<div class="reveal-item"><span class="num">01</span><span>OBJECT</span><span>SUPPLIED</span></div>';
     const labels=items.map(x=>x.label);
-    sceneGuess.textContent="“"+makeSceneGuess(labels)+"”";
+    if(interactionMode==="voice"){
+      const spoken=lastVoiceTranscript||labels.join(" ");
+      sceneGuess.textContent="“You said ‘"+spoken+".’ I can recognize the words, but I still do not know why you said them or what they mean here.”";
+    } else if(interactionMode==="manual"){
+      sceneGuess.textContent="“You supplied the label ‘"+(labels[0]||"object")+".’ That tells me what to call it, but not why it matters.”";
+    } else {
+      sceneGuess.textContent="“"+makeSceneGuess(labels)+"”";
+    }
     show("reveal");
   }
 
   function chooseManual(label){
+    interactionMode="manual"; lastVoiceTranscript="";
     best=new Map([[label,{label,score:null,bbox:null}]]);
     manualDialog.close(); reveal();
   }
@@ -472,6 +517,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     if(recognition){try{recognition.abort()}catch(e){} recognition=null}
   }
   function openVoice(){
+    interactionMode="voice";
     stopCamera(); stopVoice();
     voiceState.textContent="Ready when you are.";
     voiceDialog.showModal();
@@ -491,6 +537,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     recognition.onerror=()=>{voiceState.textContent="I couldn't capture that clearly. Try again or choose an object instead."};
     recognition.onresult=e=>{
       const heard=e.results?.[0]?.[0]?.transcript?.trim()||"";
+      lastVoiceTranscript=heard;
       const label=heard.split(/\s+/).slice(-2).join(" ")||"object";
       voiceState.textContent=`I heard: “${heard}”`;
       best=new Map([[label,{label,score:null,bbox:null}]]);
@@ -499,7 +546,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     try{recognition.start()}catch(e){voiceState.textContent="Voice couldn't start. Choose an object instead."}
   }
   function reset(){
-    stopCamera();best.clear();ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
+    stopCamera();best.clear();interactionMode="camera";lastVoiceTranscript="";ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
   }
   choices.forEach(label=>{
     const b=document.createElement("button");b.className="secondary";b.type="button";b.textContent=label;
