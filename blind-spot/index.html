@@ -101,7 +101,7 @@ h3{font:700 clamp(1.4rem,2.4vw,2rem)/1.05 var(--sans);letter-spacing:-.03em}
 .idx{color:var(--pink);font-weight:900}.conf{color:var(--muted);font-size:.72rem}
 .empty{padding:18px 0;color:var(--muted);font:.8rem/1.5 var(--mono)}
 .scan-actions{margin-top:auto;padding-top:22px;display:grid;gap:12px}
-.scan-actions .secondary{width:100%}.scan-actions .text-link{justify-self:start;font:800 .72rem var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.scan-actions .cta,.scan-actions .secondary{width:100%}
 .error{padding:14px;border-left:4px solid var(--pink);background:#FFF5FB;color:#414B5B;margin-top:16px}
 
 /* REVEAL */
@@ -207,12 +207,12 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
       <div class="console-top">
         <p class="eyebrow">Look</p>
         <h3>Show the machine your world.</h3>
-        <p class="lead">Point your camera at a few ordinary things. The reveal will happen automatically once AI has enough to work with.</p>
+        <p class="lead">Point your camera at a few ordinary things. When you’re ready, freeze what AI sees.</p>
       </div>
       <div id="objects" class="objects"><div class="empty">Preparing object detection…</div></div>
       <div id="scanError" class="error" hidden>Camera isn't available here. You can still complete the experience without it.</div>
       <div class="scan-actions">
-        <button class="text-link" id="freezeBtn" type="button" disabled>Reveal now</button>
+        <button class="cta" id="freezeBtn" type="button" disabled>Freeze what AI sees →</button>
         <button class="secondary" id="voiceScan" type="button">Use voice instead</button><button class="secondary" id="manualScan" type="button">Choose an object instead</button>
       </div>
     </aside>
@@ -236,36 +236,27 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
         </div>
       </div>
     </div>
-    <div class="thesis"><h2>The machine had <strong>data.</strong><br>You had <strong>context.</strong></h2></div>
-    <div class="context">
+
+    <div class="thesis">
+      <h2>The machine had <strong>data.</strong><br>You had <strong>context.</strong></h2>
+    </div>
+
+    <div class="context" id="contextBlock">
       <div>
         <label for="contextInput">What did the machine miss? <span style="color:#8190A8">Optional</span></label>
-        <p>One sentence is enough. This is the part a label cannot know.</p>
+        <p>Add one sentence if you want to put the human meaning back in.</p>
         <input id="contextInput" maxlength="140" placeholder="I was preparing a class about AI literacy.">
+        <div id="contextResult" class="card-context" style="margin-top:16px;display:none"></div>
       </div>
-      <button class="cta" id="createBtn" type="button">Create my blind spot →</button>
+      <div style="display:grid;gap:10px">
+        <button class="cta" id="createBtn" type="button">Add my context</button>
+        <button class="secondary" id="againBtn" type="button">Run it again</button>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="final" class="stage">
-  <div class="final-copy">
-    <p class="eyebrow">Your blind spot</p>
-    <h2>AI saw the evidence.<br>It missed the meaning.</h2>
-    <p class="lead">Recognition can look like understanding. It isn't. Context is what turns a label into something meaningful.</p>
-    <div class="final-actions">
-      <button class="cta" id="againBtn" type="button">Run it again</button>
-      <button class="secondary" id="howBtnFinal" type="button">How it works</button>
-    </div>
-  </div>
-  <div class="final-card">
-    <div class="card-inner">
-      <div class="card-label">ITSBAD LABS / AI BLIND SPOT</div>
-      <div class="card-object" id="cardObject">OBJECT</div>
-      <div class="card-context" id="cardContext">The model had a label.<br><em>The human had the meaning.</em></div>
-    </div>
-  </div>
-</section>
+
 </main>
 </div>
 
@@ -318,7 +309,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   let recognition=null;
   const manualChoices=document.getElementById("manualChoices");
   const choices=["chair","phone","book","cup","plant","backpack","laptop","dog"];
-  let stream=null,model=null,running=false,timer=null,autoRevealTimer=null,firstDetectionAt=null;
+  let stream=null,model=null,running=false,timer=null;
   let best=new Map();
 
   function show(id){
@@ -329,16 +320,12 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     running=false;
     if(timer) clearTimeout(timer);
     timer=null;
-    if(autoRevealTimer) clearTimeout(autoRevealTimer);
-    autoRevealTimer=null;
-    firstDetectionAt=null;
     if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
     video.srcObject=null;
   }
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
   async function start(){
-    show("scan"); best.clear(); renderObjects(); scanError.hidden=true; freezeBtn.disabled=true; firstDetectionAt=null;
-    if(autoRevealTimer) clearTimeout(autoRevealTimer); autoRevealTimer=null;
+    show("scan"); best.clear(); renderObjects(); scanError.hidden=true; freezeBtn.disabled=true;
     cameraMessage.textContent="Waiting for camera permission…";
     try{
       if(!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unsupported");
@@ -347,7 +334,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
       cameraMessage.textContent="Camera ready · loading local object detection…";
       if(!window.cocoSsd) throw new Error("Object detection library unavailable");
       model=model||await window.cocoSsd.load({base:"lite_mobilenet_v2"});
-      running=true; cameraMessage.textContent="AI is looking · point at ordinary objects · reveal happens automatically";
+      running=true; cameraMessage.textContent="AI is looking · point at ordinary objects";
       detect();
     }catch(err){
       scanError.hidden=false;cameraMessage.textContent="Camera path unavailable";
@@ -361,14 +348,6 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
         const preds=(await model.detect(video,12)).filter(p=>p.score>=.52).sort((a,b)=>b.score-a.score);
         preds.forEach(p=>{const cur=best.get(p.class);if(!cur||p.score>cur.score)best.set(p.class,{label:p.class,score:p.score,bbox:p.bbox})});
         draw(preds.slice(0,5));renderObjects();freezeBtn.disabled=best.size===0;
-        if(best.size>0 && !firstDetectionAt){
-          firstDetectionAt=Date.now();
-          autoRevealTimer=setTimeout(()=>{ if(running && best.size>0) reveal(); },7000);
-        }
-        if(best.size>=3 && firstDetectionAt && Date.now()-firstDetectionAt>=2500 && running){
-          reveal();
-          return;
-        }
       }catch(e){}
     }
     timer=setTimeout(detect,550);
@@ -428,16 +407,18 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     try{recognition.start()}catch(e){voiceState.textContent="Voice couldn't start. Choose an object instead."}
   }
   function buildFinal(){
-    const items=[...best.values()];
-    const primary=(items[0]?.label||"object").toUpperCase();
-    const extra=items.slice(1,4).map(x=>x.label.toUpperCase()).join(" · ");
-    document.getElementById("cardObject").textContent=extra?primary+" + "+extra:primary;
     const c=contextInput.value.trim();
-    document.getElementById("cardContext").innerHTML=c?escapeHtml(c)+'<br><em>The machine could not know that.</em>':'The model had a label.<br><em>The human had the meaning.</em>';
-    show("final");
+    const result=document.getElementById("contextResult");
+    if(!c){
+      result.style.display="none";
+      return;
+    }
+    result.innerHTML=escapeHtml(c)+'<br><em>The machine could not know that.</em>';
+    result.style.display="block";
+    document.getElementById("createBtn").textContent="Context added";
   }
   function reset(){
-    stopCamera();best.clear();contextInput.value="";ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
+    stopCamera();best.clear();contextInput.value="";const cr=document.getElementById("contextResult");if(cr){cr.style.display="none";cr.innerHTML=""}const cb=document.getElementById("createBtn");if(cb)cb.textContent="Add my context";ctx.clearRect(0,0,overlay.width,overlay.height);show("intro");
   }
   choices.forEach(label=>{
     const b=document.createElement("button");b.className="secondary";b.type="button";b.textContent=label;
@@ -452,8 +433,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   document.getElementById("createBtn").addEventListener("click",buildFinal);
   document.getElementById("againBtn").addEventListener("click",reset);
   document.getElementById("howBtn").addEventListener("click",()=>howDialog.showModal());
-  document.getElementById("howBtnFinal").addEventListener("click",()=>howDialog.showModal());
-  document.getElementById("closeDialog").addEventListener("click",()=>howDialog.close());
+    document.getElementById("closeDialog").addEventListener("click",()=>howDialog.close());
   document.getElementById("closeManual").addEventListener("click",()=>manualDialog.close());
   document.getElementById("closeVoice").addEventListener("click",()=>{stopVoice();voiceDialog.close()});
   document.getElementById("listenBtn").addEventListener("click",listenVoice);
