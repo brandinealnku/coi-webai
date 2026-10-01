@@ -1,1018 +1,425 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#07111F">
-  <title>AI Blind Spot — What does the machine miss?</title>\n  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <meta name="description" content="A browser-based AI literacy experiment about observation, inference, and human context.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#070a12" />
+  <title>webAI by ITSBAD Labs — The web that responds to people</title>
+  <meta name="description" content="A research-informed webAI prototype: value-first, multimodal, accessible, transparent, and designed around meaningful human participation." />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js" defer></script>
   <style>
     :root{
-      --ink:#07111F;
-      --ink-2:#0B1728;
-      --navy:#3A3B78;
-      --paper:#F7F8FC;
-      --paper-2:#EEF1F7;
-      --white:#FFFFFF;
-      --signal:#FF66C4;
-      --acid:#5FD4FF;
-      --violet:#8A7DFF;
-      --muted:#5B667A;
-      --line:#DCE1EA;
-      --soft:#EEF1F7;
-      --labs-pink:#FF66C4;
-      --labs-blue:#5FD4FF;
-      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
-      --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      --serif:Georgia,"Times New Roman",serif;
+      --bg:#070a12; --bg2:#0d1323; --panel:#101827; --panel2:#141e31;
+      --text:#f7f8fb; --muted:#aeb8ca; --line:rgba(255,255,255,.11);
+      --pink:#ff6fca; --cyan:#6ee7f7; --violet:#9187ff; --green:#5fe0a4; --amber:#ffd37a;
+      --shadow:0 24px 80px rgba(0,0,0,.42); --radius:26px; --max:1160px;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans)}
-    body{min-height:100vh}
-    button,input,textarea{font:inherit}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:
+      radial-gradient(circle at 15% -10%,rgba(255,111,202,.16),transparent 34%),
+      radial-gradient(circle at 100% 5%,rgba(110,231,247,.14),transparent 32%),
+      linear-gradient(180deg,#060910,#09101c 52%,#07101a);
+      color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+    a{color:inherit;text-decoration:none} button,input,textarea{font:inherit}
     button{cursor:pointer}
-    .app{min-height:100vh}
-    .mast{
-      min-height:70px;
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      align-items:center;
-      gap:18px;
-      padding:0 22px;
-      background:var(--ink);
-      color:#fff;
-      border-bottom:6px solid var(--signal);
-    }
-    .brand-logo{display:block;width:86px;height:auto}
-    .mast-title{text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:900}
-    .mast-note{font:.68rem/1 var(--mono);color:#AEBBD0}
-    .stage{display:none;min-height:calc(100vh - 76px)}
-    .stage.active{display:grid}
-    .eyebrow{
-      margin:0 0 18px;
-      font:800 .71rem/1 var(--mono);
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color:var(--signal);
-    }
-    h1,h2,h3,p{margin-top:0}
-    h1{
-      font:500 clamp(4rem,8.2vw,7.8rem)/.87 var(--serif);
-      letter-spacing:-.065em;
-      max-width:940px;
-      margin-bottom:26px;
-    }
-    h2{
-      font:500 clamp(2.7rem,5vw,5.2rem)/.94 var(--serif);
-      letter-spacing:-.05em;
-      margin-bottom:20px;
-    }
-    h3{
-      font:750 clamp(1.5rem,2.5vw,2.25rem)/1.05 var(--sans);
-      letter-spacing:-.03em;
-    }
-    .lead{font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.55;max-width:700px;color:#41413e}
-    .fine{font:500 .75rem/1.45 var(--mono);color:var(--muted);max-width:720px;margin:14px 0 0}
-    .cta,.secondary-btn{
-      min-height:54px;
-      padding:0 22px;
-      border-radius:0;
-      font-weight:900;
-      letter-spacing:.01em;
-    }
-    .cta{
-      border:0;
-      background:var(--ink);
-      color:#fff;
-      border-bottom:6px solid var(--signal);
-      align-self:flex-start;
-    }
-    .cta:hover{background:#0B1728}
-    .secondary-btn{
-      border:2px solid var(--ink);
-      background:#fff;
-      color:var(--ink);
-    }
-    .secondary-btn:hover{background:var(--ink);color:#fff}
+    button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .skip-link{position:fixed;left:12px;top:-80px;z-index:999;background:#fff;color:#000;padding:12px 16px;border-radius:12px}.skip-link:focus{top:12px}
+    .wrap{width:min(calc(100% - 28px),var(--max));margin:auto}
+    header{position:sticky;top:0;z-index:50;background:rgba(7,10,18,.78);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:780;letter-spacing:-.02em}
+    .mark{width:38px;height:38px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--violet) 55%,var(--cyan));box-shadow:0 10px 30px rgba(255,111,202,.25);display:grid;place-items:center;font-size:.72rem;letter-spacing:.12em}
+    .navlinks{display:flex;align-items:center;gap:18px;color:var(--muted);font-size:.92rem}.navlinks a:hover{color:#fff}
+    .tiny-btn{border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;min-height:42px;padding:0 14px;border-radius:999px}
 
-    /* INTRO */
-    #intro{grid-template-columns:minmax(0,1.32fr) minmax(330px,.68fr)}
-    .intro-copy{
-      padding:clamp(42px,7vw,88px);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      border-right:1px solid var(--line);
-    }
-    .intro-copy .cta{margin-top:14px}
-    .intro-panel{
-      position:relative;
-      overflow:hidden;
-      background:var(--ink);
-      color:#fff;
-      padding:30px;
-      display:grid;
-      grid-template-rows:auto 1fr auto;
-      gap:22px;
-    }
-    .intro-panel::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        linear-gradient(rgba(198,255,74,.08) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(198,255,74,.08) 1px,transparent 1px);
-      background-size:38px 38px;
-    }
-    .intro-panel::after{
-      content:"";
-      position:absolute;
-      left:0;right:0;top:-4px;
-      height:2px;
-      background:var(--acid);
-      box-shadow:0 0 24px rgba(198,255,74,.7);
-      animation:introScan 2.8s linear infinite;
-    }
-    @keyframes introScan{
-      0%{transform:translateY(0)}
-      100%{transform:translateY(calc(100vh - 80px))}
-    }
-    .intro-panel > *{position:relative;z-index:1}
-    .panel-label{font:800 .68rem/1 var(--mono);text-transform:uppercase;letter-spacing:.15em;color:var(--acid)}
-    .manifesto{align-self:center;border-top:1px solid #494949;border-bottom:1px solid #494949;padding:28px 0}
-    .manifesto p{font:500 clamp(1.7rem,3vw,2.9rem)/1.04 var(--serif);margin:0}
-    .manifesto strong{color:var(--acid);font-weight:500}
-    .rules{display:grid;gap:8px;font:.76rem/1.4 var(--mono);color:#bbb}
-    .rule{display:grid;grid-template-columns:30px 1fr;gap:10px}
-    .rule b{color:#fff}
+    .hero{padding:clamp(52px,8vw,110px) 0 48px}
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:28px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;color:#e8eefb;font-size:.76rem;text-transform:uppercase;letter-spacing:.15em;font-weight:760;border:1px solid var(--line);background:rgba(255,255,255,.04);padding:9px 12px;border-radius:999px}
+    .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(95,224,164,.12)}
+    h1{font-size:clamp(3rem,7vw,6.5rem);line-height:.91;letter-spacing:-.07em;margin:20px 0 20px;max-width:9ch}
+    .gradient{background:linear-gradient(100deg,#fff,#ffdff2 28%,#c6f6ff 64%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{font-size:clamp(1.05rem,2vw,1.28rem);color:var(--muted);max-width:690px;margin:0 0 28px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap}.btn{min-height:54px;padding:0 20px;border-radius:999px;border:1px solid var(--line);font-weight:760;display:inline-flex;align-items:center;justify-content:center;gap:9px}
+    .btn.primary{background:#fff;color:#09101c}.btn.secondary{background:rgba(255,255,255,.04);color:#fff}.btn:hover{transform:translateY(-1px)}
+    .trust-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.trust-chip{font-size:.84rem;color:var(--muted);border:1px solid var(--line);padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.025)}
 
-    /* SCAN */
-    .scan-layout{
-      width:100%;
-      display:grid;
-      grid-template-columns:minmax(0,1.15fr) minmax(350px,.85fr);
-      min-height:calc(100vh - 76px);
-    }
-    .vision{
-      position:relative;
-      overflow:hidden;
-      background:#050505;
-      min-height:calc(100vh - 76px);
-      border-right:1px solid #3A3B78;
-    }
-    #video,#overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-    #video{transform:scaleX(-1)}
-    .vision.rear-camera #video{transform:none}
-    #overlay{pointer-events:none}
-    .scan-line{
-      position:absolute;left:0;right:0;top:0;height:2px;background:var(--acid);
-      box-shadow:0 0 18px rgba(198,255,74,.8);
-      animation:scan 2.2s linear infinite;z-index:3;opacity:.85
-    }
-    @keyframes scan{from{transform:translateY(0)}to{transform:translateY(calc(100vh - 78px))}}
-    .scan-head{
-      position:absolute;left:18px;right:18px;top:18px;z-index:4;
-      display:flex;justify-content:space-between;gap:12px;align-items:center;
-      font:800 .67rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#fff
-    }
-    .scan-tools{display:flex;gap:8px;align-items:center}
-    .camera-toggle{
-      border:1px solid rgba(255,255,255,.35);
-      background:rgba(7,17,31,.82);
-      color:#fff;
-      min-height:34px;
-      padding:0 10px;
-      font:800 .63rem var(--mono);
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-    .camera-toggle:hover{border-color:var(--labs-pink, #FF66C4);color:#FF66C4}
-    .live{color:var(--acid)}
-    .machine-status{
-      position:absolute;left:18px;bottom:18px;z-index:4;
-      max-width:min(70%,680px);
-      background:rgba(11,11,11,.88);
-      border-left:4px solid var(--acid);
-      padding:12px 14px;
-      color:#fff;
-      font:.75rem/1.45 var(--mono)
-    }
-    .machine-status strong{color:var(--acid)}
-    .camera-error{
-      display:none;position:absolute;inset:0;z-index:6;padding:44px;background:#07111F;color:#fff;
-      align-items:center;justify-content:center
-    }
-    .camera-error.show{display:flex}
-    .console{
-      background:#fff;
-      padding:32px;
-      display:flex;
-      flex-direction:column;
-      min-width:0;
-      overflow:auto;
-      max-height:calc(100vh - 76px);
-    }
-    .timer-row{
-      display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;
-      padding-bottom:18px;border-bottom:2px solid var(--ink)
-    }
-    .timer-big{font:500 clamp(3.2rem,6vw,5rem)/.85 var(--serif)}
-    .timer-label{font:800 .65rem var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
-    .metric-pair{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
-    .metric{
-      padding:18px 0;
-      border-right:1px solid var(--line);
-    }
-    .metric:last-child{border-right:0;padding-left:18px}
-    .metric small{display:block;font:800 .63rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-    .metric strong{display:block;margin-top:4px;font:500 2rem/1 var(--serif)}
-    .obs-block{padding:22px 0;border-bottom:1px solid var(--line)}
-    .obs-title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
-    .obs-title strong{font:900 .73rem var(--mono);letter-spacing:.13em;text-transform:uppercase}
-    .count{font:700 .69rem var(--mono);color:var(--signal)}
-    .observations{display:grid;gap:0;border-top:1px solid var(--line)}
-    .observation{
-      display:grid;grid-template-columns:42px 1fr auto;gap:10px;padding:11px 0;
-      border-bottom:1px solid var(--line);font:.84rem var(--mono);align-items:center
-    }
-    .idx{color:var(--signal)}
-    .conf{color:var(--muted);font-size:.71rem}
-    .empty{font:.82rem/1.5 var(--mono);color:var(--muted);padding:16px 0}
-    .limits{display:grid;gap:9px;margin-top:12px}
-    .limit{display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:.92rem;line-height:1.35}
-    .limit::before{content:"?";font-family:var(--mono);color:var(--signal);font-weight:900}
-    .stop-btn{margin-top:auto}
+    .hero-card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border-radius:32px;box-shadow:var(--shadow);padding:22px;position:relative;overflow:hidden}
+    .hero-card:before{content:"";position:absolute;width:240px;height:240px;right:-90px;top:-80px;background:radial-gradient(circle,rgba(110,231,247,.24),transparent 66%);pointer-events:none}
+    .system-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--muted);font-size:.82rem;margin-bottom:20px}.live{display:flex;align-items:center;gap:8px}.live-dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
+    .preview{min-height:390px;border-radius:24px;background:linear-gradient(160deg,#121c31,#0c1424 60%,#13182a);border:1px solid var(--line);padding:22px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+    .preview-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(110,231,247,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(110,231,247,.05) 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(to bottom,rgba(255,255,255,.5),transparent);pointer-events:none}
+    .state{position:relative;z-index:2}.state-label{font-size:.73rem;text-transform:uppercase;letter-spacing:.14em;color:var(--cyan);font-weight:800;margin-bottom:10px}.state h2{font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-.04em;margin:0 0 10px;line-height:1}.state p{color:var(--muted);margin:0;max-width:28rem}
+    .detected-card{position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;background:rgba(4,8,16,.62);backdrop-filter:blur(14px);border:1px solid var(--line);padding:16px;border-radius:18px}.detected-icon{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,rgba(255,111,202,.25),rgba(110,231,247,.19));display:grid;place-items:center;font-size:1.25rem}.detected-card strong{display:block}.detected-card span{color:var(--muted);font-size:.88rem}
 
-    /* REVEAL */
-    #reveal{
-      background:var(--ink);
-      color:#fff;
-      padding:clamp(28px,5vw,62px);
-      align-content:center
-    }
-    .reveal-grid{
-      width:min(100%,1180px);margin:0 auto;
-      display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #444
-    }
-    .reveal-col{padding:clamp(26px,4vw,48px)}
-    .reveal-col:first-child{border-right:1px solid #444}
-    .reveal-kicker{font:800 .69rem var(--mono);letter-spacing:.14em;text-transform:uppercase;margin-bottom:24px}
-    .reveal-col:first-child .reveal-kicker{color:var(--acid)}
-    .reveal-col:last-child .reveal-kicker{color:var(--signal)}
-    .reveal-list{display:grid}
-    .reveal-row{
-      display:grid;grid-template-columns:42px 1fr auto;gap:12px;
-      padding:13px 0;border-top:1px solid #3A3B78;font:.9rem var(--mono);align-items:center
-    }
-    .reveal-row:last-child{border-bottom:1px solid #3A3B78}
-    .reveal-row .state{font-size:.68rem;color:#888}
-    .reveal-col:first-child .reveal-row .num{color:var(--acid)}
-    .reveal-col:last-child .reveal-row .num{color:var(--signal)}
-    .reveal-thesis{
-      width:min(100%,1180px);margin:26px auto 0;
-      display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end
-    }
-    .reveal-thesis h2{color:#fff;margin:0}
-    .reveal-thesis strong{color:var(--acid);font-weight:500}
-    .reveal-next{white-space:nowrap}
-    .reveal-context{
-      width:min(100%,1180px);
-      margin:26px auto 0;
-      border-top:1px solid #444;
-      padding-top:22px;
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:16px;
-      align-items:end;
-    }
-    .reveal-context-copy{min-width:0}
-    .reveal-context label{
-      display:block;
-      margin:0 0 8px;
-      color:#fff;
-      font:800 .69rem var(--mono);
-      letter-spacing:.13em;
-      text-transform:uppercase;
-    }
-    .reveal-context-note{
-      margin:0 0 12px;
-      color:#aebbd0;
-      font:.78rem/1.45 var(--mono);
-    }
-    .reveal-context input{
-      width:100%;
-      min-height:52px;
-      border:1px solid #56657d;
-      border-radius:0;
-      background:#0B1728;
-      color:#fff;
-      padding:0 14px;
-      font-size:.98rem;
-    }
-    .reveal-context input::placeholder{color:#7f8fa8}
-    .reveal-context-meta{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      margin-top:8px;
-      font:.68rem var(--mono);
-      color:#7f8fa8;
-    }
-    .reveal-context .cta{margin:0}
+    .principles{padding:24px 0 52px}.principle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.principle{border:1px solid var(--line);background:rgba(255,255,255,.028);border-radius:18px;padding:16px}.principle strong{display:block;margin-bottom:5px}.principle span{color:var(--muted);font-size:.9rem}
 
-    /* REFLECTION */
-    #reflection{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
-    .reflect-left{
-      background:var(--ink);color:#fff;padding:clamp(36px,6vw,72px);
-      display:flex;flex-direction:column;justify-content:center
-    }
-    .reflect-left .eyebrow{color:var(--acid)}
-    .reflect-left h2{color:#fff}
-    .machine-list{margin-top:24px;border-top:1px solid #444}
-    .machine-item{display:grid;grid-template-columns:42px 1fr;padding:12px 0;border-bottom:1px solid #444;font:.85rem var(--mono)}
-    .machine-item span:first-child{color:var(--acid)}
-    .reflect-right{padding:clamp(36px,6vw,72px);display:flex;flex-direction:column;justify-content:center}
-    label{display:block;font-weight:900;margin:24px 0 10px}
-    textarea{
-      width:100%;min-height:132px;resize:vertical;border:2px solid var(--ink);border-radius:0;
-      background:#fff;padding:16px;font-size:1rem;line-height:1.45;color:var(--ink)
-    }
-    .charrow{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font:.7rem var(--mono);color:var(--muted)}
+    .experience-section{padding:46px 0 110px}
+    .section-kicker{font-size:.76rem;text-transform:uppercase;letter-spacing:.16em;color:var(--cyan);font-weight:800;margin-bottom:10px}
+    .section-title{font-size:clamp(2.2rem,5vw,4.4rem);line-height:.95;letter-spacing:-.055em;margin:0;max-width:12ch}.section-copy{color:var(--muted);max-width:710px;font-size:1.04rem;margin:16px 0 0}
+    .experience-shell{margin-top:28px;border:1px solid var(--line);border-radius:32px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));box-shadow:var(--shadow);overflow:hidden}
+    .exp-header{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px;background:rgba(255,255,255,.018)}
+    .progress-wrap{flex:1;max-width:430px}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem;margin-bottom:7px}.progress{height:6px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}.progress > div{height:100%;width:16%;background:linear-gradient(90deg,var(--pink),var(--cyan));transition:width .35s ease}
+    .privacy-btn{border:0;background:transparent;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+    .exp-body{min-height:620px;padding:clamp(20px,4vw,48px);display:grid;place-items:center;position:relative}
+    .step{width:min(100%,830px);display:none}.step.active{display:block}
+    .step h3{font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-.05em;line-height:.98;margin:0 0 14px}.step .big-copy{font-size:1.08rem;color:var(--muted);max-width:650px;margin:0 0 24px}
+    .choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.choice{min-height:175px;text-align:left;border:1px solid var(--line);color:#fff;background:rgba(255,255,255,.035);border-radius:22px;padding:19px;transition:.2s}.choice:hover{background:rgba(255,255,255,.065);transform:translateY(-2px)}.choice .emoji{font-size:1.5rem}.choice strong{display:block;font-size:1.1rem;margin:18px 0 5px}.choice span{display:block;color:var(--muted);font-size:.91rem}
+    .notice{border:1px solid var(--line);background:rgba(255,255,255,.035);padding:16px;border-radius:18px;color:var(--muted);margin:16px 0}.notice strong{color:#fff}
+    .step-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    .status-box{display:flex;align-items:flex-start;gap:13px;padding:16px;border-radius:18px;background:rgba(110,231,247,.06);border:1px solid rgba(110,231,247,.18);margin:18px 0;color:var(--muted)}.status-indicator{width:11px;height:11px;border-radius:50%;background:var(--cyan);margin-top:5px;box-shadow:0 0 0 6px rgba(110,231,247,.08);flex:0 0 auto}.status-box strong{color:#fff;display:block}
+    .camera-frame{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:24px;background:#02050a;aspect-ratio:16/10;max-height:480px}.camera-frame video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}.camera-frame canvas{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none}.camera-overlay{position:absolute;left:14px;right:14px;bottom:14px;display:flex;justify-content:space-between;align-items:end;gap:10px;z-index:5}.camera-pill{background:rgba(3,7,14,.72);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-size:.82rem}
+    .manual-grid{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}.manual-chip{border:1px solid var(--line);background:rgba(255,255,255,.04);color:#fff;border-radius:999px;padding:12px 15px;min-height:46px}.manual-chip:hover{background:rgba(255,255,255,.08)}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}.result-panel{border:1px solid var(--line);border-radius:22px;padding:20px;background:rgba(255,255,255,.03)}.result-panel .label{font-size:.75rem;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--cyan)}.result-panel h4{font-size:1.45rem;margin:10px 0 8px}.result-panel p{color:var(--muted);margin:0}.result-panel.human{background:linear-gradient(145deg,rgba(255,111,202,.08),rgba(145,135,255,.05))}.result-panel.human .label{color:#ffb5df}
+    .meaning-input{width:100%;min-height:110px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.04);color:#fff;padding:14px;resize:vertical}.meaning-input::placeholder{color:#7f8a9d}
+    .outcome{padding:26px;border:1px solid rgba(95,224,164,.22);background:linear-gradient(140deg,rgba(95,224,164,.08),rgba(110,231,247,.04));border-radius:22px;margin-top:18px}.outcome strong{font-size:1.2rem}.outcome p{color:var(--muted);margin:7px 0 0}
 
-    /* SHARE */
-    .share-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,.65fr);min-height:calc(100vh - 76px)}
-    .share-preview{background:#191919;padding:28px;display:flex;align-items:center;justify-content:center}
-    #shareCanvas{width:min(100%,540px);height:auto;background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.28)}
-    .share-actions{padding:40px 34px;display:flex;flex-direction:column;justify-content:center}
-    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
-    .action{min-height:50px;border:2px solid var(--ink);background:#fff;color:var(--ink);font-weight:900}
-    .action.primary{background:var(--ink);color:#fff}
-    .action.share{display:none}
-    .action.share.available{display:block}
-    .restart{border:0;background:transparent;text-decoration:underline;font-weight:800;margin-top:16px;align-self:flex-start;padding:0}
-    .footer-note{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font:.73rem/1.45 var(--mono);color:var(--muted)}
+    .buyer{padding:0 0 110px}.buyer-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:20px;align-items:start}.buyer-copy{position:sticky;top:110px}.use-cases{display:grid;gap:12px}.case{border:1px solid var(--line);background:rgba(255,255,255,.028);border-radius:22px;padding:20px}.case-top{display:flex;gap:12px;align-items:center}.case-icon{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.06);display:grid;place-items:center}.case h4{margin:0;font-size:1.08rem}.case p{color:var(--muted);margin:10px 0 0}.metric{margin-top:13px;font-size:.83rem;color:#dce6f4}.metric span{color:var(--green)}
 
-    @media(max-width:900px){
-      #intro,.share-layout{grid-template-columns:1fr}
-      .intro-panel{min-height:340px}
-      .scan-layout{grid-template-columns:1fr}
-      .vision{min-height:55vh;border-right:0;border-bottom:1px solid #3A3B78}
-      .console{max-height:none}
-      .reveal-grid{grid-template-columns:1fr}
-      .reveal-col:first-child{border-right:0;border-bottom:1px solid #444}
-      .reveal-thesis{grid-template-columns:1fr}
-      .reveal-context{grid-template-columns:1fr}
-      .reveal-context .cta{width:100%}
-    }
-    @media(max-width:560px){
-      .mast{grid-template-columns:auto 1fr;min-height:64px;padding-inline:14px}
-      .mast-note{display:none}
-      .intro-copy,.share-actions{padding:34px 20px}
-      h1{font-size:clamp(3.5rem,17vw,5.5rem)}
-      .intro-panel{padding:24px 20px}
-      .vision{min-height:48vh}
-      .console{padding:26px 20px}
-      .action-grid{grid-template-columns:1fr}
-      .share-preview{padding:16px}
-      .metric-pair{grid-template-columns:1fr}
-      .metric{border-right:0;border-bottom:1px solid var(--line)}
-      .metric:last-child{padding-left:0;border-bottom:0}
-    }
-    @media(prefers-reduced-motion:reduce){
-      .scan-line,.intro-panel::after{animation:none}
-      *{scroll-behavior:auto!important}
-    }
+    .standards{padding:0 0 110px}.standards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:26px}.standard{border:1px solid var(--line);border-radius:22px;padding:20px;background:rgba(255,255,255,.026)}.standard strong{display:block;font-size:1.05rem}.standard p{margin:7px 0 0;color:var(--muted)}
+
+    footer{border-top:1px solid var(--line);padding:30px 0 80px;color:var(--muted)}.footer-grid{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer-brand{color:#fff;font-weight:780}
+
+    dialog{border:1px solid var(--line);border-radius:24px;background:#0d1423;color:#fff;max-width:680px;width:min(calc(100% - 28px),680px);padding:0;box-shadow:var(--shadow)}dialog::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}.dialog-inner{padding:22px}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.dialog-head h3{margin:0;font-size:1.45rem}.close{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff}.dialog-inner p,.dialog-inner li{color:var(--muted)}.dialog-inner ul{padding-left:20px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    @media(max-width:900px){.hero-grid,.buyer-grid{grid-template-columns:1fr}.principle-grid{grid-template-columns:repeat(2,1fr)}.buyer-copy{position:static}.choice-grid{grid-template-columns:1fr}.choice{min-height:0}.navlinks a:not(.tiny-btn){display:none}}
+    @media(max-width:640px){.navlinks{gap:8px}.brand span:last-child{display:none}.principle-grid,.result-grid,.standards-grid{grid-template-columns:1fr}.hero{padding-top:38px}.hero-card{padding:14px}.preview{min-height:350px}.exp-body{padding:22px 16px;min-height:600px}.exp-header{align-items:flex-start}.progress-wrap{max-width:none}.privacy-btn{white-space:nowrap}.btn{width:100%}.step-actions .btn{width:auto;flex:1}.camera-frame{aspect-ratio:3/4}.camera-overlay{align-items:flex-start;flex-direction:column}.choice{min-height:140px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}.btn:hover,.choice:hover{transform:none}}
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="mast">
-      <img class="brand-logo" src="assets/itsbad-labs-logo.svg" alt="ITSBAD Labs">
-      <div class="mast-title">AI Blind Spot</div>
-      <div class="mast-note">LAB EXPERIMENT / LOCAL ONLY</div>
-    </header>
-
-    <main>
-      <section id="intro" class="stage active">
-        <div class="intro-copy">
-          <p class="eyebrow">Observation ≠ understanding</p>
-          <h1>I can see.<br>I cannot understand.</h1>
-          <p class="lead">Give your browser 12 seconds. It will identify visible objects in your camera frame, then show you how quickly detection can feel like understanding — even when it is not.</p>
-          <button id="startBtn" class="cta" type="button">Let the machine look →</button>
-          <p class="fine">No image is uploaded. No identity, emotion, age, personality, race, gender, health, or other sensitive trait is analyzed. Object detection runs in your browser.</p>
-        </div>
-        <aside class="intro-panel" aria-hidden="true">
-          <div class="panel-label">LAB SIGNAL / EXPERIMENT 01</div>
-          <div class="manifesto">
-            <p>The model gets <strong>pixels</strong>.<br>You live the <strong>context</strong>.</p>
-          </div>
-          <div class="rules">
-            <div class="rule"><b>01</b><span>Observe what is visibly present.</span></div>
-            <div class="rule"><b>02</b><span>Notice how quickly observation starts to feel like knowledge.</span></div>
-            <div class="rule"><b>03</b><span>Put the human context back in.</span></div>
-          </div>
-        </aside>
-      </section>
-
-      <section id="scan" class="stage">
-        <div class="scan-layout">
-          <div id="vision" class="vision">
-            <video id="video" autoplay playsinline muted aria-hidden="true"></video>
-            <canvas id="overlay" aria-label="Live object detection overlay"></canvas>
-            <div class="scan-line" aria-hidden="true"></div>
-            <div class="scan-head">
-              <span>Machine observation</span>
-              <div class="scan-tools">
-                <button id="cameraToggle" class="camera-toggle" type="button" aria-label="Switch camera">Scan room ↻</button>
-                <span class="live">● local model</span>
-              </div>
-            </div>
-            <div class="machine-status">
-              <strong>MODE:</strong> detect visible objects only · no identity or trait inference
-            </div>
-            <div id="cameraError" class="camera-error">
-              <div>
-                <h3>Camera unavailable.</h3>
-                <p>You can still experience the reveal with a simulated observation set.</p>
-                <button id="fallbackBtn" class="cta" type="button">Use simulated observations →</button>
-              </div>
-            </div>
-          </div>
-          <aside class="console">
-            <div class="timer-row">
-              <div>
-                <div class="timer-label">Seconds remaining</div>
-                <div id="timer" class="timer-big">12</div>
-              </div>
-              <div class="timer-label">Do nothing.<br>Just be visible.</div>
-            </div>
-
-            <div class="metric-pair">
-              <div class="metric">
-                <small>Known</small>
-                <strong id="knownCount">0</strong>
-              </div>
-              <div class="metric">
-                <small>Unknown</small>
-                <strong>∞</strong>
-              </div>
-            </div>
-
-            <div class="obs-block">
-              <div class="obs-title"><strong>AI sees</strong><span id="observationCount" class="count">0 objects</span></div>
-              <div id="observations" class="observations">
-                <div class="empty">Loading the local vision model…</div>
-              </div>
-            </div>
-
-            <div class="obs-block">
-              <div class="obs-title"><strong>AI cannot know</strong></div>
-              <div class="limits">
-                <div class="limit">why you are here</div>
-                <div class="limit">what you are thinking</div>
-                <div class="limit">what matters to you</div>
-                <div class="limit">your expertise or intentions</div>
-              </div>
-            </div>
-
-            <button id="stopBtn" class="secondary-btn stop-btn" type="button">Freeze the frame →</button>
-          </aside>
-        </div>
-      </section>
-
-      <section id="reveal" class="stage">
-        <div>
-          <div class="reveal-grid">
-            <div class="reveal-col">
-              <div class="reveal-kicker">Detected / evidence</div>
-              <div id="revealKnown" class="reveal-list"></div>
-            </div>
-            <div class="reveal-col">
-              <div class="reveal-kicker">Not detected / context</div>
-              <div class="reveal-list">
-                <div class="reveal-row"><span class="num">01</span><span>WHY YOU ARE HERE</span><span class="state">UNKNOWN</span></div>
-                <div class="reveal-row"><span class="num">02</span><span>WHAT YOU ARE THINKING</span><span class="state">UNKNOWN</span></div>
-                <div class="reveal-row"><span class="num">03</span><span>WHAT MATTERS TO YOU</span><span class="state">UNKNOWN</span></div>
-                <div class="reveal-row"><span class="num">04</span><span>YOUR INTENTIONS</span><span class="state">UNKNOWN</span></div>
-                <div class="reveal-row"><span class="num">05</span><span>WHY THIS MOMENT MATTERS</span><span class="state">UNKNOWN</span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="reveal-thesis">
-            <h2>The machine had <strong>data.</strong><br>You had <strong>context.</strong></h2>
-          </div>
-
-          <div class="reveal-context">
-            <div class="reveal-context-copy">
-              <label for="contextInput">What did the machine miss? <span style="color:#7f8fa8;font-weight:700;">Optional</span></label>
-              <p class="reveal-context-note">Add one sentence if you want your share card to include the context AI could not see.</p>
-              <input id="contextInput" type="text" maxlength="120" placeholder="I was preparing a class about AI literacy.">
-              <div class="reveal-context-meta">
-                <span>Human context, not another prediction.</span>
-                <span id="charCount">0 / 120</span>
-              </div>
-            </div>
-            <button id="makeCardBtn" class="cta reveal-next" type="button">Create my blind spot →</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="share" class="stage">
-        <div class="share-layout">
-          <div class="share-preview">
-            <canvas id="shareCanvas" width="1080" height="1350" aria-label="AI Blind Spot share card"></canvas>
-          </div>
-          <aside class="share-actions">
-            <p class="eyebrow">Your blind spot</p>
-            <h2>AI saw the evidence.<br>It missed the meaning.</h2>
-            <p class="lead">The share card is designed to start a conversation: what did the machine miss about you?</p>
-            <div class="action-grid">
-              <button id="saveBtn" class="action primary" type="button">Save share card</button>
-              <button id="shareBtn" class="action share" type="button">Share</button>
-            </div>
-            <button id="restartBtn" class="restart" type="button">Run it again</button>
-            <div class="footer-note">Built by ITSBAD Labs — technology for things that shouldn’t be this hard. The card contains your own text and a local camera still; nothing is sent to a server by this page.</div>
-          </aside>
-        </div>
-      </section>
-    </main>
+<a class="skip-link" href="#main">Skip to main content</a>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="webAI by ITSBAD Labs home"><span class="mark">AI</span><span>webAI <span style="color:var(--muted);font-weight:600">by ITSBAD Labs</span></span></a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="#experience">Try it</a><a href="#uses">Use cases</a><a href="#standards">Design standard</a>
+      <button class="tiny-btn" data-open-privacy>How it works</button>
+    </nav>
   </div>
+</header>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
-  <script>
-  (() => {
-    "use strict";
+<main id="main">
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span> browser-native human + AI experiences</div>
+        <h1>The web can <span class="gradient">respond to people.</span></h1>
+        <p class="lead">webAI turns passive webpages into participatory experiences that can see, hear, respond, and adapt—without asking people to install an app or learn a new interface.</p>
+        <div class="actions">
+          <a class="btn primary" href="#experience">Try a 45-second experience <span aria-hidden="true">→</span></a>
+          <button class="btn secondary" data-open-privacy>See exactly what the AI does</button>
+        </div>
+        <div class="trust-row" aria-label="Experience principles">
+          <span class="trust-chip">No account required</span><span class="trust-chip">Permission before camera or mic</span><span class="trust-chip">Tap fallback always available</span><span class="trust-chip">Designed for WCAG-minded interaction</span>
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="webAI interaction preview">
+        <div class="system-bar"><span>LIVE EXPERIENCE PREVIEW</span><span class="live"><span class="live-dot"></span> browser ready</span></div>
+        <div class="preview">
+          <div class="preview-grid"></div>
+          <div class="state"><div class="state-label">What AI can do</div><h2>Notice patterns.</h2><p>Detect objects, recognize speech, and respond to input in real time.</p></div>
+          <div class="detected-card"><div class="detected-icon" aria-hidden="true">◉</div><div><strong>AI detects a chair.</strong><span>It still cannot know whether it is yours, why it matters, or the story attached to it.</span></div></div>
+        </div>
+      </aside>
+    </div>
+  </section>
 
-    const SCAN_SECONDS = 12;
-    const MAX_OBJECTS = 8;
-    const MIN_SCORE = 0.52;
+  <section class="principles" aria-label="webAI research-informed design principles">
+    <div class="wrap principle-grid">
+      <div class="principle"><strong>Useful</strong><span>Starts with a human outcome—not an AI feature.</span></div>
+      <div class="principle"><strong>Usable</strong><span>Always shows what is happening and what to do next.</span></div>
+      <div class="principle"><strong>Trustworthy</strong><span>Asks permission with purpose and exposes limits.</span></div>
+      <div class="principle"><strong>Accessible</strong><span>Voice, camera, and gesture never become the only path.</span></div>
+    </div>
+  </section>
 
-    const stages = [...document.querySelectorAll(".stage")];
-    const video = document.getElementById("video");
-    const vision = document.getElementById("vision");
-    const cameraToggle = document.getElementById("cameraToggle");
-    const overlay = document.getElementById("overlay");
-    const octx = overlay.getContext("2d");
-    const observationsEl = document.getElementById("observations");
-    const observationCountEl = document.getElementById("observationCount");
-    const knownCountEl = document.getElementById("knownCount");
-    const timerEl = document.getElementById("timer");
-    const cameraError = document.getElementById("cameraError");
-    const contextInput = document.getElementById("contextInput");
-    const charCount = document.getElementById("charCount");
-    const shareCanvas = document.getElementById("shareCanvas");
-    const sctx = shareCanvas.getContext("2d");
+  <section class="experience-section" id="experience">
+    <div class="wrap">
+      <div class="section-kicker">Experience 01 · AI Blind Spot</div>
+      <h2 class="section-title">See what AI sees. Then notice what it misses.</h2>
+      <p class="section-copy">This prototype demonstrates the webAI design model: explain the value first, ask permission only when needed, make system state visible, and preserve a human-controlled fallback.</p>
 
-    let model = null;
-    let stream = null;
-    let running = false;
-    let countdownId = null;
-    let frameId = null;
-    let secondsLeft = SCAN_SECONDS;
-    let best = new Map();
-    let capturedFrame = null;
-    let capturedFrameUrl = "";
-    let lastCardUrl = null;
-    let facingMode = "user";
-    let switchingCamera = false;
+      <div class="experience-shell" aria-live="polite">
+        <div class="exp-header">
+          <div class="progress-wrap"><div class="progress-label"><span id="progressText">Step 1 of 6</span><span id="modeLabel">Choose how to participate</span></div><div class="progress" aria-hidden="true"><div id="progressBar"></div></div></div>
+          <button class="privacy-btn" data-open-privacy>Privacy + accessibility</button>
+        </div>
+        <div class="exp-body">
+          <section class="step active" data-step="1">
+            <div class="section-kicker">Start here</div>
+            <h3>Give the AI one ordinary thing.</h3>
+            <p class="big-copy">You can use your camera, say an object aloud, or skip both and tap one. The lesson is the same: recognition is not understanding.</p>
+            <div class="choice-grid">
+              <button class="choice" data-mode="camera"><span class="emoji" aria-hidden="true">◉</span><strong>Use my camera</strong><span>Let an object-detection model identify something in view. You will see the permission request before anything starts.</span></button>
+              <button class="choice" data-mode="voice"><span class="emoji" aria-hidden="true">◌</span><strong>Say an object</strong><span>Use browser speech recognition to name something around you. A tap option stays available.</span></button>
+              <button class="choice" data-mode="manual"><span class="emoji" aria-hidden="true">↗</span><strong>Just let me tap</strong><span>No camera. No microphone. Pick an object manually and continue through the full experience.</span></button>
+            </div>
+          </section>
 
-    function showStage(id){
-      stages.forEach(s => s.classList.toggle("active", s.id === id));
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
+          <section class="step" data-step="2">
+            <div id="cameraPermission" hidden>
+              <div class="section-kicker">Camera path</div><h3>Your camera is optional.</h3>
+              <p class="big-copy">If you continue, this demo uses your camera feed inside this browser tab so the object-detection model can analyze frames locally. This page does not record or intentionally upload your camera frames.</p>
+              <div class="notice"><strong>If camera access fails or you change your mind:</strong> use the manual path. The experience does not stop.</div>
+              <div class="step-actions"><button class="btn primary" id="enableCamera">Allow camera and continue</button><button class="btn secondary" data-fallback>Continue without camera</button></div>
+            </div>
+            <div id="voicePermission" hidden>
+              <div class="section-kicker">Voice path</div><h3>Your microphone is optional.</h3>
+              <p class="big-copy">If you continue, your browser’s speech-recognition capability will listen for one short object name. Browser implementations may process speech through platform services, so use the tap path if you prefer not to use voice.</p>
+              <div class="notice"><strong>Nothing gets blocked:</strong> voice unsupported or inaccurate? Pick the object manually.</div>
+              <div class="step-actions"><button class="btn primary" id="enableVoice">Use voice</button><button class="btn secondary" data-fallback>Continue without microphone</button></div>
+            </div>
+            <div id="manualPermission" hidden>
+              <div class="section-kicker">Tap path</div><h3>No sensor needed.</h3>
+              <p class="big-copy">Choose something that could be around you. This is the accessibility and recovery path—and it leads to the same core insight.</p>
+              <div class="manual-grid" data-manual-options></div>
+            </div>
+          </section>
 
-    async function loadModel(){
-      if(model) return model;
-      observationsEl.innerHTML = '<div class="empty">Loading the local vision model…</div>';
-      model = await cocoSsd.load({base:"lite_mobilenet_v2"});
-      return model;
-    }
+          <section class="step" data-step="3">
+            <div id="cameraInteraction" hidden>
+              <div class="section-kicker">AI is looking</div><h3>Point the camera at one ordinary object.</h3>
+              <div class="status-box" role="status"><span class="status-indicator"></span><div><strong id="cameraStatusStrong">Preparing the model…</strong><span id="cameraStatus">The page will tell you when detection is active.</span></div></div>
+              <div class="camera-frame"><video id="cameraVideo" autoplay playsinline muted></video><canvas id="cameraCanvas" aria-hidden="true"></canvas><div class="camera-overlay"><span class="camera-pill" id="detectedLive">No confident detection yet</span><button class="tiny-btn" id="cameraFallback">Use tap instead</button></div></div>
+              <div class="step-actions"><button class="btn primary" id="acceptDetection" disabled>Use this detection</button></div>
+            </div>
+            <div id="voiceInteraction" hidden>
+              <div class="section-kicker">AI is listening</div><h3>Say one ordinary object.</h3>
+              <div class="status-box" role="status"><span class="status-indicator"></span><div><strong id="voiceStatusStrong">Ready when you are.</strong><span id="voiceStatus">Say something like “chair,” “phone,” “book,” or “dog.”</span></div></div>
+              <div class="step-actions"><button class="btn primary" id="listenAgain">Listen</button><button class="btn secondary" data-fallback>Use tap instead</button></div>
+            </div>
+            <div id="manualInteraction" hidden>
+              <div class="section-kicker">Tap path</div><h3>Pick one object.</h3><p class="big-copy">This path preserves the experience even when camera, microphone, browser support, environment, or user preference makes AI sensing a poor fit.</p>
+              <div class="manual-grid" data-manual-options></div>
+            </div>
+          </section>
 
-    async function startCamera(){
-      if(!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unsupported");
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio:false,
-        video:{
-          facingMode:{ideal:facingMode},
-          width:{ideal:1280},
-          height:{ideal:960}
-        }
+          <section class="step" data-step="4">
+            <div class="section-kicker">AI output</div><h3>The label is only the beginning.</h3>
+            <div class="result-grid">
+              <div class="result-panel"><div class="label">Detected / supplied</div><h4 id="resultObject">Object</h4><p id="resultConfidence">The system can produce or receive a label.</p></div>
+              <div class="result-panel"><div class="label">What it cannot know</div><h4>Meaning.</h4><p id="blindSpotText">It does not know why this object matters, who it belongs to, what happened around it, or what it means to you.</p></div>
+            </div>
+            <div class="step-actions"><button class="btn primary" id="toMeaning">Add the missing human context</button></div>
+          </section>
+
+          <section class="step" data-step="5">
+            <div class="section-kicker">Human context</div><h3>What does the AI not know?</h3>
+            <p class="big-copy">Add one detail that a visual or language model would not reliably infer from the object alone.</p>
+            <label for="meaningText" class="sr-only">Human context the AI does not know</label>
+            <textarea class="meaning-input" id="meaningText" placeholder="Example: This chair belonged to my grandmother, and I kept it because…"></textarea>
+            <div class="step-actions"><button class="btn primary" id="finishExperience">Reveal the point</button><button class="btn secondary" id="skipMeaning">Skip writing</button></div>
+          </section>
+
+          <section class="step" data-step="6">
+            <div class="section-kicker">The point</div><h3>AI can recognize patterns. Humans supply meaning.</h3>
+            <div class="result-grid">
+              <div class="result-panel"><div class="label">AI contribution</div><h4 id="finalObject">Object</h4><p id="finalAIText">A pattern was recognized or a label was supplied.</p></div>
+              <div class="result-panel human"><div class="label">Human contribution</div><h4>Context changes the experience.</h4><p id="finalMeaning">The label alone was incomplete.</p></div>
+            </div>
+            <div class="outcome"><strong>This is the webAI principle:</strong><p>The AI capability is not the experience. The experience creates value by combining machine perception with clear human purpose, control, context, and recovery.</p></div>
+            <div class="step-actions"><button class="btn primary" id="restart">Try another path</button><a class="btn secondary" href="#uses">See where this could be used</a></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="buyer" id="uses">
+    <div class="wrap buyer-grid">
+      <div class="buyer-copy"><div class="section-kicker">What organizations buy</div><h2 class="section-title">Not “AI.” A better moment.</h2><p class="section-copy">The commercial product is a measurable human experience. webAI is the interaction layer that can make that moment responsive, memorable, and reusable.</p></div>
+      <div class="use-cases">
+        <article class="case"><div class="case-top"><div class="case-icon" aria-hidden="true">🏛</div><h4>Museums + cultural spaces</h4></div><p>Turn exhibits into guided, participatory moments without asking visitors to download an app.</p><div class="metric"><span>Measure:</span> activation, completion, exhibit exploration, learning signal.</div></article>
+        <article class="case"><div class="case-top"><div class="case-icon" aria-hidden="true">🎓</div><h4>Learning + AI literacy</h4></div><p>Let learners experiment with AI behavior instead of only hearing an explanation of it.</p><div class="metric"><span>Measure:</span> misconception correction, participation, task success, reflection.</div></article>
+        <article class="case"><div class="case-top"><div class="case-icon" aria-hidden="true">✦</div><h4>Events + brand activations</h4></div><p>Create a live web moment that reacts to participants and is memorable enough to become part of the event story.</p><div class="metric"><span>Measure:</span> starts, completions, sharing, qualified follow-up.</div></article>
+        <article class="case"><div class="case-top"><div class="case-icon" aria-hidden="true">◎</div><h4>Recruiting + employer brand</h4></div><p>Replace passive “about us” pages with interactive demonstrations of culture, work, or problem solving.</p><div class="metric"><span>Measure:</span> candidate engagement, completion, conversion to next action.</div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="standards" id="standards">
+    <div class="wrap"><div class="section-kicker">webAI experience standard</div><h2 class="section-title">Every experience has to earn the AI.</h2><p class="section-copy">These are the product constraints carried forward from the UX, accessibility, trust, and human-AI research.</p>
+      <div class="standards-grid">
+        <div class="standard"><strong>1 · Value before permission</strong><p>Explain the outcome first. Ask for camera, microphone, or other sensors only at the moment they become useful.</p></div>
+        <div class="standard"><strong>2 · System state stays visible</strong><p>Waiting, loading, listening, looking, processing, result, and error states are explicit—not implied.</p></div>
+        <div class="standard"><strong>3 · Every AI path has a human path</strong><p>Tap, keyboard, and manual alternatives preserve task completion when sensing fails or users decline it.</p></div>
+        <div class="standard"><strong>4 · Limits are part of the interface</strong><p>Outputs are framed as detections or inferences, not human-like understanding. Uncertainty is shown where useful.</p></div>
+        <div class="standard"><strong>5 · One meaningful outcome</strong><p>Each experience has a clear human takeaway or action instead of stacking unrelated AI tricks.</p></div>
+        <div class="standard"><strong>6 · The buyer can prove value</strong><p>Activation, completion, recovery, and outcome metrics are defined before additional platform complexity is built.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap footer-grid"><div><span class="footer-brand">webAI by ITSBAD Labs</span><br><span>Human experience is the product. Browser-native AI is the medium.</span></div><button class="tiny-btn" data-open-privacy>Privacy + technical notes</button></div></footer>
+
+<dialog id="privacyDialog" aria-labelledby="privacyTitle">
+  <div class="dialog-inner"><div class="dialog-head"><h3 id="privacyTitle">How this prototype works</h3><button class="close" id="closeDialog" aria-label="Close">×</button></div>
+    <p><strong>Camera:</strong> access is requested only after you choose the camera path. The camera feed stays in the page and is analyzed by a browser-loaded object-detection model. This prototype does not intentionally record or upload camera frames.</p>
+    <p><strong>Voice:</strong> access begins only after you choose the voice path. Browser speech-recognition implementations may use platform or cloud speech services. If you prefer not to use that, choose the tap path.</p>
+    <p><strong>AI model:</strong> the camera path loads TensorFlow.js and COCO-SSD from a public CDN. The model is useful for demonstrating object recognition, not for identifying people or understanding personal meaning.</p>
+    <p><strong>Accessibility + recovery:</strong></p><ul><li>Keyboard-accessible controls and visible focus states.</li><li>Tap/manual path preserves the core experience without camera or microphone.</li><li>Reduced-motion preferences are honored.</li><li>Status changes use text, not color alone.</li></ul>
+    <p>This is a prototype experience, not a production privacy policy. A client deployment should document its own data flow, hosting, analytics, retention, and accessibility testing.</p>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const steps = [...document.querySelectorAll('.step')];
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const modeLabel = document.getElementById('modeLabel');
+  const privacyDialog = document.getElementById('privacyDialog');
+  const manualObjects = ['chair','phone','book','dog','plant','cup','backpack','person'];
+  let currentStep = 1, mode = 'manual', selectedObject = '', confidence = null, stream = null, model = null, detectionTimer = null, lastDetection = null, recognition = null;
+
+  function setStep(n, label){
+    currentStep = n;
+    steps.forEach(s => s.classList.toggle('active', Number(s.dataset.step) === n));
+    progressBar.style.width = `${(n/6)*100}%`;
+    progressText.textContent = `Step ${n} of 6`;
+    if(label) modeLabel.textContent = label;
+    const active = steps.find(s => Number(s.dataset.step) === n);
+    active?.querySelector('h3,button,textarea')?.focus?.({preventScroll:true});
+    active?.scrollIntoView?.({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'center'});
+  }
+
+  function fillManualOptions(){
+    document.querySelectorAll('[data-manual-options]').forEach(host => {
+      host.innerHTML = '';
+      manualObjects.forEach(obj => {
+        const b = document.createElement('button'); b.className='manual-chip'; b.textContent=obj; b.addEventListener('click',()=>chooseObject(obj,null,'manual')); host.appendChild(b);
       });
-      video.srcObject = stream;
-      vision.classList.toggle("rear-camera", facingMode === "environment");
-      cameraToggle.textContent = facingMode === "environment" ? "Selfie view ↻" : "Scan room ↻";
-      await new Promise((resolve,reject)=>{
-        const timeout=setTimeout(()=>reject(new Error("Camera timeout")),6000);
-        video.onloadedmetadata=async()=>{
-          clearTimeout(timeout);
-          try{await video.play();resolve();}catch(err){reject(err);}
-        };
-      });
+    });
+  }
+  fillManualOptions();
+
+  document.querySelectorAll('[data-open-privacy]').forEach(b => b.addEventListener('click',()=>privacyDialog.showModal()));
+  document.getElementById('closeDialog').addEventListener('click',()=>privacyDialog.close());
+  privacyDialog.addEventListener('click',e=>{ if(e.target===privacyDialog) privacyDialog.close(); });
+
+  document.querySelectorAll('[data-mode]').forEach(btn => btn.addEventListener('click', () => {
+    mode = btn.dataset.mode;
+    document.getElementById('cameraPermission').hidden = mode !== 'camera';
+    document.getElementById('voicePermission').hidden = mode !== 'voice';
+    document.getElementById('manualPermission').hidden = mode !== 'manual';
+    const labels = {camera:'Camera selected',voice:'Voice selected',manual:'Tap path selected'};
+    setStep(2, labels[mode]);
+  }));
+
+  document.querySelectorAll('[data-fallback]').forEach(b => b.addEventListener('click',()=>showManualInteraction('Manual fallback')));
+  document.getElementById('cameraFallback').addEventListener('click',()=>showManualInteraction('Manual fallback'));
+
+  function showManualInteraction(label='Tap path'){
+    mode='manual'; stopCamera(); stopRecognition();
+    document.getElementById('cameraInteraction').hidden=true;
+    document.getElementById('voiceInteraction').hidden=true;
+    document.getElementById('manualInteraction').hidden=false;
+    setStep(3,label);
+  }
+
+  document.getElementById('enableCamera').addEventListener('click', startCameraPath);
+  async function startCameraPath(){
+    document.getElementById('cameraInteraction').hidden=false; document.getElementById('voiceInteraction').hidden=true; document.getElementById('manualInteraction').hidden=true;
+    setStep(3,'Camera · preparing');
+    const strong = document.getElementById('cameraStatusStrong'), status = document.getElementById('cameraStatus');
+    try{
+      if(!navigator.mediaDevices?.getUserMedia) throw new Error('Camera API unavailable');
+      strong.textContent='Waiting for camera permission…'; status.textContent='Your browser will ask you to allow camera access.';
+      stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+      const video = document.getElementById('cameraVideo'); video.srcObject=stream; await video.play();
+      strong.textContent='Camera ready. Loading object detection…'; status.textContent='Model code loads in the browser. Your frames are not intentionally uploaded by this page.';
+      if(!window.cocoSsd) throw new Error('Object-detection library did not load');
+      model = model || await window.cocoSsd.load();
+      strong.textContent='AI is looking.'; status.textContent='Move one object into view and hold it steady for a moment.'; modeLabel.textContent='Camera · detecting';
+      detectLoop();
+    }catch(err){
+      strong.textContent='Camera path unavailable.'; status.textContent='No problem. Continue with the tap path.'; document.getElementById('detectedLive').textContent=String(err.message||'Camera unavailable');
+      document.getElementById('cameraFallback').focus();
     }
+  }
 
-    function stopCamera(){
-      if(stream){
-        stream.getTracks().forEach(t=>t.stop());
-        stream=null;
-      }
-      video.srcObject=null;
-    }
-
-    function resizeOverlay(){
-      if(!video.videoWidth || !video.videoHeight) return;
-      overlay.width=video.videoWidth;
-      overlay.height=video.videoHeight;
-    }
-
-    function drawPredictions(preds){
-      resizeOverlay();
-      octx.clearRect(0,0,overlay.width,overlay.height);
-      octx.lineWidth=Math.max(3,overlay.width/360);
-      octx.font=`700 ${Math.max(18,overlay.width/42)}px ui-monospace, monospace`;
-
-      preds.forEach((p,i)=>{
-        const [rawX,y,w,h]=p.bbox;
-        // The selfie video is mirrored with CSS. Mirror only the box coordinates
-        // so labels remain readable instead of being flipped backward.
-        const x = facingMode === "user"
-          ? overlay.width - rawX - w
-          : rawX;
-
-        const uncertain=p.score<.68;
-        const line=uncertain?"#FF66C4":"#5FD4FF";
-        octx.strokeStyle=line;
-        octx.fillStyle="#07111F";
-        octx.strokeRect(x,y,w,h);
-
-        const label=`${String(i+1).padStart(2,"0")} ${p.class.toUpperCase()}${uncertain?"?":""} ${Math.round(p.score*100)}%`;
-        const tw=octx.measureText(label).width+18;
-        const th=Math.max(28,overlay.width/28);
-
-        // Keep the label on-canvas when the detected box sits near the right edge.
-        const labelX=Math.min(Math.max(0,x),Math.max(0,overlay.width-tw));
-        const labelY=Math.max(0,y-th);
-
-        octx.fillRect(labelX,labelY,tw,th);
-        octx.fillStyle=line;
-        octx.fillText(label,labelX+8,labelY+th-8);
-      });
-    }
-
-    function record(preds){
-      preds.filter(p=>p.score>=MIN_SCORE).forEach(p=>{
-        const key=p.class;
-        const current=best.get(key);
-        if(!current || p.score>current.score){
-          best.set(key,{label:p.class,score:p.score,bbox:p.bbox});
-        }
-      });
-      renderObservations();
-    }
-
-    function renderObservations(){
-      const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,MAX_OBJECTS);
-      observationCountEl.textContent=`${items.length} ${items.length===1?"object":"objects"}`;
-      knownCountEl.textContent=String(items.length);
-      if(!items.length){
-        observationsEl.innerHTML='<div class="empty">Looking for visible objects…</div>';
-        return;
-      }
-      observationsEl.innerHTML=items.map((item,i)=>`
-        <div class="observation">
-          <span class="idx">${String(i+1).padStart(2,"0")}</span>
-          <span>${escapeHtml(item.label)}</span>
-          <span class="conf">${Math.round(item.score*100)}%</span>
-        </div>`).join("");
-    }
-
-    function escapeHtml(str){
-      return String(str).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
-    }
-
-    async function detectLoop(){
-      if(!running || !model) return;
-      if(video.readyState<2){
-        frameId=requestAnimationFrame(detectLoop);
-        return;
-      }
+  async function detectLoop(){
+    if(!model || !stream) return;
+    const video = document.getElementById('cameraVideo');
+    if(video.readyState >= 2){
       try{
-        const preds=await model.detect(video,12);
-        const safePreds=preds.filter(p=>p.score>=MIN_SCORE);
-        record(safePreds);
-        drawPredictions(safePreds);
-      }catch(err){
-        console.warn("Detection error:",err);
-      }
-      if(running) frameId=requestAnimationFrame(detectLoop);
-    }
-
-    function startCountdown(){
-      secondsLeft=SCAN_SECONDS;
-      timerEl.textContent=String(secondsLeft);
-      countdownId=setInterval(()=>{
-        secondsLeft-=1;
-        timerEl.textContent=String(Math.max(0,secondsLeft));
-        if(secondsLeft<=0) finishScan();
-      },1000);
-    }
-
-    function captureStill(){
-      if(!video.videoWidth || !video.videoHeight) return null;
-      const c=document.createElement("canvas");
-      c.width=video.videoWidth;
-      c.height=video.videoHeight;
-      const cctx=c.getContext("2d");
-      if(facingMode === "user"){
-        cctx.translate(c.width,0);
-        cctx.scale(-1,1);
-      }
-      cctx.drawImage(video,0,0,c.width,c.height);
-      return c;
-    }
-
-    async function switchCamera(){
-      if(switchingCamera || !stream) return;
-      switchingCamera = true;
-      const previousMode = facingMode;
-      facingMode = facingMode === "user" ? "environment" : "user";
-      cameraToggle.disabled = true;
-      cameraToggle.textContent = "Switching…";
-      try{
-        stopCamera();
-        await startCamera();
-        capturedFrame = null;
-        capturedFrameUrl = "";
-      }catch(err){
-        console.warn("Camera switch failed:", err);
-        facingMode = previousMode;
-        try{
-          stopCamera();
-          await startCamera();
-        }catch(recoveryErr){
-          console.warn("Camera recovery failed:", recoveryErr);
-          cameraError.classList.add("show");
+        const predictions = await model.detect(video);
+        const good = predictions.filter(p=>p.score>=.55).sort((a,b)=>b.score-a.score);
+        drawPredictions(good, video);
+        if(good[0]){
+          lastDetection = good[0];
+          document.getElementById('detectedLive').textContent=`Detected: ${good[0].class} · ${Math.round(good[0].score*100)}%`;
+          document.getElementById('acceptDetection').disabled=false;
+        } else {
+          document.getElementById('detectedLive').textContent='Looking… no confident detection yet';
+          document.getElementById('acceptDetection').disabled=true;
         }
-      }finally{
-        cameraToggle.disabled = false;
-        cameraToggle.textContent = facingMode === "environment" ? "Selfie view ↻" : "Scan room ↻";
-        switchingCamera = false;
-      }
+      }catch(e){}
     }
+    detectionTimer = setTimeout(detectLoop,650);
+  }
 
-    async function beginScan(){
-      showStage("scan");
-      cameraError.classList.remove("show");
-      best.clear();
-      renderObservations();
-      try{
-        await Promise.all([loadModel(),startCamera()]);
-        capturedFrame=null;
-        capturedFrameUrl="";
-        running=true;
-        startCountdown();
-        detectLoop();
-      }catch(err){
-        console.warn(err);
-        running=false;
-        cameraError.classList.add("show");
-        observationsEl.innerHTML='<div class="empty">Camera access is unavailable.</div>';
-      }
-    }
+  function drawPredictions(preds, video){
+    const canvas=document.getElementById('cameraCanvas'), ctx=canvas.getContext('2d');
+    const w=video.videoWidth||640,h=video.videoHeight||480; canvas.width=w; canvas.height=h; ctx.clearRect(0,0,w,h);
+    ctx.lineWidth=Math.max(3,w/220); ctx.font=`${Math.max(16,w/34)}px system-ui`; ctx.textBaseline='top';
+    preds.slice(0,3).forEach(p=>{const [x,y,bw,bh]=p.bbox; ctx.strokeStyle='rgba(110,231,247,.95)'; ctx.fillStyle='rgba(5,11,21,.78)'; ctx.strokeRect(x,y,bw,bh); const t=`${p.class} ${Math.round(p.score*100)}%`; const tw=ctx.measureText(t).width+16; ctx.fillRect(x,Math.max(0,y-34),tw,32); ctx.fillStyle='#fff';ctx.fillText(t,x+8,Math.max(2,y-31));});
+  }
 
-    function finishScan(){
-      if(!running && !cameraError.classList.contains("show")) return;
-      running=false;
-      clearInterval(countdownId);
-      cancelAnimationFrame(frameId);
-      capturedFrame=captureStill();
-      if(capturedFrame) capturedFrameUrl=capturedFrame.toDataURL("image/jpeg",.9);
-      stopCamera();
-      renderReveal();
-    }
+  document.getElementById('acceptDetection').addEventListener('click',()=>{ if(lastDetection) chooseObject(lastDetection.class,lastDetection.score,'camera'); });
 
-    function useFallback(){
-      running=false;
-      clearInterval(countdownId);
-      best=new Map([
-        ["person",{label:"person",score:.96}],
-        ["laptop",{label:"laptop",score:.88}],
-        ["cup",{label:"cup",score:.81}],
-        ["chair",{label:"chair",score:.76}]
-      ]);
-      capturedFrame=null;
-      capturedFrameUrl="";
-      renderReveal();
-    }
+  document.getElementById('enableVoice').addEventListener('click',()=>{ document.getElementById('cameraInteraction').hidden=true; document.getElementById('voiceInteraction').hidden=false; document.getElementById('manualInteraction').hidden=true; setStep(3,'Voice · ready'); beginRecognition(); });
+  document.getElementById('listenAgain').addEventListener('click',beginRecognition);
 
-    function renderReveal(){
-      const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,MAX_OBJECTS);
-      const target=document.getElementById("revealKnown");
-      if(!items.length){
-        target.innerHTML='<div class="reveal-row"><span class="num">00</span><span>NO CONFIDENT OBJECT DETECTIONS</span><span class="state">NO EVIDENCE</span></div>';
-      }else{
-        target.innerHTML=items.map((item,i)=>`
-          <div class="reveal-row">
-            <span class="num">${String(i+1).padStart(2,"0")}</span>
-            <span>${escapeHtml(item.label.toUpperCase())}</span>
-            <span class="state">${Math.round(item.score*100)}% DETECTED</span>
-          </div>`).join("");
-      }
-      showStage("reveal");
-    }
+  function beginRecognition(){
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const strong=document.getElementById('voiceStatusStrong'), status=document.getElementById('voiceStatus');
+    if(!SR){ strong.textContent='Voice recognition is not supported here.'; status.textContent='Use the tap path instead.'; return; }
+    stopRecognition(); recognition=new SR(); recognition.lang='en-US'; recognition.interimResults=false; recognition.maxAlternatives=1;
+    recognition.onstart=()=>{strong.textContent='Listening…';status.textContent='Say one ordinary object. You can stop by using the tap fallback.';modeLabel.textContent='Voice · listening'};
+    recognition.onerror=()=>{strong.textContent='I could not capture that clearly.';status.textContent='Try again or continue with the tap path.';modeLabel.textContent='Voice · recovery available'};
+    recognition.onresult=(e)=>{const text=e.results?.[0]?.[0]?.transcript?.trim()||''; const obj=text.split(/\s+/).slice(-2).join(' '); strong.textContent=`I heard: “${text}”`;status.textContent='Speech recognition produced a label. Continue to see what that label still cannot tell us.'; setTimeout(()=>chooseObject(obj||'object',e.results?.[0]?.[0]?.confidence||null,'voice'),650);};
+    recognition.onend=()=>{};
+    try{recognition.start()}catch(e){strong.textContent='Voice could not start.';status.textContent='Use the tap path instead.'}
+  }
 
-    function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=4){
-      const words=String(text).split(/\s+/);
-      const lines=[];
-      let line="";
-      for(const word of words){
-        const test=line?line+" "+word:word;
-        if(ctx.measureText(test).width>maxWidth && line){
-          lines.push(line);
-          line=word;
-          if(lines.length===maxLines-1) break;
-        }else{
-          line=test;
-        }
-      }
-      if(line && lines.length<maxLines) lines.push(line);
-      lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
-      return lines.length;
-    }
+  function stopRecognition(){ if(recognition){ try{recognition.abort()}catch(e){} recognition=null; } }
+  function stopCamera(){ if(detectionTimer) clearTimeout(detectionTimer); detectionTimer=null; if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;} const video=document.getElementById('cameraVideo'); if(video) video.srcObject=null; }
 
-    function drawCover(ctx,img,x,y,w,h){
-      const sw=img.width,sh=img.height;
-      if(!sw||!sh) return;
-      const scale=Math.max(w/sw,h/sh);
-      const cw=w/scale,ch=h/scale;
-      const sx=(sw-cw)/2,sy=(sh-ch)/2;
-      ctx.drawImage(img,sx,sy,cw,ch,x,y,w,h);
-    }
+  function chooseObject(obj, conf, source){
+    selectedObject=(obj||'object').trim(); confidence=conf; stopCamera(); stopRecognition();
+    document.getElementById('resultObject').textContent=selectedObject;
+    document.getElementById('finalObject').textContent=selectedObject;
+    let msg='The system received a label through the manual fallback.';
+    if(source==='camera') msg=`The model detected “${selectedObject}” with about ${Math.round((conf||0)*100)}% confidence.`;
+    if(source==='voice') msg=conf ? `Speech recognition heard “${selectedObject}” with a reported confidence of about ${Math.round(conf*100)}%.` : `Speech recognition heard “${selectedObject}.”`;
+    document.getElementById('resultConfidence').textContent=msg; document.getElementById('finalAIText').textContent=msg;
+    document.getElementById('blindSpotText').textContent=`A label like “${selectedObject}” does not explain ownership, history, emotional significance, intent, or whether the label is the most important thing about what is in front of you.`;
+    setStep(4,`${source==='camera'?'Camera':source==='voice'?'Voice':'Tap'} · result`);
+  }
 
-    function buildCard(){
-      const context=contextInput.value.trim() || "Why this moment mattered.";
-      const items=[...best.values()].sort((a,b)=>b.score-a.score).slice(0,6);
-      const labels=items.map(i=>i.label);
-      const count=labels.length;
+  document.getElementById('toMeaning').addEventListener('click',()=>setStep(5,'Add human context'));
+  document.getElementById('finishExperience').addEventListener('click',finish);
+  document.getElementById('skipMeaning').addEventListener('click',()=>{document.getElementById('meaningText').value='';finish();});
+  function finish(){
+    const meaning=document.getElementById('meaningText').value.trim();
+    document.getElementById('finalMeaning').textContent=meaning || `The object may carry context, purpose, history, relationships, or emotion that the label “${selectedObject||'object'}” cannot represent.`;
+    setStep(6,'Experience complete');
+  }
 
-      const W=1080,H=1350;
-      shareCanvas.width=W;
-      shareCanvas.height=H;
-
-      sctx.fillStyle="#F7F8FC";
-      sctx.fillRect(0,0,W,H);
-
-      // Header
-      sctx.fillStyle="#07111F";
-      sctx.fillRect(0,0,W,132);
-      sctx.fillStyle="#fff";
-      sctx.font="900 30px ui-monospace, monospace";
-      sctx.fillText("ITSBAD LABS / AI BLIND SPOT",54,58);
-      const keys=["I","T","S","B","A","D"];
-      keys.forEach((key,i)=>{
-        const x=54+i*34;
-        sctx.fillStyle="#FF66C4";
-        sctx.fillRect(x,82,28,24);
-        sctx.fillStyle="#07111F";
-        sctx.font="900 13px ui-monospace, monospace";
-        sctx.fillText(key,x+9,99);
-      });
-      sctx.fillStyle="#FF66C4";
-      sctx.fillRect(0,124,W,8);
-      sctx.fillStyle="#c8c8c8";
-      sctx.font="700 17px ui-monospace, monospace";
-      sctx.textAlign="right";
-      sctx.fillText("OBSERVATION ≠ UNDERSTANDING",W-54,58);
-      sctx.textAlign="left";
-
-      // Big share headline
-      sctx.fillStyle="#07111F";
-      sctx.font="500 70px Georgia,serif";
-      const topHeadline=`AI SAW ${count} ${count===1?"THING":"THINGS"}.`;
-      sctx.fillText(topHeadline,54,220);
-      sctx.fillStyle="#FF66C4";
-      sctx.font="500 75px Georgia,serif";
-      sctx.fillText("IT MISSED THE MOST IMPORTANT ONE.",54,300);
-
-      // Photo
-      const photoY=342,photoH=430;
-      sctx.fillStyle="#0B1728";
-      sctx.fillRect(0,photoY,W,photoH);
-      if(capturedFrame){
-        drawCover(sctx,capturedFrame,0,photoY,W,photoH);
-      }else{
-        sctx.fillStyle="#2d2d2d";
-        sctx.fillRect(0,photoY,W,photoH);
-        sctx.fillStyle="#5FD4FF";
-        sctx.font="700 30px ui-monospace, monospace";
-        sctx.fillText("SIMULATED OBSERVATION",54,photoY+70);
-      }
-
-      // Machine strip
-      sctx.fillStyle="rgba(11,11,11,.92)";
-      sctx.fillRect(0,photoY+photoH-102,W,102);
-      sctx.fillStyle="#5FD4FF";
-      sctx.font="800 18px ui-monospace, monospace";
-      sctx.fillText("THE MACHINE SAW",54,photoY+photoH-65);
-      sctx.fillStyle="#fff";
-      sctx.font="700 24px ui-monospace, monospace";
-      const seen=labels.length?labels.join(" · "):"no confident object detections";
-      wrapText(sctx,seen.toUpperCase(),54,photoY+photoH-29,W-108,30,2);
-
-      // Context
-      const hasHumanContext = contextInput.value.trim().length > 0;
-      sctx.fillStyle="#07111F";
-      sctx.font="900 18px ui-monospace, monospace";
-      sctx.fillText(hasHumanContext ? "THE HUMAN CONTEXT WAS" : "WHAT THE MACHINE COULD NOT KNOW",54,846);
-
-      sctx.font="500 51px Georgia,serif";
-      wrapText(sctx,hasHumanContext ? "\"" + context + "\"" : context,54,918,W-108,60,4);
-
-      // Gap
-      sctx.fillStyle="#07111F";
-      sctx.fillRect(54,1138,W-108,2);
-      sctx.font="800 18px ui-monospace, monospace";
-      sctx.fillStyle="#FF66C4";
-      sctx.fillText("THE MODEL HAD OBJECT LABELS.",54,1190);
-
-      sctx.fillStyle="#07111F";
-      sctx.font="500 48px Georgia,serif";
-      sctx.fillText("The gap was context.",54,1260);
-
-      sctx.fillStyle="#666";
-      sctx.font="700 16px ui-monospace, monospace";
-      sctx.fillText("ITSBAD LABS · AI BLIND SPOT",54,1325);
-      sctx.textAlign="right";
-      sctx.fillText("What did the machine miss?",W-54,1325);
-      sctx.textAlign="left";
-
-      lastCardUrl=shareCanvas.toDataURL("image/png");
-      showStage("share");
-
-      const shareBtn=document.getElementById("shareBtn");
-      if(navigator.share) shareBtn.classList.add("available");
-    }
-
-    function saveCard(){
-      if(!lastCardUrl) return;
-      const a=document.createElement("a");
-      a.href=lastCardUrl;
-      a.download="ai-blind-spot.png";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
-
-    async function shareCard(){
-      if(!lastCardUrl||!navigator.share) return;
-      try{
-        const blob=await (await fetch(lastCardUrl)).blob();
-        const file=new File([blob],"ai-blind-spot.png",{type:"image/png"});
-        if(!navigator.canShare || navigator.canShare({files:[file]})){
-          await navigator.share({
-            title:"AI Blind Spot",
-            text:"AI saw the evidence. It missed the context. What would it miss about you?",
-            files:[file]
-          });
-        }
-      }catch(err){
-        if(err?.name!=="AbortError") console.warn(err);
-      }
-    }
-
-    function reset(){
-      running=false;
-      clearInterval(countdownId);
-      cancelAnimationFrame(frameId);
-      stopCamera();
-      best.clear();
-      capturedFrame=null;
-      capturedFrameUrl="";
-      lastCardUrl=null;
-      contextInput.value="";
-      charCount.textContent="0 / 120";
-      facingMode="user";
-      vision.classList.remove("rear-camera");
-      cameraToggle.textContent="Scan room ↻";
-      octx.clearRect(0,0,overlay.width,overlay.height);
-      document.getElementById("shareBtn").classList.remove("available");
-      showStage("intro");
-    }
-
-
-
-    document.getElementById("startBtn").addEventListener("click",beginScan);
-    cameraToggle.addEventListener("click",switchCamera);
-    document.getElementById("stopBtn").addEventListener("click",finishScan);
-    document.getElementById("fallbackBtn").addEventListener("click",useFallback);
-    document.getElementById("makeCardBtn").addEventListener("click",buildCard);
-    document.getElementById("saveBtn").addEventListener("click",saveCard);
-    document.getElementById("shareBtn").addEventListener("click",shareCard);
-    document.getElementById("restartBtn").addEventListener("click",reset);
-    contextInput.addEventListener("input",()=>charCount.textContent=`${contextInput.value.length} / 120`);
-    window.addEventListener("pagehide",stopCamera);
-  })();
-  </script>
+  document.getElementById('restart').addEventListener('click',()=>{
+    stopCamera();stopRecognition();selectedObject='';confidence=null;lastDetection=null;document.getElementById('meaningText').value='';
+    document.getElementById('cameraPermission').hidden=true;document.getElementById('voicePermission').hidden=true;document.getElementById('manualPermission').hidden=true;
+    document.getElementById('cameraInteraction').hidden=true;document.getElementById('voiceInteraction').hidden=true;document.getElementById('manualInteraction').hidden=true;
+    setStep(1,'Choose how to participate');
+  });
+  window.addEventListener('beforeunload',()=>{stopCamera();stopRecognition();});
+})();
+</script>
 </body>
 </html>
