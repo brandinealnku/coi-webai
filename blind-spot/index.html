@@ -179,7 +179,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     <p class="lead">Give AI a few seconds with something around you. See what it notices—and what it completely misses.</p>
     <div class="intro-actions">
       <button class="cta" id="startBtn" type="button">Let the machine look →</button>
-      <button class="text-link" id="manualIntro" type="button">Rather not use your camera? Choose an object instead.</button>
+      <button class="text-link" id="voiceIntro" type="button">Use voice instead</button><button class="text-link" id="manualIntro" type="button">Choose an object instead</button>
     </div>
     <p class="small intro-meta">Camera optional · No account · Camera frames are not intentionally uploaded by this page</p>
   </div>
@@ -213,7 +213,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
       <div id="scanError" class="error" hidden>Camera isn't available here. You can still complete the experience without it.</div>
       <div class="scan-actions">
         <button class="cta" id="freezeBtn" type="button" disabled>Freeze what AI sees →</button>
-        <button class="secondary" id="manualScan" type="button">Choose an object instead</button>
+        <button class="secondary" id="voiceScan" type="button">Use voice instead</button><button class="secondary" id="manualScan" type="button">Choose an object instead</button>
       </div>
     </aside>
   </div>
@@ -278,6 +278,18 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   </div>
 </dialog>
 
+<dialog id="voiceDialog" aria-labelledby="voiceTitle">
+  <div class="dialog">
+    <div class="dialog-head"><h3 id="voiceTitle">Say one object</h3><button class="close" id="closeVoice" aria-label="Close">×</button></div>
+    <p>Say one ordinary object around you—like “chair,” “phone,” “book,” or “cup.”</p>
+    <div id="voiceState" class="error" style="border-left-color:var(--blue);background:#F1FBFF">Ready when you are.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+      <button class="cta" id="listenBtn" type="button">Listen →</button>
+      <button class="secondary" id="voiceToManual" type="button">Choose instead</button>
+    </div>
+  </div>
+</dialog>
+
 <dialog id="manualDialog" aria-labelledby="manualTitle">
   <div class="dialog">
     <div class="dialog-head"><h3 id="manualTitle">Choose one object</h3><button class="close" id="closeManual" aria-label="Close">×</button></div>
@@ -301,6 +313,9 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   const contextInput=document.getElementById("contextInput");
   const howDialog=document.getElementById("howDialog");
   const manualDialog=document.getElementById("manualDialog");
+  const voiceDialog=document.getElementById("voiceDialog");
+  const voiceState=document.getElementById("voiceState");
+  let recognition=null;
   const manualChoices=document.getElementById("manualChoices");
   const choices=["chair","phone","book","cup","plant","backpack","laptop","dog"];
   let stream=null,model=null,running=false,timer=null;
@@ -370,6 +385,36 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     best=new Map([[label,{label,score:null,bbox:null}]]);
     manualDialog.close(); reveal();
   }
+  function stopVoice(){
+    if(recognition){try{recognition.abort()}catch(e){} recognition=null}
+  }
+  function openVoice(){
+    stopCamera(); stopVoice();
+    voiceState.textContent="Ready when you are.";
+    voiceDialog.showModal();
+  }
+  function listenVoice(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){
+      voiceState.textContent="Voice recognition is not supported in this browser. Choose an object instead.";
+      return;
+    }
+    stopVoice();
+    recognition=new SR();
+    recognition.lang="en-US";
+    recognition.interimResults=false;
+    recognition.maxAlternatives=1;
+    recognition.onstart=()=>{voiceState.textContent="Listening… say one ordinary object."};
+    recognition.onerror=()=>{voiceState.textContent="I couldn't capture that clearly. Try again or choose an object instead."};
+    recognition.onresult=e=>{
+      const heard=e.results?.[0]?.[0]?.transcript?.trim()||"";
+      const label=heard.split(/\s+/).slice(-2).join(" ")||"object";
+      voiceState.textContent=`I heard: “${heard}”`;
+      best=new Map([[label,{label,score:null,bbox:null}]]);
+      setTimeout(()=>{voiceDialog.close();reveal()},450);
+    };
+    try{recognition.start()}catch(e){voiceState.textContent="Voice couldn't start. Choose an object instead."}
+  }
   function buildFinal(){
     const items=[...best.values()];
     const primary=(items[0]?.label||"object").toUpperCase();
@@ -388,7 +433,9 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   });
   document.getElementById("startBtn").addEventListener("click",start);
   document.getElementById("freezeBtn").addEventListener("click",reveal);
+  document.getElementById("voiceIntro").addEventListener("click",openVoice);
   document.getElementById("manualIntro").addEventListener("click",()=>manualDialog.showModal());
+  document.getElementById("voiceScan").addEventListener("click",openVoice);
   document.getElementById("manualScan").addEventListener("click",()=>{stopCamera();manualDialog.showModal()});
   document.getElementById("createBtn").addEventListener("click",buildFinal);
   document.getElementById("againBtn").addEventListener("click",reset);
@@ -396,9 +443,13 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   document.getElementById("howBtnFinal").addEventListener("click",()=>howDialog.showModal());
   document.getElementById("closeDialog").addEventListener("click",()=>howDialog.close());
   document.getElementById("closeManual").addEventListener("click",()=>manualDialog.close());
+  document.getElementById("closeVoice").addEventListener("click",()=>{stopVoice();voiceDialog.close()});
+  document.getElementById("listenBtn").addEventListener("click",listenVoice);
+  document.getElementById("voiceToManual").addEventListener("click",()=>{stopVoice();voiceDialog.close();manualDialog.showModal()});
   howDialog.addEventListener("click",e=>{if(e.target===howDialog)howDialog.close()});
   manualDialog.addEventListener("click",e=>{if(e.target===manualDialog)manualDialog.close()});
-  window.addEventListener("pagehide",stopCamera);
+  voiceDialog.addEventListener("click",e=>{if(e.target===voiceDialog){stopVoice();voiceDialog.close()}});
+  window.addEventListener("pagehide",()=>{stopCamera();stopVoice()});
 })();
 </script>
 </body>
