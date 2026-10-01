@@ -701,7 +701,11 @@
     }
 
     async function detectLoop(){
-      if(!running || !model || video.readyState<2) return;
+      if(!running || !model) return;
+      if(video.readyState<2){
+        frameId=requestAnimationFrame(detectLoop);
+        return;
+      }
       try{
         const preds=await model.detect(video,12);
         const safePreds=preds.filter(p=>p.score>=MIN_SCORE);
