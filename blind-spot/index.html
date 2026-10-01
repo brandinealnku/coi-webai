@@ -101,7 +101,7 @@ h3{font:700 clamp(1.4rem,2.4vw,2rem)/1.05 var(--sans);letter-spacing:-.03em}
 .idx{color:var(--pink);font-weight:900}.conf{color:var(--muted);font-size:.72rem}
 .empty{padding:18px 0;color:var(--muted);font:.8rem/1.5 var(--mono)}
 .scan-actions{margin-top:auto;padding-top:22px;display:grid;gap:12px}
-.scan-actions .cta,.scan-actions .secondary{width:100%}
+.scan-actions .secondary{width:100%}.scan-actions .text-link{justify-self:start;font:800 .72rem var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
 .error{padding:14px;border-left:4px solid var(--pink);background:#FFF5FB;color:#414B5B;margin-top:16px}
 
 /* REVEAL */
@@ -207,12 +207,12 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
       <div class="console-top">
         <p class="eyebrow">Look</p>
         <h3>Show the machine your world.</h3>
-        <p class="lead">Point your camera at a few ordinary things. When you're ready, freeze what AI sees.</p>
+        <p class="lead">Point your camera at a few ordinary things. The reveal will happen automatically once AI has enough to work with.</p>
       </div>
       <div id="objects" class="objects"><div class="empty">Preparing object detection…</div></div>
       <div id="scanError" class="error" hidden>Camera isn't available here. You can still complete the experience without it.</div>
       <div class="scan-actions">
-        <button class="cta" id="freezeBtn" type="button" disabled>Freeze what AI sees →</button>
+        <button class="text-link" id="freezeBtn" type="button" disabled>Reveal now</button>
         <button class="secondary" id="voiceScan" type="button">Use voice instead</button><button class="secondary" id="manualScan" type="button">Choose an object instead</button>
       </div>
     </aside>
@@ -318,7 +318,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
   let recognition=null;
   const manualChoices=document.getElementById("manualChoices");
   const choices=["chair","phone","book","cup","plant","backpack","laptop","dog"];
-  let stream=null,model=null,running=false,timer=null;
+  let stream=null,model=null,running=false,timer=null,autoRevealTimer=null,firstDetectionAt=null;
   let best=new Map();
 
   function show(id){
@@ -329,12 +329,16 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
     running=false;
     if(timer) clearTimeout(timer);
     timer=null;
+    if(autoRevealTimer) clearTimeout(autoRevealTimer);
+    autoRevealTimer=null;
+    firstDetectionAt=null;
     if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
     video.srcObject=null;
   }
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
   async function start(){
-    show("scan"); best.clear(); renderObjects(); scanError.hidden=true; freezeBtn.disabled=true;
+    show("scan"); best.clear(); renderObjects(); scanError.hidden=true; freezeBtn.disabled=true; firstDetectionAt=null;
+    if(autoRevealTimer) clearTimeout(autoRevealTimer); autoRevealTimer=null;
     cameraMessage.textContent="Waiting for camera permission…";
     try{
       if(!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unsupported");
@@ -343,7 +347,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
       cameraMessage.textContent="Camera ready · loading local object detection…";
       if(!window.cocoSsd) throw new Error("Object detection library unavailable");
       model=model||await window.cocoSsd.load({base:"lite_mobilenet_v2"});
-      running=true; cameraMessage.textContent="AI is looking · point at ordinary objects";
+      running=true; cameraMessage.textContent="AI is looking · point at ordinary objects · reveal happens automatically";
       detect();
     }catch(err){
       scanError.hidden=false;cameraMessage.textContent="Camera path unavailable";
@@ -357,6 +361,14 @@ dialog::backdrop{background:rgba(0,0,0,.72)}
         const preds=(await model.detect(video,12)).filter(p=>p.score>=.52).sort((a,b)=>b.score-a.score);
         preds.forEach(p=>{const cur=best.get(p.class);if(!cur||p.score>cur.score)best.set(p.class,{label:p.class,score:p.score,bbox:p.bbox})});
         draw(preds.slice(0,5));renderObjects();freezeBtn.disabled=best.size===0;
+        if(best.size>0 && !firstDetectionAt){
+          firstDetectionAt=Date.now();
+          autoRevealTimer=setTimeout(()=>{ if(running && best.size>0) reveal(); },7000);
+        }
+        if(best.size>=3 && firstDetectionAt && Date.now()-firstDetectionAt>=2500 && running){
+          reveal();
+          return;
+        }
       }catch(e){}
     }
     timer=setTimeout(detect,550);
