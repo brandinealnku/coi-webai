@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CMC Fossil Scan Prototype</title>
+  <meta name="description" content="Browser-based fossil recognition experiment for the Cincinnati Museum Center AI Native Studio project." />
+  <meta name="theme-color" content="#111111" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">AI Native Studio · Cincinnati Museum Center</div>
+        <h1>Can a browser recognize this fossil?</h1>
+        <p>This is a small evidence test, not a production detector. Teach the browser several views of one fossil, add a few background examples, then scan it live.</p>
+      </div>
+      <div class="status-card">
+        <span id="modelDot" class="dot"></span>
+        <div><strong id="modelStatus">Loading vision model…</strong><span>MobileNet embeddings · local browser inference</span></div>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <article class="camera-card">
+        <div class="camera-top">
+          <div><span class="kicker">Live camera</span><h2>Center the object in the frame.</h2></div>
+          <button id="flipBtn" class="ghost" type="button">Flip camera</button>
+        </div>
+        <div class="stage" id="stage">
+          <video id="video" playsinline muted></video>
+          <canvas id="overlay"></canvas>
+          <div class="scan-frame" aria-hidden="true"><span></span></div>
+          <div class="scan-beam" aria-hidden="true"></div>
+          <div class="hud">
+            <div id="liveLabel" class="live-label">Waiting to scan</div>
+            <div class="score-row"><span>Fossil match</span><strong id="liveScore">—</strong></div>
+          </div>
+        </div>
+        <div class="camera-actions">
+          <button id="startBtn" class="primary" type="button">Start camera</button>
+          <button id="stopBtn" class="secondary" type="button" disabled>Stop</button>
+        </div>
+      </article>
+
+      <aside class="control-card">
+        <div class="step">
+          <span class="step-num">1</span>
+          <div><h3>Teach the fossil</h3><p>Hold the fossil in the scan box. Capture multiple angles, distances, and orientations.</p></div>
+        </div>
+        <button id="addFossilBtn" class="primary full" type="button" disabled>Add fossil example</button>
+        <div class="counter"><span>Fossil examples</span><strong id="fossilCount">0</strong></div>
+
+        <div class="divider"></div>
+
+        <div class="step">
+          <span class="step-num">2</span>
+          <div><h3>Teach “not fossil”</h3><p>Point the camera at the table, your hand, nearby objects, and empty background.</p></div>
+        </div>
+        <button id="addBackgroundBtn" class="secondary full" type="button" disabled>Add background example</button>
+        <div class="counter"><span>Background examples</span><strong id="backgroundCount">0</strong></div>
+
+        <div class="divider"></div>
+
+        <div class="step">
+          <span class="step-num">3</span>
+          <div><h3>Run the test</h3><p>Once you have examples, start live scanning and move the fossil in and out of frame.</p></div>
+        </div>
+        <button id="scanBtn" class="accent full" type="button" disabled>Start live scan</button>
+
+        <label class="threshold">
+          <span>Match threshold <strong id="thresholdLabel">72%</strong></span>
+          <input id="threshold" type="range" min="55" max="95" value="72" />
+        </label>
+
+        <div class="result-card">
+          <span class="kicker">Current result</span>
+          <strong id="resultTitle">No scan yet</strong>
+          <p id="resultDetail">Teach the model first, then start scanning.</p>
+        </div>
+
+        <button id="resetBtn" class="text-btn" type="button">Reset training examples</button>
+      </aside>
+    </section>
+
+    <section class="evidence-card">
+      <div><span class="kicker">Experiment evidence</span><h2>What this test can actually tell us</h2></div>
+      <div class="evidence-grid">
+        <article><strong>Can test</strong><p>Whether one known fossil can be recognized again from live camera views on a phone or laptop.</p></article>
+        <article><strong>Cannot prove</strong><p>That the system can recognize arbitrary fossils, identify species, or localize objects across a gallery.</p></article>
+        <article><strong>Success signal</strong><p>Repeatedly scores the fossil above threshold and ordinary backgrounds below threshold across several angles.</p></article>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
