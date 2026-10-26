@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CMC Fossil Scan V2</title>
+  <meta name="description" content="KNN browser-based fossil recognition validation prototype for Cincinnati Museum Center." />
+  <meta name="theme-color" content="#0b0d10" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<main class="shell">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">AI Native Studio · Cincinnati Museum Center · V2</div>
+      <h1>Teach it. Lock it. Test it.</h1>
+      <p>Three-class KNN recognition for one known fossil. Training and validation are intentionally separated so the results can become usable evidence.</p>
+    </div>
+    <div class="status-card">
+      <span id="modelDot" class="dot"></span>
+      <div><strong id="modelStatus">Loading vision model…</strong><span>MobileNet embeddings + KNN · in-browser</span></div>
+    </div>
+  </header>
+
+  <section class="phase-strip" aria-label="Experiment phase">
+    <div id="phaseTrain" class="phase active"><span>1</span><strong>TRAIN</strong><small>Add examples</small></div>
+    <div id="phaseLock" class="phase"><span>2</span><strong>LOCK</strong><small>Freeze training</small></div>
+    <div id="phaseTest" class="phase"><span>3</span><strong>TEST</strong><small>Record evidence</small></div>
+  </section>
+
+  <section class="workspace">
+    <article class="camera-card">
+      <div class="camera-top">
+        <div><span class="kicker">Live camera</span><h2>Keep the object inside the scan frame.</h2></div>
+        <button id="flipBtn" class="ghost" type="button">Flip camera</button>
+      </div>
+
+      <div class="stage">
+        <video id="video" playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div class="scan-frame" aria-hidden="true"><span></span></div>
+        <div class="scan-beam" aria-hidden="true"></div>
+        <div class="hud-top"><div id="phasePill" class="pill">TRAINING OPEN</div></div>
+        <div class="hud">
+          <div>
+            <span class="hud-label">Prediction</span>
+            <strong id="liveLabel">Waiting to start</strong>
+          </div>
+          <div class="score-stack">
+            <div><span>Fossil</span><strong id="fossilProb">—</strong></div>
+            <div><span>Other</span><strong id="otherProb">—</strong></div>
+            <div><span>Background</span><strong id="backgroundProb">—</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="camera-actions">
+        <button id="startBtn" class="primary" type="button">Start camera</button>
+        <button id="stopBtn" class="secondary" type="button" disabled>Stop</button>
+      </div>
+    </article>
+
+    <aside class="control-card">
+      <section id="trainingPanel">
+        <div class="panel-heading"><div><span class="kicker">Training</span><h2>Build three classes.</h2></div><span id="trainingState" class="state-badge">OPEN</span></div>
+
+        <div class="class-card fossil">
+          <div><strong>THIS FOSSIL</strong><span>Different angles, distances, lighting.</span></div>
+          <button id="addFossilBtn" class="primary" disabled>Add example</button>
+          <b id="fossilCount">0</b>
+        </div>
+
+        <div class="class-card other">
+          <div><strong>OTHER OBJECT</strong><span>Rock, phone, mug, book, hand-held object.</span></div>
+          <button id="addOtherBtn" class="secondary" disabled>Add example</button>
+          <b id="otherCount">0</b>
+        </div>
+
+        <div class="class-card background">
+          <div><strong>EMPTY / BACKGROUND</strong><span>Table, room, hand, empty scan frame.</span></div>
+          <button id="addBackgroundBtn" class="secondary" disabled>Add example</button>
+          <b id="backgroundCount">0</b>
+        </div>
+
+        <div class="training-advice" id="trainingAdvice">Aim for at least 10 examples per class before locking.</div>
+        <button id="lockBtn" class="accent full" type="button" disabled>Lock training & begin test</button>
+      </section>
+
+      <section id="testingPanel" class="hidden">
+        <div class="panel-heading"><div><span class="kicker">Validation</span><h2>Record held-out tests.</h2></div><span class="state-badge locked">LOCKED</span></div>
+        <p class="test-help">Do not add training examples now. Place a test item in frame, then record what is actually present.</p>
+
+        <button id="scanBtn" class="accent full" type="button" disabled>Start live classification</button>
+
+        <div class="truth-label">What is actually in the frame?</div>
+        <div class="truth-grid">
+          <button class="truth-btn" data-truth="fossil" disabled>Fossil</button>
+          <button class="truth-btn" data-truth="other" disabled>Other object</button>
+          <button class="truth-btn" data-truth="background" disabled>Background</button>
+        </div>
+
+        <div class="result-card">
+          <span class="kicker">Current prediction</span>
+          <strong id="resultTitle">No test yet</strong>
+          <p id="resultDetail">Start live classification, then record a held-out test.</p>
+        </div>
+      </section>
+
+      <button id="resetBtn" class="text-btn" type="button">Reset entire experiment</button>
+    </aside>
+  </section>
+
+  <section class="metrics-card">
+    <div class="section-head">
+      <div><span class="kicker">Test metrics</span><h2>Validation results</h2></div>
+      <button id="exportBtn" class="ghost" type="button" disabled>Export results JSON</button>
+    </div>
+    <div class="metric-grid">
+      <article><span>Recorded tests</span><strong id="metricTests">0</strong></article>
+      <article><span>Correct</span><strong id="metricCorrect">0</strong></article>
+      <article><span>Accuracy</span><strong id="metricAccuracy">—</strong></article>
+      <article><span>False positives</span><strong id="metricFalsePos">0</strong></article>
+      <article><span>False negatives</span><strong id="metricFalseNeg">0</strong></article>
+      <article><span>Avg. confidence</span><strong id="metricConfidence">—</strong></article>
+    </div>
+    <div class="gate" id="successGate"><strong>Evidence gate:</strong> Record at least 20 held-out tests. Target ≥90% overall accuracy with ≤10% fossil false-positive rate.</div>
+  </section>
+
+  <section class="evidence-card">
+    <div class="section-head">
+      <div><span class="kicker">Evidence snapshots</span><h2>Every recorded test leaves a trace.</h2></div>
+      <button id="clearEvidenceBtn" class="ghost" type="button" disabled>Clear test evidence</button>
+    </div>
+    <div id="evidenceGrid" class="evidence-grid">
+      <div class="empty-state">No validation tests recorded yet.</div>
+    </div>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
