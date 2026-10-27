@@ -1,62 +1,46 @@
-# CMC Fossil Experience V4 — QR Field Study
+# CMC Fossil Experience V4 — QR Field Study (Google Edition)
 
-V4 is designed for NKU AI Day visitors to join from their **own phones via QR code**, scan the physical fossil, complete the experience, and contribute anonymous interaction data to one shared research dataset.
+V4 is optimized for NKU AI Day:
 
-## Architecture
+**QR → visitor phone → local fossil scan → museum interaction → anonymous event rows in Google Sheets**
 
-### Public visitor
-`/fossil-experience-v4/`
+## Simplified architecture
 
-Loads:
-- MobileNet + KNN in the browser
-- the published fossil classifier from the Worker `GET /model`
-- camera access on the participant's own phone
+### GitHub Pages
+Hosts the mobile visitor experience and the frozen `training.json` classifier.
 
-Posts anonymous interaction events to `POST /events`.
+### TensorFlow.js
+Runs MobileNet + KNN locally in each visitor's browser. Camera frames are not uploaded.
 
-No camera image is uploaded by V4.
+### Google Apps Script + Google Sheets
+Receives anonymous event data and writes one event per row to a shared research Sheet.
 
-### Research setup
-`/fossil-experience-v4/admin.html`
+No Cloudflare Worker or database is required.
 
-Researchers:
-1. train fossil / other object / background,
-2. publish the classifier to the Worker,
-3. display/copy the visitor QR code.
+## Setup
 
-### Shared dashboard
-`/fossil-experience-v4/dashboard.html`
+See `google-apps-script/SETUP.md`.
 
-Loads the shared event log and calculates:
-- sessions
-- completion
-- scan success
-- median scan time
+## Research data
+
+The Sheet captures:
+- session id
+- event type and timestamps
+- scan attempts
+- scan confidence and class probabilities
+- scan time
+- observation choice
 - looked-closer response
-- median dwell time
+- desired next action
+- manual bypass
+- total experience time
+- screen progression
+- user agent
 
-## Backend
+## Model publishing
 
-The `worker/` folder contains a minimal Cloudflare Worker + D1 implementation.
-
-Endpoints:
-- `GET /health`
-- `GET /model`
-- `PUT /model` — admin key required
-- `POST /events`
-- `GET /events` — admin key required
-
-## Deployment setup
-
-1. Create a Cloudflare D1 database named `cmc-fossil-ai-day`.
-2. Run `worker/schema.sql` against it.
-3. Put the D1 database id into `worker/wrangler.toml`.
-4. Set `ADMIN_KEY` as a Worker secret.
-5. Deploy the Worker.
-6. Put the Worker URL into `config.js` as `API_BASE`.
-7. Open `admin.html`, train the three classes, and publish the classifier.
-8. Test the visitor URL from a phone not used for training.
+Use `admin.html` to train the three classes and download `training.json`. Replace the static file in this folder before AI Day.
 
 ## Research boundary
 
-V4 tests whether people can independently join, grant camera access, recognize the fossil, look more closely, and continue exploring. It does not establish general fossil identification or production museum readiness.
+This is a formative visitor-experience study. It tests interaction value and scan usability for one trained fossil instance. It does not validate general fossil identification or a production museum system.
