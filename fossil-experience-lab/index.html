@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CMC Fossil Experience Lab</title>
+  <meta name="description" content="AI Day visitor research prototype for Cincinnati Museum Center and NKU AI Native Studio." />
+  <meta name="theme-color" content="#0b0d10" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<main id="app">
+  <section id="visitorApp" class="visitor-app">
+    <header class="visitor-topbar">
+      <div class="brand-lockup">
+        <span class="brand-dot"></span>
+        <div><strong>Fossil Experience Lab</strong><span>NKU AI Native Studio × Cincinnati Museum Center</span></div>
+      </div>
+      <button id="researchModeBtn" class="quiet-btn" type="button" aria-label="Open research mode">Research</button>
+    </header>
+
+    <section id="screenInvite" class="screen active">
+      <div class="experience-card hero-card">
+        <span class="eyebrow">AI DAY EXPERIENCE</span>
+        <h1>What can this fossil tell you?</h1>
+        <p class="lede">Use the camera to explore a real object. No special knowledge needed.</p>
+        <div class="object-prompt">
+          <span class="object-icon" aria-hidden="true">◌</span>
+          <div><strong>Start with the fossil in front of you.</strong><span>You'll be asked to look closely before anything is revealed.</span></div>
+        </div>
+        <button id="beginBtn" class="primary xl" type="button">Scan the fossil</button>
+        <p class="microcopy">Prototype experience. Camera images stay on this device during the session.</p>
+      </div>
+    </section>
+
+    <section id="screenCamera" class="screen">
+      <div class="camera-layout">
+        <div class="camera-copy">
+          <span class="eyebrow">STEP 1 · SCAN</span>
+          <h2>Put the fossil inside the frame.</h2>
+          <p id="cameraGuidance">Move closer until the fossil fills most of the box.</p>
+        </div>
+        <div class="camera-stage">
+          <video id="visitorVideo" playsinline muted></video>
+          <canvas id="visitorOverlay"></canvas>
+          <div class="focus-frame" aria-hidden="true"><span></span></div>
+          <div class="scan-line" aria-hidden="true"></div>
+          <div id="scanStatus" class="scan-status">Looking…</div>
+        </div>
+        <div class="camera-footer">
+          <button id="cancelScanBtn" class="secondary" type="button">Start over</button>
+          <button id="manualContinueBtn" class="quiet-link" type="button">Having trouble scanning?</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenObserve" class="screen">
+      <div class="experience-card">
+        <span class="eyebrow">STEP 2 · LOOK CLOSER</span>
+        <h2>Before you keep going, look at the fossil itself.</h2>
+        <p class="lede">What catches your attention first?</p>
+        <div class="choice-grid three">
+          <button class="choice-btn observe-choice" data-choice="shape"><span class="choice-mark">01</span><strong>Its shape</strong><span>The overall form or outline</span></button>
+          <button class="choice-btn observe-choice" data-choice="texture"><span class="choice-mark">02</span><strong>Its texture</strong><span>Ridges, pits, lines, or surface</span></button>
+          <button class="choice-btn observe-choice" data-choice="pattern"><span class="choice-mark">03</span><strong>Its pattern</strong><span>Repeated or unusual details</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenReveal" class="screen">
+      <div class="experience-card reveal-card">
+        <span class="eyebrow">STEP 3 · DISCOVER</span>
+        <h2 id="revealHeading">That detail is a clue.</h2>
+        <p id="revealCopy" class="reveal-copy">Scientists use visible features such as shape, texture, and pattern to compare specimens and ask better questions about what they are seeing.</p>
+        <div class="prototype-note"><strong>Prototype interpretation</strong><span>This short reveal is intentionally generic for AI Day. A museum version would use curator-approved content tied to the actual object.</span></div>
+        <button id="continueConnectionBtn" class="primary xl" type="button">Show me what comes next</button>
+      </div>
+    </section>
+
+    <section id="screenConnection" class="screen">
+      <div class="experience-card">
+        <span class="eyebrow">STEP 4 · EXPAND YOUR WORLD</span>
+        <h2>What if this object could lead you to another one?</h2>
+        <p class="lede">A museum experience could use AI to surface a meaningful connection—not just identify what you're looking at.</p>
+        <div class="connection-demo">
+          <div class="connection-node current"><span>YOU STARTED HERE</span><strong>This fossil</strong></div>
+          <div class="connection-line"><span>AI finds a connection</span></div>
+          <div class="connection-node related"><span>NEXT</span><strong>A related collection object</strong><small>On display—or hidden in the collection</small></div>
+        </div>
+        <button id="continueReactionBtn" class="primary xl" type="button">Continue</button>
+      </div>
+    </section>
+
+    <section id="screenReaction" class="screen">
+      <div class="experience-card">
+        <span class="eyebrow">TWO QUICK QUESTIONS</span>
+        <h2>Did scanning make you look more closely at the fossil?</h2>
+        <div class="choice-grid three reaction-grid">
+          <button class="choice-btn reaction-look" data-choice="yes"><strong>Yes</strong></button>
+          <button class="choice-btn reaction-look" data-choice="a-little"><strong>A little</strong></button>
+          <button class="choice-btn reaction-look" data-choice="no"><strong>No</strong></button>
+        </div>
+
+        <div id="nextQuestion" class="next-question hidden">
+          <h3>What would you most want to do next?</h3>
+          <div class="choice-grid two">
+            <button class="choice-btn next-choice" data-choice="learn-about-fossil"><strong>Learn about this fossil</strong></button>
+            <button class="choice-btn next-choice" data-choice="find-related-object"><strong>Find a related object</strong></button>
+            <button class="choice-btn next-choice" data-choice="scan-something-else"><strong>Scan something else</strong></button>
+            <button class="choice-btn next-choice" data-choice="ask-a-question"><strong>Ask a question</strong></button>
+            <button class="choice-btn next-choice wide" data-choice="finished"><strong>I'm finished</strong></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenThanks" class="screen">
+      <div class="experience-card thanks-card">
+        <span class="eyebrow">THANK YOU</span>
+        <h2>You just helped test a possible museum experience.</h2>
+        <p class="lede">We're studying whether camera-based AI can help people notice more, explore deeper, and discover connections across a collection.</p>
+        <div class="thanks-stat"><strong id="sessionTime">—</strong><span>your total experience time</span></div>
+        <button id="nextVisitorBtn" class="primary xl" type="button">Ready for the next visitor</button>
+      </div>
+    </section>
+  </section>
+
+  <section id="researchApp" class="research-app hidden">
+    <header class="research-header">
+      <div><span class="eyebrow">RESEARCH MODE</span><h1>AI Day Research Console</h1><p>Train once, run many visitor sessions, export the evidence.</p></div>
+      <button id="closeResearchBtn" class="secondary" type="button">Back to visitor mode</button>
+    </header>
+
+    <nav class="research-tabs" aria-label="Research console sections">
+      <button class="tab active" data-tab="setup">1. Setup</button>
+      <button class="tab" data-tab="dashboard">2. Dashboard</button>
+      <button class="tab" data-tab="evidence">3. Evidence</button>
+    </nav>
+
+    <section id="tabSetup" class="research-panel active">
+      <div class="research-grid">
+        <article class="panel camera-panel">
+          <div class="panel-head"><div><span class="kicker">Training camera</span><h2>Teach the three classes.</h2></div><span id="modelBadge" class="badge">Loading…</span></div>
+          <div class="research-camera">
+            <video id="researchVideo" playsinline muted></video>
+            <div class="focus-frame" aria-hidden="true"></div>
+          </div>
+          <div class="button-row"><button id="researchStartCameraBtn" class="primary">Start camera</button><button id="researchFlipBtn" class="secondary">Flip</button><button id="researchStopCameraBtn" class="secondary" disabled>Stop</button></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head"><div><span class="kicker">Persistent classifier</span><h2>Training set</h2></div><span id="savedBadge" class="badge">Not saved</span></div>
+          <div class="train-class"><div><strong>This fossil</strong><span>Angles, distance, lighting</span></div><b id="rcFossil">0</b><button id="rAddFossil" class="primary" disabled>Add</button></div>
+          <div class="train-class"><div><strong>Other object</strong><span>Rock, mug, phone, similar textures</span></div><b id="rcOther">0</b><button id="rAddOther" class="secondary" disabled>Add</button></div>
+          <div class="train-class"><div><strong>Background</strong><span>Empty frame, table, hand, room</span></div><b id="rcBackground">0</b><button id="rAddBackground" class="secondary" disabled>Add</button></div>
+          <div class="setup-actions">
+            <button id="saveTrainingBtn" class="accent full" disabled>Save training to this device</button>
+            <button id="clearTrainingBtn" class="danger-link">Clear saved training</button>
+          </div>
+          <div id="setupReadiness" class="readiness">Aim for at least 10 examples per class.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="tabDashboard" class="research-panel">
+      <div class="section-head"><div><span class="kicker">AI Day evidence</span><h2>Visitor behavior dashboard</h2></div><button id="exportResearchBtn" class="secondary">Export research JSON</button></div>
+      <div class="metrics">
+        <article><span>Sessions</span><strong id="mSessions">0</strong></article>
+        <article><span>Completed</span><strong id="mCompletion">—</strong></article>
+        <article><span>Scan success</span><strong id="mScanSuccess">—</strong></article>
+        <article><span>Median scan time</span><strong id="mScanTime">—</strong></article>
+        <article><span>Looked closer</span><strong id="mLookCloser">—</strong></article>
+        <article><span>Median dwell</span><strong id="mDwell">—</strong></article>
+      </div>
+      <div class="dashboard-grid">
+        <article class="panel"><span class="kicker">What visitors noticed</span><div id="observeBreakdown" class="bar-list"></div></article>
+        <article class="panel"><span class="kicker">What they wanted next</span><div id="nextBreakdown" class="bar-list"></div></article>
+      </div>
+      <div class="panel session-table-wrap">
+        <div class="panel-head"><div><span class="kicker">Session log</span><h2>Recent participants</h2></div><button id="clearSessionsBtn" class="danger-link">Clear session data</button></div>
+        <div class="session-table" id="sessionTable"><div class="empty-state">No visitor sessions yet.</div></div>
+      </div>
+    </section>
+
+    <section id="tabEvidence" class="research-panel">
+      <div class="section-head"><div><span class="kicker">Recognition evidence</span><h2>Scan snapshots & diagnostics</h2></div></div>
+      <div id="researchEvidenceGrid" class="evidence-grid"><div class="empty-state">No scan evidence yet.</div></div>
+    </section>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
