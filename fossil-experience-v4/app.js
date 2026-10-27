@@ -1,10 +1,42 @@
-const CFG=window.CMC_V4_CONFIG||{};const API=(CFG.API_BASE||'').replace(/\/$/,'');
+const CFG=window.CMC_V4_CONFIG||{};const ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim();
 const $=id=>document.getElementById(id),screens=['loading','welcome','camera','observe','discover','connection','feedback','thanks','notReady'];
 let model=null,classifier=null,stream=null,raf=null,lastInfer=0,stable=0,current=null,session=null;
 const video=$('video'),overlay=$('overlay'),ctx=overlay.getContext('2d'),crop=document.createElement('canvas'),cctx=crop.getContext('2d',{willReadFrequently:true});
-function uid(){return crypto.randomUUID?crypto.randomUUID():'s-'+Date.now()+'-'+Math.random().toString(16).slice(2)}function show(id){screens.forEach(s=>$(s).classList.toggle('active',s===id));event('screen',{screen:id})}
-function event(type,data={}){if(!session)return;const e={type,at:new Date().toISOString(),elapsedMs:Date.now()-session.startedAt,...data};session.events.push(e);if(API)fetch(API+'/events',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({sessionId:session.id,event:e})}).catch(()=>{})}
-async function loadTraining(){let data=null;if(API){try{const r=await fetch(API+'/model',{cache:'no-store'});if(r.ok)data=await r.json()}catch{}}if(!data){try{const r=await fetch('training.json',{cache:'no-store'});if(r.ok)data=await r.json()}catch{}}if(!data?.classes||!Object.keys(data.classes).length)return false;const ds={};for(const [label,o] of Object.entries(data.classes))ds[label]=tf.tensor(o.data,o.shape);classifier.setClassifierDataset(ds);return classifier.getNumClasses()>=3}
+
+function uid(){return crypto.randomUUID?crypto.randomUUID():'s-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
+function show(id){screens.forEach(s=>$(s).classList.toggle('active',s===id));event('screen',{screen:id})}
+function sendToGoogle(payload){
+  if(!ENDPOINT)return;
+  try{
+    fetch(ENDPOINT,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload),
+      keepalive:true
+    }).catch(()=>{});
+  }catch{}
+}
+function event(type,data={}){
+  if(!session)return;
+  const e={type,at:new Date().toISOString(),elapsedMs:Date.now()-session.startedAt,...data};
+  session.events.push(e);
+  sendToGoogle({
+    eventName:CFG.EVENT_NAME||'NKU AI Day 2026',
+    sessionId:session.id,
+    event:e,
+    userAgent:navigator.userAgent
+  });
+}
+async function loadTraining(){
+  let data=null;
+  try{const r=await fetch('training.json?v=4',{cache:'no-store'});if(r.ok)data=await r.json()}catch{}
+  if(!data?.classes||Object.keys(data.classes).length<3)return false;
+  const ds={};
+  for(const [label,o] of Object.entries(data.classes))ds[label]=tf.tensor(o.data,o.shape);
+  classifier.setClassifierDataset(ds);
+  return classifier.getNumClasses()>=3;
+}
 function cropFrame(){if(!video.videoWidth)return null;const side=Math.min(video.videoWidth,video.videoHeight)*.66,sx=(video.videoWidth-side)/2,sy=(video.videoHeight-side)/2;crop.width=224;crop.height=224;cctx.drawImage(video,sx,sy,side,side,0,0,224,224);return crop}
 function activation(){const f=cropFrame();return f?model.infer(f,true):null}
 async function startCamera(){session.scanAttempts++;session.scanStartedAt=session.scanStartedAt||Date.now();event('scan-start',{attempt:session.scanAttempts});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});video.srcObject=stream;await video.play();stable=0;if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
@@ -12,7 +44,7 @@ function stopCamera(){if(raf)cancelAnimationFrame(raf);if(stream)stream.getTrack
 async function loop(ts){if(!stream)return;if(ts-lastInfer>250){lastInfer=ts;const a=activation();if(a){try{const r=await classifier.predictClass(a,5),p=r.confidences||{},conf=p[r.label]||0;current={label:r.label,confidence:conf,probabilities:p};renderPrediction()}finally{a.dispose()}}}raf=requestAnimationFrame(loop)}
 function renderPrediction(){const p=current.probabilities||{},f=p.fossil||0;if(current.label==='fossil'&&f>=.78){stable++;$('scanState').textContent=stable>=3?'Found it.':'Hold steady…';$('guidance').textContent='Keep the fossil centered for just a moment.'}else{stable=Math.max(0,stable-1);$('scanState').textContent='Looking…';$('guidance').textContent=current.label==='background'?'Move closer so the fossil fills more of the frame.':'Center the fossil and hold still.'}overlay.width=video.videoWidth||640;overlay.height=video.videoHeight||480;ctx.clearRect(0,0,overlay.width,overlay.height);const w=overlay.width*.66,h=overlay.height*.66,x=(overlay.width-w)/2,y=(overlay.height-h)/2;ctx.strokeStyle=current.label==='fossil'?'#34d399':'#f2b51d';ctx.lineWidth=Math.max(3,overlay.width/260);ctx.strokeRect(x,y,w,h);if(stable>=4)success()}
 function success(){if(session.scanSuccessAt)return;session.scanSuccessAt=Date.now();session.scanTimeMs=session.scanSuccessAt-session.scanStartedAt;event('scan-success',{confidence:current.confidence,probabilities:current.probabilities,scanTimeMs:session.scanTimeMs});stopCamera();setTimeout(()=>show('observe'),300)}
-function beginSession(){session={id:uid(),startedAt:Date.now(),startedAtISO:new Date().toISOString(),scanAttempts:0,scanStartedAt:null,scanSuccessAt:null,scanTimeMs:null,manualBypass:false,observe:null,lookCloser:null,next:null,events:[]};event('session-start',{ua:navigator.userAgent});show('welcome')}
+function beginSession(){session={id:uid(),startedAt:Date.now(),startedAtISO:new Date().toISOString(),scanAttempts:0,scanStartedAt:null,scanSuccessAt:null,scanTimeMs:null,manualBypass:false,observe:null,lookCloser:null,next:null,events:[]};event('session-start');show('welcome')}
 function finish(){session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,observe:session.observe,lookCloser:session.lookCloser,next:session.next,manualBypass:session.manualBypass});$('duration').textContent=session.totalMs<60000?Math.round(session.totalMs/1000)+' sec':Math.floor(session.totalMs/60000)+'m '+Math.round(session.totalMs%60000/1000)+'s';show('thanks')}
 $('startExperience').onclick=async()=>{show('camera');try{await startCamera()}catch(e){event('camera-error',{message:String(e)});$('scanState').textContent='Camera permission needed';$('guidance').textContent='Allow camera access in your browser, then try again.'}};
 $('restart').onclick=()=>{stopCamera();beginSession()};$('scanHelp').onclick=()=>{session.manualBypass=true;event('manual-bypass');stopCamera();show('observe')};
