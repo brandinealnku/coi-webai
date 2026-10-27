@@ -1,0 +1,23 @@
+const CFG=window.CMC_V4_CONFIG||{},ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim(),$=id=>document.getElementById(id);
+let model=null;const batchId=(crypto.randomUUID?crypto.randomUUID():'batch-'+Date.now());
+const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+function fileInput(label){return $(label==='fossil'?'fossilFiles':label==='other'?'otherFiles':'backgroundFiles')}
+function statusEl(label){return $(label==='fossil'?'fossilStatus':label==='other'?'otherStatus':'backgroundStatus')}
+function readImage(file){return new Promise((resolve,reject)=>{const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(u);resolve(img)};img.onerror=e=>{URL.revokeObjectURL(u);reject(e)};img.src=u})}
+function embeddingFor(img){
+  const side=Math.min(img.naturalWidth,img.naturalHeight),sx=(img.naturalWidth-side)/2,sy=(img.naturalHeight-side)/2;
+  canvas.width=224;canvas.height=224;ctx.clearRect(0,0,224,224);ctx.drawImage(img,sx,sy,side,side,0,0,224,224);
+  const t=model.infer(canvas,true),arr=Array.from(t.dataSync());t.dispose();return arr;
+}
+async function sendExample(label,embedding){
+  await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({kind:'training-example',eventName:CFG.EVENT_NAME||'NKU AI Day 2026',batchId,label,embedding,userAgent:navigator.userAgent}),keepalive:true});
+}
+document.querySelectorAll('[data-submit]').forEach(btn=>btn.onclick=async()=>{
+  const label=btn.dataset.submit,files=[...fileInput(label).files],status=statusEl(label);
+  if(!files.length){status.textContent='Choose at least one photo first.';return}
+  btn.disabled=true;status.textContent='Processing 0 of '+files.length+'…';
+  let done=0;
+  for(const file of files){try{const img=await readImage(file),embedding=embeddingFor(img);await sendExample(label,embedding);done++;status.textContent='Submitted '+done+' of '+files.length+'…'}catch(e){console.error(e)}}
+  status.textContent='✓ Submitted '+done+' training example'+(done===1?'':'s')+'.';fileInput(label).value='';btn.disabled=false;
+});
+(async()=>{try{await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1});$('loading').classList.add('hidden');$('trainer').classList.remove('hidden')}catch(e){$('loading').textContent='The vision model could not load. Refresh and check your connection.'}})();
