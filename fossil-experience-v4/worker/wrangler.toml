@@ -1,0 +1,11 @@
+name = "cmc-fossil-ai-day"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cmc-fossil-ai-day"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+# Set ADMIN_KEY as a Worker secret:
+# wrangler secret put ADMIN_KEY
