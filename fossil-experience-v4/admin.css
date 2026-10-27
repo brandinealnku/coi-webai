@@ -4,3 +4,6 @@ button.selected,[aria-pressed="true"]{background:#fff;color:#111;box-shadow:0 0 
 button.selected::before,[aria-pressed="true"]::before{content:"✓ ";font-weight:1000}
 button:disabled{opacity:.38;cursor:not-allowed;transform:none;box-shadow:none}
 .buttons.wrap button{min-width:132px;min-height:48px;transition:background .12s ease,box-shadow .12s ease,transform .12s ease}
+
+.privacy-box{display:grid;gap:5px;padding:15px 16px;margin-bottom:20px;border-left:3px solid var(--gold);background:rgba(242,181,29,.06);border-radius:0 12px 12px 0}.privacy-box span{color:#aeb7c1;font-size:.86rem;line-height:1.5}
+.upload-status{display:block;margin-top:9px;color:#c8d0d8;font-size:.86rem}input[type=file]{margin:8px 0 12px}
