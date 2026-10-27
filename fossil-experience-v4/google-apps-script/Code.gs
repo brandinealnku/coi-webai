@@ -19,6 +19,9 @@ function doPost(e) {
     }
 
     const probs = event.probabilities || {};
+    const observeChoice = event.observe ?? (event.type === 'observe-choice' ? event.value : '');
+    const lookCloser = event.lookCloser ?? (event.type === 'look-closer' ? event.value : '');
+    const nextAction = event.next ?? (event.type === 'next-action' ? event.value : '');
     sheet.appendRow([
       new Date(),
       payload.eventName || '',
@@ -32,9 +35,9 @@ function doPost(e) {
       probs.other ?? '',
       probs.background ?? '',
       event.scanTimeMs ?? '',
-      event.observe ?? event.value && event.type === 'observe-choice' ? event.value : '',
-      event.lookCloser ?? event.value && event.type === 'look-closer' ? event.value : '',
-      event.next ?? event.value && event.type === 'next-action' ? event.value : '',
+      observeChoice,
+      lookCloser,
+      nextAction,
       event.manualBypass ?? '',
       event.totalMs ?? '',
       event.screen ?? '',
