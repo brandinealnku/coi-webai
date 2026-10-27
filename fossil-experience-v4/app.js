@@ -46,7 +46,7 @@ function renderPrediction(){const p=current.probabilities||{},f=p.fossil||0;if(c
 function success(){if(session.scanSuccessAt)return;session.scanSuccessAt=Date.now();session.scanTimeMs=session.scanSuccessAt-session.scanStartedAt;event('scan-success',{confidence:current.confidence,probabilities:current.probabilities,scanTimeMs:session.scanTimeMs});stopCamera();setTimeout(()=>show('observe'),300)}
 function newSession(){session={id:uid(),startedAt:Date.now(),startedAtISO:new Date().toISOString(),scanAttempts:0,scanStartedAt:null,scanSuccessAt:null,scanTimeMs:null,manualBypass:false,observe:null,lookCloser:null,next:null,events:[]};$('studyCode').textContent='Study '+session.id.slice(0,6).toUpperCase();event('page-open');}
 function beginExperience(){event('session-start');show('welcome')}
-function resetSession(){stopCamera();document.querySelectorAll('[data-look]').forEach(x=>x.disabled=false);$('nextBlock').classList.add('hidden');newSession();beginExperience()}
+function resetSession(){stopCamera();document.querySelectorAll('[data-look]').forEach(x=>{x.disabled=false;x.classList.remove('selected');x.setAttribute('aria-pressed','false')});$('nextBlock').classList.add('hidden');newSession();beginExperience()}
 function finish(){session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,observe:session.observe,lookCloser:session.lookCloser,next:session.next,manualBypass:session.manualBypass});$('duration').textContent=session.totalMs<60000?Math.round(session.totalMs/1000)+' sec':Math.floor(session.totalMs/60000)+'m '+Math.round(session.totalMs%60000/1000)+'s';show('thanks')}
 $('startExperience').onclick=async()=>{show('camera');try{await startCamera()}catch(e){event('camera-error',{message:String(e)});$('scanState').textContent='Camera permission needed';$('guidance').textContent='Allow camera access in your browser, then try again.'}};
 $('restart').onclick=()=>resetSession();$('scanHelp').onclick=()=>{session.manualBypass=true;event('manual-bypass');stopCamera();show('observe')};
@@ -64,7 +64,7 @@ function applyCuratorContent(){
   if(cc.relatedObjectReason)$('relatedObjectReason').textContent=cc.relatedObjectReason;
 }
 $('toConnection').onclick=()=>show('connection');$('toFeedback').onclick=()=>show('feedback');
-document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{session.lookCloser=b.dataset.look;event('look-closer',{value:session.lookCloser});document.querySelectorAll('[data-look]').forEach(x=>x.disabled=true);$('nextBlock').classList.remove('hidden')});
+document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{session.lookCloser=b.dataset.look;event('look-closer',{value:session.lookCloser});document.querySelectorAll('[data-look]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');x.disabled=true});$('nextBlock').classList.remove('hidden')});
 document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{session.next=b.dataset.next;event('next-action',{value:session.next});finish()});
 (async()=>{
   newSession();
