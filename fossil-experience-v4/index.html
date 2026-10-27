@@ -11,7 +11,7 @@
 </head>
 <body>
 <main class="visitor-shell">
-  <header class="topbar"><div class="brand"><span class="brand-dot"></span><div><strong>Look Closer</strong><span>NKU AI Native Studio × Cincinnati Museum Center</span></div></div><span class="event-pill">AI DAY</span></header>
+  <header class="topbar"><div class="brand"><span class="brand-dot"></span><div><strong>Look Closer</strong><span>NKU AI Native Studio × Cincinnati Museum Center</span></div></div><div class="study-meta"><span id="studyCode" class="study-code">Study —</span><span class="event-pill">AI DAY</span></div></header>
 
   <section id="loading" class="screen active"><div class="card centered"><div class="loader"></div><h1>Getting the experience ready…</h1><p id="loadingMsg">Loading the fossil recognition model.</p></div></section>
 
@@ -40,22 +40,23 @@
 
   <section id="discover" class="screen"><div class="card">
     <span class="eyebrow">3 · DISCOVER</span><h2 id="discoverTitle">That detail is a clue.</h2><p id="discoverText" class="discovery"></p>
-    <div class="curator-note"><strong>Imagine this at the museum</strong><span>The short interpretation here is a prototype. A museum version would use curator-approved content tied to the actual specimen.</span></div>
+    <div id="fossilFact" class="fact-card hidden"><span>ABOUT THIS FOSSIL</span><strong id="fossilFactTitle"></strong><p id="fossilFactText"></p></div>
+    <div id="curatorNote" class="curator-note"><strong>Prototype content</strong><span>Until Cincinnati Museum Center supplies curator-approved specimen content, this screen intentionally avoids inventing facts about the fossil.</span></div>
     <button id="toConnection" class="primary xl">Keep exploring</button>
   </div></section>
 
   <section id="connection" class="screen"><div class="card">
     <span class="eyebrow">4 · EXPAND YOUR WORLD</span><h2>What if this fossil could lead you somewhere unexpected?</h2><p class="lede">Instead of stopping at identification, AI could help surface a meaningful connection elsewhere in the collection.</p>
-    <div class="connection"><div><span>YOU STARTED HERE</span><strong>This fossil</strong></div><div class="arrow">→<small>possible connection</small></div><div><span>NEXT</span><strong>A related object</strong><small>Even one not currently on display</small></div></div>
+    <div class="connection"><div><span>YOU STARTED HERE</span><strong id="sourceObjectName">This fossil</strong></div><div class="arrow">→<small>possible connection</small></div><div><span>NEXT</span><strong id="relatedObjectName">A related object</strong><small id="relatedObjectReason">Even one not currently on display</small></div></div>
     <button id="toFeedback" class="primary xl">Continue</button>
   </div></section>
 
   <section id="feedback" class="screen"><div class="card">
-    <span class="eyebrow">TWO QUICK QUESTIONS</span><h2>Did scanning make you look more closely at the fossil?</h2>
+    <span class="eyebrow">TWO QUICK QUESTIONS</span><h2>How did using the scanner affect how closely you looked at the fossil?</h2>
     <div class="choice-grid three compact">
-      <button class="choice look-choice" data-look="yes"><b>Yes</b></button>
-      <button class="choice look-choice" data-look="a-little"><b>A little</b></button>
-      <button class="choice look-choice" data-look="no"><b>No</b></button>
+      <button class="choice look-choice" data-look="more"><b>I looked more closely</b></button>
+      <button class="choice look-choice" data-look="same"><b>About the same</b></button>
+      <button class="choice look-choice" data-look="less"><b>I looked less closely</b></button>
     </div>
     <div id="nextBlock" class="next-block hidden"><h3>What would you most want to do next?</h3>
       <div class="choice-grid two">
