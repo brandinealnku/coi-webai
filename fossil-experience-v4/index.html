@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Look Closer · Fossil Experience</title>
+<meta name="theme-color" content="#0b0d10">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="visitor-shell">
+  <header class="topbar"><div class="brand"><span class="brand-dot"></span><div><strong>Look Closer</strong><span>NKU AI Native Studio × Cincinnati Museum Center</span></div></div><span class="event-pill">AI DAY</span></header>
+
+  <section id="loading" class="screen active"><div class="card centered"><div class="loader"></div><h1>Getting the experience ready…</h1><p id="loadingMsg">Loading the fossil recognition model.</p></div></section>
+
+  <section id="welcome" class="screen"><div class="card hero">
+    <span class="eyebrow">A 2-MINUTE EXPERIMENT</span>
+    <h1>What can this fossil make you notice?</h1>
+    <p class="lede">Use your own camera to explore the fossil in front of you. We’re testing whether AI can help people look closer—not replace the object itself.</p>
+    <div class="privacy-note"><strong>What we collect</strong><span>Anonymous interaction timing, scan success, and your two responses. Camera images are processed on your device and are not uploaded.</span></div>
+    <button id="startExperience" class="primary xl">Start the experience</button>
+  </div></section>
+
+  <section id="camera" class="screen"><div class="camera-wrap">
+    <div class="step-copy"><span class="eyebrow">1 · SCAN</span><h2>Point your camera at the fossil.</h2><p id="guidance">Center the fossil and move close enough to fill the frame.</p></div>
+    <div class="stage"><video id="video" playsinline muted></video><canvas id="overlay"></canvas><div class="focus-frame"></div><div class="scan-line"></div><div id="scanState" class="scan-state">Looking…</div></div>
+    <div class="camera-actions"><button id="restart" class="secondary">Start over</button><button id="scanHelp" class="quiet-link">Having trouble?</button></div>
+  </div></section>
+
+  <section id="observe" class="screen"><div class="card">
+    <span class="eyebrow">2 · LOOK CLOSER</span><h2>Before we tell you anything, look at the fossil itself.</h2><p class="lede">What catches your attention first?</p>
+    <div class="choice-grid three">
+      <button class="choice" data-observe="shape"><b>Shape</b><span>The overall form or outline</span></button>
+      <button class="choice" data-observe="texture"><b>Texture</b><span>Ridges, pits, lines, or surface</span></button>
+      <button class="choice" data-observe="pattern"><b>Pattern</b><span>Repeated or unusual details</span></button>
+    </div>
+  </div></section>
+
+  <section id="discover" class="screen"><div class="card">
+    <span class="eyebrow">3 · DISCOVER</span><h2 id="discoverTitle">That detail is a clue.</h2><p id="discoverText" class="discovery"></p>
+    <div class="curator-note"><strong>Imagine this at the museum</strong><span>The short interpretation here is a prototype. A museum version would use curator-approved content tied to the actual specimen.</span></div>
+    <button id="toConnection" class="primary xl">Keep exploring</button>
+  </div></section>
+
+  <section id="connection" class="screen"><div class="card">
+    <span class="eyebrow">4 · EXPAND YOUR WORLD</span><h2>What if this fossil could lead you somewhere unexpected?</h2><p class="lede">Instead of stopping at identification, AI could help surface a meaningful connection elsewhere in the collection.</p>
+    <div class="connection"><div><span>YOU STARTED HERE</span><strong>This fossil</strong></div><div class="arrow">→<small>possible connection</small></div><div><span>NEXT</span><strong>A related object</strong><small>Even one not currently on display</small></div></div>
+    <button id="toFeedback" class="primary xl">Continue</button>
+  </div></section>
+
+  <section id="feedback" class="screen"><div class="card">
+    <span class="eyebrow">TWO QUICK QUESTIONS</span><h2>Did scanning make you look more closely at the fossil?</h2>
+    <div class="choice-grid three compact">
+      <button class="choice look-choice" data-look="yes"><b>Yes</b></button>
+      <button class="choice look-choice" data-look="a-little"><b>A little</b></button>
+      <button class="choice look-choice" data-look="no"><b>No</b></button>
+    </div>
+    <div id="nextBlock" class="next-block hidden"><h3>What would you most want to do next?</h3>
+      <div class="choice-grid two">
+        <button class="choice next-choice" data-next="learn"><b>Learn about this fossil</b></button>
+        <button class="choice next-choice" data-next="related"><b>Find a related object</b></button>
+        <button class="choice next-choice" data-next="scan"><b>Scan something else</b></button>
+        <button class="choice next-choice" data-next="ask"><b>Ask a question</b></button>
+        <button class="choice next-choice wide" data-next="finished"><b>I’m finished</b></button>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="thanks" class="screen"><div class="card centered thanks">
+    <span class="eyebrow">THANK YOU</span><h2>You helped us test a possible museum experience.</h2>
+    <p class="lede">Your interaction helps us understand whether scanning creates curiosity, closer observation, and useful paths into a collection.</p>
+    <div class="session-stat"><strong id="duration">—</strong><span>total experience time</span></div>
+  </div></section>
+
+  <section id="notReady" class="screen"><div class="card centered"><span class="eyebrow">SETUP NEEDED</span><h2>This AI Day station isn’t trained yet.</h2><p class="lede">The researcher needs to publish the fossil training set before visitors can scan.</p></div></section>
+</main>
+<script src="config.js"></script><script src="app.js"></script>
+</body></html>
