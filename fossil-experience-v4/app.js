@@ -44,12 +44,49 @@ function stopCamera(){if(raf)cancelAnimationFrame(raf);if(stream)stream.getTrack
 async function loop(ts){if(!stream)return;if(ts-lastInfer>250){lastInfer=ts;const a=activation();if(a){try{const r=await classifier.predictClass(a,5),p=r.confidences||{},conf=p[r.label]||0;current={label:r.label,confidence:conf,probabilities:p};renderPrediction()}finally{a.dispose()}}}raf=requestAnimationFrame(loop)}
 function renderPrediction(){const p=current.probabilities||{},f=p.fossil||0;if(current.label==='fossil'&&f>=.78){stable++;$('scanState').textContent=stable>=3?'Found it.':'Hold steady…';$('guidance').textContent='Keep the fossil centered for just a moment.'}else{stable=Math.max(0,stable-1);$('scanState').textContent='Looking…';$('guidance').textContent=current.label==='background'?'Move closer so the fossil fills more of the frame.':'Center the fossil and hold still.'}overlay.width=video.videoWidth||640;overlay.height=video.videoHeight||480;ctx.clearRect(0,0,overlay.width,overlay.height);const w=overlay.width*.66,h=overlay.height*.66,x=(overlay.width-w)/2,y=(overlay.height-h)/2;ctx.strokeStyle=current.label==='fossil'?'#34d399':'#f2b51d';ctx.lineWidth=Math.max(3,overlay.width/260);ctx.strokeRect(x,y,w,h);if(stable>=4)success()}
 function success(){if(session.scanSuccessAt)return;session.scanSuccessAt=Date.now();session.scanTimeMs=session.scanSuccessAt-session.scanStartedAt;event('scan-success',{confidence:current.confidence,probabilities:current.probabilities,scanTimeMs:session.scanTimeMs});stopCamera();setTimeout(()=>show('observe'),300)}
-function beginSession(){session={id:uid(),startedAt:Date.now(),startedAtISO:new Date().toISOString(),scanAttempts:0,scanStartedAt:null,scanSuccessAt:null,scanTimeMs:null,manualBypass:false,observe:null,lookCloser:null,next:null,events:[]};event('session-start');show('welcome')}
+function newSession(){session={id:uid(),startedAt:Date.now(),startedAtISO:new Date().toISOString(),scanAttempts:0,scanStartedAt:null,scanSuccessAt:null,scanTimeMs:null,manualBypass:false,observe:null,lookCloser:null,next:null,events:[]};$('studyCode').textContent='Study '+session.id.slice(0,6).toUpperCase();event('page-open');}
+function beginExperience(){event('session-start');show('welcome')}
+function resetSession(){stopCamera();document.querySelectorAll('[data-look]').forEach(x=>x.disabled=false);$('nextBlock').classList.add('hidden');newSession();beginExperience()}
 function finish(){session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,observe:session.observe,lookCloser:session.lookCloser,next:session.next,manualBypass:session.manualBypass});$('duration').textContent=session.totalMs<60000?Math.round(session.totalMs/1000)+' sec':Math.floor(session.totalMs/60000)+'m '+Math.round(session.totalMs%60000/1000)+'s';show('thanks')}
 $('startExperience').onclick=async()=>{show('camera');try{await startCamera()}catch(e){event('camera-error',{message:String(e)});$('scanState').textContent='Camera permission needed';$('guidance').textContent='Allow camera access in your browser, then try again.'}};
-$('restart').onclick=()=>{stopCamera();beginSession()};$('scanHelp').onclick=()=>{session.manualBypass=true;event('manual-bypass');stopCamera();show('observe')};
+$('restart').onclick=()=>resetSession();$('scanHelp').onclick=()=>{session.manualBypass=true;event('manual-bypass');stopCamera();show('observe')};
 document.querySelectorAll('[data-observe]').forEach(b=>b.onclick=()=>{session.observe=b.dataset.observe;event('observe-choice',{value:session.observe});const copy={shape:['Shape is one of the first clues.','The outline of an object can help researchers compare it with other specimens and decide what details deserve a closer look.'],texture:['Texture can hold important clues.','Ridges, pits, lines, and surface changes can help researchers compare specimens and ask what processes may have shaped them.'],pattern:['Patterns can point to relationships.','Repeated structures can help researchers notice similarities that are easy to miss at first glance.']}[session.observe];$('discoverTitle').textContent=copy[0];$('discoverText').textContent=copy[1];show('discover')});
+function applyCuratorContent(){
+  const cc=CFG.CURATOR_CONTENT||{};
+  if(cc.approved&&cc.factTitle&&cc.factText){
+    $('fossilFactTitle').textContent=cc.factTitle;
+    $('fossilFactText').textContent=cc.factText;
+    $('fossilFact').classList.remove('hidden');
+    $('curatorNote').classList.add('hidden');
+  }
+  if(cc.fossilName)$('sourceObjectName').textContent=cc.fossilName;
+  if(cc.relatedObjectName)$('relatedObjectName').textContent=cc.relatedObjectName;
+  if(cc.relatedObjectReason)$('relatedObjectReason').textContent=cc.relatedObjectReason;
+}
 $('toConnection').onclick=()=>show('connection');$('toFeedback').onclick=()=>show('feedback');
 document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{session.lookCloser=b.dataset.look;event('look-closer',{value:session.lookCloser});document.querySelectorAll('[data-look]').forEach(x=>x.disabled=true);$('nextBlock').classList.remove('hidden')});
 document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{session.next=b.dataset.next;event('next-action',{value:session.next});finish()});
-(async()=>{try{await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1});classifier=knnClassifier.create();const ok=await loadTraining();if(ok){beginSession()}else{show('notReady')}}catch(e){console.error(e);$('loadingMsg').textContent='The vision model could not load. Check your connection and refresh.'}})();
+(async()=>{
+  newSession();
+  applyCuratorContent();
+  event('model-load-start');
+  try{
+    await tf.setBackend('webgl');
+    await tf.ready();
+    model=await mobilenet.load({version:2,alpha:1});
+    classifier=knnClassifier.create();
+    event('model-library-ready');
+    const ok=await loadTraining();
+    if(ok){
+      event('training-ready');
+      beginExperience();
+    }else{
+      event('training-missing');
+      show('notReady');
+    }
+  }catch(e){
+    console.error(e);
+    event('model-load-error',{message:String(e)});
+    $('loadingMsg').textContent='The vision model could not load. Check your connection and refresh.';
+  }
+})();
