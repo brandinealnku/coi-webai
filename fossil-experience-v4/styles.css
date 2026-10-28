@@ -427,3 +427,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 
 .scenario-context{margin:0 0 12px;color:#f2b51d;font-weight:850;font-size:.82rem;line-height:1.4}
+
+.why-details{margin:12px 0 20px;border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);padding:8px 0}
+.why-details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:800;color:#f2b51d}
+.why-details p{margin:4px 0 10px;color:#e7ebef;line-height:1.45}
+@media(max-width:700px){
+  .fact-card p{font-size:.95rem;line-height:1.45}
+  .uncertainty{font-size:.82rem;line-height:1.4}
+  .destination-mission p{font-size:.92rem}
+}
