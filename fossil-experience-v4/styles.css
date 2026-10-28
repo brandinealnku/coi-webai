@@ -382,3 +382,39 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   .connection-explanation p{font-size:.92rem}
   .connection-location strong{font-size:.98rem}
 }
+
+
+/* === MVP 10 visitor refinements === */
+.test-mode-note{display:grid;gap:4px;margin:16px 0;padding:12px 14px;border:2px solid #f2b51d;border-radius:14px;background:#211b0c}
+.test-mode-note strong{color:#f2b51d;font-size:.72rem;letter-spacing:.1em}
+.test-mode-note span{color:#fff;font-size:.86rem;line-height:1.4}
+.privacy-details{margin:16px 0 22px;border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);padding:12px 0}
+.privacy-details summary{cursor:pointer;font-weight:800;min-height:44px;display:flex;align-items:center}
+.privacy-details p{margin:8px 0;color:#c7ced6;font-size:.86rem;line-height:1.5}
+.privacy-code{font-variant-numeric:tabular-nums;color:#fff!important}
+.object-direction{margin:8px 0 0;padding:12px 14px;border-left:4px solid #f2b51d;background:#15191e;border-radius:0 12px 12px 0;color:#fff;font-weight:750;line-height:1.4}
+.collection-details{margin-top:14px;border-top:1px solid rgba(255,255,255,.24);padding-top:10px}
+.collection-details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:#c7ced6;font-weight:750}
+.destination-mission{margin:20px 0 14px;padding:20px;border:2px solid #f2b51d;border-radius:18px;background:#211b0c}
+.destination-mission strong{display:block;margin:8px 0 6px;color:#fff;font-size:clamp(1.45rem,4vw,2.1rem);line-height:1.1}
+.destination-mission p{margin:0;color:#f4f6f8;font-size:1rem;line-height:1.5}
+.micro-feedback{margin-top:24px;padding-top:20px;border-top:2px solid rgba(255,255,255,.24)}
+.micro-feedback h3{font-size:1.15rem;line-height:1.35;margin:0 0 12px}
+.mission-complete{margin-top:18px;padding:18px;border:2px solid #34d399;border-radius:16px;background:rgba(52,211,153,.08)}
+.mission-complete strong{display:block;margin-top:7px;font-size:1.05rem;line-height:1.45}
+.test-object-grid{display:grid;gap:10px;width:min(100%,340px)}
+.test-object-grid button{width:100%;min-height:52px}
+@media(max-width:700px){
+  .privacy-details{margin:12px 0 18px}
+  .destination-mission{padding:16px;margin-top:16px}
+  .destination-mission strong{font-size:1.35rem}
+  .micro-feedback{margin-top:20px}
+  .micro-feedback .choice-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .micro-feedback .choice{min-height:58px;padding:12px 8px;text-align:center;align-items:center}
+  .micro-feedback .choice b{font-size:.95rem}
+  .mission-complete{padding:15px}
+}
+@media(max-width:360px){
+  .micro-feedback .choice-grid.three{gap:7px}
+  .micro-feedback .choice{padding:10px 5px}
+}
