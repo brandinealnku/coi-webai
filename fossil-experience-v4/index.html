@@ -12,21 +12,31 @@
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
 <main id="experience" class="visitor-shell">
-  <header class="topbar"><div class="brand"><span class="brand-dot"></span><div><strong>AI Object Experience</strong><span>NKU AI Native Studio × Cincinnati Museum Center</span></div></div><div class="study-meta"><span id="studyCode" class="study-code">Study —</span><span class="event-pill">AI DAY</span></div></header>
+  <header class="topbar"><div class="brand"><span class="brand-dot"></span><div><strong>AI Object Experience</strong><span>NKU AI Native Studio × Cincinnati Museum Center</span></div></div><div class="study-meta"><span id="studyCode" class="study-code">Study —</span><span id="modePill" class="event-pill">AI DAY</span></div></header>
 
   <section id="loading" class="screen active" aria-live="polite" aria-busy="true"><div class="card centered"><div class="loader"></div><h1>Getting the experience ready…</h1><p id="loadingMsg">Loading the fossil recognition model.</p></div></section>
 
   <section id="welcome" class="screen" aria-hidden="true"><div class="card hero">
     <span class="eyebrow">A 2-MINUTE EXPERIMENT</span>
     <h1>Ready to try it?</h1>
-    <p class="lede">Choose one of the three objects on the table. When you start, your phone will ask for camera access so you can point it at the object you chose. Then follow the prompts to continue the experience.</p>
+    <p class="lede">Choose the label beside the physical object you want to try. Then start the experience and point your phone at that same object.</p>
+    <fieldset class="object-picker" aria-describedby="objectHelp">
+      <legend>Which object are you using?</legend>
+      <p id="objectHelp" class="lede object-help">Use the number shown beside the physical object on the table.</p>
+      <div class="choice-grid three compact">
+        <button type="button" class="choice object-choice" data-object="fossil1" aria-pressed="false"><b>Object 1</b></button>
+        <button type="button" class="choice object-choice" data-object="fossil2" aria-pressed="false"><b>Object 2</b></button>
+        <button type="button" class="choice object-choice" data-object="fossil3" aria-pressed="false"><b>Object 3</b></button>
+      </div>
+    </fieldset>
+    <div id="testModeNotice" class="privacy-note hidden"><strong>TEST MODE</strong><span>This rehearsal uses simulated recognition and test-only logging. No trained artifacts are required.</span></div>
     <div class="privacy-note"><strong>What we collect</strong><span>Anonymous interaction timing, scan success, and your two responses. Camera images are processed on your device and are not uploaded. You can continue without using the camera if needed.</span></div>
-    <button id="startExperience" class="primary xl">Start the experience</button>
+    <button id="startExperience" class="primary xl" disabled>Choose an object to start</button>
   </div></section>
 
   <section id="camera" class="screen" aria-hidden="true"><div class="camera-wrap">
-    <div class="step-copy"><span class="eyebrow">1 · CHOOSE & SCAN</span><h2>Choose one of the three objects, then point your camera at it.</h2><p id="guidance">Center the object you chose and move close enough to fill the frame.</p><p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p></div>
-    <div class="stage"><video id="video" playsinline muted aria-label="Live camera preview"></video><canvas id="overlay" aria-hidden="true"></canvas><div class="focus-frame" aria-hidden="true"></div><div class="scan-line" aria-hidden="true"></div><div id="scanState" class="scan-state" aria-live="off">Looking…</div></div>
+    <div class="step-copy"><span class="eyebrow">1 · SCAN</span><h2>Point your camera at <span id="selectedObjectName">the object you chose</span>.</h2><p id="guidance">Center that object and move close enough to fill the frame.</p><p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p></div>
+    <div class="stage"><video id="video" playsinline muted aria-label="Live camera preview"></video><canvas id="overlay" aria-hidden="true"></canvas><div class="focus-frame" aria-hidden="true"></div><div class="scan-line" aria-hidden="true"></div><div id="scanState" class="scan-state" aria-live="off">Looking…</div><div id="testScanPanel" class="test-scan-panel hidden"><strong>Test recognition</strong><span>No camera model is needed in test mode.</span><button id="simulateRecognition" type="button" class="primary">Simulate recognition</button></div></div>
     <div class="camera-actions"><button id="restart" class="secondary">Start over</button><button id="scanHelp" class="quiet-link">Can’t use the camera? Continue without scanning</button></div>
   </div></section>
 
