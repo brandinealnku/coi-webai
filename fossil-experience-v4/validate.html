@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CMC Fossil Validation</title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script><script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script><script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script><link rel="stylesheet" href="admin.css?v=20261028-0915"></head>
+<body><main class="admin-shell"><header><div><span class="eyebrow">CMC FOSSIL EXPERIENCE · V4.2</span><h1>Held-out Validation</h1><p>Test photos that were never used for training. Nothing on this page is added to the training set.</p></div><a href="admin.html">← Setup</a></header>
+<section class="panel" style="margin-top:24px;max-width:900px">
+<div class="privacy-box"><strong>Use unseen photos</strong><span>For a meaningful test, use different images—and ideally a different phone—from the training examples.</span></div>
+<div id="loading" class="note">Loading shared training data and vision model…</div>
+<div id="validator" class="hidden">
+<div id="validationInputs"></div>
+<button id="runValidation">Run validation</button>
+<p id="validationStatus" class="note"></p>
+<div id="validationResults"></div>
+</div></section></main><script src="config.js?v=20261028-0915"></script><script src="validate.js?v=20261028-0915"></script></body></html>
