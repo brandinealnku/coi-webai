@@ -2,116 +2,155 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI Object Experience · AI Day 2026</title>
+<title>Expand Your World · Cincinnati Museum Center</title>
 <meta name="theme-color" content="#0b0d10">
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="styles.css?v=20261028-connection2">
+<link rel="stylesheet" href="styles.css?v=20261028-mvp10">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
 <main id="experience" class="visitor-shell">
-  <header class="topbar"><div class="brand"><span class="brand-dot"></span><div><strong>AI Object Experience</strong><span>NKU AI Native Studio × Cincinnati Museum Center</span></div></div><div class="study-meta"><span id="studyCode" class="study-code">Study —</span><span id="modePill" class="event-pill">AI DAY</span></div></header>
+  <header class="topbar">
+    <div class="brand"><span class="brand-dot" aria-hidden="true"></span><div><strong>Expand Your World</strong><span>Cincinnati Museum Center × NKU AI Native Studio</span></div></div>
+    <div class="study-meta"><span id="studyCode" class="study-code">Study —</span><span id="modePill" class="event-pill">AI DAY</span></div>
+  </header>
 
-  <section id="loading" class="screen active" aria-live="polite" aria-busy="true"><div class="card centered"><div class="loader"></div><h1>Getting the experience ready…</h1><p id="loadingMsg">Loading the fossil recognition model.</p></div></section>
+  <section id="loading" class="screen active" aria-live="polite" aria-busy="true">
+    <div class="card centered"><div class="loader" aria-hidden="true"></div><h1>Getting ready…</h1><p id="loadingMsg">Loading the object-recognition model.</p></div>
+  </section>
 
-  <section id="welcome" class="screen" aria-hidden="true"><div class="card hero">
-    <span class="eyebrow">A 2-MINUTE EXPERIMENT</span>
-    <h1>Ready to try it?</h1>
-    <p class="lede">Choose the label beside the physical object you want to try. Then start the experience and point your phone at that same object.</p>
-    <fieldset class="object-picker" aria-describedby="objectHelp">
-      <legend>Which object are you using?</legend>
-      <p id="objectHelp" class="lede object-help">Use the number shown beside the physical object on the table.</p>
-      <div class="choice-grid three compact">
-        <button type="button" class="choice object-choice" data-object="fossil1" aria-pressed="false"><b id="objectLabel1">Object 1</b></button>
-        <button type="button" class="choice object-choice" data-object="fossil2" aria-pressed="false"><b id="objectLabel2">Object 2</b></button>
-        <button type="button" class="choice object-choice" data-object="fossil3" aria-pressed="false"><b id="objectLabel3">Object 3</b></button>
-      </div>
-    </fieldset>
-    <div id="testModeNotice" class="privacy-note hidden"><strong>TEST MODE</strong><span>This rehearsal uses simulated recognition and test-only logging. No trained artifacts are required.</span></div>
-    <div class="privacy-note"><strong>What we collect</strong><span>Anonymous interaction timing, scan success, and your two responses. Camera images are processed on your device and are not uploaded. You can continue without using the camera if needed.</span></div>
-    <button id="startExperience" class="primary xl" disabled>Choose an object to start</button>
-  </div></section>
-
-  <section id="camera" class="screen" aria-hidden="true"><div class="camera-wrap">
-    <div class="step-copy"><span class="eyebrow">1 · SCAN</span><h2>Point your camera at <span id="selectedObjectName">the object you chose</span>.</h2><p id="guidance">Center that object and move close enough to fill the frame.</p><p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p></div>
-    <div class="stage"><video id="video" playsinline muted aria-label="Live camera preview"></video><canvas id="overlay" aria-hidden="true"></canvas><div class="focus-frame" aria-hidden="true"></div><div class="scan-line" aria-hidden="true"></div><div id="scanState" class="scan-state" aria-live="off">Looking…</div><div id="testScanPanel" class="test-scan-panel hidden"><strong>Test recognition</strong><span>No camera model is needed in test mode.</span><button id="simulateRecognition" type="button" class="primary">Simulate recognition</button></div></div>
-    <div class="camera-actions"><button id="restart" class="secondary">Start over</button><button id="scanHelp" class="quiet-link">Can’t use the camera? Continue without scanning</button></div>
-  </div></section>
-
-  <section id="observe" class="screen" aria-hidden="true"><div class="card">
-    <span class="eyebrow">2 · NOTICE</span><div class="recognized-chip">Recognized: <strong id="recognizedName">Object</strong></div><h2 id="noticeQuestion">What catches your attention first?</h2><p class="lede">Look at the physical object and choose the answer that best matches what you notice.</p>
-    <div class="choice-grid three">
-      <button class="choice" data-observe="choice1"><b id="noticeChoice1Label">Shape</b><span id="noticeChoice1Detail">The overall form or outline</span></button>
-      <button class="choice" data-observe="choice2"><b id="noticeChoice2Label">Texture</b><span id="noticeChoice2Detail">Ridges, pits, lines, or surface</span></button>
-      <button class="choice" data-observe="choice3"><b id="noticeChoice3Label">Pattern</b><span id="noticeChoice3Detail">Repeated or unusual details</span></button>
+  <section id="welcome" class="screen" aria-hidden="true">
+    <div class="card hero">
+      <span class="eyebrow">EXPAND YOUR WORLD</span>
+      <h1>Discover something hiding in plain sight.</h1>
+      <p class="lede">Point your camera at one of the featured objects. We’ll give you one thing to look for—and one connection to follow.</p>
+      <div id="testModeNotice" class="test-mode-note hidden"><strong>TEST MODE</strong><span>Recognition is simulated. The museum interaction is otherwise the same.</span></div>
+      <details class="privacy-details">
+        <summary>Camera & privacy</summary>
+        <p>Images stay on your device and are not uploaded. We anonymously record interaction timing and your two responses. You can continue without the camera.</p>
+      </details>
+      <button id="startExperience" class="primary xl">Start exploring</button>
     </div>
-  </div></section>
+  </section>
 
-  <section id="discover" class="screen" aria-hidden="true"><div class="card">
-    <span class="eyebrow">3 · DISCOVER</span><h2 id="discoverTitle">That detail is a clue.</h2><p id="discoverText" class="discovery"></p>
-    <div id="fossilFact" class="fact-card hidden"><span>CMC-APPROVED CONTENT</span><strong id="fossilFactTitle"></strong><p id="fossilFactText"></p><p id="uncertaintyText" class="uncertainty hidden"></p><small id="sourceText" class="source-line"></small></div>
-    <div id="curatorNote" class="curator-note"><strong>Prototype content</strong><span>This prototype does not display object facts until curator-approved content is available.</span></div>
-    <button id="toConnection" class="primary xl">Expand your world</button>
-  </div></section>
-
-  <section id="connection" class="screen" aria-hidden="true"><div class="card">
-    <span class="eyebrow">4 · EXPAND YOUR WORLD</span><h2>Follow the connection.</h2><p class="lede" id="connectionIntro">This object connects to another real object in the gallery.</p>
-    <div class="connection-flow" aria-label="Connection from this object to another gallery object">
-      <section class="connection-card source-card">
-        <span class="connection-label">YOU STARTED HERE</span>
-        <strong id="sourceObjectName">This object</strong>
-        <small id="sourceCatalog" class="catalog-meta"></small>
-      </section>
-
-      <div class="connection-arrow" aria-hidden="true">
-        <span>↓</span>
+  <section id="camera" class="screen" aria-hidden="true">
+    <div class="camera-wrap">
+      <div class="step-copy">
+        <span class="eyebrow">1 · SCAN</span>
+        <h2>Point your camera at the object.</h2>
+        <p id="guidance">Move close enough for the object to fill most of the frame.</p>
+        <p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p>
       </div>
+      <div class="stage">
+        <video id="video" playsinline muted aria-label="Live camera preview"></video>
+        <canvas id="overlay" aria-hidden="true"></canvas>
+        <div class="focus-frame" aria-hidden="true"></div>
+        <div class="scan-line" aria-hidden="true"></div>
+        <div id="scanState" class="scan-state" role="status" aria-live="polite">Looking…</div>
 
-      <section class="connection-card destination-card">
-        <span class="connection-label">FIND THIS NEXT</span>
+        <div id="testScanPanel" class="test-scan-panel hidden">
+          <strong>Choose what the test should recognize</strong>
+          <span>This replaces camera recognition only. Everything after this matches the MVP flow.</span>
+          <div class="test-object-grid" role="group" aria-label="Simulated recognition object">
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil1">City fossil</button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil2">Predator trace</button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil3">Mystery donut</button>
+          </div>
+        </div>
+      </div>
+      <div class="camera-actions">
+        <button id="restart" class="secondary">Start over</button>
+        <button id="scanHelp" class="quiet-link">Camera not available? Continue without it</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="observe" class="screen" aria-hidden="true">
+    <div class="card">
+      <span class="eyebrow">2 · NOTICE</span>
+      <div class="recognized-chip">Found: <strong id="recognizedName">Object</strong></div>
+      <h2 id="noticeQuestion">What do you notice?</h2>
+      <p class="object-direction">Keep your eyes on the physical object while you decide.</p>
+      <div class="choice-grid three" id="noticeChoices">
+        <button class="choice" data-observe="choice1"><b id="noticeChoice1Label">Choice 1</b><span id="noticeChoice1Detail"></span></button>
+        <button class="choice" data-observe="choice2"><b id="noticeChoice2Label">Choice 2</b><span id="noticeChoice2Detail"></span></button>
+        <button class="choice" data-observe="choice3"><b id="noticeChoice3Label">Choice 3</b><span id="noticeChoice3Detail"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="discover" class="screen" aria-hidden="true">
+    <div class="card">
+      <span class="eyebrow">3 · DISCOVER</span>
+      <h2 id="discoverTitle">Here’s what that clue tells us.</h2>
+      <p id="discoverText" class="discovery"></p>
+      <div id="fossilFact" class="fact-card hidden">
+        <strong id="fossilFactTitle"></strong>
+        <p id="fossilFactText"></p>
+        <p id="uncertaintyText" class="uncertainty hidden"></p>
+        <details id="collectionDetails" class="collection-details">
+          <summary>Collection details</summary>
+          <small id="sourceText" class="source-line"></small>
+        </details>
+      </div>
+      <div id="curatorNote" class="curator-note hidden"><strong>Story coming soon</strong><span>This object’s interpretive content is still being reviewed.</span></div>
+      <button id="toConnection" class="primary xl">Find the connection</button>
+    </div>
+  </section>
+
+  <section id="connection" class="screen" aria-hidden="true">
+    <div class="card">
+      <span class="eyebrow">4 · GO</span>
+      <h2>Find this next.</h2>
+
+      <section class="destination-mission" aria-labelledby="relatedObjectName">
+        <span class="connection-label">YOUR NEXT OBJECT</span>
         <strong id="relatedObjectName">A related object</strong>
+        <p id="missionPrompt">See if you can spot the connection yourself.</p>
         <small id="relatedCatalog" class="catalog-meta"></small>
       </section>
-    </div>
 
-    <section class="connection-explanation">
-      <span class="connection-label">WHY THIS CONNECTION?</span>
-      <p id="relatedObjectReason"></p>
-    </section>
+      <section class="connection-explanation">
+        <span class="connection-label">WHY THESE CONNECT</span>
+        <p id="relatedObjectReason"></p>
+      </section>
 
-    <section class="connection-location" aria-labelledby="locationHeading">
-      <span id="locationHeading" class="connection-label">WHERE TO FIND IT</span>
-      <strong id="relatedStop"></strong>
-    </section>
+      <section class="connection-location" aria-labelledby="locationHeading">
+        <span id="locationHeading" class="connection-label">WHERE TO FIND IT</span>
+        <strong id="relatedStop"></strong>
+      </section>
 
-    <button id="toFeedback" class="primary xl connection-cta">Tell us what you think</button>
-  </div></section>
+      <div class="micro-feedback">
+        <h3>Did this experience help you notice something you hadn’t noticed before?</h3>
+        <div class="choice-grid three compact">
+          <button class="choice notice-value-choice" data-noticed="yes" aria-pressed="false"><b>Yes</b></button>
+          <button class="choice notice-value-choice" data-noticed="maybe" aria-pressed="false"><b>Maybe</b></button>
+          <button class="choice notice-value-choice" data-noticed="no" aria-pressed="false"><b>No</b></button>
+        </div>
 
-  <section id="feedback" class="screen" aria-hidden="true"><div class="card">
-    <span class="eyebrow">TWO QUICK QUESTIONS</span><h2>How did using the scanner affect how closely you looked at the physical object?</h2>
-    <div class="choice-grid three compact">
-      <button class="choice look-choice" data-look="more" aria-pressed="false"><b>I looked more closely</b></button>
-      <button class="choice look-choice" data-look="same" aria-pressed="false"><b>About the same</b></button>
-      <button class="choice look-choice" data-look="less" aria-pressed="false"><b>I looked less closely</b></button>
-    </div>
-    <div id="nextBlock" class="next-block hidden"><h3>Would this connection make you want to go find the related object?</h3>
-      <div class="choice-grid three compact">
-        <button class="choice next-choice" data-next="yes"><b>Yes</b><span>I’d follow the connection</span></button>
-        <button class="choice next-choice" data-next="maybe"><b>Maybe</b><span>It would depend on the connection</span></button>
-        <button class="choice next-choice" data-next="no"><b>No</b><span>I’d rather stay with this object</span></button>
+        <div id="followBlock" class="next-block hidden">
+          <h3>Would you go find the related object?</h3>
+          <div class="choice-grid three compact">
+            <button class="choice next-choice" data-next="yes"><b>Yes</b></button>
+            <button class="choice next-choice" data-next="maybe"><b>Maybe</b></button>
+            <button class="choice next-choice" data-next="no"><b>No</b></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="missionComplete" class="mission-complete hidden" role="status" aria-live="polite">
+        <span class="connection-label">KEEP EXPLORING</span>
+        <strong id="missionCompleteText">Go see if you can spot the connection yourself.</strong>
       </div>
     </div>
-  </div></section>
+  </section>
 
-  <section id="thanks" class="screen" aria-hidden="true"><div class="card centered thanks">
-    <span class="eyebrow">THANK YOU</span><h2>You helped us test a possible museum experience.</h2>
-    <p class="lede">Now that your responses are recorded, here’s what we were studying: whether an AI-guided object experience changes how people engage with the physical object and what they want to do next.</p>
-    <div class="session-stat"><strong id="duration">—</strong><span>total experience time</span></div>
-  </div></section>
-
-  <section id="notReady" class="screen" aria-hidden="true"><div class="card centered"><span class="eyebrow">SETUP NEEDED</span><h2>This AI Day station is not ready yet.</h2><p class="lede">The research team needs to publish the final training set before visitors can use the scanner.</p></div></section>
+  <section id="notReady" class="screen" aria-hidden="true">
+    <div class="card centered"><span class="eyebrow">SETUP NEEDED</span><h2>This station is not ready yet.</h2><p class="lede">The final trained object set still needs to be published.</p></div>
+  </section>
 </main>
-<script src="config.js?v=20261028-0905"></script><script src="app.js?v=20261028-0905"></script>
+<script src="config.js?v=20261028-mvp10"></script>
+<script src="app.js?v=20261028-mvp10"></script>
 </body></html>
