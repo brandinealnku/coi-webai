@@ -1,2 +1,45 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CMC V4 Research Data</title><link rel="stylesheet" href="admin.css"></head><body><main class="admin-shell"><header><div><span class="eyebrow">CMC FOSSIL EXPERIENCE · V4</span><h1>AI Day Research Data</h1><p>V4 now uses Google Sheets as the shared research dashboard.</p></div><a href="admin.html">← Setup</a></header>
-<section class="panel" style="margin-top:24px"><h2>Google Sheets is the dashboard</h2><p class="note">Each visitor interaction is written as one event row by Google Apps Script. Use the Sheet for filtering, pivots, charts, and the final CMC analysis.</p><div id="sheetAction"></div><hr><h2>Recommended analysis</h2><p class="note">Track sessions, completion, scan success, scan time, total dwell time, look-closer responses, observation choice, desired next action, and browser/device patterns.</p></section></main><script src="config.js?v=20261027-1725"></script><script>const c=window.CMC_V4_CONFIG||{},el=document.getElementById('sheetAction');if(c.GOOGLE_SHEET_URL){const a=document.createElement('a');a.href=c.GOOGLE_SHEET_URL;a.target='_blank';a.rel='noopener';a.textContent='Open AI Day Google Sheet →';a.style.color='#f2b51d';a.style.fontWeight='800';el.appendChild(a)}else{el.innerHTML='<p class="note">Google Sheet URL has not been added to config.js yet.</p>'}</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CMC Object Experience · Research Data</title>
+<link rel="stylesheet" href="admin.css?v=20261028-a11y">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<main id="main" class="admin-shell">
+<header>
+  <div>
+    <span class="eyebrow">CMC OBJECT EXPERIENCE · V4.2</span>
+    <h1>AI Day Research Data</h1>
+    <p>Google Sheets is the shared research dashboard for visitor and observer event data.</p>
+  </div>
+  <a href="admin.html">← Setup</a>
+</header>
+<section class="panel" style="margin-top:24px">
+  <h2>Open the research workbook</h2>
+  <p class="note">Visitor and observer interactions are submitted as event rows through Google Apps Script. Use the Sheet for filtering, summaries, charts, and post-event analysis.</p>
+  <div id="sheetAction" role="status" aria-live="polite"></div>
+  <hr>
+  <h2>Recommended analysis</h2>
+  <p class="note">Review unique visitor sessions, completion, scan success, recognized object, scan time, total experience time, look-closer responses, observation choice, desired next action, observer help, visible look-back behavior, attention, companion talk, and abandonment.</p>
+  <p class="note">Important: Observer records are standalone timestamped observations and are not automatically linked one-to-one with visitor sessions.</p>
+</section>
+</main>
+<script src="config.js?v=20261028-a11y"></script>
+<script>
+const c=window.CMC_V4_CONFIG||{},el=document.getElementById('sheetAction');
+if(c.GOOGLE_SHEET_URL){
+  const a=document.createElement('a');
+  a.href=c.GOOGLE_SHEET_URL;
+  a.target='_blank';
+  a.rel='noopener';
+  a.textContent='Open AI Day Google Sheet →';
+  el.appendChild(a);
+}else{
+  el.textContent='Google Sheet URL has not been added to config.js yet.';
+}
+</script>
+</body>
+</html>
