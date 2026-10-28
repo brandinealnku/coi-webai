@@ -1,15 +1,85 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CMC V4 Research Setup</title>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script><script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script><script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="admin.css?v=20261028-0855"></head>
-<body><main class="admin-shell"><header><div><span class="eyebrow">CMC FOSSIL EXPERIENCE · V4.2</span><h1>AI Day Setup</h1><p>Train once, publish one static model, then let visitors join from their own phones.</p></div><div><a href="../train/">Student training →</a><br><a href="../validate/">Held-out validation →</a><br><a href="../observe/">Observer tool →</a><br><a href="dashboard.html">Research data →</a></div></header>
-<section class="grid"><article class="panel"><h2>1. Train the three specimens</h2><p class="note"><a href="contribute.html">Student contribution page →</a></p><video id="video" playsinline muted></video><div class="buttons"><button id="start">Start camera</button><button id="stop" disabled>Stop</button></div>
-<div class="train">
-<div><b id="fossil1Label">Fossil 1</b><span id="fossil1Count">0</span><button data-add="fossil1" disabled>Add</button></div>
-<div><b id="fossil2Label">Fossil 2</b><span id="fossil2Count">0</span><button data-add="fossil2" disabled>Add</button></div>
-<div><b id="fossil3Label">Fossil 3</b><span id="fossil3Count">0</span><button data-add="fossil3" disabled>Add</button></div>
-<div><b>Other object</b><span id="otherCount">0</span><button data-add="other" disabled>Add</button></div>
-<div><b>Background</b><span id="backgroundCount">0</span><button data-add="background" disabled>Add</button></div>
-</div>
-<p id="readiness" class="note">Aim for at least 10 examples per class; 25–40 per specimen is better for AI Day.</p></article>
-<article class="panel"><h2>2. Export the frozen model</h2><p class="note">When training looks good, download <code>training.json</code>. That single file becomes the model every visitor phone uses.</p><button id="download" disabled>Download training.json</button><p class="note">After download, replace the existing <code>fossil-experience-v4/training.json</code> file in GitHub with this one. No database or model server is required.</p>
-<hr><h2>3. Shared student submissions</h2><p class="note">Pull anonymous training examples contributed from student phones into this classifier.</p><button id="loadShared" class="secondary">Load student submissions</button><p id="sharedStatus" class="note">No shared submissions loaded yet.</p><hr><h2>4. Visitor QR code</h2><div id="qrcode"></div><code id="visitorUrl"></code><button id="copyUrl" class="secondary">Copy visitor URL</button>
-<hr><h2>5. Google research logging</h2><p id="googleStatus" class="note">The visitor app can send anonymous events to Google Sheets once a Google Apps Script web-app URL is added to <code>config.js</code>.</p></article></section></main><script src="config.js?v=20261028-0855"></script><script src="admin.js?v=20261028-0855"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CMC Object Experience · AI Day Setup</title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="admin.css?v=20261028-a11y">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<main id="main" class="admin-shell">
+<header>
+  <div>
+    <span class="eyebrow">CMC OBJECT EXPERIENCE · V4.2</span>
+    <h1>AI Day Setup</h1>
+    <p>Use this page to review shared training, validate the model, export the frozen AI Day model, and verify the visitor link.</p>
+  </div>
+  <nav aria-label="Experience tools">
+    <a href="../train/">Student training →</a><br>
+    <a href="../validate/">Held-out validation →</a><br>
+    <a href="../observe/">Observer tool →</a><br>
+    <a href="../fossil-display/">Monitor display →</a><br>
+    <a href="dashboard.html">Research data →</a>
+  </nav>
+</header>
+
+<section class="grid">
+<article class="panel">
+  <h2>1. Load shared student training</h2>
+  <p class="note">Students submit examples from the Training page. Load those shared examples here before reviewing counts or exporting the final model.</p>
+  <button id="loadShared" class="secondary" type="button">Load student submissions</button>
+  <p id="sharedStatus" class="note" role="status" aria-live="polite">No shared submissions loaded yet.</p>
+
+  <hr>
+  <h2>2. Review class counts</h2>
+  <p class="note">Target 25–40 examples for each of the three selected objects and 20–30 examples for Other object and Background. More examples are not automatically better; variety matters.</p>
+  <div class="train" aria-label="Training example counts">
+    <div><b id="fossil1Label">Fossil 1</b><span id="fossil1Count" aria-label="Fossil 1 count">0</span><button type="button" data-add="fossil1" disabled>Add local example</button></div>
+    <div><b id="fossil2Label">Fossil 2</b><span id="fossil2Count" aria-label="Fossil 2 count">0</span><button type="button" data-add="fossil2" disabled>Add local example</button></div>
+    <div><b id="fossil3Label">Fossil 3</b><span id="fossil3Count" aria-label="Fossil 3 count">0</span><button type="button" data-add="fossil3" disabled>Add local example</button></div>
+    <div><b>Other object</b><span id="otherCount" aria-label="Other object count">0</span><button type="button" data-add="other" disabled>Add local example</button></div>
+    <div><b>Background</b><span id="backgroundCount" aria-label="Background count">0</span><button type="button" data-add="background" disabled>Add local example</button></div>
+  </div>
+  <p id="readiness" class="note" role="status" aria-live="polite">Load the shared submissions to review the current dataset.</p>
+
+  <details>
+    <summary>Optional: add a local camera example</summary>
+    <p class="note">This is a setup tool, not the normal student workflow. Use it only if you intentionally need to add an example from this device.</p>
+    <video id="video" playsinline muted aria-label="Live camera preview for optional local training"></video>
+    <div class="buttons"><button id="start" type="button">Start camera</button><button id="stop" type="button" disabled>Stop camera</button></div>
+  </details>
+</article>
+
+<article class="panel">
+  <h2>3. Run held-out validation</h2>
+  <p class="note">Before export, test photos that were never used for training. Use the Held-out Validation page and check performance across the three selected objects, Other object, Background, and—if possible—more than one phone.</p>
+  <p><a href="../validate/">Open held-out validation →</a></p>
+
+  <hr>
+  <h2>4. Export the frozen model</h2>
+  <p class="note">After validation is acceptable, download <code>training.json</code>. This frozen file becomes the classifier dataset used by visitor phones during AI Day.</p>
+  <button id="download" type="button" disabled>Download training.json</button>
+  <p class="note">After download, replace <code>fossil-experience-v4/training.json</code> in GitHub, then test the Visitor Experience on multiple phones before the event.</p>
+
+  <hr>
+  <h2>5. Visitor link and QR code</h2>
+  <div id="qrcode" role="img" aria-label="QR code for the Visitor Experience"></div>
+  <p><a id="visitorLink" href="../fossil/" target="_blank" rel="noopener">Open Visitor Experience</a></p>
+  <code id="visitorUrl"></code>
+  <button id="copyUrl" class="secondary" type="button">Copy visitor URL</button>
+
+  <hr>
+  <h2>6. Research logging</h2>
+  <p id="googleStatus" class="note" role="status" aria-live="polite">Checking Google Sheets logging configuration…</p>
+</article>
+</section>
+</main>
+<script src="config.js?v=20261028-a11y"></script>
+<script src="admin.js?v=20261028-a11y"></script>
+</body>
+</html>
