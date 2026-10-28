@@ -269,3 +269,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   .camera-actions{flex-direction:column}
   .quiet-link{text-align:center}
 }
+
+.uncertainty{margin:14px 0 0;padding:12px 13px;border-left:3px solid var(--gold);background:rgba(242,181,29,.06);color:#d7dde3;line-height:1.5}
+.source-line{display:block;margin-top:14px;color:#8f9aa5;font-size:.75rem;line-height:1.4}
+.connection-reason{margin:0 0 24px;padding:16px 17px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025)}
+.connection-reason p{margin:0 0 10px;color:#d7dde3;line-height:1.5}
+.connection-reason strong{display:block;color:var(--gold);font-size:.85rem;line-height:1.45}
+@media(max-width:700px){
+  .uncertainty{font-size:.88rem}
+  .source-line{font-size:.7rem}
+  .connection-reason{padding:14px;margin-bottom:18px}
+  .connection-reason p{font-size:.9rem}
+  .connection-reason strong{font-size:.78rem}
+}
