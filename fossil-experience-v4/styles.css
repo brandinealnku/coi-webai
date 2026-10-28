@@ -418,3 +418,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   .micro-feedback .choice-grid.three{gap:7px}
   .micro-feedback .choice{padding:10px 5px}
 }
+
+.completion-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.completion-actions button{min-height:52px}
+.mission-complete p{margin:8px 0 0;color:#d9e0e6;line-height:1.45}
+@media(max-width:520px){
+  .completion-actions{grid-template-columns:1fr}
+}
