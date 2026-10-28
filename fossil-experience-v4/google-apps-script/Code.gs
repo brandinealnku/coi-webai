@@ -223,7 +223,7 @@ function setupWorkbook() {
   if (!summary) summary = ss.insertSheet('Summary');
   summary.clear();
 
-  summary.getRange('A1:B17').setValues([
+  summary.getRange('A1:B22').setValues([
     ['AI Day Metric','Value'],
     ['Unique LIVE visitor sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="live")))'],
     ['Completed LIVE sessions','=COUNTIFS(Events!D2:D,"session-complete",Events!AC2:AC,"live")'],
@@ -231,14 +231,19 @@ function setupWorkbook() {
     ['Recognized Object 1','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil1",Events!AC2:AC,"live")'],
     ['Recognized Object 2','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil2",Events!AC2:AC,"live")'],
     ['Recognized Object 3','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil3",Events!AC2:AC,"live")'],
+    ['Selected = recognized','=SUMPRODUCT((Events!D2:D="scan-success")*(Events!AC2:AC="live")*(Events!AA2:AA=Events!AD2:AD))'],
     ['Scanner made them look more closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"more",Events!AC2:AC,"live")'],
     ['About the same','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"same",Events!AC2:AC,"live")'],
     ['Looked less closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"less",Events!AC2:AC,"live")'],
+    ['Would follow connection: Yes','=COUNTIFS(Events!D2:D,"next-action",Events!O2:O,"yes",Events!AC2:AC,"live")'],
+    ['Would follow connection: Maybe','=COUNTIFS(Events!D2:D,"next-action",Events!O2:O,"maybe",Events!AC2:AC,"live")'],
+    ['Would follow connection: No','=COUNTIFS(Events!D2:D,"next-action",Events!O2:O,"no",Events!AC2:AC,"live")'],
     ['Manual scan bypasses','=COUNTIFS(Events!D2:D,"manual-bypass",Events!AC2:AC,"live")'],
     ['Observer: looked back at object','=COUNTIFS(Events!D2:D,"observer-note",Events!V2:V,"yes",Events!AC2:AC,"live")'],
     ['Observer: needed help','=COUNTIFS(Events!D2:D,"observer-note",Events!U2:U,"yes",Events!AC2:AC,"live")'],
     ['Paired observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!AE2:AE,"<>",Events!AC2:AC,"live")'],
     ['TEST sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="test")))'],
+    ['TEST completed sessions','=COUNTIFS(Events!D2:D,"session-complete",Events!AC2:AC,"test")'],
     ['TEST observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!AC2:AC,"test")'],
     ['Last event','=MAX(Events!A2:A)']
   ]);
