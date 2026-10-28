@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Look Closer · AI Day 2026</title>
+  <meta name="description" content="AI Native Studio × Cincinnati Museum Center — interactive object recognition field study for NKU AI Day 2026." />
+  <style>
+    :root{
+      --gold:#f2b51d;
+      --ink:#07090c;
+      --panel:#11161c;
+      --text:#f7f8fa;
+      --muted:#a8b2bd;
+      --line:rgba(255,255,255,.12);
+      --green:#34d399;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;background:#07090c;color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}
+    body{
+      background:
+        radial-gradient(circle at 83% 12%,rgba(242,181,29,.14),transparent 31%),
+        radial-gradient(circle at 14% 90%,rgba(52,211,153,.08),transparent 30%),
+        linear-gradient(135deg,#111720 0%,#080b10 48%,#05070a 100%);
+    }
+    .shell{height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:clamp(28px,3.4vw,56px);gap:20px;position:relative}
+    .shell:before,.shell:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.05);border-radius:50%;pointer-events:none}
+    .shell:before{width:34vw;height:34vw;right:-12vw;top:-15vw}
+    .shell:after{width:26vw;height:26vw;left:-13vw;bottom:-15vw}
+    header{display:flex;align-items:center;justify-content:space-between;gap:24px;z-index:1}
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand-dot{width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 8px rgba(242,181,29,.09)}
+    .brand-copy{display:grid;gap:3px}
+    .brand-copy strong{font-size:clamp(.95rem,1.25vw,1.2rem);letter-spacing:.01em}
+    .brand-copy span{font-size:clamp(.7rem,.95vw,.9rem);color:#8d98a5}
+    .event-pill{border:1px solid rgba(242,181,29,.4);color:var(--gold);border-radius:999px;padding:9px 14px;font-size:clamp(.62rem,.8vw,.78rem);font-weight:900;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+    main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(330px,.65fr);gap:clamp(30px,5vw,78px);align-items:center;z-index:1}
+    .copy{max-width:980px}
+    .eyebrow{color:var(--gold);font-size:clamp(.72rem,1vw,.95rem);font-weight:900;letter-spacing:.17em;text-transform:uppercase;margin-bottom:16px}
+    h1{font-size:clamp(4.2rem,8.5vw,9.2rem);line-height:.86;letter-spacing:-.065em;margin:0 0 26px;max-width:10ch}
+    .accent{color:var(--gold)}
+    .lede{font-size:clamp(1.2rem,2vw,2rem);line-height:1.45;color:#d0d6dd;max-width:33ch;margin:0 0 34px}
+    .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:900px}
+    .step{padding:18px 18px 17px;border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:18px;min-height:115px}
+    .step b{display:block;color:var(--gold);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+    .step strong{display:block;font-size:clamp(.98rem,1.25vw,1.2rem);margin-bottom:5px}
+    .step span{color:#98a3af;font-size:clamp(.76rem,.95vw,.9rem);line-height:1.35}
+    .qr-panel{justify-self:end;width:min(100%,520px);padding:clamp(24px,2.8vw,40px);border-radius:30px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(150deg,rgba(255,255,255,.075),rgba(255,255,255,.025));box-shadow:0 36px 100px rgba(0,0,0,.38);backdrop-filter:blur(16px);text-align:center}
+    .qr-label{font-size:clamp(.7rem,.9vw,.86rem);font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+    .qr-title{font-size:clamp(1.5rem,2.25vw,2.4rem);line-height:1.05;letter-spacing:-.035em;font-weight:900;margin-bottom:22px}
+    #qrcode{width:min(28vw,340px);height:min(28vw,340px);min-width:250px;min-height:250px;margin:0 auto 20px;padding:16px;border-radius:22px;background:#fff;display:grid;place-items:center}
+    #qrcode img,#qrcode canvas{max-width:100%;max-height:100%}
+    .scan-note{font-size:clamp(.9rem,1.15vw,1.05rem);color:#d7dce2;font-weight:700}
+    .scan-sub{font-size:clamp(.7rem,.9vw,.84rem);color:#8f9aa6;margin-top:6px}
+    .fallback{margin-top:12px;font-size:clamp(.63rem,.78vw,.76rem);color:#77838f;word-break:break-all}
+    footer{display:flex;align-items:center;justify-content:space-between;gap:20px;color:#86919d;font-size:clamp(.65rem,.85vw,.82rem);z-index:1}
+    .research{display:flex;align-items:center;gap:9px}
+    .research:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(52,211,153,.08)}
+    .prototype{font-weight:750;color:#aeb8c2}
+    @media(max-width:900px){
+      html,body{overflow:auto}
+      .shell{height:auto;min-height:100vh}
+      main{grid-template-columns:1fr}
+      .qr-panel{justify-self:stretch}
+      #qrcode{width:280px;height:280px}
+      .steps{grid-template-columns:1fr}
+      h1{font-size:clamp(4rem,16vw,7rem)}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <div class="brand-copy">
+          <strong>AI Native Studio × Cincinnati Museum Center</strong>
+          <span>Student-built field study · Northern Kentucky University</span>
+        </div>
+      </div>
+      <div class="event-pill">AI Day · 2026</div>
+    </header>
+
+    <main>
+      <section class="copy">
+        <div class="eyebrow">A physical object. An AI lens. A human reaction.</div>
+        <h1>Look <span class="accent">closer.</span></h1>
+        <p class="lede">Can AI help us pay more attention to the real world—not less? Choose an object, scan the code, and see what happens.</p>
+
+        <div class="steps">
+          <div class="step">
+            <b>01 · Choose</b>
+            <strong>Pick an object</strong>
+            <span>Select one of the three physical specimens on the table.</span>
+          </div>
+          <div class="step">
+            <b>02 · Scan</b>
+            <strong>Use your phone</strong>
+            <span>No app required. Scan the QR code and allow camera access.</span>
+          </div>
+          <div class="step">
+            <b>03 · Look again</b>
+            <strong>Notice what changes</strong>
+            <span>The experience is designed to bring your attention back to the object.</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="qr-panel">
+        <div class="qr-label">Try the experience</div>
+        <div class="qr-title">Scan with your phone</div>
+        <div id="qrcode" aria-label="QR code for the visitor experience"></div>
+        <div class="scan-note">Point your camera at the QR code</div>
+        <div class="scan-sub">Then choose one of the three objects on the table.</div>
+        <div class="fallback">brandinealnku.github.io/coi-webai/fossil/</div>
+      </aside>
+    </main>
+
+    <footer>
+      <div class="research">We’re studying whether AI-mediated recognition changes how people engage with physical objects.</div>
+      <div class="prototype">Prototype · AI Native Studio · Fall 2026</div>
+    </footer>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    (function(){
+      const fallback = "https://brandinealnku.github.io/coi-webai/fossil/";
+      const visitorUrl = (window.CMC_V4_CONFIG && window.CMC_V4_CONFIG.VISITOR_URL) || fallback;
+      const target = document.getElementById("qrcode");
+      if (window.QRCode) {
+        new QRCode(target, {
+          text: visitorUrl,
+          width: 320,
+          height: 320,
+          colorDark: "#080a0d",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } else {
+        target.innerHTML = '<div style="color:#111;font-weight:800;text-align:center;padding:24px">QR unavailable<br><small>Use the URL below</small></div>';
+      }
+    })();
+  </script>
+</body>
+</html>
