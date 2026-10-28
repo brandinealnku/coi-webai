@@ -93,6 +93,7 @@ function resetSession(){
  document.querySelectorAll('[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
  document.querySelectorAll('.choice.selected').forEach(x=>x.classList.remove('selected'));
  $('followBlock').classList.add('hidden');$('missionComplete').classList.add('hidden');
+ $('finishExperience').classList.remove('hidden');$('tryAnother').textContent='Try another object';
  $('testScanPanel').classList.add('hidden');$('scanState').classList.remove('hidden');
  newSession();beginExperience()
 }
