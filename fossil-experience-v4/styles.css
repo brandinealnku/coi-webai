@@ -11,3 +11,5 @@
 .choice.selected{border-color:var(--gold);background:var(--gold);color:#111;box-shadow:0 0 0 4px rgba(242,181,29,.2)}
 .choice.selected b::before{content:"✓ ";font-weight:1000}
 .choice.selected span{color:#28230f}
+
+.recognized-chip{display:inline-flex;gap:6px;align-items:center;margin:8px 0 14px;padding:8px 11px;border-radius:999px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.3);color:#a7b0ba;font-size:.8rem}.recognized-chip strong{color:#fff}
