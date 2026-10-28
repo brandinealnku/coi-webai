@@ -33,7 +33,7 @@ function doPost(e) {
 
     const probs = event.probabilities || {};
     const sessionId = String(payload.sessionId || '');
-    const studyCode = sessionId.slice(0, 6).toUpperCase();
+    const studyCode = String(event.studyCode || sessionId.slice(0, 6)).trim().toUpperCase();
     const observeChoice = event.observe ?? (event.type === 'observe-choice' ? event.value : '');
     const lookCloser = event.lookCloser ?? (event.type === 'look-closer' ? event.value : '');
     const nextAction = event.next ?? (event.type === 'next-action' ? event.value : '');
@@ -148,7 +148,7 @@ function setupWorkbook() {
 
   summary.getRange('A1:B15').setValues([
     ['AI Day Metric','Value'],
-    ['Unique sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"")))'],
+    ['Unique visitor sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note")))'],
     ['Completed sessions','=COUNTIF(Events!D2:D,"session-complete")'],
     ['Successful scans','=COUNTIF(Events!D2:D,"scan-success")'],
     ['Recognized Fossil 1','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil1")'],
@@ -158,9 +158,9 @@ function setupWorkbook() {
     ['About the same','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"same")'],
     ['Looked less closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"less")'],
     ['Manual scan bypasses','=COUNTIF(Events!D2:D,"manual-bypass")'],
-    ['Observer: looked back at fossil','=COUNTIFS(Events!D2:D,"observer-note",Events!V2:V,"yes")'],
+    ['Observer: looked back at object','=COUNTIFS(Events!D2:D,"observer-note",Events!V2:V,"yes")'],
     ['Observer: needed help','=COUNTIFS(Events!D2:D,"observer-note",Events!U2:U,"yes")'],
-    ['Observer notes','=COUNTIF(Events!D2:D,"observer-note")'],
+    ['Paired observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!T2:T,"<>")'],
     ['Last event','=MAX(Events!A2:A)']
   ]);
 
