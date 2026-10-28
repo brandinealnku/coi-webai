@@ -51,12 +51,12 @@
         <div id="scanState" class="scan-state" role="status" aria-live="polite">Looking…</div>
 
         <div id="testScanPanel" class="test-scan-panel hidden">
-          <strong>Choose what the test should recognize</strong>
-          <span>This replaces camera recognition only. Everything after this matches the MVP flow.</span>
+          <strong id="scanPanelTitle">Choose what the test should recognize</strong>
+          <span id="scanPanelText">This replaces camera recognition only. Everything after this matches the MVP flow.</span>
           <div class="test-object-grid" role="group" aria-label="Simulated recognition object">
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil1">City fossil</button>
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil2">Predator trace</button>
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil3">Mystery donut</button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil1"><span id="scanChoice1">City fossil</span></button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil2"><span id="scanChoice2">Predator trace</span></button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil3"><span id="scanChoice3">Mystery donut</span></button>
           </div>
         </div>
       </div>
