@@ -425,3 +425,5 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(max-width:520px){
   .completion-actions{grid-template-columns:1fr}
 }
+
+.scenario-context{margin:0 0 12px;color:#f2b51d;font-weight:850;font-size:.82rem;line-height:1.4}
