@@ -13,3 +13,10 @@
 .choice.selected span{color:#28230f}
 
 .recognized-chip{display:inline-flex;gap:6px;align-items:center;margin:8px 0 14px;padding:8px 11px;border-radius:999px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.3);color:#a7b0ba;font-size:.8rem}.recognized-chip strong{color:#fff}
+.skip-link{position:fixed;left:12px;top:12px;z-index:9999;padding:10px 14px;border-radius:8px;background:#fff;color:#111;font-weight:800;transform:translateY(-150%);transition:transform .15s}
+.skip-link:focus{transform:translateY(0)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex="-1"]:focus{outline:3px solid #fff;outline-offset:4px}
+[tabindex="-1"]:focus{outline:none}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media (forced-colors:active){.choice.selected,[aria-pressed="true"]{outline:3px solid ButtonText}.focus-frame{border-color:Highlight}.event-pill,.eyebrow{color:CanvasText}}
+@media (max-width:320px){.topbar{width:calc(100% - 16px)}.card{padding:20px 14px}.camera-actions{align-items:stretch;flex-direction:column;gap:10px}.quiet-link{padding:12px}}
