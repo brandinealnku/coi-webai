@@ -23,7 +23,7 @@ $('submit').onclick=()=>{
   const event={type:'observer-note',at:new Date().toISOString(),elapsedMs:'',observerHelp:state.help,lookedBack:state.lookback,attention:state.attention,companionTalk:state.companion,outcome:state.outcome,observerNotes:$('notes').value.trim()};
   try{
     fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({eventName:CFG.EVENT_NAME||'NKU AI Day 2026',sessionId:observationId,event,userAgent:navigator.userAgent}),keepalive:true});
-    $('status').textContent='Observation saved. Ready for the next visitor.';
+    $('status').textContent='Observation submitted. Ready for the next visitor.';
     reset();
   }catch(e){
     $('status').textContent='Could not save. Check the network and try again.';
