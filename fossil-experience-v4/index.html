@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="styles.css?v=20261028-mvp10">
+<link rel="stylesheet" href="styles.css?v=20261028-mvp11">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
@@ -141,8 +141,13 @@
       </div>
 
       <div id="missionComplete" class="mission-complete hidden" role="status" aria-live="polite">
-        <span class="connection-label">KEEP EXPLORING</span>
-        <strong id="missionCompleteText">Go see if you can spot the connection yourself.</strong>
+        <span class="connection-label">OBJECT COMPLETE</span>
+        <strong id="missionCompleteText">You’ve completed this object.</strong>
+        <p id="missionCompleteSubtext">What would you like to do next?</p>
+        <div class="completion-actions">
+          <button id="tryAnother" type="button" class="primary">Try another object</button>
+          <button id="finishExperience" type="button" class="secondary">I’m finished</button>
+        </div>
       </div>
     </div>
   </section>
