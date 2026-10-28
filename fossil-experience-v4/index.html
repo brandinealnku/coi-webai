@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="styles.css?v=20261028-route2">
+<link rel="stylesheet" href="styles.css?v=20261028-lessread1">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
@@ -24,8 +24,8 @@
   <section id="welcome" class="screen" aria-hidden="true">
     <div class="card hero">
       <span class="eyebrow">EXPAND YOUR WORLD</span>
-      <h1>Discover something hiding in plain sight.</h1>
-      <p class="lede">Point your camera at one of the featured objects. We’ll give you one thing to look for—and one connection to follow.</p>
+      <h1>Look closer.</h1>
+      <p class="lede">Scan an object. Notice one clue. Follow where it leads.</p>
       <div id="testModeNotice" class="test-mode-note hidden"><strong>TEST MODE</strong><span>Recognition is simulated. The museum interaction is otherwise the same.</span></div>
       <details class="privacy-details">
         <summary>Camera & privacy</summary>
@@ -73,7 +73,6 @@
       <div class="recognized-chip">Found: <strong id="recognizedName">Object</strong></div>
       <p id="scenarioContext" class="scenario-context"></p>
       <h2 id="noticeQuestion">What do you notice?</h2>
-      <p class="object-direction">Keep your eyes on the physical object while you decide.</p>
       <div class="choice-grid three" id="noticeChoices">
         <button class="choice" data-observe="choice1"><b id="noticeChoice1Label">Choice 1</b><span id="noticeChoice1Detail"></span></button>
         <button class="choice" data-observe="choice2"><b id="noticeChoice2Label">Choice 2</b><span id="noticeChoice2Detail"></span></button>
@@ -85,46 +84,44 @@
   <section id="discover" class="screen" aria-hidden="true">
     <div class="card">
       <span class="eyebrow">3 · DISCOVER</span>
-      <h2 id="discoverTitle">Here’s what that clue tells us.</h2>
-      <p id="discoverText" class="discovery"></p>
       <div id="fossilFact" class="fact-card hidden">
         <strong id="fossilFactTitle"></strong>
         <p id="fossilFactText"></p>
         <p id="uncertaintyText" class="uncertainty hidden"></p>
         <details id="collectionDetails" class="collection-details">
-          <summary>Collection details</summary>
+          <summary>More about this object</summary>
           <small id="sourceText" class="source-line"></small>
         </details>
       </div>
       <div id="curatorNote" class="curator-note hidden"><strong>Story coming soon</strong><span>This object’s interpretive content is still being reviewed.</span></div>
-      <button id="toConnection" class="primary xl">Find the connection</button>
+      <button id="toConnection" class="primary xl">Where does this lead?</button>
     </div>
   </section>
 
   <section id="connection" class="screen" aria-hidden="true">
     <div class="card">
       <span class="eyebrow">4 · GO</span>
-      <h2>Continue the story.</h2>
+      <h2>Next stop.</h2>
 
       <section class="destination-mission" aria-labelledby="relatedObjectName">
-        <span class="connection-label">YOUR NEXT STOP</span>
+        <span class="connection-label">GO FIND</span>
         <strong id="relatedObjectName">A related object</strong>
         <p id="missionPrompt">See if you can spot the connection yourself.</p>
-        <small id="relatedCatalog" class="catalog-meta"></small>
-      </section>
-
-      <section class="connection-explanation">
-        <span class="connection-label">WHY THIS STOP COMES NEXT</span>
-        <p id="relatedObjectReason"></p>
       </section>
 
       <section class="connection-location" aria-labelledby="locationHeading">
-        <span id="locationHeading" class="connection-label">WHERE TO FIND IT</span>
+        <span id="locationHeading" class="connection-label">WHERE</span>
         <strong id="relatedStop"></strong>
       </section>
 
+      <details class="why-details">
+        <summary>Why this stop?</summary>
+        <p id="relatedObjectReason"></p>
+        <small id="relatedCatalog" class="catalog-meta"></small>
+      </details>
+
       <div class="micro-feedback">
-        <h3>Did this experience help you notice something you hadn’t noticed before?</h3>
+        <h3>Notice something new?</h3>
         <div class="choice-grid three compact">
           <button class="choice notice-value-choice" data-noticed="yes" aria-pressed="false"><b>Yes</b></button>
           <button class="choice notice-value-choice" data-noticed="maybe" aria-pressed="false"><b>Maybe</b></button>
@@ -132,7 +129,7 @@
         </div>
 
         <div id="followBlock" class="next-block hidden">
-          <h3>Would you continue to the next stop?</h3>
+          <h3>Keep going?</h3>
           <div class="choice-grid three compact">
             <button class="choice next-choice" data-next="yes"><b>Yes</b></button>
             <button class="choice next-choice" data-next="maybe"><b>Maybe</b></button>
@@ -142,9 +139,9 @@
       </div>
 
       <div id="missionComplete" class="mission-complete hidden" role="status" aria-live="polite">
-        <span class="connection-label">OBJECT COMPLETE</span>
+        <span class="connection-label">DONE</span>
         <strong id="missionCompleteText">You’ve completed this object.</strong>
-        <p id="missionCompleteSubtext">What would you like to do next?</p>
+        <p id="missionCompleteSubtext">What next?</p>
         <div class="completion-actions">
           <button id="tryAnother" type="button" class="primary">Try another route stop</button>
           <button id="finishExperience" type="button" class="secondary">I’m finished</button>
