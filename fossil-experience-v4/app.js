@@ -127,7 +127,7 @@ function applySpecimenContent(label){
  $('relatedObjectName').textContent=cc.relatedObjectName||'Curator-approved related content';
  $('relatedCatalog').textContent=cc.relatedCatalogNumber||'';
  $('relatedObjectReason').textContent=cc.relatedObjectReason||'A future museum version could add an approved connection here.';
- $('relatedStop').textContent=cc.relatedStop?('Find it: '+cc.relatedStop):'';
+ $('relatedStop').textContent=cc.relatedStop||'';
  $('connectionIntro').textContent=cc.relatedObjectName?'This object connects to another real object in the gallery.':'A future museum version could connect this object to curator-approved related content.'
 }
 
