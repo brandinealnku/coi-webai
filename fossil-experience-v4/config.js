@@ -28,5 +28,5 @@ window.CMC_V4_CONFIG = {
       relatedObjectReason: ""
     }
   },
-  VISITOR_URL: "https://brandinealnku.github.io/coi-webai/fossil-experience-v4/"
+  VISITOR_URL: "https://brandinealnku.github.io/coi-webai/fossil/"
 };
