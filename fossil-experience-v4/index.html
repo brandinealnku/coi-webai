@@ -25,7 +25,7 @@
   </div></section>
 
   <section id="camera" class="screen" aria-hidden="true"><div class="camera-wrap">
-    <div class="step-copy"><span class="eyebrow">1 · SCAN</span><h2>Point your camera at the object you chose.</h2><p id="guidance">Center that object and move close enough to fill the frame.</p></div>
+    <div class="step-copy"><span class="eyebrow">1 · SCAN</span><h2>Point your camera at the object you chose.</h2><p id="guidance">Center that object and move close enough to fill the frame.</p><p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p></div>
     <div class="stage"><video id="video" playsinline muted aria-label="Live camera preview"></video><canvas id="overlay" aria-hidden="true"></canvas><div class="focus-frame" aria-hidden="true"></div><div class="scan-line" aria-hidden="true"></div><div id="scanState" class="scan-state" aria-live="off">Looking…</div></div>
     <div class="camera-actions"><button id="restart" class="secondary">Start over</button><button id="scanHelp" class="quiet-link">Can’t use the camera? Continue without scanning</button></div>
   </div></section>
@@ -55,9 +55,9 @@
   <section id="feedback" class="screen" aria-hidden="true"><div class="card">
     <span class="eyebrow">TWO QUICK QUESTIONS</span><h2>How did using the scanner affect how closely you looked at the physical object?</h2>
     <div class="choice-grid three compact">
-      <button class="choice look-choice" data-look="more"><b>I looked more closely</b></button>
-      <button class="choice look-choice" data-look="same"><b>About the same</b></button>
-      <button class="choice look-choice" data-look="less"><b>I looked less closely</b></button>
+      <button class="choice look-choice" data-look="more" aria-pressed="false"><b>I looked more closely</b></button>
+      <button class="choice look-choice" data-look="same" aria-pressed="false"><b>About the same</b></button>
+      <button class="choice look-choice" data-look="less" aria-pressed="false"><b>I looked less closely</b></button>
     </div>
     <div id="nextBlock" class="next-block hidden"><h3>What would you most want to do next?</h3>
       <div class="choice-grid two">
