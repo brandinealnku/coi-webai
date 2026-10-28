@@ -7,7 +7,8 @@ const HEADERS = [
   'Scan Time ms','Observe Choice','Look Closer','Next Action','Manual Bypass',
   'Total Time ms','Screen','User Agent',
   'Study Code','Observer Help','Looked Back','Attention','Companion Talk','Outcome','Observer Notes',
-  'Recognized Specimen','Probabilities JSON'
+  'Recognized Specimen','Probabilities JSON',
+  'Mode','Selected Object','Observed Session ID'
 ];
 
 const TRAINING_HEADERS = [
@@ -38,6 +39,9 @@ function doPost(e) {
     const lookCloser = event.lookCloser ?? (event.type === 'look-closer' ? event.value : '');
     const nextAction = event.next ?? (event.type === 'next-action' ? event.value : '');
     const recognizedSpecimen = event.recognizedSpecimen || '';
+    const mode = String(event.mode || 'live').toLowerCase() === 'test' ? 'test' : 'live';
+    const selectedObject = event.selectedObject || '';
+    const observedSessionId = event.observedSessionId || '';
 
     sheet.appendRow([
       new Date(), payload.eventName || '', sessionId, event.type || '', event.at || '',
@@ -48,7 +52,8 @@ function doPost(e) {
       payload.userAgent || '', studyCode,
       event.observerHelp ?? '', event.lookedBack ?? '', event.attention ?? '',
       event.companionTalk ?? '', event.outcome ?? '', event.observerNotes ?? '',
-      recognizedSpecimen, Object.keys(probs).length ? JSON.stringify(probs) : ''
+      recognizedSpecimen, Object.keys(probs).length ? JSON.stringify(probs) : '',
+      mode, selectedObject, observedSessionId
     ]);
 
     return ContentService.createTextOutput('ok');
@@ -60,13 +65,21 @@ function doPost(e) {
 function doGet(e) {
   try {
     const action = String(e.parameter.action || '');
+
+    if (action === 'active') {
+      return getActiveSessions_(e);
+    }
+
     if (action !== 'training') {
       return ContentService.createTextOutput('ok');
     }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(TRAINING_SHEET);
-    const out = {version: 4.2, classes: {fossil1: [], fossil2: [], fossil3: [], other: [], background: []}};
+    const out = {
+      version: 4.3,
+      classes: {fossil1: [], fossil2: [], fossil3: [], other: [], background: []}
+    };
 
     if (sheet && sheet.getLastRow() > 1) {
       const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, TRAINING_HEADERS.length).getValues();
@@ -80,17 +93,81 @@ function doGet(e) {
       });
     }
 
-    const json = JSON.stringify(out);
-    const callback = String(e.parameter.callback || '');
-    if (callback) {
-      return ContentService.createTextOutput(callback + '(' + json + ')')
-        .setMimeType(ContentService.MimeType.JAVASCRIPT);
-    }
-    return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+    return jsonOrJsonp_(out, e);
   } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({error: err.message}))
+    return ContentService
+      .createTextOutput(JSON.stringify({error: err.message}))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+function getActiveSessions_(e) {
+  const requestedMode = String(e.parameter.mode || 'live').toLowerCase() === 'test' ? 'test' : 'live';
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000;
+  const sessions = {};
+
+  if (sheet && sheet.getLastRow() > 1) {
+    ensureHeaders_(sheet);
+    const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, HEADERS.length).getValues();
+
+    rows.forEach(row => {
+      const eventType = String(row[3] || '');
+      if (eventType === 'observer-note') return;
+
+      const mode = String(row[28] || 'live').toLowerCase();
+      if (mode !== requestedMode) return;
+
+      const sessionId = String(row[2] || '');
+      if (!sessionId) return;
+
+      const receivedAt = row[0] instanceof Date ? row[0].getTime() : new Date(row[0]).getTime();
+      if (!Number.isFinite(receivedAt) || now - receivedAt > windowMs) return;
+
+      const s = sessions[sessionId] || {
+        sessionId: sessionId,
+        studyCode: String(row[19] || sessionId.slice(0, 6)).toUpperCase(),
+        selectedObject: '',
+        recognizedSpecimen: '',
+        startedAt: '',
+        lastAt: '',
+        completed: false,
+        mode: mode
+      };
+
+      const eventAt = String(row[4] || '');
+      if (!s.startedAt || eventType === 'page-open' || eventType === 'session-start') {
+        s.startedAt = s.startedAt || eventAt || new Date(receivedAt).toISOString();
+      }
+      s.lastAt = eventAt || new Date(receivedAt).toISOString();
+
+      if (row[29]) s.selectedObject = String(row[29]);
+      if (row[26]) s.recognizedSpecimen = String(row[26]);
+      if (eventType === 'session-complete') s.completed = true;
+
+      sessions[sessionId] = s;
+    });
+  }
+
+  const out = Object.values(sessions)
+    .filter(s => s.selectedObject)
+    .sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt))
+    .slice(0, 12);
+
+  return jsonOrJsonp_({mode: requestedMode, sessions: out}, e);
+}
+
+function jsonOrJsonp_(data, e) {
+  const json = JSON.stringify(data);
+  const callback = String((e && e.parameter && e.parameter.callback) || '');
+  if (callback) {
+    return ContentService.createTextOutput(callback + '(' + json + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function saveTrainingExample_(payload) {
@@ -146,21 +223,23 @@ function setupWorkbook() {
   if (!summary) summary = ss.insertSheet('Summary');
   summary.clear();
 
-  summary.getRange('A1:B15').setValues([
+  summary.getRange('A1:B17').setValues([
     ['AI Day Metric','Value'],
-    ['Unique visitor sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note")))'],
-    ['Completed sessions','=COUNTIF(Events!D2:D,"session-complete")'],
-    ['Successful scans','=COUNTIF(Events!D2:D,"scan-success")'],
-    ['Recognized Fossil 1','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil1")'],
-    ['Recognized Fossil 2','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil2")'],
-    ['Recognized Fossil 3','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil3")'],
-    ['Scanner made them look more closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"more")'],
-    ['About the same','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"same")'],
-    ['Looked less closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"less")'],
-    ['Manual scan bypasses','=COUNTIF(Events!D2:D,"manual-bypass")'],
-    ['Observer: looked back at object','=COUNTIFS(Events!D2:D,"observer-note",Events!V2:V,"yes")'],
-    ['Observer: needed help','=COUNTIFS(Events!D2:D,"observer-note",Events!U2:U,"yes")'],
-    ['Paired observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!T2:T,"<>")'],
+    ['Unique LIVE visitor sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="live")))'],
+    ['Completed LIVE sessions','=COUNTIFS(Events!D2:D,"session-complete",Events!AC2:AC,"live")'],
+    ['Successful LIVE scans','=COUNTIFS(Events!D2:D,"scan-success",Events!AC2:AC,"live")'],
+    ['Recognized Object 1','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil1",Events!AC2:AC,"live")'],
+    ['Recognized Object 2','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil2",Events!AC2:AC,"live")'],
+    ['Recognized Object 3','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil3",Events!AC2:AC,"live")'],
+    ['Scanner made them look more closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"more",Events!AC2:AC,"live")'],
+    ['About the same','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"same",Events!AC2:AC,"live")'],
+    ['Looked less closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"less",Events!AC2:AC,"live")'],
+    ['Manual scan bypasses','=COUNTIFS(Events!D2:D,"manual-bypass",Events!AC2:AC,"live")'],
+    ['Observer: looked back at object','=COUNTIFS(Events!D2:D,"observer-note",Events!V2:V,"yes",Events!AC2:AC,"live")'],
+    ['Observer: needed help','=COUNTIFS(Events!D2:D,"observer-note",Events!U2:U,"yes",Events!AC2:AC,"live")'],
+    ['Paired observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!AE2:AE,"<>",Events!AC2:AC,"live")'],
+    ['TEST sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="test")))'],
+    ['TEST observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!AC2:AC,"test")'],
     ['Last event','=MAX(Events!A2:A)']
   ]);
 
