@@ -7,7 +7,7 @@ let model=null,classifier=null,stream=null,raf=null,lastInfer=0,stable=0,current
 const video=$('video'),overlay=$('overlay'),ctx=overlay.getContext('2d'),crop=document.createElement('canvas'),cctx=crop.getContext('2d',{willReadFrequently:true});
 
 function uid(){return crypto.randomUUID?crypto.randomUUID():'s-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
-function specimenConfig(label){return CFG.SPECIMENS?.[label]||{name:label}}
+function specimenConfig(label){const source=MODE==='test'?(CFG.TEST_SPECIMENS||CFG.SPECIMENS):CFG.SPECIMENS;return source?.[label]||{name:label}}
 function specimenName(label){return specimenConfig(label).name||label}
 function isSpecimen(label){return SPECIMEN_LABELS.includes(label)}
 function show(id){
@@ -91,10 +91,44 @@ function finish(){
  $('duration').textContent=session.totalMs<60000?Math.round(session.totalMs/1000)+' sec':Math.floor(session.totalMs/60000)+'m '+Math.round(session.totalMs%60000/1000)+'s';show('thanks')
 }
 function applySpecimenContent(label){
- const cc=specimenConfig(label);$('sourceObjectName').textContent=cc.name||'This object';
- if(cc.approved&&cc.factTitle&&cc.factText){$('fossilFactTitle').textContent=cc.factTitle;$('fossilFactText').textContent=cc.factText;$('fossilFact').classList.remove('hidden');$('curatorNote').classList.add('hidden')}
- else{$('fossilFact').classList.add('hidden');$('curatorNote').classList.remove('hidden')}
- $('relatedObjectName').textContent=cc.relatedObjectName||'Curator-approved related content';$('relatedObjectReason').textContent=cc.relatedObjectReason||'A future museum version could add an approved connection here.'
+ const cc=specimenConfig(label);
+ $('sourceObjectName').textContent=cc.name||'This object';
+ $('sourceCatalog').textContent=cc.catalogNumber?cc.catalogNumber:'';
+ $('noticeQuestion').textContent=cc.noticeQuestion||'What catches your attention first?';
+
+ const choices=cc.noticeChoices||[
+  {value:'shape',label:'Shape',detail:'The overall form or outline'},
+  {value:'texture',label:'Texture',detail:'Ridges, pits, lines, or surface'},
+  {value:'pattern',label:'Pattern',detail:'Repeated or unusual details'}
+ ];
+ const buttons=[...document.querySelectorAll('[data-observe]')];
+ choices.slice(0,3).forEach((choice,i)=>{
+   const b=buttons[i];if(!b)return;
+   b.dataset.observe=choice.value;
+   b.querySelector('b').textContent=choice.label;
+   const span=b.querySelector('span');if(span)span.textContent=choice.detail||'';
+ });
+
+ if(cc.approved&&cc.revealTitle&&cc.revealText){
+   $('discoverTitle').textContent=cc.revealTitle;
+   $('discoverText').textContent='';
+   $('fossilFactTitle').textContent=cc.revealTitle;
+   $('fossilFactText').textContent=cc.revealText;
+   $('sourceText').textContent=cc.sourceText||'';
+   if(cc.uncertaintyText){$('uncertaintyText').textContent=cc.uncertaintyText;$('uncertaintyText').classList.remove('hidden')}
+   else{$('uncertaintyText').textContent='';$('uncertaintyText').classList.add('hidden')}
+   $('fossilFact').classList.remove('hidden');$('curatorNote').classList.add('hidden')
+ }else{
+   $('discoverTitle').textContent='That detail is a clue.';
+   $('discoverText').textContent='The full object story will be added only after the content is reviewed and approved.';
+   $('fossilFact').classList.add('hidden');$('curatorNote').classList.remove('hidden')
+ }
+
+ $('relatedObjectName').textContent=cc.relatedObjectName||'Curator-approved related content';
+ $('relatedCatalog').textContent=cc.relatedCatalogNumber||'';
+ $('relatedObjectReason').textContent=cc.relatedObjectReason||'A future museum version could add an approved connection here.';
+ $('relatedStop').textContent=cc.relatedStop?('Find it: '+cc.relatedStop):'';
+ $('connectionIntro').textContent=cc.relatedObjectName?'This object connects to another real object in the gallery.':'A future museum version could connect this object to curator-approved related content.'
 }
 
 document.querySelectorAll('[data-object]').forEach(b=>b.onclick=()=>selectObject(b.dataset.object));
@@ -120,9 +154,11 @@ $('scanHelp').onclick=()=>{
  $('recognizedName').textContent='Scan skipped';applySpecimenContent(selectedObject);show('observe')
 };
 document.querySelectorAll('[data-observe]').forEach(b=>b.onclick=()=>{
- session.observe=b.dataset.observe;event('observe-choice',{value:session.observe});
- const copy={shape:['Look again at the shape.','For this prototype, shape is one prompt for noticing details you might otherwise pass over.'],texture:['Look again at the texture.','For this prototype, texture is one prompt for noticing ridges, pits, lines, or surface changes.'],pattern:['Look again at the pattern.','For this prototype, pattern is one prompt for noticing repeated or unusual details.']}[session.observe];
- $('discoverTitle').textContent=copy[0];$('discoverText').textContent=copy[1];show('discover')
+ session.observe=b.dataset.observe;
+ const cc=specimenConfig(session.selectedObject);
+ const choice=(cc.noticeChoices||[]).find(x=>x.value===session.observe);
+ event('observe-choice',{value:session.observe,choiceLabel:choice?.label||''});
+ show('discover')
 });
 $('toConnection').onclick=()=>show('connection');$('toFeedback').onclick=()=>show('feedback');
 document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{
@@ -136,6 +172,7 @@ document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{session.next=
  newSession();resetObjectSelection();
  if(MODE==='test'){
    $('modePill').textContent='TEST MODE';$('testModeNotice').classList.remove('hidden');
+   ['fossil1','fossil2','fossil3'].forEach((label,i)=>{const el=$('objectLabel'+(i+1));if(el){const cc=specimenConfig(label);el.textContent=cc.shortName||cc.name||('Object '+(i+1))}});
    $('loading').setAttribute('aria-busy','false');event('test-mode-ready');beginExperience();return
  }
  event('model-load-start');
