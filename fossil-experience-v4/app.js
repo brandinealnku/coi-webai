@@ -101,8 +101,10 @@ function finish(){
  session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;
  event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,selectedObject:session.selectedObject,recognizedSpecimen:session.recognizedSpecimen,observe:session.observe,noticedNew:session.noticedNew,next:session.next,manualBypass:session.manualBypass});
  const cc=specimenConfig(session.selectedObject);
- $('missionCompleteText').textContent=session.next==='yes'?(cc.missionPrompt||'Go see if you can spot the connection yourself.'):'Keep exploring the gallery in whatever way works for you.';
- $('missionComplete').classList.remove('hidden')
+ $('missionCompleteText').textContent=session.next==='yes'?(cc.missionPrompt||'Go see if you can spot the connection yourself.'):'You’ve completed this object.';
+ $('missionCompleteSubtext').textContent=MODE==='test'?'Test complete. Try another object or finish the rehearsal.':'Try another object, or finish when you’re ready.';
+ $('missionComplete').classList.remove('hidden');
+ $('tryAnother').focus({preventScroll:true})
 }
 function applySpecimenContent(label){
  const cc=specimenConfig(label);
@@ -202,3 +204,11 @@ document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{
    else{event('training-missing');show('notReady')}
  }catch(e){console.error(e);event('model-load-error',{message:String(e)});$('loadingMsg').textContent='The recognition model could not load. Check your connection and refresh.'}
 })();
+$('tryAnother').onclick=()=>resetSession();
+$('finishExperience').onclick=()=>{
+ event('experience-finished');
+ $('missionCompleteText').textContent='Thanks for exploring.';
+ $('missionCompleteSubtext').textContent=MODE==='test'?'This rehearsal is complete. You can close this tab or start again.':'You’re all set. You can close this tab or keep exploring the exhibit.';
+ $('tryAnother').textContent='Start again';
+ $('finishExperience').classList.add('hidden');
+};
