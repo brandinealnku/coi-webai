@@ -19,7 +19,7 @@ window.CMC_V4_CONFIG = {
         {value:"other",label:"Something else",detail:"Another detail stands out first"}
       ],
       revealTitle: "That resemblance is a clue.",
-      revealText: "In the CMC route, this interaction belongs to the Cincinnati city fossil: an edrioasteroid related to today’s starfish, from the ancient sea that once covered Cincinnati.",
+      revealText: "This animal was related to starfish and lived in Cincinnati’s ancient sea.",
       uncertaintyText: "",
       sourceText: "AI Day route simulation · CMC Stop 1 · Catalog IP87827",
       relatedObjectName: "Outgrowing a Skeleton",
@@ -44,8 +44,8 @@ window.CMC_V4_CONFIG = {
         {value:"unsure",label:"I’m not sure",detail:"The fossil evidence is puzzling"}
       ],
       revealTitle: "They weren’t headless bodies after all.",
-      revealText: "In the CMC route, this clue reveals trilobite molting. Trilobites had hard outer skeletons and had to crawl out of the old shell to grow.",
-      uncertaintyText: "Molting left them vulnerable until the new skeleton hardened.",
+      revealText: "Trilobites grew by molting—crawling out of an old outer skeleton.",
+      uncertaintyText: "While soft, they were vulnerable.",
       sourceText: "AI Day route simulation · CMC Stop 4 · Catalogs IP52930 and IP87975",
       relatedObjectName: "Ordovician donuts",
       relatedCatalogNumber: "IP56360 / IP56362",
@@ -69,8 +69,8 @@ window.CMC_V4_CONFIG = {
         {value:"mystery",label:"I can’t tell",detail:"The shape leaves an open question"}
       ],
       revealTitle: "The mystery is real.",
-      revealText: "In the CMC route, this bryozoan colony probably grew around a cephalopod shell—but the shell left no trace. Scientists still do not know exactly what happened.",
-      uncertaintyText: "Scientists still don’t know exactly what happened."
+      revealText: "This colony probably grew around a shell—but the shell left no trace.",
+      uncertaintyText: "Scientists still don’t know exactly what happened.",
       sourceText: "AI Day route simulation · CMC Stop 5 · Catalog IP56360",
       relatedObjectName: "Silurian–Devonian case",
       relatedCatalogNumber: "",
@@ -100,8 +100,8 @@ window.CMC_V4_CONFIG = {
       relatedObjectName: "Outgrowing a Skeleton",
       relatedCatalogNumber: "",
       relatedStop: "Stop 4 · Right of the seafloor slab graphic",
-      relatedObjectReason: "You’ve met one animal from ancient Cincinnati. Next, investigate another familiar group from that sea and the surprising way trilobites had to grow.",
-      missionPrompt: "At the next stop, look for the clue that explains why some trilobite fossils seem to be missing their heads."
+      relatedObjectReason: "Next, see how trilobites grew by shedding their outer skeletons.",
+      missionPrompt: "Look for the clue behind the “headless” trilobites."
     },
     fossil2: {
       name: "Outgrowing a Skeleton",
@@ -118,13 +118,13 @@ window.CMC_V4_CONFIG = {
       ],
       revealTitle: "They weren’t headless bodies after all.",
       revealText: "Trilobites grew by molting—crawling out of an old outer skeleton.",
-      uncertaintyText: "While soft, they were vulnerable."
+      uncertaintyText: "While soft, they were vulnerable.",
       sourceText: "CMC gallery panels · Catalogs IP52930 and IP87975",
       relatedObjectName: "Ordovician donuts",
       relatedCatalogNumber: "IP56360 / IP56362",
       relatedStop: "Stop 5 · Ramp stairs, left of the middle case",
-      relatedObjectReason: "Here, the fossils help explain how trilobites grew. At the next stop, growth becomes a genuine mystery: scientists still do not know exactly how the donut-shaped bryozoan formed.",
-      missionPrompt: "At the next stop, make your own hypothesis before you see what scientists think happened."
+      relatedObjectReason: "You just saw growth we can explain. Next comes growth we still can’t.",
+      missionPrompt: "Make a guess before you see the answer."
     },
     fossil3: {
       name: "Ordovician donut",
@@ -141,13 +141,13 @@ window.CMC_V4_CONFIG = {
       ],
       revealTitle: "The mystery is real.",
       revealText: "This colony probably grew around a shell—but the shell left no trace.",
-      uncertaintyText: "Not every fossil has a final answer. Uncertainty is part of how science works.",
+      uncertaintyText: "Scientists still don’t know exactly what happened.",
       sourceText: "CMC gallery panel · Catalog IP56360",
       relatedObjectName: "Silurian–Devonian case",
       relatedCatalogNumber: "",
       relatedStop: "Stop 6 · After the DNA lab, first case facing the ramp",
-      relatedObjectReason: "The donut leaves us with an Ordovician mystery. The final stop moves forward in time to what happened after the Ordovician extinction, when marine life rebounded and diversified.",
-      missionPrompt: "At the final stop, look for evidence of how life changed after the Ordovician world ended."
+      relatedObjectReason: "The final stop jumps forward to life after the Ordovician extinction.",
+      missionPrompt: "Look for how life changed after the extinction."
     }
   },
   VISITOR_URL: "https://brandinealnku.github.io/coi-webai/fossil/"
