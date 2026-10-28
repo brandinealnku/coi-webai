@@ -124,16 +124,14 @@ function applySpecimenContent(label){
  });
 
  if(cc.approved&&cc.revealTitle&&cc.revealText){
-   $('discoverTitle').textContent='Look what that clue reveals.';
-   $('discoverText').textContent='';
+
    $('fossilFactTitle').textContent=cc.revealTitle;$('fossilFactText').textContent=cc.revealText;
    $('sourceText').textContent=cc.sourceText||'';
    if(cc.uncertaintyText){$('uncertaintyText').textContent=cc.uncertaintyText;$('uncertaintyText').classList.remove('hidden')}
    else{$('uncertaintyText').textContent='';$('uncertaintyText').classList.add('hidden')}
    $('fossilFact').classList.remove('hidden');$('curatorNote').classList.add('hidden')
  }else{
-   $('discoverTitle').textContent='Look what that clue reveals.';
-   $('discoverText').textContent='This object’s interpretive story is still being reviewed.';
+
    $('fossilFact').classList.add('hidden');$('curatorNote').classList.remove('hidden')
  }
 
