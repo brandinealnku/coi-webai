@@ -1,23 +1,23 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CMC Fossil Training Contribution</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CMC Fossil Training Contribution</title>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script><script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script><link rel="stylesheet" href="admin.css?v=20261028-0845"></head>
-<body><main class="admin-shell"><header><div><span class="eyebrow">CMC FOSSIL EXPERIENCE · V4.2 TRAINING</span><h1>Help train the fossil scanner</h1><p>Photograph the exact specimens we will use at AI Day from different angles, distances, lighting, and phones. Photos stay on your device; only anonymous numeric training features are submitted.</p></div><a href="admin.html">← Setup</a></header>
+<body><a class="skip-link" href="#main">Skip to main content</a><main id="main" class="admin-shell"><header><div><span class="eyebrow">CMC FOSSIL EXPERIENCE · V4.2 TRAINING</span><h1>Help train the fossil scanner</h1><p>Before AI Day, help teach the model the three exact objects we will display. Use varied angles, distances, lighting, orientations, backgrounds, and phones. Keep some photos out of training so they can be used later for validation. Photos stay on your device; only numeric image features are submitted.</p></div><a href="admin.html">← Setup</a></header>
 <section class="panel" style="margin-top:24px;max-width:820px">
-<div class="privacy-box"><strong>Important</strong><span>Only photograph the target specimens or nearby objects/background. Avoid faces, names, screens, IDs, or other personal information.</span></div>
-<div id="loading" class="note">Loading the vision model…</div>
+<div class="privacy-box"><strong>Important</strong><span>Only photograph the three selected objects, useful non-target objects, or background views. Avoid faces, names, screens, IDs, or other personal information. Do not submit photos reserved for held-out validation.</span></div>
+<div id="loading" class="note" role="status" aria-live="polite">Loading the vision model…</div>
 <div id="trainer" class="hidden">
 <h2>1. <span data-specimen-name="fossil1">Fossil 1</span></h2><p class="note">Photograph this exact specimen from several angles, distances, and orientations.</p>
-<input id="fossil1Files" type="file" accept="image/*" capture="environment" multiple><button data-submit="fossil1">Submit Fossil 1 photos</button><span id="fossil1Status" class="upload-status"></span>
+<label for="fossil1Files" class="file-label">Choose photos for Fossil 1</label><input id="fossil1Files" type="file" accept="image/*" capture="environment" multiple><button data-submit="fossil1">Submit Fossil 1 photos</button><span id="fossil1Status" class="upload-status" role="status" aria-live="polite"></span>
 <hr>
 <h2>2. <span data-specimen-name="fossil2">Fossil 2</span></h2><p class="note">Photograph this exact specimen with the same kind of variation.</p>
-<input id="fossil2Files" type="file" accept="image/*" capture="environment" multiple><button data-submit="fossil2">Submit Fossil 2 photos</button><span id="fossil2Status" class="upload-status"></span>
+<label for="fossil2Files" class="file-label">Choose photos for Fossil 2</label><input id="fossil2Files" type="file" accept="image/*" capture="environment" multiple><button data-submit="fossil2">Submit Fossil 2 photos</button><span id="fossil2Status" class="upload-status" role="status" aria-live="polite"></span>
 <hr>
 <h2>3. <span data-specimen-name="fossil3">Fossil 3</span></h2><p class="note">Photograph this exact specimen with the same kind of variation.</p>
-<input id="fossil3Files" type="file" accept="image/*" capture="environment" multiple><button data-submit="fossil3">Submit Fossil 3 photos</button><span id="fossil3Status" class="upload-status"></span>
+<label for="fossil3Files" class="file-label">Choose photos for Fossil 3</label><input id="fossil3Files" type="file" accept="image/*" capture="environment" multiple><button data-submit="fossil3">Submit Fossil 3 photos</button><span id="fossil3Status" class="upload-status" role="status" aria-live="polite"></span>
 <hr>
 <h2>4. Other object</h2><p class="note">Add nearby non-target objects or visually similar objects the scanner should reject.</p>
-<input id="otherFiles" type="file" accept="image/*" capture="environment" multiple><button data-submit="other">Submit other-object photos</button><span id="otherStatus" class="upload-status"></span>
+<label for="otherFiles" class="file-label">Choose photos of other objects</label><input id="otherFiles" type="file" accept="image/*" capture="environment" multiple><button data-submit="other">Submit other-object photos</button><span id="otherStatus" class="upload-status" role="status" aria-live="polite"></span>
 <hr>
 <h2>5. Background</h2><p class="note">Add empty/background views around the table or exhibit area.</p>
-<input id="backgroundFiles" type="file" accept="image/*" capture="environment" multiple><button data-submit="background">Submit background photos</button><span id="backgroundStatus" class="upload-status"></span>
+<label for="backgroundFiles" class="file-label">Choose background photos</label><input id="backgroundFiles" type="file" accept="image/*" capture="environment" multiple><button data-submit="background">Submit background photos</button><span id="backgroundStatus" class="upload-status" role="status" aria-live="polite"></span>
 </div>
 </section></main><script src="config.js?v=20261028-0845"></script><script src="contribute.js?v=20261028-0845"></script></body></html>
