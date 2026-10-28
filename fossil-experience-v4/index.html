@@ -18,14 +18,14 @@
 
   <section id="welcome" class="screen" aria-hidden="true"><div class="card hero">
     <span class="eyebrow">A 2-MINUTE EXPERIMENT</span>
-    <h1>What can this object make you notice?</h1>
-    <p class="lede">Choose one of the three objects on the table. Use your phone camera to scan that same object, then follow the prompts. We’re testing whether AI can help people look closer—not replace the object itself.</p>
+    <h1>Ready to look closer?</h1>
+    <p class="lede">Choose one of the three objects on the table. When you start, your phone will ask for camera access so you can point it at the object you chose. Then follow the prompts and notice what draws your attention back to the physical object.</p>
     <div class="privacy-note"><strong>What we collect</strong><span>Anonymous interaction timing, scan success, and your two responses. Camera images are processed on your device and are not uploaded. You can continue without using the camera if needed.</span></div>
     <button id="startExperience" class="primary xl">Start the experience</button>
   </div></section>
 
   <section id="camera" class="screen" aria-hidden="true"><div class="camera-wrap">
-    <div class="step-copy"><span class="eyebrow">1 · SCAN</span><h2>Point your camera at the object you chose.</h2><p id="guidance">Center that object and move close enough to fill the frame.</p><p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p></div>
+    <div class="step-copy"><span class="eyebrow">1 · CHOOSE & SCAN</span><h2>Choose one of the three objects, then point your camera at it.</h2><p id="guidance">Center the object you chose and move close enough to fill the frame.</p><p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p></div>
     <div class="stage"><video id="video" playsinline muted aria-label="Live camera preview"></video><canvas id="overlay" aria-hidden="true"></canvas><div class="focus-frame" aria-hidden="true"></div><div class="scan-line" aria-hidden="true"></div><div id="scanState" class="scan-state" aria-live="off">Looking…</div></div>
     <div class="camera-actions"><button id="restart" class="secondary">Start over</button><button id="scanHelp" class="quiet-link">Can’t use the camera? Continue without scanning</button></div>
   </div></section>
