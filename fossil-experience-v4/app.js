@@ -93,7 +93,7 @@ function resetSession(){
  document.querySelectorAll('[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
  document.querySelectorAll('.choice.selected').forEach(x=>x.classList.remove('selected'));
  $('followBlock').classList.add('hidden');$('missionComplete').classList.add('hidden');
- $('finishExperience').classList.remove('hidden');$('tryAnother').textContent='Try another object';
+ $('finishExperience').classList.remove('hidden');$('tryAnother').textContent='Try another route stop';
  $('testScanPanel').classList.add('hidden');$('scanState').classList.remove('hidden');
  newSession();beginExperience()
 }
@@ -102,8 +102,8 @@ function finish(){
  session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;
  event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,selectedObject:session.selectedObject,recognizedSpecimen:session.recognizedSpecimen,observe:session.observe,noticedNew:session.noticedNew,next:session.next,manualBypass:session.manualBypass});
  const cc=specimenConfig(session.selectedObject);
- $('missionCompleteText').textContent=session.next==='yes'?(cc.missionPrompt||'Go see if you can spot the connection yourself.'):'You’ve completed this object.';
- $('missionCompleteSubtext').textContent=MODE==='test'?'Test complete. Try another object or finish the rehearsal.':'Try another object, or finish when you’re ready.';
+ $('missionCompleteText').textContent=session.next==='yes'?(cc.missionPrompt||'Continue to the next stop and see what you notice.'):'You’ve completed this route stop.';
+ $('missionCompleteSubtext').textContent=MODE==='test'?'Route-stop test complete. Try another stop or finish the rehearsal.':'Try another route stop, or finish when you’re ready.';
  $('missionComplete').classList.remove('hidden');
  $('tryAnother').focus({preventScroll:true})
 }
