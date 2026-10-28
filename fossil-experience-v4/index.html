@@ -101,7 +101,8 @@
   <section id="connection" class="screen" aria-hidden="true">
     <div class="card">
       <span class="eyebrow">4 · GO</span>
-      <h2>Next stop.</h2>
+      <h2 id="connectionHeading">Notice something new?</h2>
+      <div id="destinationDetails" class="hidden">
 
       <section class="destination-mission" aria-labelledby="relatedObjectName">
         <span class="connection-label">GO FIND</span>
@@ -120,30 +121,23 @@
         <small id="relatedCatalog" class="catalog-meta"></small>
       </details>
 
-      <div class="micro-feedback">
-        <h3>Notice something new?</h3>
+      </div>
+      <div id="noticeFeedback" class="micro-feedback">
         <div class="choice-grid three compact">
           <button class="choice notice-value-choice" data-noticed="yes" aria-pressed="false"><b>Yes</b></button>
           <button class="choice notice-value-choice" data-noticed="maybe" aria-pressed="false"><b>Maybe</b></button>
           <button class="choice notice-value-choice" data-noticed="no" aria-pressed="false"><b>No</b></button>
         </div>
 
-        <div id="followBlock" class="next-block hidden">
-          <h3>Keep going?</h3>
-          <div class="choice-grid three compact">
-            <button class="choice next-choice" data-next="yes"><b>Yes</b></button>
-            <button class="choice next-choice" data-next="maybe"><b>Maybe</b></button>
-            <button class="choice next-choice" data-next="no"><b>No</b></button>
-          </div>
-        </div>
+
       </div>
 
       <div id="missionComplete" class="mission-complete hidden" role="status" aria-live="polite">
-        <span class="connection-label">DONE</span>
+        <span id="completionLabel" class="connection-label">NEXT STOP</span>
         <strong id="missionCompleteText">You’ve completed this object.</strong>
         <p id="missionCompleteSubtext">What next?</p>
         <div class="completion-actions">
-          <button id="tryAnother" type="button" class="primary">Try another route stop</button>
+          <button id="tryAnother" type="button" class="primary">Continue to next stop</button>
           <button id="finishExperience" type="button" class="secondary">I’m finished</button>
         </div>
       </div>
@@ -155,5 +149,5 @@
   </section>
 </main>
 <script src="config.js?v=20261028-mvp10"></script>
-<script src="app.js?v=20261028-mvp10"></script>
+<script src="app.js?v=20261028-routeflow2"></script>
 </body></html>

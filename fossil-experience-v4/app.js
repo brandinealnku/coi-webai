@@ -88,25 +88,64 @@ function newSession(){
  $('studyCode').textContent='Study code '+session.id.slice(0,6).toUpperCase();event('page-open')
 }
 function beginExperience(){event('session-start');show('welcome')}
-function resetSession(){
+function resetSession(start=true){
  stopCamera();stable=0;current=null;
  document.querySelectorAll('[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
  document.querySelectorAll('.choice.selected').forEach(x=>x.classList.remove('selected'));
- $('followBlock').classList.add('hidden');$('missionComplete').classList.add('hidden');
- $('finishExperience').classList.remove('hidden');$('tryAnother').textContent='Try another route stop';
+ document.querySelectorAll('[data-noticed]').forEach(x=>{x.disabled=false;x.setAttribute('aria-pressed','false')});
+ document.querySelectorAll('details').forEach(x=>x.open=false);
+ $('noticeFeedback').classList.remove('hidden');$('destinationDetails').classList.add('hidden');
+ $('connectionHeading').textContent='Notice something new?';
+ $('missionComplete').classList.add('hidden');
+ $('completionLabel').textContent='NEXT STOP';
+ $('cameraStatus').textContent='';$('scanState').textContent='Looking…';
+ $('guidance').textContent='Move close enough for the object to fill most of the frame.';
+ $('finishExperience').classList.remove('hidden');$('tryAnother').classList.remove('hidden');$('tryAnother').textContent='Continue to next stop';
  $('testScanPanel').classList.add('hidden');$('scanState').classList.remove('hidden');
- newSession();beginExperience()
+ newSession();if(start)beginExperience()
 }
 function finish(){
  if(session.completed)return;
  session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;
  event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,selectedObject:session.selectedObject,recognizedSpecimen:session.recognizedSpecimen,observe:session.observe,noticedNew:session.noticedNew,next:session.next,manualBypass:session.manualBypass});
- const cc=specimenConfig(session.selectedObject);
- $('missionCompleteText').textContent=session.next==='yes'?(cc.missionPrompt||'Continue to the next stop and see what you notice.'):'You’ve completed this route stop.';
- $('missionCompleteSubtext').textContent=MODE==='test'?'Route-stop test complete. Try another stop or finish the rehearsal.':'Try another route stop, or finish when you’re ready.';
- $('missionComplete').classList.remove('hidden');
- $('tryAnother').focus({preventScroll:true})
 }
+function nextRouteLabel(){
+ return ({fossil1:'fossil2',fossil2:'fossil3'})[session.selectedObject]||null
+}
+function showNextActions(){
+ const cc=specimenConfig(session.selectedObject);
+ $('noticeFeedback').classList.add('hidden');
+ $('connectionHeading').textContent='What next?';
+ $('missionCompleteText').textContent=cc.relatedObjectName||'Route complete';
+ $('missionCompleteSubtext').textContent=cc.missionPrompt||'';
+ $('tryAnother').textContent=nextRouteLabel()?'Continue to next stop':'Continue to finale';
+ $('missionComplete').classList.remove('hidden');
+ $('tryAnother').focus({preventScroll:true});window.scrollTo(0,0)
+}
+async function continueRoute(){
+ const nextLabel=nextRouteLabel();
+ session.next='yes';event('next-action',{value:'yes',source:'navigation'});finish();
+ event('route-continue',{destination:nextLabel||'finale'});
+ if(!nextLabel){
+   $('completionLabel').textContent='STOP 6 · FINALE';
+   $('connectionHeading').textContent='Expand your world.';
+   $('missionCompleteText').textContent='Silurian–Devonian case';
+   $('missionCompleteSubtext').textContent='At CMC, the story continues with life after the Ordovician extinction. This is the end of the AI Day rehearsal.';
+   $('tryAnother').classList.add('hidden');
+   $('finishExperience').focus({preventScroll:true});return
+ }
+ resetSession(false);event('session-start');show('camera');
+ if(MODE==='test'){
+   session.scanAttempts++;session.scanStartedAt=Date.now();
+   event('scan-start',{attempt:session.scanAttempts,simulated:true});
+   event('test-recognition-simulated',{selectedObject:nextLabel});
+   completeRecognition(nextLabel,1,{[nextLabel]:1},true)
+ }else{
+   $('guidance').textContent='Find '+specimenName(nextLabel)+' and scan its proxy object.';
+   try{await startCamera()}catch(e){event('camera-error',{message:String(e)});openObjectFallback(false)}
+ }
+}
+
 function applySpecimenContent(label){
  const cc=specimenConfig(label);
  $('scenarioContext').textContent=cc.scenarioName?('CMC route scenario: '+cc.scenarioName):'';
@@ -171,7 +210,7 @@ document.querySelectorAll('[data-test-object]').forEach(b=>b.onclick=()=>{
    $('recognizedName').textContent=specimenName(label);applySpecimenContent(label);event('manual-bypass',{selectedObject:label,recognizedSpecimen:label});stopCamera();show('observe')
  }
 });
-$('restart').onclick=resetSession;
+$('restart').onclick=()=>resetSession();
 $('scanHelp').onclick=()=>{session.manualBypass=true;event('manual-bypass-open');stopCamera();openObjectFallback(false)};
 document.querySelectorAll('[data-observe]').forEach(b=>b.onclick=()=>{
  session.observe=b.dataset.observe;
@@ -183,12 +222,7 @@ $('toConnection').onclick=()=>show('connection');
 document.querySelectorAll('[data-noticed]').forEach(b=>b.onclick=()=>{
  session.noticedNew=b.dataset.noticed;event('noticed-new',{value:session.noticedNew});
  document.querySelectorAll('[data-noticed]').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false');x.disabled=true});
- $('followBlock').classList.remove('hidden');$('followBlock').querySelector('h3').setAttribute('tabindex','-1');$('followBlock').querySelector('h3').focus({preventScroll:true})
-});
-document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{
- session.next=b.dataset.next;event('next-action',{value:session.next});
- document.querySelectorAll('[data-next]').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false');x.disabled=true});
- finish()
+ showNextActions()
 });
 
 (async()=>{
@@ -204,11 +238,15 @@ document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{
    else{event('training-missing');show('notReady')}
  }catch(e){console.error(e);event('model-load-error',{message:String(e)});$('loadingMsg').textContent='The recognition model could not load. Check your connection and refresh.'}
 })();
-$('tryAnother').onclick=()=>resetSession();
+$('tryAnother').onclick=()=>{if(session.experienceFinished)resetSession();else continueRoute()};
 $('finishExperience').onclick=()=>{
- event('experience-finished');
+ if(!session.completed){session.next='no';event('next-action',{value:'no',source:'navigation'});finish()}
+ session.experienceFinished=true;event('experience-finished');
+ $('connectionHeading').textContent='All done.';$('completionLabel').textContent='DONE';
+ $('tryAnother').classList.remove('hidden');
  $('missionCompleteText').textContent='Thanks for exploring.';
  $('missionCompleteSubtext').textContent=MODE==='test'?'This rehearsal is complete. You can close this tab or start again.':'You’re all set. You can close this tab or keep exploring the exhibit.';
  $('tryAnother').textContent='Start again';
  $('finishExperience').classList.add('hidden');
 };
+
