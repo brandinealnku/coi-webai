@@ -109,6 +109,7 @@ function finish(){
 }
 function applySpecimenContent(label){
  const cc=specimenConfig(label);
+ $('scenarioContext').textContent=cc.scenarioName?('CMC route scenario: '+cc.scenarioName):'';
  $('noticeQuestion').textContent=cc.noticeQuestion||'What do you notice?';
  const choices=cc.noticeChoices||[
    {value:'shape',label:'Shape',detail:'The overall form or outline'},
