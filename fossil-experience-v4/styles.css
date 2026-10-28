@@ -20,3 +20,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @media (forced-colors:active){.choice.selected,[aria-pressed="true"]{outline:3px solid ButtonText}.focus-frame{border-color:Highlight}.event-pill,.eyebrow{color:CanvasText}}
 @media (max-width:320px){.topbar{width:calc(100% - 16px)}.card{padding:20px 14px}.camera-actions{align-items:stretch;flex-direction:column;gap:10px}.quiet-link{padding:12px}}
+
+.object-picker{border:0;padding:0;margin:26px 0}.object-picker legend{font-weight:900;font-size:1.15rem;margin-bottom:4px}.object-help{margin:.25rem 0 0;font-size:.95rem}
+.test-scan-panel{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:rgba(3,4,5,.92);padding:24px;z-index:5}.test-scan-panel strong{font-size:1.6rem}.test-scan-panel span{color:#c7ced6;max-width:26rem;line-height:1.45}
