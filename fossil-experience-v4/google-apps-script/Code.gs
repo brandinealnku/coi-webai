@@ -4,7 +4,7 @@ const TRAINING_SHEET = 'Training';
 const HEADERS = [
   'Received At','Event Name','Session ID','Event Type','Event At','Elapsed ms',
   'Scan Attempt','Confidence','Fossil Probability','Other Probability','Background Probability',
-  'Scan Time ms','Observe Choice','Look Closer','Next Action','Manual Bypass',
+  'Scan Time ms','Observe Choice','Noticed New','Next Action','Manual Bypass',
   'Total Time ms','Screen','User Agent',
   'Study Code','Observer Help','Looked Back','Attention','Companion Talk','Outcome','Observer Notes',
   'Recognized Specimen','Probabilities JSON',
@@ -36,7 +36,7 @@ function doPost(e) {
     const sessionId = String(payload.sessionId || '');
     const studyCode = String(event.studyCode || sessionId.slice(0, 6)).trim().toUpperCase();
     const observeChoice = event.observe ?? (event.type === 'observe-choice' ? event.value : '');
-    const lookCloser = event.lookCloser ?? (event.type === 'look-closer' ? event.value : '');
+    const noticedNew = event.noticedNew ?? (event.type === 'noticed-new' ? event.value : '');
     const nextAction = event.next ?? (event.type === 'next-action' ? event.value : '');
     const recognizedSpecimen = event.recognizedSpecimen || '';
     const mode = String(event.mode || 'live').toLowerCase() === 'test' ? 'test' : 'live';
@@ -47,7 +47,7 @@ function doPost(e) {
       new Date(), payload.eventName || '', sessionId, event.type || '', event.at || '',
       event.elapsedMs ?? '', event.attempt ?? '', event.confidence ?? '',
       probs.fossil ?? '', probs.other ?? '', probs.background ?? '',
-      event.scanTimeMs ?? '', observeChoice, lookCloser, nextAction,
+      event.scanTimeMs ?? '', observeChoice, noticedNew, nextAction,
       event.manualBypass ?? '', event.totalMs ?? '', event.screen ?? '',
       payload.userAgent || '', studyCode,
       event.observerHelp ?? '', event.lookedBack ?? '', event.attention ?? '',
@@ -232,14 +232,14 @@ function setupWorkbook() {
     ['Recognized Object 2','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil2",Events!AC2:AC,"live")'],
     ['Recognized Object 3','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil3",Events!AC2:AC,"live")'],
     ['Selected = recognized','=SUMPRODUCT((Events!D2:D="scan-success")*(Events!AC2:AC="live")*(Events!AA2:AA=Events!AD2:AD))'],
-    ['Scanner made them look more closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"more",Events!AC2:AC,"live")'],
-    ['About the same','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"same",Events!AC2:AC,"live")'],
-    ['Looked less closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"less",Events!AC2:AC,"live")'],
+    ['Noticed something new: Yes','=COUNTIFS(Events!D2:D,"noticed-new",Events!N2:N,"yes",Events!AC2:AC,"live")'],
+    ['Noticed something new: Maybe','=COUNTIFS(Events!D2:D,"noticed-new",Events!N2:N,"maybe",Events!AC2:AC,"live")'],
+    ['Noticed something new: No','=COUNTIFS(Events!D2:D,"noticed-new",Events!N2:N,"no",Events!AC2:AC,"live")'],
     ['Would follow connection: Yes','=COUNTIFS(Events!D2:D,"next-action",Events!O2:O,"yes",Events!AC2:AC,"live")'],
     ['Would follow connection: Maybe','=COUNTIFS(Events!D2:D,"next-action",Events!O2:O,"maybe",Events!AC2:AC,"live")'],
     ['Would follow connection: No','=COUNTIFS(Events!D2:D,"next-action",Events!O2:O,"no",Events!AC2:AC,"live")'],
     ['Manual scan bypasses','=COUNTIFS(Events!D2:D,"manual-bypass",Events!AC2:AC,"live")'],
-    ['Observer: looked back at object','=COUNTIFS(Events!D2:D,"observer-note",Events!V2:V,"yes",Events!AC2:AC,"live")'],
+    ['Observer: attention returned to object','=COUNTIFS(Events!D2:D,"observer-note",Events!V2:V,"yes",Events!AC2:AC,"live")'],
     ['Observer: needed help','=COUNTIFS(Events!D2:D,"observer-note",Events!U2:U,"yes",Events!AC2:AC,"live")'],
     ['Paired observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!AE2:AE,"<>",Events!AC2:AC,"live")'],
     ['TEST sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="test")))'],
