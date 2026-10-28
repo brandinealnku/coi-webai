@@ -4,7 +4,7 @@ window.CMC_V4_CONFIG = {
   EVENT_NAME: "NKU AI Day 2026",
   SPECIMENS: {
     fossil1: {
-      name: "Fossil 1",
+      name: "Object 1",
       approved: false,
       factTitle: "",
       factText: "",
@@ -12,7 +12,7 @@ window.CMC_V4_CONFIG = {
       relatedObjectReason: ""
     },
     fossil2: {
-      name: "Fossil 2",
+      name: "Object 2",
       approved: false,
       factTitle: "",
       factText: "",
@@ -20,7 +20,7 @@ window.CMC_V4_CONFIG = {
       relatedObjectReason: ""
     },
     fossil3: {
-      name: "Fossil 3",
+      name: "Object 3",
       approved: false,
       factTitle: "",
       factText: "",
