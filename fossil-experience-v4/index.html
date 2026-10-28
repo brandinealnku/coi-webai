@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="styles.css?v=20261028-mobile1">
+<link rel="stylesheet" href="styles.css?v=20261028-cmcmvp1">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
@@ -24,9 +24,9 @@
       <legend>Which object are you using?</legend>
       <p id="objectHelp" class="lede object-help">Use the number shown beside the physical object on the table.</p>
       <div class="choice-grid three compact">
-        <button type="button" class="choice object-choice" data-object="fossil1" aria-pressed="false"><b>Object 1</b></button>
-        <button type="button" class="choice object-choice" data-object="fossil2" aria-pressed="false"><b>Object 2</b></button>
-        <button type="button" class="choice object-choice" data-object="fossil3" aria-pressed="false"><b>Object 3</b></button>
+        <button type="button" class="choice object-choice" data-object="fossil1" aria-pressed="false"><b id="objectLabel1">Object 1</b></button>
+        <button type="button" class="choice object-choice" data-object="fossil2" aria-pressed="false"><b id="objectLabel2">Object 2</b></button>
+        <button type="button" class="choice object-choice" data-object="fossil3" aria-pressed="false"><b id="objectLabel3">Object 3</b></button>
       </div>
     </fieldset>
     <div id="testModeNotice" class="privacy-note hidden"><strong>TEST MODE</strong><span>This rehearsal uses simulated recognition and test-only logging. No trained artifacts are required.</span></div>
@@ -41,25 +41,26 @@
   </div></section>
 
   <section id="observe" class="screen" aria-hidden="true"><div class="card">
-    <span class="eyebrow">2 · NOTICE</span><div class="recognized-chip">Recognized: <strong id="recognizedName">Object</strong></div><h2>What catches your attention first?</h2><p class="lede">Choose the detail that stands out most to you.</p>
+    <span class="eyebrow">2 · NOTICE</span><div class="recognized-chip">Recognized: <strong id="recognizedName">Object</strong></div><h2 id="noticeQuestion">What catches your attention first?</h2><p class="lede">Look at the physical object and choose the answer that best matches what you notice.</p>
     <div class="choice-grid three">
-      <button class="choice" data-observe="shape"><b>Shape</b><span>The overall form or outline</span></button>
-      <button class="choice" data-observe="texture"><b>Texture</b><span>Ridges, pits, lines, or surface</span></button>
-      <button class="choice" data-observe="pattern"><b>Pattern</b><span>Repeated or unusual details</span></button>
+      <button class="choice" data-observe="choice1"><b id="noticeChoice1Label">Shape</b><span id="noticeChoice1Detail">The overall form or outline</span></button>
+      <button class="choice" data-observe="choice2"><b id="noticeChoice2Label">Texture</b><span id="noticeChoice2Detail">Ridges, pits, lines, or surface</span></button>
+      <button class="choice" data-observe="choice3"><b id="noticeChoice3Label">Pattern</b><span id="noticeChoice3Detail">Repeated or unusual details</span></button>
     </div>
   </div></section>
 
   <section id="discover" class="screen" aria-hidden="true"><div class="card">
     <span class="eyebrow">3 · DISCOVER</span><h2 id="discoverTitle">That detail is a clue.</h2><p id="discoverText" class="discovery"></p>
-    <div id="fossilFact" class="fact-card hidden"><span>ABOUT THIS OBJECT</span><strong id="fossilFactTitle"></strong><p id="fossilFactText"></p></div>
+    <div id="fossilFact" class="fact-card hidden"><span>CMC-APPROVED CONTENT</span><strong id="fossilFactTitle"></strong><p id="fossilFactText"></p><p id="uncertaintyText" class="uncertainty hidden"></p><small id="sourceText" class="source-line"></small></div>
     <div id="curatorNote" class="curator-note"><strong>Prototype content</strong><span>This prototype does not display object facts until curator-approved content is available.</span></div>
-    <button id="toConnection" class="primary xl">Keep exploring</button>
+    <button id="toConnection" class="primary xl">Expand your world</button>
   </div></section>
 
   <section id="connection" class="screen" aria-hidden="true"><div class="card">
-    <span class="eyebrow">4 · EXPAND YOUR WORLD</span><h2>What could a recognized object help you discover next?</h2><p class="lede">In a future museum version, recognition could connect an object to curator-approved information or related objects. This prototype does not claim a live CMC collection connection yet.</p>
-    <div class="connection"><div><span>YOU STARTED HERE</span><strong id="sourceObjectName">This fossil</strong></div><div class="arrow">→<small>possible connection</small></div><div><span>NEXT</span><strong id="relatedObjectName">A related object</strong><small id="relatedObjectReason">Even one not currently on display</small></div></div>
-    <button id="toFeedback" class="primary xl">Continue</button>
+    <span class="eyebrow">4 · EXPAND YOUR WORLD</span><h2>Follow the connection.</h2><p class="lede" id="connectionIntro">This object connects to another real object in the gallery.</p>
+    <div class="connection"><div><span>YOU STARTED HERE</span><strong id="sourceObjectName">This object</strong><small id="sourceCatalog"></small></div><div class="arrow">→<small>connection</small></div><div><span>FIND NEXT</span><strong id="relatedObjectName">A related object</strong><small id="relatedCatalog"></small></div></div>
+    <div class="connection-reason"><p id="relatedObjectReason"></p><strong id="relatedStop"></strong></div>
+    <button id="toFeedback" class="primary xl">Tell us what you think</button>
   </div></section>
 
   <section id="feedback" class="screen" aria-hidden="true"><div class="card">
@@ -69,13 +70,11 @@
       <button class="choice look-choice" data-look="same" aria-pressed="false"><b>About the same</b></button>
       <button class="choice look-choice" data-look="less" aria-pressed="false"><b>I looked less closely</b></button>
     </div>
-    <div id="nextBlock" class="next-block hidden"><h3>What would you most want to do next?</h3>
-      <div class="choice-grid two">
-        <button class="choice next-choice" data-next="learn"><b>Learn about this object</b></button>
-        <button class="choice next-choice" data-next="related"><b>Find a related object</b></button>
-        <button class="choice next-choice" data-next="scan"><b>Scan something else</b></button>
-        <button class="choice next-choice" data-next="ask"><b>Ask a question</b></button>
-        <button class="choice next-choice wide" data-next="finished"><b>I’m finished</b></button>
+    <div id="nextBlock" class="next-block hidden"><h3>Would this connection make you want to go find the related object?</h3>
+      <div class="choice-grid three compact">
+        <button class="choice next-choice" data-next="yes"><b>Yes</b><span>I’d follow the connection</span></button>
+        <button class="choice next-choice" data-next="maybe"><b>Maybe</b><span>It would depend on the connection</span></button>
+        <button class="choice next-choice" data-next="no"><b>No</b><span>I’d rather stay with this object</span></button>
       </div>
     </div>
   </div></section>
