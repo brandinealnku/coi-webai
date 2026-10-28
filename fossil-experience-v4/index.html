@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="styles.css?v=20261028-cmcmvp1">
+<link rel="stylesheet" href="styles.css?v=20261028-connection2">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
@@ -58,9 +58,35 @@
 
   <section id="connection" class="screen" aria-hidden="true"><div class="card">
     <span class="eyebrow">4 · EXPAND YOUR WORLD</span><h2>Follow the connection.</h2><p class="lede" id="connectionIntro">This object connects to another real object in the gallery.</p>
-    <div class="connection"><div><span>YOU STARTED HERE</span><strong id="sourceObjectName">This object</strong><small id="sourceCatalog"></small></div><div class="arrow">→<small>connection</small></div><div><span>FIND NEXT</span><strong id="relatedObjectName">A related object</strong><small id="relatedCatalog"></small></div></div>
-    <div class="connection-reason"><p id="relatedObjectReason"></p><strong id="relatedStop"></strong></div>
-    <button id="toFeedback" class="primary xl">Tell us what you think</button>
+    <div class="connection-flow" aria-label="Connection from this object to another gallery object">
+      <section class="connection-card source-card">
+        <span class="connection-label">YOU STARTED HERE</span>
+        <strong id="sourceObjectName">This object</strong>
+        <small id="sourceCatalog" class="catalog-meta"></small>
+      </section>
+
+      <div class="connection-arrow" aria-hidden="true">
+        <span>↓</span>
+      </div>
+
+      <section class="connection-card destination-card">
+        <span class="connection-label">FIND THIS NEXT</span>
+        <strong id="relatedObjectName">A related object</strong>
+        <small id="relatedCatalog" class="catalog-meta"></small>
+      </section>
+    </div>
+
+    <section class="connection-explanation">
+      <span class="connection-label">WHY THIS CONNECTION?</span>
+      <p id="relatedObjectReason"></p>
+    </section>
+
+    <section class="connection-location" aria-labelledby="locationHeading">
+      <span id="locationHeading" class="connection-label">WHERE TO FIND IT</span>
+      <strong id="relatedStop"></strong>
+    </section>
+
+    <button id="toFeedback" class="primary xl connection-cta">Tell us what you think</button>
   </div></section>
 
   <section id="feedback" class="screen" aria-hidden="true"><div class="card">
