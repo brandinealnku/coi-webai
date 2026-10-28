@@ -6,12 +6,15 @@ const HEADERS = [
   'Scan Attempt','Confidence','Fossil Probability','Other Probability','Background Probability',
   'Scan Time ms','Observe Choice','Look Closer','Next Action','Manual Bypass',
   'Total Time ms','Screen','User Agent',
-  'Study Code','Observer Help','Looked Back','Attention','Companion Talk','Outcome','Observer Notes'
+  'Study Code','Observer Help','Looked Back','Attention','Companion Talk','Outcome','Observer Notes',
+  'Recognized Specimen','Probabilities JSON'
 ];
 
 const TRAINING_HEADERS = [
   'Received At','Batch ID','Label','Embedding JSON','User Agent'
 ];
+
+const TRAINING_LABELS = ['fossil1','fossil2','fossil3','other','background'];
 
 function doPost(e) {
   try {
@@ -34,6 +37,7 @@ function doPost(e) {
     const observeChoice = event.observe ?? (event.type === 'observe-choice' ? event.value : '');
     const lookCloser = event.lookCloser ?? (event.type === 'look-closer' ? event.value : '');
     const nextAction = event.next ?? (event.type === 'next-action' ? event.value : '');
+    const recognizedSpecimen = event.recognizedSpecimen || '';
 
     sheet.appendRow([
       new Date(), payload.eventName || '', sessionId, event.type || '', event.at || '',
@@ -43,7 +47,8 @@ function doPost(e) {
       event.manualBypass ?? '', event.totalMs ?? '', event.screen ?? '',
       payload.userAgent || '', studyCode,
       event.observerHelp ?? '', event.lookedBack ?? '', event.attention ?? '',
-      event.companionTalk ?? '', event.outcome ?? '', event.observerNotes ?? ''
+      event.companionTalk ?? '', event.outcome ?? '', event.observerNotes ?? '',
+      recognizedSpecimen, Object.keys(probs).length ? JSON.stringify(probs) : ''
     ]);
 
     return ContentService.createTextOutput('ok');
@@ -61,7 +66,7 @@ function doGet(e) {
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(TRAINING_SHEET);
-    const out = {version: 4, classes: {fossil: [], other: [], background: []}};
+    const out = {version: 4.2, classes: {fossil1: [], fossil2: [], fossil3: [], other: [], background: []}};
 
     if (sheet && sheet.getLastRow() > 1) {
       const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, TRAINING_HEADERS.length).getValues();
@@ -78,8 +83,7 @@ function doGet(e) {
     const json = JSON.stringify(out);
     const callback = String(e.parameter.callback || '');
     if (callback) {
-      return ContentService
-        .createTextOutput(callback + '(' + json + ')')
+      return ContentService.createTextOutput(callback + '(' + json + ')')
         .setMimeType(ContentService.MimeType.JAVASCRIPT);
     }
     return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
@@ -91,7 +95,7 @@ function doGet(e) {
 
 function saveTrainingExample_(payload) {
   const label = String(payload.label || '');
-  if (!['fossil','other','background'].includes(label)) {
+  if (!TRAINING_LABELS.includes(label)) {
     throw new Error('Invalid training label');
   }
 
@@ -142,11 +146,14 @@ function setupWorkbook() {
   if (!summary) summary = ss.insertSheet('Summary');
   summary.clear();
 
-  summary.getRange('A1:B12').setValues([
+  summary.getRange('A1:B15').setValues([
     ['AI Day Metric','Value'],
     ['Unique sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"")))'],
     ['Completed sessions','=COUNTIF(Events!D2:D,"session-complete")'],
     ['Successful scans','=COUNTIF(Events!D2:D,"scan-success")'],
+    ['Recognized Fossil 1','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil1")'],
+    ['Recognized Fossil 2','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil2")'],
+    ['Recognized Fossil 3','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil3")'],
     ['Scanner made them look more closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"more")'],
     ['About the same','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"same")'],
     ['Looked less closely','=COUNTIFS(Events!D2:D,"look-closer",Events!N2:N,"less")'],
