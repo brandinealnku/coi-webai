@@ -2,42 +2,48 @@ window.CMC_V4_CONFIG = {
   GOOGLE_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbz3XFh57ivklNRHKoVu1DMnfDgCv8pW0sQKAcCwDQJa8U0f0qAcUSDcaPWa4re_9wMHIw/exec",
   GOOGLE_SHEET_URL: "https://docs.google.com/spreadsheets/d/14e7XkQCSgtAwCrXhWVYWou3ARAR_9AZtZe4uvXl1-es/edit",
   EVENT_NAME: "NKU AI Day 2026",
+  RELEASE: "ai-day-focused-release-2026-10-29",
+
+  ARTIFACT_MAPPING: {
+    fossil1: { artifact: "NEEDS CONFIRMATION", routeStop: "Stop 1", tableLabel: "STOP 1 · CITY FOSSIL STORY" },
+    fossil2: { artifact: "NEEDS CONFIRMATION", routeStop: "Stop 4", tableLabel: "STOP 4 · MOLTING MYSTERY" },
+    fossil3: { artifact: "NEEDS CONFIRMATION", routeStop: "Stop 5", tableLabel: "STOP 5 · MYSTERY DONUT" }
+  },
+
   SPECIMENS: {
     fossil1: {
-      name: "Route Stop 1",
-      shortName: "Route Stop 1",
-      proxyLabel: "AI Day proxy artifact",
-      approved: true,
-      routePosition: 1,
-      catalogNumber: "IP87827",
-      stopName: "Stop 1 · Cincinnati Under the Sea",
+      name: "Stop 1 proxy",
+      tableLabel: "Stop 1 · City Fossil Story",
       scenarioName: "Cincinnati city fossil",
-      noticeQuestion: "What does this body shape remind you of?",
+      approved: true,
+      promptAudit: "NEEDS ARTIFACT REVIEW",
+      referenceImage: "",
+      referenceAlt: "",
+      referenceCaption: "Look at the museum image.",
+      noticeQuestion: "Which feature would you look for to spot a starfish relative?",
       noticeChoices: [
-        {value:"star",label:"A star",detail:"A five-part, star-like body plan"},
-        {value:"disc",label:"A round disc",detail:"A low, plate-like overall form"},
-        {value:"other",label:"Something else",detail:"Another detail stands out first"}
+        {value:"five-part",label:"A five-part pattern",detail:""},
+        {value:"round",label:"A round body",detail:""},
+        {value:"unsure",label:"Not sure",detail:""}
       ],
       revealTitle: "An ancient relative of starfish.",
       revealText: "This animal was related to starfish and lived in Cincinnati’s ancient sea.",
       uncertaintyText: "",
-      sourceText: "AI Day route simulation · CMC Stop 1 · Catalog IP87827",
+      sourceText: "CMC Stop 1 · Cincinnati City Fossil · Catalog IP87827",
       relatedObjectName: "Stop 4 · Molting Mystery",
-      relatedCatalogNumber: "",
-      relatedStop: "Stop 4 · Right of the seafloor slab graphic",
-      relatedObjectReason: "Next, see how trilobites grew by shedding their outer skeletons.",
+      aiDayDirection: "Find the table label: STOP 4 · MOLTING MYSTERY.",
       missionPrompt: "Look for the clue behind the “headless” trilobites."
     },
     fossil2: {
-      name: "Route Stop 4",
-      shortName: "Route Stop 4",
-      proxyLabel: "AI Day proxy artifact",
-      approved: true,
-      routePosition: 2,
-      catalogNumber: "IP52930 / IP87975",
-      stopName: "Stop 4 · Outgrowing a Skeleton slab case",
+      name: "Stop 4 proxy",
+      tableLabel: "Stop 4 · Molting Mystery",
       scenarioName: "Outgrowing a Skeleton",
-      noticeQuestion: "Why might a slab contain so many ‘headless’ trilobite bodies?",
+      approved: true,
+      promptAudit: "REFERENCE IMAGE OR MATCHING PROXY REQUIRED",
+      referenceImage: "",
+      referenceAlt: "",
+      referenceCaption: "Look at the museum image.",
+      noticeQuestion: "Why might a slab contain so many “headless” trilobite bodies?",
       noticeChoices: [
         {value:"predator",label:"A predator",detail:""},
         {value:"molts",label:"Shedding their shells",detail:""},
@@ -46,117 +52,37 @@ window.CMC_V4_CONFIG = {
       revealTitle: "They weren’t headless bodies after all.",
       revealText: "Trilobites grew by molting—crawling out of an old outer skeleton.",
       uncertaintyText: "While soft, they were vulnerable.",
-      sourceText: "AI Day route simulation · CMC Stop 4 · Catalogs IP52930 and IP87975",
+      sourceText: "CMC Stop 4 · Catalogs IP52930 and IP87975",
       relatedObjectName: "Stop 5 · Mystery Donut",
-      relatedCatalogNumber: "IP56360 / IP56362",
-      relatedStop: "Stop 5 · Ramp stairs, left of the middle case",
-      relatedObjectReason: "You just saw growth we can explain. Next comes growth we still can’t.",
+      aiDayDirection: "Find the table label: STOP 5 · MYSTERY DONUT.",
       missionPrompt: "Make a guess before you see the answer."
     },
     fossil3: {
-      name: "Route Stop 5",
-      shortName: "Route Stop 5",
-      proxyLabel: "AI Day proxy artifact",
-      approved: true,
-      routePosition: 3,
-      catalogNumber: "IP56360",
-      stopName: "Stop 5 · Ordovician donuts",
+      name: "Stop 5 proxy",
+      tableLabel: "Stop 5 · Mystery Donut",
       scenarioName: "Ordovician donut",
+      approved: true,
+      promptAudit: "REFERENCE IMAGE OR MATCHING PROXY REQUIRED",
+      referenceImage: "",
+      referenceAlt: "",
+      referenceCaption: "Look at the museum image.",
       noticeQuestion: "How do you think this hole formed?",
       noticeChoices: [
-        {value:"shell",label:"Another animal’s shell",detail:"Something may have occupied the center"},
-        {value:"growth",label:"It grew that way",detail:"The colony may have formed the opening itself"},
-        {value:"mystery",label:"I can’t tell",detail:"The shape leaves an open question"}
-      ],
-      revealTitle: "The mystery is real.",
-      revealText: "This colony probably grew around a shell—but the shell left no trace.",
-      uncertaintyText: "Scientists still don’t know exactly what happened.",
-      sourceText: "AI Day route simulation · CMC Stop 5 · Catalog IP56360",
-      relatedObjectName: "Stop 6 · Finale",
-      relatedCatalogNumber: "",
-      relatedStop: "Stop 6 · After the DNA lab, first case facing the ramp",
-      relatedObjectReason: "The final stop jumps forward to life after the Ordovician extinction.",
-      missionPrompt: "Look for how life changed after the extinction."
-    }
-  },
-  TEST_SPECIMENS: {
-    fossil1: {
-      name: "Cincinnati city fossil",
-      shortName: "City fossil",
-      approved: true,
-      routePosition: 1,
-      catalogNumber: "IP87827",
-      stopName: "Stop 1 · Cincinnati Under the Sea",
-      noticeQuestion: "What does this body shape remind you of?",
-      noticeChoices: [
-        {value:"star",label:"A star",detail:"A five-part, star-like body plan"},
-        {value:"disc",label:"A round disc",detail:"A low, plate-like overall form"},
-        {value:"other",label:"Something else",detail:"Another detail stands out first"}
-      ],
-      revealTitle: "An ancient relative of starfish.",
-      revealText: "This animal was related to starfish and lived in Cincinnati’s ancient sea.",
-      uncertaintyText: "",
-      sourceText: "CMC gallery panel · Catalog IP87827",
-      relatedObjectName: "Stop 4 · Molting Mystery",
-      relatedCatalogNumber: "",
-      relatedStop: "Stop 4 · Right of the seafloor slab graphic",
-      relatedObjectReason: "Next, see how trilobites grew by shedding their outer skeletons.",
-      missionPrompt: "Look for the clue behind the “headless” trilobites."
-    },
-    fossil2: {
-      name: "Outgrowing a Skeleton",
-      shortName: "Molting mystery",
-      approved: true,
-      routePosition: 2,
-      catalogNumber: "IP52930 / IP87975",
-      stopName: "Stop 4 · Outgrowing a Skeleton slab case",
-      noticeQuestion: "Why might a slab contain so many ‘headless’ trilobite bodies?",
-      noticeChoices: [
-        {value:"predator",label:"A predator",detail:""},
-        {value:"molts",label:"Shedding their shells",detail:""},
+        {value:"shell",label:"Around another shell",detail:""},
+        {value:"growth",label:"It grew that way",detail:""},
         {value:"unsure",label:"Not sure",detail:""}
       ],
-      revealTitle: "They weren’t headless bodies after all.",
-      revealText: "Trilobites grew by molting—crawling out of an old outer skeleton.",
-      uncertaintyText: "While soft, they were vulnerable.",
-      sourceText: "CMC gallery panels · Catalogs IP52930 and IP87975",
-      relatedObjectName: "Stop 5 · Mystery Donut",
-      relatedCatalogNumber: "IP56360 / IP56362",
-      relatedStop: "Stop 5 · Ramp stairs, left of the middle case",
-      relatedObjectReason: "You just saw growth we can explain. Next comes growth we still can’t.",
-      missionPrompt: "Make a guess before you see the answer."
-    },
-    fossil3: {
-      name: "Ordovician donut",
-      shortName: "Mystery donut",
-      approved: true,
-      routePosition: 3,
-      catalogNumber: "IP56360",
-      stopName: "Stop 5 · Ordovician donuts",
-      noticeQuestion: "How do you think this hole formed?",
-      noticeChoices: [
-        {value:"shell",label:"Another animal’s shell",detail:"Something may have occupied the center"},
-        {value:"growth",label:"It grew that way",detail:"The colony may have formed the opening itself"},
-        {value:"mystery",label:"I can’t tell",detail:"The shape leaves an open question"}
-      ],
       revealTitle: "The mystery is real.",
       revealText: "This colony probably grew around a shell—but the shell left no trace.",
       uncertaintyText: "Scientists still don’t know exactly what happened.",
-      sourceText: "CMC gallery panel · Catalog IP56360",
+      sourceText: "CMC Stop 5 · Ordovician Donut · Catalog IP56360",
       relatedObjectName: "Stop 6 · Finale",
-      relatedCatalogNumber: "",
-      relatedStop: "Stop 6 · After the DNA lab, first case facing the ramp",
-      relatedObjectReason: "The final stop jumps forward to life after the Ordovician extinction.",
+      aiDayDirection: "Continue to the STOP 6 · FINALE card.",
       missionPrompt: "Look for how life changed after the extinction."
     }
   },
-  VISITOR_URL: "https://brandinealnku.github.io/coi-webai/fossil/"
-};
 
-// No approved reference image or proxy-feature audit is available yet.
-// Use story prompts that do not pretend the table proxy is the CMC specimen.
-for (const set of [window.CMC_V4_CONFIG.SPECIMENS, window.CMC_V4_CONFIG.TEST_SPECIMENS]) {
- set.fossil1.noticeQuestion='Which feature would you look for to spot a starfish relative?';
- set.fossil1.noticeChoices=[{value:'star',label:'A five-part pattern',detail:''},{value:'disc',label:'A round body',detail:''},{value:'unsure',label:'Not sure',detail:''}];
- for(const item of Object.values(set)) item.scenarioName=(item.scenarioName||item.name)+' · Table object is a proxy; this story describes the museum fossil.';
-}
+  VISITOR_URL: "https://brandinealnku.github.io/coi-webai/fossil/",
+  VISITOR_BLUE_URL: "https://brandinealnku.github.io/coi-webai/fossil/?design=blue",
+  VISITOR_GOLD_URL: "https://brandinealnku.github.io/coi-webai/fossil/?design=gold"
+};
