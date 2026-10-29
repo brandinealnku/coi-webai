@@ -41,6 +41,7 @@ function event(type,data={}){
   session.events.push(e);
   send({eventName:CFG.EVENT_NAME||'NKU AI Day 2026',sessionId:session.id,event:e,userAgent:navigator.userAgent});
 }
+function beginExperience(){event('session-start');show('welcome')}
 function newSession(){
   session={
     id:uid(),startedAt:Date.now(),mode:MODE,selectedObject:'',recognizedSpecimen:'',
