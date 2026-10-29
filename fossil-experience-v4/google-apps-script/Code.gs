@@ -16,7 +16,11 @@ const TRAINING_HEADERS = [
   'Received At','Batch ID','Label','Embedding JSON','User Agent'
 ];
 
-const TRAINING_LABELS = ['fossil1','fossil2','fossil3','other','background'];
+const RESERVED_TRAINING_LABELS = ['other','background'];
+
+function validTrainingLabel_(label) {
+  return /^[a-z0-9][a-z0-9_-]{0,63}$/i.test(label);
+}
 
 function doPost(e) {
   try {
@@ -83,15 +87,16 @@ function doGet(e) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(TRAINING_SHEET);
     const out = {
-      version: 4.3,
-      classes: {fossil1: [], fossil2: [], fossil3: [], other: [], background: []}
+      version: 5.0,
+      classes: {other: [], background: []}
     };
 
     if (sheet && sheet.getLastRow() > 1) {
       const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, TRAINING_HEADERS.length).getValues();
       rows.forEach(row => {
         const label = String(row[2] || '');
-        if (!out.classes[label]) return;
+        if (!label || !validTrainingLabel_(label)) return;
+        if (!out.classes[label]) out.classes[label] = [];
         try {
           const embedding = JSON.parse(String(row[3] || '[]'));
           if (Array.isArray(embedding) && embedding.length) out.classes[label].push(embedding);
@@ -186,7 +191,7 @@ function jsonOrJsonp_(data, e) {
 
 function saveTrainingExample_(payload) {
   const label = String(payload.label || '');
-  if (!TRAINING_LABELS.includes(label)) {
+  if (!label || !validTrainingLabel_(label)) {
     throw new Error('Invalid training label');
   }
 
@@ -242,10 +247,10 @@ function setupWorkbook() {
     ['Unique LIVE visitor sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="live")))'],
     ['Completed LIVE sessions','=COUNTIFS(Events!D2:D,"session-complete",Events!AC2:AC,"live")'],
     ['Successful LIVE scans','=COUNTIFS(Events!D2:D,"scan-success",Events!AC2:AC,"live")'],
-    ['Recognized Object 1','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil1",Events!AC2:AC,"live")'],
-    ['Recognized Object 2','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil2",Events!AC2:AC,"live")'],
-    ['Recognized Object 3','=COUNTIFS(Events!D2:D,"scan-success",Events!AA2:AA,"fossil3",Events!AC2:AC,"live")'],
-    ['Selected = recognized','=SUMPRODUCT((Events!D2:D="scan-success")*(Events!AC2:AC="live")*(Events!AA2:AA=Events!AD2:AD))'],
+    ['Recognized journey artifacts','=COUNTIFS(Events!D2:D,"scan-success",Events!AC2:AC,"live")'],
+    ['Distinct recognized classes','=COUNTA(UNIQUE(FILTER(Events!AA2:AA,Events!AA2:AA<>"",Events!D2:D="scan-success",Events!AC2:AC="live")))'],
+    ['Distinct selected artifacts','=COUNTA(UNIQUE(FILTER(Events!AD2:AD,Events!AD2:AD<>"",Events!D2:D<>"observer-note",Events!AC2:AC="live")))'],
+    ['Successful model recognitions','=COUNTIFS(Events!D2:D,"scan-success",Events!AI2:AI,"model",Events!AC2:AC,"live")'],
     ['Noticed something new: Yes','=COUNTIFS(Events!D2:D,"noticed-new",Events!N2:N,"yes",Events!AC2:AC,"live")'],
     ['Noticed something new: Maybe','=COUNTIFS(Events!D2:D,"noticed-new",Events!N2:N,"maybe",Events!AC2:AC,"live")'],
     ['Noticed something new: No','=COUNTIFS(Events!D2:D,"noticed-new",Events!N2:N,"no",Events!AC2:AC,"live")'],
