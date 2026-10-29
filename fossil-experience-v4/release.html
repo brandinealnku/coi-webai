@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Day Focused Release · Control Center</title>
+<link rel="stylesheet" href="admin.css?v=20261029-release"></head>
+<body><a class="skip-link" href="#main">Skip to main content</a>
+<main id="main" class="admin-shell">
+<header><div><span class="eyebrow">AI DAY FOCUSED RELEASE</span><h1>Release Control Center</h1>
+<p>One release, two workstreams: visitor-interface/design readiness and artifact/model readiness. LIVE is not release-ready until both pass.</p></div>
+<nav aria-label="Release tools"><a href="admin.html">Model setup →</a><br><a href="test.html">Test environment →</a><br><a href="labels.html">Table labels →</a></nav></header>
+
+<section class="grid">
+<article class="panel">
+<h2>Workstream A · Visitor interface + design</h2>
+<p class="note">Built now. Validate Tuesday with unfamiliar users.</p>
+<div class="release-checks">
+<label><input type="checkbox" data-gate="flow"> Start → Scan → Notice → Discover → Next-stop → Continue/Finish works</label>
+<label><input type="checkbox" data-gate="skipfeedback"> Entire route works with feedback skipped</label>
+<label><input type="checkbox" data-gate="blue"> Blue variant tested on phone</label>
+<label><input type="checkbox" data-gate="gold"> Dark/gold variant tested on phone</label>
+<label><input type="checkbox" data-gate="a11y"> Keyboard, focus, labels, zoom/reflow checked</label>
+<label><input type="checkbox" data-gate="unfamiliar"> 3–5 unfamiliar users complete setup without coaching</label>
+</div>
+<hr>
+<h3>Design test links</h3>
+<p><a href="index.html?mode=test&design=blue">TEST · student-inspired blue →</a></p>
+<p><a href="index.html?mode=test&design=gold">TEST · current dark/gold →</a></p>
+<p class="note">Keep wording and functionality identical. Alternate which link participants receive first, then ask which feels more inviting/easier and what caused hesitation.</p>
+</article>
+
+<article class="panel">
+<h2>Workstream B · Artifact + model readiness</h2>
+<div id="artifactMap"></div>
+<p id="trainingStatus" class="note" role="status" aria-live="polite">Checking shared training counts…</p>
+<div class="release-checks">
+<label><input type="checkbox" data-gate="artifacts"> Three physical artifacts confirmed and mapped to classes</label>
+<label><input type="checkbox" data-gate="prompts"> Each prompt audited against proxy; approved reference images added where needed</label>
+<label><input type="checkbox" data-gate="holdout"> Held-out validation completed on unseen examples</label>
+<label><input type="checkbox" data-gate="iphone"> Actual iPhone recognition/fallback tested</label>
+<label><input type="checkbox" data-gate="android"> Actual Android recognition/fallback tested</label>
+<label><input type="checkbox" data-gate="negative"> Unrelated objects/background do not routinely trigger a route stop</label>
+<label><input type="checkbox" data-gate="published"> Validated training.json published; prior valid model retained for rollback</label>
+</div>
+<hr>
+<p id="releaseDecision" class="privacy-box"><strong>LIVE BLOCKED</strong><span>Complete both workstreams before calling the model release-ready. Manual selection remains the honest demonstration fallback.</span></p>
+</article>
+</section>
+</main>
+<script src="config.js?v=20261029-release"></script><script src="release.js?v=20261029-release"></script>
+</body></html>
