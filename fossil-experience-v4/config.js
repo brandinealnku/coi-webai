@@ -18,11 +18,11 @@ window.CMC_V4_CONFIG = {
         {value:"disc",label:"A round disc",detail:"A low, plate-like overall form"},
         {value:"other",label:"Something else",detail:"Another detail stands out first"}
       ],
-      revealTitle: "That resemblance is a clue.",
+      revealTitle: "An ancient relative of starfish.",
       revealText: "This animal was related to starfish and lived in Cincinnati’s ancient sea.",
       uncertaintyText: "",
       sourceText: "AI Day route simulation · CMC Stop 1 · Catalog IP87827",
-      relatedObjectName: "Outgrowing a Skeleton",
+      relatedObjectName: "Stop 4 · Molting Mystery",
       relatedCatalogNumber: "",
       relatedStop: "Stop 4 · Right of the seafloor slab graphic",
       relatedObjectReason: "Next, see how trilobites grew by shedding their outer skeletons.",
@@ -39,15 +39,15 @@ window.CMC_V4_CONFIG = {
       scenarioName: "Outgrowing a Skeleton",
       noticeQuestion: "Why might a slab contain so many ‘headless’ trilobite bodies?",
       noticeChoices: [
-        {value:"predator",label:"A predator attacked them",detail:"Something removed the heads"},
-        {value:"molts",label:"They shed their old shells",detail:"The bodies may be molts, not dead animals"},
-        {value:"unsure",label:"I’m not sure",detail:"The fossil evidence is puzzling"}
+        {value:"predator",label:"A predator",detail:""},
+        {value:"molts",label:"Shedding their shells",detail:""},
+        {value:"unsure",label:"Not sure",detail:""}
       ],
       revealTitle: "They weren’t headless bodies after all.",
       revealText: "Trilobites grew by molting—crawling out of an old outer skeleton.",
       uncertaintyText: "While soft, they were vulnerable.",
       sourceText: "AI Day route simulation · CMC Stop 4 · Catalogs IP52930 and IP87975",
-      relatedObjectName: "Ordovician donuts",
+      relatedObjectName: "Stop 5 · Mystery Donut",
       relatedCatalogNumber: "IP56360 / IP56362",
       relatedStop: "Stop 5 · Ramp stairs, left of the middle case",
       relatedObjectReason: "You just saw growth we can explain. Next comes growth we still can’t.",
@@ -62,7 +62,7 @@ window.CMC_V4_CONFIG = {
       catalogNumber: "IP56360",
       stopName: "Stop 5 · Ordovician donuts",
       scenarioName: "Ordovician donut",
-      noticeQuestion: "What do you think once filled the hole?",
+      noticeQuestion: "How do you think this hole formed?",
       noticeChoices: [
         {value:"shell",label:"Another animal’s shell",detail:"Something may have occupied the center"},
         {value:"growth",label:"It grew that way",detail:"The colony may have formed the opening itself"},
@@ -72,7 +72,7 @@ window.CMC_V4_CONFIG = {
       revealText: "This colony probably grew around a shell—but the shell left no trace.",
       uncertaintyText: "Scientists still don’t know exactly what happened.",
       sourceText: "AI Day route simulation · CMC Stop 5 · Catalog IP56360",
-      relatedObjectName: "Silurian–Devonian case",
+      relatedObjectName: "Stop 6 · Finale",
       relatedCatalogNumber: "",
       relatedStop: "Stop 6 · After the DNA lab, first case facing the ramp",
       relatedObjectReason: "The final stop jumps forward to life after the Ordovician extinction.",
@@ -93,11 +93,11 @@ window.CMC_V4_CONFIG = {
         {value:"disc",label:"A round disc",detail:"A low, plate-like overall form"},
         {value:"other",label:"Something else",detail:"Another detail stands out first"}
       ],
-      revealTitle: "That resemblance is a clue.",
+      revealTitle: "An ancient relative of starfish.",
       revealText: "This animal was related to starfish and lived in Cincinnati’s ancient sea.",
       uncertaintyText: "",
       sourceText: "CMC gallery panel · Catalog IP87827",
-      relatedObjectName: "Outgrowing a Skeleton",
+      relatedObjectName: "Stop 4 · Molting Mystery",
       relatedCatalogNumber: "",
       relatedStop: "Stop 4 · Right of the seafloor slab graphic",
       relatedObjectReason: "Next, see how trilobites grew by shedding their outer skeletons.",
@@ -112,15 +112,15 @@ window.CMC_V4_CONFIG = {
       stopName: "Stop 4 · Outgrowing a Skeleton slab case",
       noticeQuestion: "Why might a slab contain so many ‘headless’ trilobite bodies?",
       noticeChoices: [
-        {value:"predator",label:"A predator attacked them",detail:"Something removed the heads"},
-        {value:"molts",label:"They shed their old shells",detail:"The bodies may be molts, not dead animals"},
-        {value:"unsure",label:"I’m not sure",detail:"The fossil evidence is puzzling"}
+        {value:"predator",label:"A predator",detail:""},
+        {value:"molts",label:"Shedding their shells",detail:""},
+        {value:"unsure",label:"Not sure",detail:""}
       ],
       revealTitle: "They weren’t headless bodies after all.",
       revealText: "Trilobites grew by molting—crawling out of an old outer skeleton.",
       uncertaintyText: "While soft, they were vulnerable.",
       sourceText: "CMC gallery panels · Catalogs IP52930 and IP87975",
-      relatedObjectName: "Ordovician donuts",
+      relatedObjectName: "Stop 5 · Mystery Donut",
       relatedCatalogNumber: "IP56360 / IP56362",
       relatedStop: "Stop 5 · Ramp stairs, left of the middle case",
       relatedObjectReason: "You just saw growth we can explain. Next comes growth we still can’t.",
@@ -133,7 +133,7 @@ window.CMC_V4_CONFIG = {
       routePosition: 3,
       catalogNumber: "IP56360",
       stopName: "Stop 5 · Ordovician donuts",
-      noticeQuestion: "What do you think once filled the hole?",
+      noticeQuestion: "How do you think this hole formed?",
       noticeChoices: [
         {value:"shell",label:"Another animal’s shell",detail:"Something may have occupied the center"},
         {value:"growth",label:"It grew that way",detail:"The colony may have formed the opening itself"},
@@ -143,7 +143,7 @@ window.CMC_V4_CONFIG = {
       revealText: "This colony probably grew around a shell—but the shell left no trace.",
       uncertaintyText: "Scientists still don’t know exactly what happened.",
       sourceText: "CMC gallery panel · Catalog IP56360",
-      relatedObjectName: "Silurian–Devonian case",
+      relatedObjectName: "Stop 6 · Finale",
       relatedCatalogNumber: "",
       relatedStop: "Stop 6 · After the DNA lab, first case facing the ramp",
       relatedObjectReason: "The final stop jumps forward to life after the Ordovician extinction.",
@@ -152,3 +152,11 @@ window.CMC_V4_CONFIG = {
   },
   VISITOR_URL: "https://brandinealnku.github.io/coi-webai/fossil/"
 };
+
+// No approved reference image or proxy-feature audit is available yet.
+// Use story prompts that do not pretend the table proxy is the CMC specimen.
+for (const set of [window.CMC_V4_CONFIG.SPECIMENS, window.CMC_V4_CONFIG.TEST_SPECIMENS]) {
+ set.fossil1.noticeQuestion='Which feature would you look for to spot a starfish relative?';
+ set.fossil1.noticeChoices=[{value:'star',label:'A five-part pattern',detail:''},{value:'disc',label:'A round body',detail:''},{value:'unsure',label:'Not sure',detail:''}];
+ for(const item of Object.values(set)) item.scenarioName=(item.scenarioName||item.name)+' · Table object is a proxy; this story describes the museum fossil.';
+}

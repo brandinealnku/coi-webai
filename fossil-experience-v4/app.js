@@ -4,6 +4,9 @@ const screens=['loading','welcome','camera','observe','discover','connection','n
 const SPECIMEN_LABELS=['fossil1','fossil2','fossil3'];
 const REQUIRED_LABELS=[...SPECIMEN_LABELS,'other','background'];
 const params=new URLSearchParams(location.search),MODE=params.get('mode')==='test'?'test':'live';
+const DESIGN=params.get('design')==='gold'?'gold':'blue',RELEASE='ai-day-2026-10-29';
+let journeyId=crypto.randomUUID(),visited=new Set(),ready=false,stableLabel=null,cameraGeneration=0;
+document.documentElement.dataset.design=DESIGN;
 let model=null,classifier=null,stream=null,raf=null,lastInfer=0,stable=0,current=null,session=null;
 const video=$('video'),overlay=$('overlay'),ctx=overlay.getContext('2d'),crop=document.createElement('canvas'),cctx=crop.getContext('2d',{willReadFrequently:true});
 
@@ -26,9 +29,9 @@ function sendToGoogle(payload){
 }
 function event(type,data={}){
  if(!session)return;
- const e={type,at:new Date().toISOString(),elapsedMs:Date.now()-session.startedAt,mode:MODE,selectedObject:session.selectedObject||'',recognizedSpecimen:session.recognizedSpecimen||'',...data};
+ const e={type,at:new Date().toISOString(),elapsedMs:Date.now()-session.startedAt,mode:MODE,design:DESIGN,release:RELEASE,journeyId,selectedObject:session.selectedObject||'',recognizedSpecimen:session.recognizedSpecimen||'',...data};
  session.events.push(e);
- sendToGoogle({eventName:CFG.EVENT_NAME||'NKU AI Day 2026',sessionId:session.id,event:e,userAgent:navigator.userAgent})
+ sendToGoogle({eventName:(CFG.EVENT_NAME||'NKU AI Day 2026')+' | '+RELEASE+' | '+DESIGN+' | journey:'+journeyId,sessionId:session.id,event:e,userAgent:navigator.userAgent})
 }
 async function loadTraining(){
  let data=null;
@@ -37,7 +40,8 @@ async function loadTraining(){
  const keys=Object.keys(data.classes);
  if(!REQUIRED_LABELS.every(k=>keys.includes(k)))return false;
  const ds={};
- for(const [label,o] of Object.entries(data.classes))ds[label]=tf.tensor(o.data,o.shape);
+ for(const label of REQUIRED_LABELS){const o=data.classes[label];if(!Array.isArray(o?.shape)||o.shape.length!==2||o.shape[0]<1||o.shape[1]!==1280||!Array.isArray(o.data)||o.data.length!==o.shape[0]*o.shape[1]||!o.data.every(Number.isFinite))return false}
+ for(const label of REQUIRED_LABELS){const o=data.classes[label];ds[label]=tf.tensor(o.data,o.shape)}
  classifier.setClassifierDataset(ds);
  return REQUIRED_LABELS.every(k=>(classifier.getClassExampleCount()?.[k]||0)>0)
 }
@@ -48,26 +52,31 @@ function cropFrame(){
 }
 function activation(){const f=cropFrame();return f?model.infer(f,true):null}
 async function startCamera(){
+ if(!ready){openObjectFallback(false);return}
+ stopCamera();const generation=cameraGeneration;
  session.scanAttempts++;session.scanStartedAt=session.scanStartedAt||Date.now();event('scan-start',{attempt:session.scanAttempts});
- stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
- video.srcObject=stream;await video.play();stable=0;if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)
+ const acquired=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+ if(generation!==cameraGeneration){acquired.getTracks().forEach(t=>t.stop());return}
+ stream=acquired;video.srcObject=stream;await video.play();stable=0;stableLabel=null;if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)
 }
-function stopCamera(){if(raf)cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null}
+function stopCamera(){cameraGeneration++;if(raf)cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null}
 async function loop(ts){
- if(!stream)return;
+ if(!stream)return;const generation=cameraGeneration;
+ try{
  if(ts-lastInfer>250){
    lastInfer=ts;const a=activation();
-   if(a){try{const r=await classifier.predictClass(a,5),p=r.confidences||{},conf=p[r.label]||0;current={label:r.label,confidence:conf,probabilities:p};renderPrediction()}finally{a.dispose()}}
+   if(a){try{const r=await classifier.predictClass(a,5),p=r.confidences||{},conf=p[r.label]||0;if(generation!==cameraGeneration)return;current={label:r.label,confidence:conf,probabilities:p};renderPrediction()}finally{a.dispose()}}
  }
- raf=requestAnimationFrame(loop)
+ }catch(e){event('scan-error',{message:String(e)});stopCamera();openObjectFallback(false);return}
+ if(stream&&generation===cameraGeneration)raf=requestAnimationFrame(loop)
 }
 function renderPrediction(){
  const label=current.label,conf=current.confidence||0,positive=isSpecimen(label)&&conf>=.78;
  if(positive){
-   stable++;$('scanState').textContent=stable>=3?'Found it.':'Hold steady…';
+   stable=stableLabel===label?stable+1:1;stableLabel=label;$('scanState').textContent=stable>=3?'Found it.':'Hold steady…';
    $('guidance').textContent='Keep the object centered for one more moment.'
  }else{
-   stable=Math.max(0,stable-1);$('scanState').textContent='Looking…';
+   stable=0;stableLabel=null;$('scanState').textContent='Looking…';
    $('guidance').textContent=label==='background'?'Move closer so the object fills more of the frame.':'Center one featured object and hold still.'
  }
  overlay.width=video.videoWidth||640;overlay.height=video.videoHeight||480;ctx.clearRect(0,0,overlay.width,overlay.height);
@@ -94,7 +103,7 @@ function resetSession(start=true){
  document.querySelectorAll('.choice.selected').forEach(x=>x.classList.remove('selected'));
  document.querySelectorAll('[data-noticed]').forEach(x=>{x.disabled=false;x.setAttribute('aria-pressed','false')});
  document.querySelectorAll('details').forEach(x=>x.open=false);
- $('noticeFeedback').classList.remove('hidden');$('destinationDetails').classList.add('hidden');
+ $('feedbackSummary').textContent='Optional: notice something new?';$('noticeFeedback').classList.remove('hidden');
  $('connectionHeading').textContent='Notice something new?';
  $('missionComplete').classList.add('hidden');
  $('completionLabel').textContent='NEXT STOP';
@@ -102,11 +111,13 @@ function resetSession(start=true){
  $('guidance').textContent='Move close enough for the object to fill most of the frame.';
  $('finishExperience').classList.remove('hidden');$('tryAnother').classList.remove('hidden');$('tryAnother').textContent='Continue to next stop';
  $('testScanPanel').classList.add('hidden');$('scanState').classList.remove('hidden');
+ if(start){journeyId=crypto.randomUUID();visited=new Set();$('routeProgress').textContent='Route 1 → 4 → 5 → Finale'}
+ $('optionalFeedback').classList.remove('hidden');$('optionalFeedback').open=false;
  newSession();if(start)beginExperience()
 }
 function finish(){
  if(session.completed)return;
- session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;
+ visited.add(session.selectedObject);session.completed=true;session.completedAtISO=new Date().toISOString();session.totalMs=Date.now()-session.startedAt;
  event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,selectedObject:session.selectedObject,recognizedSpecimen:session.recognizedSpecimen,observe:session.observe,noticedNew:session.noticedNew,next:session.next,manualBypass:session.manualBypass});
 }
 function nextRouteLabel(){
@@ -114,10 +125,9 @@ function nextRouteLabel(){
 }
 function showNextActions(){
  const cc=specimenConfig(session.selectedObject);
- $('noticeFeedback').classList.add('hidden');
  $('connectionHeading').textContent='What next?';
  $('missionCompleteText').textContent=cc.relatedObjectName||'Route complete';
- $('missionCompleteSubtext').textContent=cc.missionPrompt||'';
+ $('missionCompleteSubtext').textContent=nextRouteLabel()?'Find the matching stop label at the AI Day table.':'Finish the rehearsal with a look ahead to CMC.';
  $('tryAnother').textContent=nextRouteLabel()?'Continue to next stop':'Continue to finale';
  $('missionComplete').classList.remove('hidden');
  $('tryAnother').focus({preventScroll:true});window.scrollTo(0,0)
@@ -127,6 +137,7 @@ async function continueRoute(){
  session.next='yes';event('next-action',{value:'yes',source:'navigation'});finish();
  event('route-continue',{destination:nextLabel||'finale'});
  if(!nextLabel){
+   $('optionalFeedback').classList.add('hidden');$('routeProgress').textContent='Finale · '+visited.size+' of 3 object stops visited';
    $('completionLabel').textContent='STOP 6 · FINALE';
    $('connectionHeading').textContent='Expand your world.';
    $('missionCompleteText').textContent='Silurian–Devonian case';
@@ -148,6 +159,8 @@ async function continueRoute(){
 
 function applySpecimenContent(label){
  const cc=specimenConfig(label);
+ $('routeProgress').textContent='Route 1 → 4 → 5 → Finale · At stop '+({fossil1:1,fossil2:4,fossil3:5}[label])+' · '+visited.size+' visited';
+ $('recognitionKind').textContent=session.manualBypass?'Selected:':MODE==='test'?'Simulated match:':'Found:';
  $('scenarioContext').textContent=cc.scenarioName?('CMC route scenario: '+cc.scenarioName):'';
  $('noticeQuestion').textContent=cc.noticeQuestion||'What do you notice?';
  const choices=cc.noticeChoices||[
@@ -174,11 +187,7 @@ function applySpecimenContent(label){
    $('fossilFact').classList.add('hidden');$('curatorNote').classList.remove('hidden')
  }
 
- $('relatedObjectName').textContent=cc.relatedObjectName||'A related object';
- $('relatedCatalog').textContent=cc.relatedCatalogNumber||'';
- $('relatedObjectReason').textContent=cc.relatedObjectReason||'This object connects to another part of the gallery story.';
- $('relatedStop').textContent=cc.relatedStop||'';
- $('missionPrompt').textContent=cc.missionPrompt||'See if you can spot the connection yourself.'
+
 }
 function openObjectFallback(testMode){
  $('scanPanelTitle').textContent=testMode?'Choose what the test should recognize':'Which featured object are you using?';
@@ -206,8 +215,8 @@ document.querySelectorAll('[data-test-object]').forEach(b=>b.onclick=()=>{
  if(MODE==='test'){
    current={label,confidence:1,probabilities:{[label]:1}};event('test-recognition-simulated',{selectedObject:label});completeRecognition(label,1,current.probabilities,true)
  }else{
-   session.manualBypass=true;session.selectedObject=label;session.recognizedSpecimen=label;session.scanSuccessAt=Date.now();session.scanTimeMs=session.scanStartedAt?session.scanSuccessAt-session.scanStartedAt:0;
-   $('recognizedName').textContent=specimenName(label);applySpecimenContent(label);event('manual-bypass',{selectedObject:label,recognizedSpecimen:label});stopCamera();show('observe')
+   session.manualBypass=true;session.selectedObject=label;session.recognizedSpecimen='';session.scanSuccessAt=Date.now();session.scanTimeMs=session.scanStartedAt?session.scanSuccessAt-session.scanStartedAt:0;
+   $('recognizedName').textContent=specimenName(label);applySpecimenContent(label);event('manual-bypass',{selectedObject:label,recognizedSpecimen:''});stopCamera();show('observe')
  }
 });
 $('restart').onclick=()=>resetSession();
@@ -218,11 +227,11 @@ document.querySelectorAll('[data-observe]').forEach(b=>b.onclick=()=>{
  event('observe-choice',{value:session.observe,choiceLabel:choice?.label||''});
  show('discover')
 });
-$('toConnection').onclick=()=>show('connection');
+$('toConnection').onclick=()=>{show('connection');showNextActions()};
 document.querySelectorAll('[data-noticed]').forEach(b=>b.onclick=()=>{
  session.noticedNew=b.dataset.noticed;event('noticed-new',{value:session.noticedNew});
  document.querySelectorAll('[data-noticed]').forEach(x=>{const on=x===b;x.classList.toggle('selected',on);x.setAttribute('aria-pressed',on?'true':'false');x.disabled=true});
- showNextActions()
+ $('noticeFeedback').classList.add('hidden');$('optionalFeedback').open=false;$('feedbackSummary').textContent='Feedback saved — thank you';
 });
 
 (async()=>{
@@ -234,14 +243,14 @@ document.querySelectorAll('[data-noticed]').forEach(b=>b.onclick=()=>{
  try{
    await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1});classifier=knnClassifier.create();event('model-library-ready');
    const ok=await loadTraining();
-   if(ok){event('training-ready');$('loading').setAttribute('aria-busy','false');beginExperience()}
-   else{event('training-missing');show('notReady')}
- }catch(e){console.error(e);event('model-load-error',{message:String(e)});$('loadingMsg').textContent='The recognition model could not load. Check your connection and refresh.'}
+   if(ok){ready=true;event('training-ready');$('loading').setAttribute('aria-busy','false');if($('loading').classList.contains('active'))beginExperience()}
+   else{event('training-missing');if($('loading').classList.contains('active'))show('notReady')}
+ }catch(e){console.error(e);event('model-load-error',{message:String(e)});if($('loading').classList.contains('active'))show('notReady')}
 })();
 $('tryAnother').onclick=()=>{if(session.experienceFinished)resetSession();else continueRoute()};
 $('finishExperience').onclick=()=>{
  if(!session.completed){session.next='no';event('next-action',{value:'no',source:'navigation'});finish()}
- session.experienceFinished=true;event('experience-finished');
+ session.experienceFinished=true;event('experience-finished');$('optionalFeedback').classList.add('hidden');
  $('connectionHeading').textContent='All done.';$('completionLabel').textContent='DONE';
  $('tryAnother').classList.remove('hidden');
  $('missionCompleteText').textContent='Thanks for exploring.';
@@ -250,3 +259,6 @@ $('finishExperience').onclick=()=>{
  $('finishExperience').classList.add('hidden');
 };
 
+
+$('manualStart').onclick=()=>{show('camera');openObjectFallback(false)};
+$('loadingFallback').onclick=()=>{show('camera');openObjectFallback(false)};

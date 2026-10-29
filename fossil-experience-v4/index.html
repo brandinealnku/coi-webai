@@ -8,24 +8,26 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
 <link rel="stylesheet" href="styles.css?v=20261028-lessread1">
+<link rel="stylesheet" href="release.css?v=20261029">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
 <main id="experience" class="visitor-shell">
   <header class="topbar">
-    <div class="brand"><span class="brand-dot" aria-hidden="true"></span><div><strong>Expand Your World</strong><span>Cincinnati Museum Center × NKU AI Native Studio</span></div></div>
+    <div class="brand"><span class="brand-dot" aria-hidden="true"></span><div><strong>Expand Your World</strong><span>CMC × NKU AI Native Studio</span></div></div>
     <div class="study-meta"><span id="modePill" class="event-pill">AI DAY</span></div>
   </header>
+  <p id="routeProgress" class="route-progress" aria-live="polite">Route 1 → 4 → 5 → Finale</p>
 
   <section id="loading" class="screen active" aria-live="polite" aria-busy="true">
-    <div class="card centered"><div class="loader" aria-hidden="true"></div><h1>Getting ready…</h1><p id="loadingMsg">Loading the object-recognition model.</p></div>
+    <div class="card centered"><div class="loader" aria-hidden="true"></div><h1>Getting ready…</h1><p id="loadingMsg">Loading the object-recognition model.</p><button id="loadingFallback" class="secondary">Continue without recognition</button></div>
   </section>
 
   <section id="welcome" class="screen" aria-hidden="true">
     <div class="card hero">
       <span class="eyebrow">EXPAND YOUR WORLD</span>
       <h1>Look closer.</h1>
-      <p class="lede">Scan an object. Notice one clue. Follow where it leads.</p>
+      <p class="lede">Scan a table object. Explore a museum story. Choose your next stop.</p>
       <div id="testModeNotice" class="test-mode-note hidden"><strong>TEST MODE</strong><span>Recognition is simulated. The museum interaction is otherwise the same.</span></div>
       <details class="privacy-details">
         <summary>Camera & privacy</summary>
@@ -70,7 +72,7 @@
   <section id="observe" class="screen" aria-hidden="true">
     <div class="card">
       <span class="eyebrow">2 · NOTICE</span>
-      <div class="recognized-chip">Found: <strong id="recognizedName">Object</strong></div>
+      <div class="recognized-chip"><span id="recognitionKind">Found:</span> <strong id="recognizedName">Object</strong></div>
       <p id="scenarioContext" class="scenario-context"></p>
       <h2 id="noticeQuestion">What do you notice?</h2>
       <div class="choice-grid three" id="noticeChoices">
@@ -102,36 +104,6 @@
     <div class="card">
       <span class="eyebrow">4 · GO</span>
       <h2 id="connectionHeading">Notice something new?</h2>
-      <div id="destinationDetails" class="hidden">
-
-      <section class="destination-mission" aria-labelledby="relatedObjectName">
-        <span class="connection-label">GO FIND</span>
-        <strong id="relatedObjectName">A related object</strong>
-        <p id="missionPrompt">See if you can spot the connection yourself.</p>
-      </section>
-
-      <section class="connection-location" aria-labelledby="locationHeading">
-        <span id="locationHeading" class="connection-label">WHERE</span>
-        <strong id="relatedStop"></strong>
-      </section>
-
-      <details class="why-details">
-        <summary>Why this stop?</summary>
-        <p id="relatedObjectReason"></p>
-        <small id="relatedCatalog" class="catalog-meta"></small>
-      </details>
-
-      </div>
-      <div id="noticeFeedback" class="micro-feedback">
-        <div class="choice-grid three compact">
-          <button class="choice notice-value-choice" data-noticed="yes" aria-pressed="false"><b>Yes</b></button>
-          <button class="choice notice-value-choice" data-noticed="maybe" aria-pressed="false"><b>Maybe</b></button>
-          <button class="choice notice-value-choice" data-noticed="no" aria-pressed="false"><b>No</b></button>
-        </div>
-
-
-      </div>
-
       <div id="missionComplete" class="mission-complete hidden" role="status" aria-live="polite">
         <span id="completionLabel" class="connection-label">NEXT STOP</span>
         <strong id="missionCompleteText">You’ve completed this object.</strong>
@@ -141,13 +113,21 @@
           <button id="finishExperience" type="button" class="secondary">I’m finished</button>
         </div>
       </div>
+      <details id="optionalFeedback" class="collection-details">
+        <summary id="feedbackSummary">Optional: notice something new?</summary>
+        <div id="noticeFeedback" class="choice-grid three compact">
+          <button class="choice" data-noticed="yes" aria-pressed="false"><b>Yes</b></button>
+          <button class="choice" data-noticed="maybe" aria-pressed="false"><b>Maybe</b></button>
+          <button class="choice" data-noticed="no" aria-pressed="false"><b>No</b></button>
+        </div>
+      </details>
     </div>
   </section>
 
   <section id="notReady" class="screen" aria-hidden="true">
-    <div class="card centered"><span class="eyebrow">SETUP NEEDED</span><h2>This station is not ready yet.</h2><p class="lede">The final trained object set still needs to be published.</p></div>
+    <div class="card centered"><span class="eyebrow">SETUP NEEDED</span><h2>Explore without recognition.</h2><p class="lede">Camera recognition is unavailable. Choose the label beside your table object to explore its museum story.</p><button id="manualStart" class="primary">Choose a stop</button></div>
   </section>
 </main>
-<script src="config.js?v=20261028-mvp10"></script>
-<script src="app.js?v=20261028-routeflow2"></script>
+<script src="config.js?v=20261029"></script>
+<script src="app.js?v=20261029"></script>
 </body></html>

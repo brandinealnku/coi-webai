@@ -1,0 +1,26 @@
+/* Shared geometry keeps the visual comparison focused on treatment. */
+.brand div span:last-child{display:block!important;font-size:.68rem;line-height:1.4;color:#bdc9d3}
+.route-progress{max-width:930px;margin:0 auto;padding:8px 18px;font-size:.78rem;color:#b9cbd5}
+.screen{min-height:calc(100dvh - 130px)}
+.primary,.secondary,.choice{border-radius:16px;min-height:48px}
+.collection-details summary{cursor:pointer;min-height:48px;padding:14px 0}
+.scenario-context{font-size:.85rem;line-height:1.5;color:inherit}
+.choice span:empty{display:none}
+html[data-design=blue]{--gold:#62d9e2;--ink:#061f32;--green:#66d9c0;--line:rgba(18,59,79,.25)}
+html[data-design=blue] body{background:#061f32}
+html[data-design=blue] .visitor-shell{background:radial-gradient(ellipse at 15% -10%,#408c9c 0,transparent 55%),linear-gradient(160deg,#123e57,#061c30 75%)}
+html[data-design=blue] .topbar{background:#082b40}
+html[data-design=blue] .card{background:#e2f0f4;color:#102e42;border-color:#b1d1dd}
+html[data-design=blue] .hero{background:linear-gradient(135deg,#edf8fa,#c8e4eb)}
+html[data-design=blue] .card :is(.lede,.privacy-details,.privacy-details p,.source-line,.fact-card p,.uncertainty,.choice span,.mission-complete p,.scenario-context){color:#294b60}
+html[data-design=blue] .card :is(.eyebrow,.connection-label,.collection-details summary){color:#155466}
+html[data-design=blue] .primary{background:#12647b;color:white}
+html[data-design=blue] .secondary{background:#fff;color:#163e52;border:1px solid #7699aa}
+html[data-design=blue] .choice{background:#f5fbfc;color:#12384b;border-color:#8caebb}
+html[data-design=blue] .choice:hover,html[data-design=blue] .choice:focus-visible{background:#cae9ee;border-color:#12647b}
+html[data-design=blue] .mission-complete,html[data-design=blue] .fact-card{background:#cce7e9;border-color:#6babae;color:#12384b}
+html[data-design=blue] .recognized-chip,html[data-design=blue] .recognized-chip strong{color:#174c56}
+html[data-design=blue] .test-mode-note{background:#cee6ec;border-color:#24708a;color:#12384b}
+html[data-design=blue] .test-mode-note span{color:#294b60}
+html[data-design=blue] button:focus-visible,html[data-design=blue] summary:focus-visible{outline:3px solid #af4b00;outline-offset:4px}
+@media(max-width:700px){.topbar{gap:8px}.brand strong{font-size:.82rem}.brand div span:last-child{font-size:.61rem}.card{padding:22px 18px}.stage{max-height:52dvh;min-height:300px}.test-scan-panel{padding:16px;gap:8px}.test-scan-panel strong{font-size:1.1rem}.camera-actions{display:flex;flex-wrap:wrap;gap:10px}.camera-actions button{min-height:48px}.screen{min-height:0;padding-bottom:20px}.route-progress{font-size:.72rem}.choice{min-height:64px}}
