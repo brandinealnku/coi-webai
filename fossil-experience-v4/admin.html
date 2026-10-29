@@ -25,6 +25,8 @@
     <a href="../observe/">Observer tool →</a><br>
     <a href="../fossil-display/">Monitor display →</a><br>
     <a href="../test/">Test environment →</a><br>
+    <a href="release.html">AI Day release gate →</a><br>
+    <a href="labels.html">Print table labels →</a><br>
     <a href="dashboard.html">Research data →</a>
   </nav>
 </header>
@@ -63,9 +65,10 @@
 
   <hr>
   <h2>4. Export the frozen model</h2>
-  <p class="note">After validation is acceptable, download <code>training.json</code>. This frozen file becomes the classifier dataset used by visitor phones during AI Day.</p>
-  <button id="download" type="button" disabled>Download training.json</button>
-  <p class="note">After download, replace <code>fossil-experience-v4/training.json</code> in GitHub, then test the Visitor Experience on multiple phones before the event.</p>
+  <p class="note">Export is intentionally gated. Reach the full training-count target, complete held-out validation, and confirm the validation below.</p>
+  <label class="privacy-box"><input id="validationConfirmed" type="checkbox"> <span><strong>Held-out validation passed</strong><br>I tested unseen examples across all five classes and the results are acceptable for AI Day.</span></label>
+  <button id="download" type="button" disabled>Download validated training.json</button>
+  <p class="note">Before replacing <code>training.json</code>, preserve any previously validated model as <code>training.rollback.json</code>. Then publish the new file and test LIVE on iPhone and Android.</p>
 
   <hr>
   <h2>5. Visitor link and QR code</h2>
