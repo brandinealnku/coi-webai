@@ -1,0 +1,224 @@
+/* NKU AI Day theme
+   Official NKU brand anchors:
+   Gold #FFC72C, White, Black
+   Avenir body / Avenir Next Condensed headlines when available
+   Arial fallback when NKU fonts are unavailable.
+   This file is intentionally isolated so students can replace the theme later
+   without changing route logic, content, logging, or model behavior.
+*/
+:root{
+  --nku-gold:#FFC72C;
+  --nku-black:#000000;
+  --nku-white:#FFFFFF;
+  --nku-charcoal:#171717;
+  --nku-gray:#F3F3F3;
+  --nku-mid:#5A5A5A;
+  --nku-border:#D4D4D4;
+  --nku-focus:#005FCC;
+  --gold:var(--nku-gold);
+  --ink:var(--nku-black);
+  --green:#2D7D46;
+  --line:rgba(0,0,0,.22);
+  --font-body:"Avenir","Avenir Next",Arial,sans-serif;
+  --font-display:"Avenir Next Condensed","Avenir Next",Arial,sans-serif;
+}
+html[data-design="nku"] body{
+  background:var(--nku-black);
+  font-family:var(--font-body);
+  color:var(--nku-black);
+}
+html[data-design="nku"] .visitor-shell{
+  background:
+    linear-gradient(135deg,rgba(255,199,44,.10) 0 18%,transparent 18% 100%),
+    linear-gradient(180deg,#090909 0,#141414 38%,#080808 100%);
+}
+html[data-design="nku"] .topbar{
+  background:var(--nku-black);
+  border-bottom:4px solid var(--nku-gold);
+  color:var(--nku-white);
+}
+html[data-design="nku"] .brand-dot{
+  background:var(--nku-gold);
+  box-shadow:none;
+}
+html[data-design="nku"] .brand strong{
+  color:var(--nku-white);
+  font-family:var(--font-display);
+  font-weight:900;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+html[data-design="nku"] .brand div span:last-child{
+  color:#E6E6E6;
+  font-family:var(--font-body);
+}
+html[data-design="nku"] .event-pill{
+  background:var(--nku-gold);
+  color:var(--nku-black);
+  border-color:var(--nku-gold);
+  font-weight:900;
+}
+html[data-design="nku"] .route-strip{
+  color:var(--nku-white);
+  background:#111;
+  border-bottom:1px solid #343434;
+}
+html[data-design="nku"] .route-strip li span{
+  border-color:#B9B9B9;
+}
+html[data-design="nku"] .route-strip li.current span{
+  background:var(--nku-gold);
+  color:var(--nku-black);
+  border-color:var(--nku-gold);
+  box-shadow:0 0 0 4px rgba(255,199,44,.16);
+}
+html[data-design="nku"] .route-strip li.complete span{
+  background:var(--nku-white);
+  color:var(--nku-black);
+  border-color:var(--nku-white);
+}
+html[data-design="nku"] .welcome-ocean{
+  background:
+    linear-gradient(135deg,rgba(255,199,44,.14) 0 24%,transparent 24% 100%),
+    radial-gradient(circle at 90% 12%,rgba(255,199,44,.12),transparent 26%),
+    linear-gradient(180deg,#101010 0,#171717 58%,#0A0A0A 100%);
+}
+html[data-design="nku"] .ocean-art span{
+  border-color:rgba(255,199,44,.40);
+}
+html[data-design="nku"] .card{
+  background:var(--nku-white);
+  color:var(--nku-black);
+  border:2px solid var(--nku-black);
+  box-shadow:0 16px 34px rgba(0,0,0,.24);
+}
+html[data-design="nku"] .hero{
+  border-top:8px solid var(--nku-gold);
+}
+html[data-design="nku"] h1,
+html[data-design="nku"] h2,
+html[data-design="nku"] h3,
+html[data-design="nku"] .next-stop-card strong{
+  font-family:var(--font-display);
+  font-weight:900;
+}
+html[data-design="nku"] h1,
+html[data-design="nku"] h2{
+  letter-spacing:-.025em;
+}
+html[data-design="nku"] .eyebrow,
+html[data-design="nku"] .connection-label{
+  color:#5A4700;
+  font-family:var(--font-display);
+  font-weight:900;
+}
+html[data-design="nku"] .card :is(.lede,.privacy-details p,.source-line,.fact-card p,.uncertainty,.choice span,.scenario-context,.mission-complete p){
+  color:#333;
+}
+html[data-design="nku"] .primary{
+  background:var(--nku-gold);
+  color:var(--nku-black);
+  border:2px solid var(--nku-black);
+  font-weight:900;
+}
+html[data-design="nku"] .primary:hover{
+  background:#FFD65C;
+}
+html[data-design="nku"] .secondary{
+  background:var(--nku-white);
+  color:var(--nku-black);
+  border:2px solid var(--nku-black);
+  font-weight:850;
+}
+html[data-design="nku"] .choice{
+  background:var(--nku-white);
+  color:var(--nku-black);
+  border:2px solid #757575;
+}
+html[data-design="nku"] .choice:hover,
+html[data-design="nku"] .choice:focus-visible,
+html[data-design="nku"] .choice.selected{
+  border-color:var(--nku-black);
+  background:#FFF6D8;
+}
+html[data-design="nku"] .fact-card{
+  background:#FFF8E3;
+  border:2px solid #A98200;
+}
+html[data-design="nku"] .recognized-chip{
+  background:#FFF2BD;
+  color:var(--nku-black);
+  border:1px solid #B38A00;
+}
+html[data-design="nku"] .next-stop-card{
+  background:var(--nku-black);
+  color:var(--nku-white);
+  border:4px solid var(--nku-gold);
+}
+html[data-design="nku"] .next-stop-card .connection-label{
+  color:var(--nku-gold);
+}
+html[data-design="nku"] .next-stop-card p{
+  color:#F0F0F0;
+}
+html[data-design="nku"] .next-number{
+  background:var(--nku-gold);
+  color:var(--nku-black);
+}
+html[data-design="nku"] .test-mode-note{
+  background:#FFF4CC;
+  border:2px solid #8A6800;
+  color:var(--nku-black);
+}
+html[data-design="nku"] .scan-state{
+  background:var(--nku-white);
+  color:var(--nku-black);
+  border:2px solid var(--nku-black);
+}
+html[data-design="nku"] .status-recognized{
+  background:#E5F4E9;
+  color:#174C2A;
+  border-color:#2D7D46;
+}
+html[data-design="nku"] .status-unavailable{
+  background:#FFF1E5;
+  color:#6A3000;
+  border-color:#A14800;
+}
+html[data-design="nku"] .feedback-details{
+  border-color:#777;
+}
+html[data-design="nku"] button:focus-visible,
+html[data-design="nku"] summary:focus-visible,
+html[data-design="nku"] a:focus-visible{
+  outline:4px solid var(--nku-focus);
+  outline-offset:4px;
+}
+.nku-affiliation{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:12px;
+  font-size:.76rem;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:#3B3B3B;
+}
+.nku-affiliation::before{
+  content:"NKU";
+  display:grid;
+  place-items:center;
+  min-width:48px;
+  height:28px;
+  padding:0 8px;
+  background:var(--nku-gold);
+  color:var(--nku-black);
+  border:2px solid var(--nku-black);
+  font-family:var(--font-display);
+  font-size:.82rem;
+}
+@media(max-width:700px){
+  html[data-design="nku"] .brand div span:last-child{display:block!important}
+  .nku-affiliation{font-size:.68rem}
+}
