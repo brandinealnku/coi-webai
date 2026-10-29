@@ -383,3 +383,39 @@ html[data-design="nku"] .choice.selected b,
 html[data-design="nku"] .choice.selected span{
   color:var(--nku-black)!important;
 }
+
+
+/* === Finale actions === */
+html[data-design="nku"] .mission-complete{
+  background:#FFF8E3;
+  border:2px solid #A98200;
+  color:var(--nku-black);
+}
+html[data-design="nku"] .mission-complete,
+html[data-design="nku"] .mission-complete strong,
+html[data-design="nku"] .mission-complete p,
+html[data-design="nku"] .mission-complete .connection-label{
+  color:var(--nku-black)!important;
+}
+.finale-actions{
+  display:grid;
+  grid-template-columns:1.35fr 1fr;
+  gap:10px;
+  margin-top:18px;
+}
+.finale-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  min-height:56px;
+  border-radius:16px;
+}
+.finale-close-note{
+  margin-top:14px!important;
+  font-size:.85rem;
+  color:#555!important;
+}
+@media(max-width:520px){
+  .finale-actions{grid-template-columns:1fr}
+}
