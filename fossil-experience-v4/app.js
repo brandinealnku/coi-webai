@@ -5,7 +5,8 @@ const TARGETS=['fossil1','fossil2','fossil3'];
 const REQUIRED=[...TARGETS,'other','background'];
 const params=new URLSearchParams(location.search);
 const MODE=params.get('mode')==='test'?'test':'live';
-const DESIGN=params.get('design')==='gold'?'gold':'blue';
+const requestedDesign=params.get('design');
+const DESIGN=(requestedDesign==='blue'||requestedDesign==='gold')?requestedDesign:'nku';
 const RELEASE='ai-day-focused-release-2026-10-29';
 document.documentElement.dataset.design=DESIGN;
 
@@ -270,7 +271,7 @@ $('finishExperience').onclick=()=>{
     $('modePill').textContent='TEST · '+DESIGN.toUpperCase();$('testModeNotice').classList.remove('hidden');event('test-mode-ready');beginExperience();
     return;
   }
-  $('modePill').textContent=DESIGN.toUpperCase();
+  $('modePill').textContent='NKU AI DAY';
   event('model-load-start');
   try{
     await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1});classifier=knnClassifier.create();event('model-library-ready');
