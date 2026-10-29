@@ -21,6 +21,7 @@ function syncJourneySettings(){
   journey.title=$('journeyTitle').value.trim()||'Expand Your World';
   journey.eventLabel=$('eventLabel').value.trim();
   journey.brandLine=$('brandLine').value.trim();
+  journey.theme=$('journeyTheme').value||'nku';
   journey.welcome=journey.welcome||{};
   journey.welcome.headline=$('welcomeHeadline').value.trim();
   journey.welcome.body=$('welcomeBody').value.trim();
@@ -35,6 +36,7 @@ function renderSettings(){
   $('journeyTitle').value=journey.title||'';
   $('eventLabel').value=journey.eventLabel||'';
   $('brandLine').value=journey.brandLine||'';
+  $('journeyTheme').value=journey.theme||'nku';
   $('welcomeHeadline').value=journey.welcome?.headline||'';
   $('welcomeBody').value=journey.welcome?.body||'';
   $('finaleNumber').value=journey.finale?.stopNumber||'';
@@ -178,7 +180,7 @@ $('artifactForm').onsubmit=applyArtifact;
 $('duplicateArtifact').onclick=duplicateArtifact;
 $('deleteArtifact').onclick=()=>selectedId&&removeArtifact(selectedId);
 $('addChoice').onclick=()=>{const a=artifact();if(!a)return;const choices=collectChoices();choices.push({value:'choice-'+(choices.length+1),label:'New choice',detail:''});renderChoices(choices)};
-for(const id of ['journeyTitle','eventLabel','brandLine','welcomeHeadline','welcomeBody','finaleNumber','finaleHeadline','finaleBody','learnMoreLabel','learnMoreUrl']){
+for(const id of ['journeyTitle','eventLabel','brandLine','journeyTheme','welcomeHeadline','welcomeBody','finaleNumber','finaleHeadline','finaleBody','learnMoreLabel','learnMoreUrl']){
   $(id).addEventListener('change',()=>saveDraft('Journey settings saved.'));
 }
 (async()=>{try{await loadPublished();renderSettings();renderList();status(localStorage.getItem(STORAGE_KEY)?'Local draft loaded. Preview reflects this draft when opened from the builder.':'Published journey loaded.')}catch(e){status(e.message)}})();
