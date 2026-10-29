@@ -9,6 +9,7 @@ const requestedDesign=params.get('design');
 const DESIGN=(requestedDesign==='blue'||requestedDesign==='gold')?requestedDesign:'nku';
 const RELEASE='ai-day-focused-release-2026-10-29';
 document.documentElement.dataset.design=DESIGN;
+document.documentElement.dataset.mode=MODE;
 
 let model=null,classifier=null,stream=null,raf=null,lastInfer=0,stable=0,stableLabel='',current=null,ready=false;
 let journeyId=uid(),visited=new Set(),session=null,cameraGeneration=0;
@@ -149,9 +150,14 @@ function completeManual(label,reason='camera'){
   stopCamera();applySpecimenContent(label);show('observe');
 }
 function openManualSelection(reason='camera'){
-  setScanState('unavailable','Camera unavailable');
-  $('scanPanelTitle').textContent=MODE==='test'?'Simulate recognition':'Choose the table label';
-  $('scanPanelText').textContent=MODE==='test'?'TEST replaces recognition only.':'This is a manual fallback, not a successful recognition.';
+  if(MODE==='test'){
+    $('scanPanelTitle').textContent='Choose a stop';
+    $('scanPanelText').textContent='Simulate recognition for this AI Day route stop.';
+  }else{
+    setScanState('unavailable','Camera unavailable');
+    $('scanPanelTitle').textContent='Choose the table label';
+    $('scanPanelText').textContent='Recognition is being skipped. Choose the label beside the object.';
+  }
   TARGETS.forEach((label,i)=>{const el=$('scanChoice'+(i+1));if(el)el.textContent=specimenConfig(label).tableLabel||specimenName(label)});
   $('testScanPanel').classList.remove('hidden');$('scanState').classList.add('hidden');
   event('manual-fallback-shown',{reason});
