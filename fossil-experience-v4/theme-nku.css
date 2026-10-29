@@ -222,3 +222,90 @@ html[data-design="nku"] a:focus-visible{
   html[data-design="nku"] .brand div span:last-child{display:block!important}
   .nku-affiliation{font-size:.68rem}
 }
+
+
+/* === Tuesday release fixes from visual QA === */
+
+/* Dark task screens need explicit light text; card screens remain black-on-white. */
+html[data-design="nku"][data-screen="camera"] .step-copy h2{
+  color:var(--nku-white);
+}
+html[data-design="nku"][data-screen="camera"] .step-copy p{
+  color:#E6E6E6;
+}
+html[data-design="nku"][data-screen="camera"] .step-copy .eyebrow{
+  color:var(--nku-gold);
+}
+
+/* TEST simulation should look intentional, not like a broken camera state. */
+html[data-design="nku"] .test-scan-panel{
+  background:var(--nku-white);
+  color:var(--nku-black);
+  border:3px solid var(--nku-gold);
+}
+html[data-design="nku"] .test-scan-panel strong{
+  color:var(--nku-black);
+}
+html[data-design="nku"] .test-scan-panel>span{
+  color:#333;
+}
+html[data-design="nku"] .test-scan-panel .secondary{
+  background:var(--nku-gold);
+  color:var(--nku-black);
+  border:2px solid var(--nku-black);
+}
+html[data-design="nku"] .test-scan-panel .secondary:hover,
+html[data-design="nku"] .test-scan-panel .secondary:focus-visible{
+  background:#FFD65C;
+}
+
+/* Hidden must win over scan-state's display rule. */
+.scan-state.hidden{
+  display:none!important;
+}
+
+/* TEST has its own recognition picker, so don't show redundant camera fallback control. */
+html[data-mode="test"][data-screen="camera"] #scanHelp{
+  display:none;
+}
+html[data-mode="test"][data-screen="camera"] .camera-actions{
+  grid-template-columns:1fr;
+}
+html[data-mode="test"][data-screen="camera"] #restart{
+  max-width:360px;
+  margin:0 auto;
+}
+
+/* Welcome TEST notice: preserve contrast on pale NKU gold tint. */
+html[data-design="nku"] .test-mode-note strong{
+  color:#5A4300;
+}
+html[data-design="nku"] .test-mode-note span{
+  color:var(--nku-black);
+}
+
+/* Camera stage should read as a functional scan surface. */
+html[data-design="nku"] .stage{
+  background:#020202;
+  border:2px solid #3B3B3B;
+}
+html[data-design="nku"] .focus-frame{
+  border-color:rgba(255,199,44,.68);
+}
+html[data-design="nku"] .scan-line{
+  background:linear-gradient(90deg,transparent,var(--nku-gold),transparent);
+}
+
+/* On smaller phones, keep the task above the fold without shrinking controls. */
+@media(max-width:700px){
+  html[data-design="nku"][data-screen="camera"] .step-copy{
+    margin-bottom:10px;
+  }
+  html[data-design="nku"][data-screen="camera"] .step-copy h2{
+    font-size:clamp(1.75rem,8vw,2.25rem);
+    line-height:1.02;
+  }
+  html[data-design="nku"] .test-scan-panel{
+    padding:16px;
+  }
+}
