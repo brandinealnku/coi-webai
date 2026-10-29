@@ -60,7 +60,7 @@ function initializeJourney(j){
   renderFinaleCopy();
 }
 function renderRoute(){
-  const root=$('routeList');root.innerHTML='';
+  const root=$('routeList');root.innerHTML='';root.style.setProperty('--route-count',String(Math.max(2,ARTIFACTS.length+1)));
   for(const a of ARTIFACTS){
     const li=document.createElement('li');li.dataset.routeStop=a.id;
     li.innerHTML='<span>'+esc(a.stopNumber||'•')+'</span><small>'+esc(a.shortLabel||a.name||a.id)+'</small>';root.appendChild(li);
