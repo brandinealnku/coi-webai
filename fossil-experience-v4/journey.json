@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "id": "nku-ai-day-2026",
+  "title": "Expand Your World",
+  "eventLabel": "NKU AI DAY",
+  "theme": "nku",
+  "brandLine": "CMC × NKU AI Native Studio",
+  "welcome": {
+    "eyebrow": "NKU AI DAY · EXPAND YOUR WORLD",
+    "headline": "Look closer.",
+    "body": "Scan an object. Notice one clue. Follow where it leads.",
+    "startButton": "Start exploring"
+  },
+  "privacy": {
+    "summary": "Camera & privacy",
+    "body": "Images stay on your device. Anonymous interaction data and optional feedback are recorded."
+  },
+  "artifacts": [
+    {
+      "id": "stop-1",
+      "stopNumber": "1",
+      "shortLabel": "City Fossil",
+      "name": "City Fossil Story",
+      "tableLabel": "Stop 1 · City Fossil Story",
+      "recognitionClass": "fossil1",
+      "physicalObjectName": "AI Day object 1",
+      "scenarioLabel": "Cincinnati city fossil",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "Look at the museum image.",
+      "notice": {
+        "question": "Which feature would you look for to spot a starfish relative?",
+        "choices": [
+          {"value":"five-part","label":"A five-part pattern","detail":""},
+          {"value":"round","label":"A round body","detail":""},
+          {"value":"unsure","label":"Not sure","detail":""}
+        ]
+      },
+      "discover": {
+        "title": "An ancient relative of starfish.",
+        "text": "This animal was related to starfish and lived in Cincinnati’s ancient sea.",
+        "uncertainty": "",
+        "source": "CMC Stop 1 · Cincinnati City Fossil · Catalog IP87827"
+      },
+      "next": {
+        "artifactId": "stop-4",
+        "label": "Stop 4 · Molting Mystery",
+        "direction": "Find the table label: STOP 4 · MOLTING MYSTERY."
+      }
+    },
+    {
+      "id": "stop-4",
+      "stopNumber": "4",
+      "shortLabel": "Molting",
+      "name": "Molting Mystery",
+      "tableLabel": "Stop 4 · Molting Mystery",
+      "recognitionClass": "fossil2",
+      "physicalObjectName": "AI Day object 2",
+      "scenarioLabel": "Outgrowing a Skeleton",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "Look at the museum image.",
+      "notice": {
+        "question": "Why might a slab contain so many “headless” trilobite bodies?",
+        "choices": [
+          {"value":"predator","label":"A predator","detail":""},
+          {"value":"molts","label":"Shedding their shells","detail":""},
+          {"value":"unsure","label":"Not sure","detail":""}
+        ]
+      },
+      "discover": {
+        "title": "They weren’t headless bodies after all.",
+        "text": "Trilobites grew by molting—crawling out of an old outer skeleton.",
+        "uncertainty": "While soft, they were vulnerable.",
+        "source": "CMC Stop 4 · Catalogs IP52930 and IP87975"
+      },
+      "next": {
+        "artifactId": "stop-5",
+        "label": "Stop 5 · Mystery Donut",
+        "direction": "Find the table label: STOP 5 · MYSTERY DONUT."
+      }
+    },
+    {
+      "id": "stop-5",
+      "stopNumber": "5",
+      "shortLabel": "Donut",
+      "name": "Mystery Donut",
+      "tableLabel": "Stop 5 · Mystery Donut",
+      "recognitionClass": "fossil3",
+      "physicalObjectName": "AI Day object 3",
+      "scenarioLabel": "Ordovician donut",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "Look at the museum image.",
+      "notice": {
+        "question": "How do you think this hole formed?",
+        "choices": [
+          {"value":"shell","label":"Around another shell","detail":""},
+          {"value":"growth","label":"It grew that way","detail":""},
+          {"value":"unsure","label":"Not sure","detail":""}
+        ]
+      },
+      "discover": {
+        "title": "The mystery is real.",
+        "text": "This colony probably grew around a shell—but the shell left no trace.",
+        "uncertainty": "Scientists still don’t know exactly what happened.",
+        "source": "CMC Stop 5 · Ordovician Donut · Catalog IP56360"
+      },
+      "next": {
+        "artifactId": "finale",
+        "label": "Stop 6 · Finale",
+        "direction": "Continue to the STOP 6 · FINALE card."
+      }
+    }
+  ],
+  "finale": {
+    "stopNumber": "6",
+    "shortLabel": "Finale",
+    "title": "Journey complete",
+    "headline": "Thanks for exploring.",
+    "body": "You made it to the end of the AI Day experience.",
+    "learnMoreLabel": "Learn about the project",
+    "learnMoreUrl": "project.html",
+    "restartLabel": "Start again",
+    "closeNote": "Done for now? You can close this tab."
+  }
+}
