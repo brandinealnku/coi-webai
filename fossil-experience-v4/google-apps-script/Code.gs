@@ -8,7 +8,8 @@ const HEADERS = [
   'Total Time ms','Screen','User Agent',
   'Study Code','Observer Help','Looked Back','Attention','Companion Talk','Outcome','Observer Notes',
   'Recognized Specimen','Probabilities JSON',
-  'Mode','Selected Object','Observed Session ID'
+  'Mode','Selected Object','Observed Session ID',
+  'Design Variant','Release','Journey ID','Recognition Method'
 ];
 
 const TRAINING_HEADERS = [
@@ -42,6 +43,10 @@ function doPost(e) {
     const mode = String(event.mode || 'live').toLowerCase() === 'test' ? 'test' : 'live';
     const selectedObject = event.selectedObject || '';
     const observedSessionId = event.observedSessionId || '';
+    const design = event.design || '';
+    const release = event.release || '';
+    const journeyId = event.journeyId || '';
+    const recognitionMethod = event.recognitionMethod || '';
 
     sheet.appendRow([
       new Date(), payload.eventName || '', sessionId, event.type || '', event.at || '',
@@ -53,7 +58,8 @@ function doPost(e) {
       event.observerHelp ?? '', event.lookedBack ?? '', event.attention ?? '',
       event.companionTalk ?? '', event.outcome ?? '', event.observerNotes ?? '',
       recognizedSpecimen, Object.keys(probs).length ? JSON.stringify(probs) : '',
-      mode, selectedObject, observedSessionId
+      mode, selectedObject, observedSessionId,
+      design, release, journeyId, recognitionMethod
     ]);
 
     return ContentService.createTextOutput('ok');
@@ -134,7 +140,11 @@ function getActiveSessions_(e) {
         startedAt: '',
         lastAt: '',
         completed: false,
-        mode: mode
+        mode: mode,
+        design: String(row[31] || ''),
+        release: String(row[32] || ''),
+        journeyId: String(row[33] || ''),
+        recognitionMethod: String(row[34] || '')
       };
 
       const eventAt = String(row[4] || '');
@@ -145,6 +155,10 @@ function getActiveSessions_(e) {
 
       if (row[29]) s.selectedObject = String(row[29]);
       if (row[26]) s.recognizedSpecimen = String(row[26]);
+      if (row[31]) s.design = String(row[31]);
+      if (row[32]) s.release = String(row[32]);
+      if (row[33]) s.journeyId = String(row[33]);
+      if (row[34]) s.recognitionMethod = String(row[34]);
       if (eventType === 'session-complete') s.completed = true;
 
       sessions[sessionId] = s;
@@ -223,7 +237,7 @@ function setupWorkbook() {
   if (!summary) summary = ss.insertSheet('Summary');
   summary.clear();
 
-  summary.getRange('A1:B22').setValues([
+  summary.getRange('A1:B26').setValues([
     ['AI Day Metric','Value'],
     ['Unique LIVE visitor sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="live")))'],
     ['Completed LIVE sessions','=COUNTIFS(Events!D2:D,"session-complete",Events!AC2:AC,"live")'],
@@ -245,6 +259,10 @@ function setupWorkbook() {
     ['TEST sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="test")))'],
     ['TEST completed sessions','=COUNTIFS(Events!D2:D,"session-complete",Events!AC2:AC,"test")'],
     ['TEST observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!AC2:AC,"test")'],
+    ['BLUE sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!AF2:AF="blue",Events!D2:D<>"observer-note")))'],
+    ['GOLD sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!AF2:AF="gold",Events!D2:D<>"observer-note")))'],
+    ['Model recognitions','=COUNTIFS(Events!D2:D,"scan-success",Events!AI2:AI,"model")'],
+    ['Manual selections','=COUNTIF(Events!D2:D,"manual-selection")'],
     ['Last event','=MAX(Events!A2:A)']
   ]);
 
