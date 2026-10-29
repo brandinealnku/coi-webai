@@ -6,7 +6,7 @@
 .brand div span:last-child{display:block!important;font-size:.68rem;line-height:1.25}
 .route-strip{width:min(100%,930px);margin:0 auto;padding:8px 14px 6px;display:flex;align-items:center;gap:10px}
 .route-label{font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-.route-strip ol{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0;padding:0;flex:1}
+.route-strip ol{list-style:none;display:grid;grid-template-columns:repeat(var(--route-count,4),minmax(48px,1fr));gap:8px;margin:0;padding:0;flex:1;overflow-x:auto;scrollbar-width:thin}
 .route-strip li{display:grid;grid-template-columns:28px 1fr;align-items:center;gap:6px;min-width:0;opacity:.58}
 .route-strip li span{width:28px;height:28px;display:grid;place-items:center;border-radius:999px;border:2px solid currentColor;font-weight:900;font-size:.78rem}
 .route-strip li small{font-size:.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
