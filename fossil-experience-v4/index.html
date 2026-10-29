@@ -2,36 +2,56 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Expand Your World · Cincinnati Museum Center</title>
-<meta name="theme-color" content="#0b0d10">
+<title>Expand Your World · CMC × NKU AI Native Studio</title>
+<meta name="theme-color" content="#08344a">
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="styles.css?v=20261028-lessread1">
-<link rel="stylesheet" href="release.css?v=20261029">
+<link rel="stylesheet" href="styles.css?v=20261029-release">
+<link rel="stylesheet" href="release.css?v=20261029-release2">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
 <main id="experience" class="visitor-shell">
   <header class="topbar">
-    <div class="brand"><span class="brand-dot" aria-hidden="true"></span><div><strong>Expand Your World</strong><span>CMC × NKU AI Native Studio</span></div></div>
+    <div class="brand">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <div><strong>Expand Your World</strong><span>CMC × NKU AI Native Studio</span></div>
+    </div>
     <div class="study-meta"><span id="modePill" class="event-pill">AI DAY</span></div>
   </header>
-  <p id="routeProgress" class="route-progress" aria-live="polite">Route 1 → 4 → 5 → Finale</p>
+
+  <nav class="route-strip" aria-label="Journey progress">
+    <span class="route-label">Journey</span>
+    <ol>
+      <li data-route-stop="fossil1"><span>1</span><small>City Fossil</small></li>
+      <li data-route-stop="fossil2"><span>4</span><small>Molting</small></li>
+      <li data-route-stop="fossil3"><span>5</span><small>Donut</small></li>
+      <li data-route-stop="finale"><span>6</span><small>Finale</small></li>
+    </ol>
+  </nav>
+  <p id="routeProgress" class="sr-only" aria-live="polite">Route 1 → 4 → 5 → Finale</p>
 
   <section id="loading" class="screen active" aria-live="polite" aria-busy="true">
-    <div class="card centered"><div class="loader" aria-hidden="true"></div><h1>Getting ready…</h1><p id="loadingMsg">Loading the object-recognition model.</p><button id="loadingFallback" class="secondary">Continue without recognition</button></div>
+    <div class="card centered">
+      <div class="loader" aria-hidden="true"></div>
+      <h1>Getting ready…</h1>
+      <p id="loadingMsg">Loading object recognition.</p>
+      <button id="loadingFallback" class="secondary">Continue without recognition</button>
+    </div>
   </section>
 
-  <section id="welcome" class="screen" aria-hidden="true">
-    <div class="card hero">
+  <section id="welcome" class="screen welcome-ocean" aria-hidden="true">
+    <div class="ocean-art" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="card hero welcome-panel">
       <span class="eyebrow">EXPAND YOUR WORLD</span>
       <h1>Look closer.</h1>
-      <p class="lede">Scan a table object. Explore a museum story. Choose your next stop.</p>
-      <div id="testModeNotice" class="test-mode-note hidden"><strong>TEST MODE</strong><span>Recognition is simulated. The museum interaction is otherwise the same.</span></div>
+      <p class="lede">Scan an object. Notice one clue. Follow where it leads.</p>
+      <div id="testModeNotice" class="test-mode-note hidden"><strong>TEST MODE</strong><span>Only recognition is simulated.</span></div>
       <details class="privacy-details">
         <summary>Camera & privacy</summary>
-        <p>Images stay on your device and are not uploaded. We anonymously record interaction timing and your two responses. You can continue without the camera.</p><p id="studyCode" class="privacy-code">Study code —</p>
+        <p>Images stay on your device. Anonymous interaction data and optional feedback are recorded.</p>
+        <p id="studyCode" class="privacy-code">Study code —</p>
       </details>
       <button id="startExperience" class="primary xl">Start exploring</button>
     </div>
@@ -41,8 +61,8 @@
     <div class="camera-wrap">
       <div class="step-copy">
         <span class="eyebrow">1 · SCAN</span>
-        <h2>Point your camera at the object.</h2>
-        <p id="guidance">Move close enough for the object to fill most of the frame.</p>
+        <h2>Point at the table object.</h2>
+        <p id="guidance">Move close enough for it to fill most of the frame.</p>
         <p id="cameraStatus" class="sr-only" role="status" aria-live="polite"></p>
       </div>
       <div class="stage">
@@ -50,21 +70,20 @@
         <canvas id="overlay" aria-hidden="true"></canvas>
         <div class="focus-frame" aria-hidden="true"></div>
         <div class="scan-line" aria-hidden="true"></div>
-        <div id="scanState" class="scan-state" role="status" aria-live="polite">Looking…</div>
-
+        <div id="scanState" class="scan-state status-looking" role="status" aria-live="polite"><span aria-hidden="true">◌</span> Looking</div>
         <div id="testScanPanel" class="test-scan-panel hidden">
-          <strong id="scanPanelTitle">Choose what the test should recognize</strong>
-          <span id="scanPanelText">This replaces camera recognition only. Everything after this matches the MVP flow.</span>
+          <strong id="scanPanelTitle">Simulate recognition</strong>
+          <span id="scanPanelText">Choose the table object. Everything after recognition is identical to LIVE.</span>
           <div class="test-object-grid" role="group" aria-label="Simulated recognition object">
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil1"><span id="scanChoice1">City fossil</span></button>
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil2"><span id="scanChoice2">Predator trace</span></button>
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil3"><span id="scanChoice3">Mystery donut</span></button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil1"><span id="scanChoice1">Stop 1 proxy</span></button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil2"><span id="scanChoice2">Stop 4 proxy</span></button>
+            <button type="button" class="secondary test-object-choice" data-test-object="fossil3"><span id="scanChoice3">Stop 5 proxy</span></button>
           </div>
         </div>
       </div>
       <div class="camera-actions">
         <button id="restart" class="secondary">Start over</button>
-        <button id="scanHelp" class="quiet-link">Camera not available? Continue without it</button>
+        <button id="scanHelp" class="quiet-link">Camera unavailable? Choose manually</button>
       </div>
     </div>
   </section>
@@ -72,8 +91,15 @@
   <section id="observe" class="screen" aria-hidden="true">
     <div class="card">
       <span class="eyebrow">2 · NOTICE</span>
-      <div class="recognized-chip"><span id="recognitionKind">Found:</span> <strong id="recognizedName">Object</strong></div>
+      <div class="recognized-chip"><span id="recognitionKind">Recognized:</span> <strong id="recognizedName">Object</strong></div>
       <p id="scenarioContext" class="scenario-context"></p>
+
+      <figure id="referenceFigure" class="reference-figure hidden">
+        <img id="referenceImage" alt="">
+        <figcaption id="referenceCaption">Look at the museum image.</figcaption>
+      </figure>
+
+      <p id="promptCue" class="prompt-cue hidden">Look at the museum image.</p>
       <h2 id="noticeQuestion">What do you notice?</h2>
       <div class="choice-grid three" id="noticeChoices">
         <button class="choice" data-observe="choice1"><b id="noticeChoice1Label">Choice 1</b><span id="noticeChoice1Detail"></span></button>
@@ -84,50 +110,68 @@
   </section>
 
   <section id="discover" class="screen" aria-hidden="true">
-    <div class="card">
+    <div class="card reveal-card">
       <span class="eyebrow">3 · DISCOVER</span>
       <div id="fossilFact" class="fact-card hidden">
         <strong id="fossilFactTitle"></strong>
         <p id="fossilFactText"></p>
         <p id="uncertaintyText" class="uncertainty hidden"></p>
         <details id="collectionDetails" class="collection-details">
-          <summary>More about this object</summary>
+          <summary>More</summary>
           <small id="sourceText" class="source-line"></small>
         </details>
       </div>
-      <div id="curatorNote" class="curator-note hidden"><strong>Story coming soon</strong><span>This object’s interpretive content is still being reviewed.</span></div>
+      <div id="curatorNote" class="curator-note hidden"><strong>Story coming soon</strong><span>This content is still being reviewed.</span></div>
       <button id="toConnection" class="primary xl">Where does this lead?</button>
     </div>
   </section>
 
   <section id="connection" class="screen" aria-hidden="true">
-    <div class="card">
-      <span class="eyebrow">4 · GO</span>
-      <h2 id="connectionHeading">Notice something new?</h2>
-      <div id="missionComplete" class="mission-complete hidden" role="status" aria-live="polite">
-        <span id="completionLabel" class="connection-label">NEXT STOP</span>
-        <strong id="missionCompleteText">You’ve completed this object.</strong>
-        <p id="missionCompleteSubtext">What next?</p>
-        <div class="completion-actions">
-          <button id="tryAnother" type="button" class="primary">Continue to next stop</button>
-          <button id="finishExperience" type="button" class="secondary">I’m finished</button>
+    <div class="card next-card-wrap">
+      <span class="eyebrow">4 · NEXT STOP</span>
+
+      <section id="nextStopCard" class="next-stop-card">
+        <span class="next-number" id="nextStopNumber">4</span>
+        <div>
+          <span class="connection-label">GO TO</span>
+          <strong id="nextStopName">Stop 4 · Molting Mystery</strong>
+          <p id="missionPrompt">Find the matching table label.</p>
         </div>
+      </section>
+
+      <div class="next-actions">
+        <button id="tryAnother" type="button" class="primary">Continue</button>
+        <button id="finishExperience" type="button" class="secondary">Finish</button>
       </div>
-      <details id="optionalFeedback" class="collection-details">
-        <summary id="feedbackSummary">Optional: notice something new?</summary>
+
+      <details id="optionalFeedback" class="feedback-details">
+        <summary id="feedbackSummary">Optional feedback</summary>
+        <p>Notice something new?</p>
         <div id="noticeFeedback" class="choice-grid three compact">
           <button class="choice" data-noticed="yes" aria-pressed="false"><b>Yes</b></button>
           <button class="choice" data-noticed="maybe" aria-pressed="false"><b>Maybe</b></button>
           <button class="choice" data-noticed="no" aria-pressed="false"><b>No</b></button>
         </div>
       </details>
+
+      <div id="missionComplete" class="mission-complete hidden" role="status" aria-live="polite">
+        <span id="completionLabel" class="connection-label">DONE</span>
+        <strong id="missionCompleteText">Thanks for exploring.</strong>
+        <p id="missionCompleteSubtext">You can close this tab or start again.</p>
+      </div>
     </div>
   </section>
 
   <section id="notReady" class="screen" aria-hidden="true">
-    <div class="card centered"><span class="eyebrow">SETUP NEEDED</span><h2>Explore without recognition.</h2><p class="lede">Camera recognition is unavailable. Choose the label beside your table object to explore its museum story.</p><button id="manualStart" class="primary">Choose a stop</button></div>
+    <div class="card centered">
+      <span class="eyebrow">RECOGNITION UNAVAILABLE</span>
+      <h2>Keep exploring.</h2>
+      <p class="lede">Choose the label beside your table object.</p>
+      <button id="manualStart" class="primary">Choose manually</button>
+    </div>
   </section>
 </main>
-<script src="config.js?v=20261029"></script>
-<script src="app.js?v=20261029"></script>
-</body></html>
+<script src="config.js?v=20261029-release2"></script>
+<script src="app.js?v=20261029-release2"></script>
+</body>
+</html>
