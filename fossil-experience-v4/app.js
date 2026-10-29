@@ -22,6 +22,7 @@ function routeNumber(label){return ({fossil1:'1',fossil2:'4',fossil3:'5',finale:
 function nextRouteLabel(label){return ({fossil1:'fossil2',fossil2:'fossil3',fossil3:'finale'})[label]||null}
 
 function show(id){
+  document.documentElement.dataset.screen=id;
   SCREENS.forEach(s=>{const el=$(s),on=s===id;el.classList.toggle('active',on);el.setAttribute('aria-hidden',on?'false':'true')});
   const target=$(id),heading=target?.querySelector('h1,h2');
   if(heading){heading.setAttribute('tabindex','-1');requestAnimationFrame(()=>heading.focus({preventScroll:true}))}
@@ -85,7 +86,9 @@ function cropFrame(){
 function activation(){const frame=cropFrame();return frame?model.infer(frame,true):null}
 function setScanState(kind,text){
   $('scanState').className='scan-state status-'+kind;
-  $('scanState').innerHTML='<span aria-hidden="true">'+(kind==='recognized'?'✓':kind==='unavailable'?'!':'◌')+'</span> '+text;
+  const icon=kind==='recognized'?'✓':kind==='unavailable'?'!':kind==='holding'?'◉':'◌';
+  $('scanState').innerHTML='<span aria-hidden="true">'+icon+'</span> '+text;
+  $('cameraStatus').textContent=text;
 }
 async function startCamera(){
   if(!ready){openManualSelection('model');return}
@@ -121,7 +124,7 @@ function renderPrediction(){
   const label=current.label,conf=current.confidence||0,positive=isTarget(label)&&conf>=.78;
   if(positive){
     stable=stableLabel===label?stable+1:1;stableLabel=label;
-    setScanState(stable>=3?'recognized':'looking',stable>=3?'Recognized':'Hold steady');
+    setScanState(stable>=3?'recognized':'holding',stable>=3?'Recognized':'Hold steady');
     $('guidance').textContent='Keep the object centered.';
   }else{
     stable=0;stableLabel='';setScanState('looking','Looking');
