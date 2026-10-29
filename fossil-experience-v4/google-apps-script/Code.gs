@@ -259,8 +259,8 @@ function setupWorkbook() {
     ['TEST sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!C2:C<>"",Events!D2:D<>"observer-note",Events!AC2:AC="test")))'],
     ['TEST completed sessions','=COUNTIFS(Events!D2:D,"session-complete",Events!AC2:AC,"test")'],
     ['TEST observer records','=COUNTIFS(Events!D2:D,"observer-note",Events!AC2:AC,"test")'],
-    ['BLUE sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!AF2:AF="blue",Events!D2:D<>"observer-note")))'],
-    ['GOLD sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!AF2:AF="gold",Events!D2:D<>"observer-note")))'],
+    ['NKU-theme sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!AF2:AF="nku",Events!D2:D<>"observer-note")))'],
+    ['Non-NKU theme sessions','=COUNTA(UNIQUE(FILTER(Events!C2:C,Events!AF2:AF<>"nku",Events!AF2:AF<>"",Events!D2:D<>"observer-note")))'],
     ['Model recognitions','=COUNTIFS(Events!D2:D,"scan-success",Events!AI2:AI,"model")'],
     ['Manual selections','=COUNTIF(Events!D2:D,"manual-selection")'],
     ['Last event','=MAX(Events!A2:A)']
