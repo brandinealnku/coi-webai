@@ -1,8 +1,10 @@
 const CFG=window.CMC_V4_CONFIG||{},ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim(),$=id=>document.getElementById(id);
 const MODE=new URLSearchParams(location.search).get('mode')==='test'?'test':'live';
+let JOURNEY=null,ARTIFACTS=[];
 const state={help:'',lookback:'',attention:'',companion:'',outcome:'',sessionId:'',studyCode:'',selectedObject:'',startedAt:'',design:'',journeyId:'',recognitionMethod:''};
 function uid(){return crypto.randomUUID?crypto.randomUUID():'obs-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
-function objectName(label){return CFG.SPECIMENS?.[label]?.name||({fossil1:'Object 1',fossil2:'Object 2',fossil3:'Object 3'}[label]||label)}
+function objectName(label){const a=ARTIFACTS.find(x=>x.id===label);return a?('Stop '+a.stopNumber+' · '+(a.name||a.id)):label}
+async function loadJourney(){try{const r=await fetch('journey.json?v='+Date.now(),{cache:'no-store'});if(r.ok){JOURNEY=await r.json();ARTIFACTS=JOURNEY.artifacts||[]}}catch{}}
 function pick(attr,key){
  document.querySelectorAll('['+attr+']').forEach(b=>b.onclick=()=>{
   state[key]=b.getAttribute(attr);
@@ -39,7 +41,8 @@ async function loadActive(){
   const sessions=(data?.sessions||[]).filter(s=>s.selectedObject);
   if(!sessions.length){root.innerHTML='<p class="note">No recent active visitors found yet. Ask the visitor to choose an object in the Visitor Experience, then refresh.</p>';return}
   root.innerHTML='';
-  ['fossil1','fossil2','fossil3'].forEach(objectId=>{
+  const ids=[...new Set(sessions.map(s=>s.selectedObject).filter(Boolean))];
+  ids.forEach(objectId=>{
    const group=sessions.filter(s=>s.selectedObject===objectId);
    if(!group.length)return;
    const section=document.createElement('section');section.className='active-object-group';
@@ -76,4 +79,4 @@ $('submit').onclick=()=>{
  }catch(e){$('status').textContent='Could not submit. Check the network and try again.'}
 };
 if(MODE==='test')$('modeNotice').classList.remove('hidden');
-validate();loadActive();setInterval(loadActive,10000);
+(async()=>{await loadJourney();validate();loadActive();setInterval(loadActive,10000)})();
