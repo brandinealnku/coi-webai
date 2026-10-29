@@ -7,9 +7,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="styles.css?v=20261029-finale1">
-<link rel="stylesheet" href="release.css?v=20261029-finale1">
-<link rel="stylesheet" href="theme-nku.css?v=20261029-finale1">
+<link rel="stylesheet" href="styles.css?v=20261029-framework1">
+<link rel="stylesheet" href="release.css?v=20261029-framework1">
+<link rel="stylesheet" href="theme-nku.css?v=20261029-framework1">
 </head>
 <body>
 <a class="skip-link" href="#experience">Skip to experience</a>
@@ -24,12 +24,7 @@
 
   <nav class="route-strip" aria-label="Journey progress">
     <span class="route-label">Journey</span>
-    <ol>
-      <li data-route-stop="fossil1"><span>1</span><small>City Fossil</small></li>
-      <li data-route-stop="fossil2"><span>4</span><small>Molting</small></li>
-      <li data-route-stop="fossil3"><span>5</span><small>Donut</small></li>
-      <li data-route-stop="finale"><span>6</span><small>Finale</small></li>
-    </ol>
+    <ol id="routeList"></ol>
   </nav>
   <p id="routeProgress" class="sr-only" aria-live="polite">Route 1 → 4 → 5 → Finale</p>
 
@@ -75,11 +70,7 @@
         <div id="testScanPanel" class="test-scan-panel hidden">
           <strong id="scanPanelTitle">Simulate recognition</strong>
           <span id="scanPanelText">Choose the table object. Everything after recognition is identical to LIVE.</span>
-          <div class="test-object-grid" role="group" aria-label="Simulated recognition object">
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil1"><span id="scanChoice1">Stop 1 proxy</span></button>
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil2"><span id="scanChoice2">Stop 4 proxy</span></button>
-            <button type="button" class="secondary test-object-choice" data-test-object="fossil3"><span id="scanChoice3">Stop 5 proxy</span></button>
-          </div>
+          <div id="testObjectGrid" class="test-object-grid" role="group" aria-label="Available journey artifacts"></div>
         </div>
       </div>
       <div class="camera-actions">
@@ -102,11 +93,7 @@
 
       <p id="promptCue" class="prompt-cue hidden">Look at the museum image.</p>
       <h2 id="noticeQuestion">What do you notice?</h2>
-      <div class="choice-grid three" id="noticeChoices">
-        <button class="choice" data-observe="choice1"><b id="noticeChoice1Label">Choice 1</b><span id="noticeChoice1Detail"></span></button>
-        <button class="choice" data-observe="choice2"><b id="noticeChoice2Label">Choice 2</b><span id="noticeChoice2Detail"></span></button>
-        <button class="choice" data-observe="choice3"><b id="noticeChoice3Label">Choice 3</b><span id="noticeChoice3Detail"></span></button>
-      </div>
+      <div class="choice-grid three" id="noticeChoices"></div>
     </div>
   </section>
 
@@ -177,7 +164,7 @@
     </div>
   </section>
 </main>
-<script src="config.js?v=20261029-finale1"></script>
-<script src="app.js?v=20261029-finale1"></script>
+<script src="config.js?v=20261029-framework1"></script>
+<script src="app.js?v=20261029-framework1"></script>
 </body>
 </html>
