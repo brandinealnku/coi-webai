@@ -309,3 +309,77 @@ html[data-design="nku"] .scan-line{
     padding:16px;
   }
 }
+
+
+/* === Contrast lock: light NKU surfaces always use dark readable text === */
+
+/* Recognition chip: legacy styles set the nested strong text to white. */
+html[data-design="nku"] .recognized-chip,
+html[data-design="nku"] .recognized-chip span,
+html[data-design="nku"] .recognized-chip strong{
+  color:var(--nku-black)!important;
+}
+
+/* TEST / manual recognition panel: buttons and nested labels must remain dark. */
+html[data-design="nku"] .test-scan-panel,
+html[data-design="nku"] .test-scan-panel strong,
+html[data-design="nku"] .test-scan-panel>span,
+html[data-design="nku"] .test-scan-panel button,
+html[data-design="nku"] .test-scan-panel button span{
+  color:var(--nku-black)!important;
+}
+
+/* Pale cards and disclosures: override legacy dark-theme child colors. */
+html[data-design="nku"] .fact-card,
+html[data-design="nku"] .fact-card strong,
+html[data-design="nku"] .fact-card p,
+html[data-design="nku"] .fact-card span,
+html[data-design="nku"] .fact-card small,
+html[data-design="nku"] .fact-card summary,
+html[data-design="nku"] .fact-card .uncertainty,
+html[data-design="nku"] .fact-card .source-line{
+  color:var(--nku-black)!important;
+}
+html[data-design="nku"] .fact-card .uncertainty{
+  background:#FFF2BD;
+  border-left-color:#8A6800;
+}
+
+/* Welcome card disclosures inherit white from the original dark theme. */
+html[data-design="nku"] .welcome-panel .privacy-details,
+html[data-design="nku"] .welcome-panel .privacy-details summary,
+html[data-design="nku"] .welcome-panel .privacy-details p,
+html[data-design="nku"] .welcome-panel .privacy-code{
+  color:var(--nku-black)!important;
+}
+html[data-design="nku"] .welcome-panel .privacy-details{
+  border-color:#B8B8B8;
+}
+
+/* Optional feedback sits on a white card. */
+html[data-design="nku"] .feedback-details,
+html[data-design="nku"] .feedback-details summary,
+html[data-design="nku"] .feedback-details p,
+html[data-design="nku"] .feedback-details .choice,
+html[data-design="nku"] .feedback-details .choice b{
+  color:var(--nku-black)!important;
+}
+
+/* White cards should never inherit white text from the original dark system. */
+html[data-design="nku"] .card .scenario-context,
+html[data-design="nku"] .card .prompt-cue,
+html[data-design="nku"] .card .reference-figure figcaption,
+html[data-design="nku"] .card .collection-details summary,
+html[data-design="nku"] .card .source-line,
+html[data-design="nku"] .card .curator-note,
+html[data-design="nku"] .card .curator-note strong,
+html[data-design="nku"] .card .curator-note span{
+  color:var(--nku-black)!important;
+}
+
+/* Selected choice on gold: black text for guaranteed NKU contrast. */
+html[data-design="nku"] .choice.selected,
+html[data-design="nku"] .choice.selected b,
+html[data-design="nku"] .choice.selected span{
+  color:var(--nku-black)!important;
+}
