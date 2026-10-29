@@ -1,9 +1,19 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Day Table Labels</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Journey Table Labels</title>
 <style>
-body{font-family:"Avenir","Avenir Next",Arial,sans-serif;margin:0;padding:24px;background:#111;color:#000}.sheet{display:grid;gap:22px;max-width:900px;margin:auto}.label{page-break-inside:avoid;background:#fff;border:6px solid #000;border-top:18px solid #FFC72C;border-radius:18px;padding:28px;text-align:center}.label:before{content:"NORTHERN KENTUCKY UNIVERSITY · AI NATIVE STUDIO";display:block;font-family:"Avenir Next Condensed","Avenir Next",Arial,sans-serif;font-weight:900;letter-spacing:.08em;font-size:14px;margin-bottom:14px}.label .stop{font-size:54px;font-weight:900;color:#000}.label h1{font-family:"Avenir Next Condensed","Avenir Next",Arial,sans-serif;font-size:34px;margin:8px 0;text-transform:uppercase}.label p{font-size:18px;margin:8px 0}.proxy{font-weight:700;color:#444}.finale{border-top-color:#FFC72C}.finale .stop{color:#000}@media print{body{background:white;padding:0}.sheet{max-width:none}.label{min-height:3.2in;display:flex;flex-direction:column;justify-content:center}}
-</style></head><body><main class="sheet">
-<section class="label"><div class="stop">STOP 1</div><h1>CITY FOSSIL STORY</h1><p class="proxy">Scan the physical proxy object beside this label.</p></section>
-<section class="label"><div class="stop">STOP 4</div><h1>MOLTING MYSTERY</h1><p class="proxy">Scan the physical proxy object beside this label.</p></section>
-<section class="label"><div class="stop">STOP 5</div><h1>MYSTERY DONUT</h1><p class="proxy">Scan the physical proxy object beside this label.</p></section>
-<section class="label finale"><div class="stop">STOP 6</div><h1>FINALE</h1><p>Life after the Ordovician extinction.</p></section>
-</main></body></html>
+body{font-family:"Avenir","Avenir Next",Arial,sans-serif;margin:0;padding:24px;background:#111;color:#000}.toolbar{max-width:900px;margin:0 auto 20px;display:flex;gap:10px}.toolbar a,.toolbar button{padding:10px 14px;border-radius:10px;border:0;font-weight:800;text-decoration:none;background:#FFC72C;color:#000}.sheet{display:grid;gap:22px;max-width:900px;margin:auto}.label{page-break-inside:avoid;background:#fff;border:6px solid #000;border-top:18px solid #FFC72C;border-radius:18px;padding:28px;text-align:center}.label:before{content:"NORTHERN KENTUCKY UNIVERSITY · AI NATIVE STUDIO";display:block;font-family:"Avenir Next Condensed","Avenir Next",Arial,sans-serif;font-weight:900;letter-spacing:.08em;font-size:14px;margin-bottom:14px}.label .stop{font-size:54px;font-weight:900;color:#000}.label h1{font-family:"Avenir Next Condensed","Avenir Next",Arial,sans-serif;font-size:34px;margin:8px 0;text-transform:uppercase}.label p{font-size:18px;margin:8px 0}.proxy{font-weight:700;color:#444}@media print{body{background:white;padding:0}.toolbar{display:none}.sheet{max-width:none}.label{min-height:3.2in;display:flex;flex-direction:column;justify-content:center}}
+</style></head><body>
+<div class="toolbar"><a href="journey-editor.html">← Journey Builder</a><button onclick="window.print()">Print labels</button></div>
+<main id="labelSheet" class="sheet"><p style="color:white">Loading journey labels…</p></main>
+<script>
+(async()=>{
+  const root=document.getElementById('labelSheet');
+  try{
+    const r=await fetch('journey.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Could not load journey.json');const j=await r.json();root.innerHTML='';
+    for(const a of j.artifacts||[]){
+      const s=document.createElement('section');s.className='label';s.innerHTML='<div class="stop">STOP '+escapeHtml(a.stopNumber||'')+'</div><h1>'+escapeHtml(a.name||a.tableLabel||a.id)+'</h1><p class="proxy">'+escapeHtml(a.physicalObjectName?('Physical object: '+a.physicalObjectName):'Scan or select the object beside this label.')+'</p>';root.appendChild(s)
+    }
+    const f=j.finale||{},s=document.createElement('section');s.className='label';s.innerHTML='<div class="stop">STOP '+escapeHtml(f.stopNumber||'✓')+'</div><h1>'+escapeHtml(f.shortLabel||'FINALE')+'</h1><p>'+escapeHtml(f.body||'Journey complete.')+'</p>';root.appendChild(s);
+  }catch(e){root.innerHTML='<p style="color:white">'+escapeHtml(e.message)+'</p>'}
+})();
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+</script></body></html>
