@@ -8,7 +8,11 @@ body{font-family:"Avenir","Avenir Next",Arial,sans-serif;margin:0;padding:24px;b
 (async()=>{
   const root=document.getElementById('labelSheet');
   try{
-    const r=await fetch('journey.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Could not load journey.json');const j=await r.json();root.innerHTML='';
+    let j=null;
+    const draft=new URLSearchParams(location.search).get('draft')==='1';
+    if(draft){try{j=JSON.parse(localStorage.getItem('expand-your-world-journey-draft-v1')||'null')}catch{}}
+    if(!j){const r=await fetch('journey.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Could not load journey.json');j=await r.json()}
+    root.innerHTML='';
     for(const a of j.artifacts||[]){
       const s=document.createElement('section');s.className='label';s.innerHTML='<div class="stop">STOP '+escapeHtml(a.stopNumber||'')+'</div><h1>'+escapeHtml(a.name||a.tableLabel||a.id)+'</h1><p class="proxy">'+escapeHtml(a.physicalObjectName?('Physical object: '+a.physicalObjectName):'Scan or select the object beside this label.')+'</p>';root.appendChild(s)
     }
