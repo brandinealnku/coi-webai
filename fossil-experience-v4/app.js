@@ -231,6 +231,7 @@ function showFinished(message,subtext){
   $('nextStopCard').classList.add('hidden');$('optionalFeedback').classList.add('hidden');$('tryAnother').classList.add('hidden');
   $('finishExperience').classList.add('hidden');$('missionComplete').classList.remove('hidden');
   $('missionCompleteText').textContent=message;$('missionCompleteSubtext').textContent=subtext;
+  $('completionLabel').textContent='JOURNEY COMPLETE';
 }
 
 $('startExperience').onclick=()=>{
@@ -271,8 +272,10 @@ $('tryAnother').onclick=()=>{
 };
 $('finishExperience').onclick=()=>{
   finishSession('finish');event('experience-finished');
-  showFinished('Thanks for exploring.',MODE==='test'?'Rehearsal complete.':'You can close this tab or keep exploring.');
+  showFinished('Thanks for exploring.','You made it to the end of the AI Day experience.');
 };
+$('startAgainFinale').onclick=()=>{event('finale-start-again');beginNewJourney()};
+$('learnMoreProject').onclick=()=>event('finale-learn-more');
 
 (async()=>{
   newSession();updateRoute();
