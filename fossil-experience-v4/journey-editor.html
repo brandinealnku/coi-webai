@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Journey Builder · Expand Your World</title>
+<link rel="stylesheet" href="admin.css?v=20261029-builder1">
+<style>
+.builder-shell{width:min(1180px,calc(100% - 24px));margin:auto;padding:24px 0 60px}
+.builder-grid{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:22px}
+.builder-list{display:grid;gap:10px}
+.artifact-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:#11151a}
+.artifact-row button{padding:8px 10px}
+.artifact-row .meta{display:grid;gap:3px}.artifact-row small{color:#9ba5af}
+.editor-panel{padding:20px;border:1px solid var(--line);background:var(--panel);border-radius:22px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+label{font-size:.78rem}.editor-panel textarea{min-height:88px}
+.choice-editor{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px}.toolbar a{display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;border-radius:999px;background:#fff;color:#111;font-weight:850;text-decoration:none}
+.danger{background:#7e1f1f!important;color:#fff!important}.status-box{padding:12px 14px;border-left:3px solid var(--gold);background:rgba(242,181,29,.06);margin:12px 0}
+@media(max-width:850px){.builder-grid{grid-template-columns:1fr}.form-grid,.choice-editor{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#builder">Skip to builder</a>
+<main id="builder" class="builder-shell">
+<header>
+  <div><span class="eyebrow">EXPAND YOUR WORLD FRAMEWORK</span><h1>Journey Builder</h1>
+  <p>Add, edit, remove, and reorder artifacts. Visitor text comes from this journey data—not from the app code.</p></div>
+  <nav><a href="index.html?mode=test&draft=1" target="_blank">Preview draft →</a><br><a href="admin.html">Model setup →</a></nav>
+</header>
+<div class="toolbar">
+  <button id="addArtifact">+ Add artifact</button>
+  <button id="saveDraft" class="secondary">Save draft</button>
+  <a id="previewDraft" href="index.html?mode=test&draft=1" target="_blank">Preview draft</a>
+  <button id="exportJourney" class="secondary">Export journey.json</button>
+  <button id="importJourney" class="secondary">Import JSON</button>
+  <input id="importFile" type="file" accept=".json,application/json" hidden>
+  <button id="resetJourney" class="danger">Reset to published</button>
+</div>
+<p id="builderStatus" class="status-box" role="status" aria-live="polite">Loading published journey…</p>
+<div class="builder-grid">
+  <aside>
+    <h2>Journey</h2>
+    <div id="artifactList" class="builder-list"></div>
+    <hr>
+    <h3>Journey settings</h3>
+    <label>Title<input id="journeyTitle"></label>
+    <label>Event label<input id="eventLabel"></label>
+    <label>Brand line<input id="brandLine"></label>
+    <label>Welcome headline<input id="welcomeHeadline"></label>
+    <label>Welcome body<textarea id="welcomeBody"></textarea></label>
+    <h3>Finale</h3>
+    <label>Finale stop number<input id="finaleNumber"></label>
+    <label>Headline<input id="finaleHeadline"></label>
+    <label>Body<textarea id="finaleBody"></textarea></label>
+    <label>Learn-more button<input id="learnMoreLabel"></label>
+    <label>Learn-more URL<input id="learnMoreUrl"></label>
+  </aside>
+  <section class="editor-panel">
+    <div id="emptyEditor"><h2>Select an artifact</h2><p class="note">Choose an artifact on the left or add a new one.</p></div>
+    <form id="artifactForm" class="hidden">
+      <div class="form-grid">
+        <label>Artifact ID<input id="artifactId" required></label>
+        <label>Stop number<input id="stopNumber" required></label>
+        <label>Short route label<input id="shortLabel"></label>
+        <label>Artifact / stop name<input id="artifactName"></label>
+        <label class="full">Physical table label<input id="tableLabel"></label>
+        <label>Recognition class<input id="recognitionClass" placeholder="optional"></label>
+        <label>Physical object name<input id="physicalObjectName"></label>
+        <label class="full">Story / scenario label<input id="scenarioLabel"></label>
+        <label class="full">Reference image URL<input id="referenceImage"></label>
+        <label class="full">Reference image alt text<input id="referenceAlt"></label>
+        <label class="full">Notice question<textarea id="noticeQuestion"></textarea></label>
+      </div>
+      <h3>Notice choices</h3>
+      <div id="choiceEditor" class="choice-editor"></div>
+      <button id="addChoice" type="button" class="secondary">+ Add choice</button>
+      <h3>Discover</h3>
+      <div class="form-grid">
+        <label class="full">Reveal title<input id="discoverTitle"></label>
+        <label class="full">Reveal text<textarea id="discoverText"></textarea></label>
+        <label class="full">Uncertainty / caveat<textarea id="discoverUncertainty"></textarea></label>
+        <label class="full">Source / details<input id="discoverSource"></label>
+      </div>
+      <h3>Next stop</h3>
+      <div class="form-grid">
+        <label>Next artifact<select id="nextArtifact"></select></label>
+        <label>Next card label<input id="nextLabel"></label>
+        <label class="full">Physical direction<textarea id="nextDirection"></textarea></label>
+      </div>
+      <hr>
+      <div class="toolbar">
+        <button id="applyArtifact" type="submit">Apply changes</button>
+        <button id="duplicateArtifact" type="button" class="secondary">Duplicate</button>
+        <button id="deleteArtifact" type="button" class="danger">Remove artifact</button>
+      </div>
+    </form>
+  </section>
+</div>
+</main>
+<script src="journey-editor.js?v=20261029-builder1"></script>
+</body></html>
