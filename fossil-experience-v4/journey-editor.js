@@ -120,6 +120,7 @@ function selectArtifact(id){
   $('recognitionClass').value=a.recognitionClass||'';
   $('physicalObjectName').value=a.physicalObjectName||'';
   $('scenarioLabel').value=a.scenarioLabel||'';
+  $('labInstruction').value=a.labInstruction||'';
   $('referenceImage').value=a.referenceImage||'';
   $('referenceAlt').value=a.referenceAlt||'';
   $('noticeQuestion').value=a.notice?.question||'';
@@ -165,7 +166,7 @@ function applyArtifact(e){
   if(newId!==oldId&&journey.artifacts.some(x=>x.id===newId))return status('Artifact ID must be unique.');
   a.id=newId;a.shortLabel=$('shortLabel').value.trim();a.name=$('artifactName').value.trim();
   a.tableLabel=$('tableLabel').value.trim();a.recognitionClass=$('recognitionClass').value.trim();a.physicalObjectName=$('physicalObjectName').value.trim();
-  a.scenarioLabel=$('scenarioLabel').value.trim();a.referenceImage=$('referenceImage').value.trim();a.referenceAlt=$('referenceAlt').value.trim();
+  a.scenarioLabel=$('scenarioLabel').value.trim();a.labInstruction=$('labInstruction').value.trim();a.referenceImage=$('referenceImage').value.trim();a.referenceAlt=$('referenceAlt').value.trim();
   a.notice={question:$('noticeQuestion').value.trim(),choices:collectChoices()};
   a.discover={title:$('discoverTitle').value.trim(),text:$('discoverText').value.trim(),uncertainty:$('discoverUncertainty').value.trim(),source:$('discoverSource').value.trim()};
   a.next={artifactId:$('nextArtifact').value,label:$('nextLabel').value.trim(),direction:$('nextDirection').value.trim()};
