@@ -1,6 +1,6 @@
 const CFG=window.CMC_V4_CONFIG||{},ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim(),$=id=>document.getElementById(id);
 let journey=null,challenges=[],model=null,stream=null,raf=null,lastInfer=0,targetRows=[],negativeRows=[],targetNorm=[],negativeNorm=[];
-let currentIndex=0,currentDecision=null,currentScores=null,selectedFeature='',reflection={look:'',trust:'',value:''},sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();
+let currentIndex=0,currentDecision=null,currentScores=null,selectedFeature='',stableTargetFrames=0,recognitionTriggered=false,reflection={look:'',trust:'',value:''},sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();
 const video=$('video'),crop=document.createElement('canvas'),ctx=crop.getContext('2d',{willReadFrequently:true});
 
 function send(type,data={}){
@@ -41,7 +41,7 @@ async function startCamera(){
   if(!model){$('analysisStatus').textContent='Loading AI model…';await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1})}
   if(!targetNorm.length){$('analysisStatus').textContent='Loading shared training…';await loadTraining()}
   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
-  video.srcObject=stream;await video.play();currentDecision=null;currentScores=null;$('recordCameraResult').disabled=true;$('decisionText').textContent='Analyzing…';$('analysisStatus').textContent='Camera running. Hold the requested view inside the box.';show('camera');raf=requestAnimationFrame(loop)
+  video.srcObject=stream;await video.play();currentDecision=null;currentScores=null;stableTargetFrames=0;recognitionTriggered=false;$('recognitionFlash').classList.add('hidden');document.querySelector('.stage')?.classList.remove('recognized');$('recordCameraResult').disabled=true;$('decisionText').textContent='Looking for the Target Rock…';$('analysisStatus').textContent='Camera running. Hold the requested view inside the box and slowly change the angle.';$('cameraChallenge').textContent=challenges[currentIndex]?.name||'Live model';show('camera');raf=requestAnimationFrame(loop)
 }
 function stopCamera(){if(raf)cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null}
 function loop(ts){
@@ -57,14 +57,32 @@ function loop(ts){
       $('decisionText').textContent=recognized?'✓ TARGET MATCH':'○ NO TARGET MATCH';
       $('focusBox').className='focus-box '+(recognized?'match':'reject');
       $('focusLabel').textContent=recognized?'TARGET MATCH':'NO TARGET MATCH';
-      $('decisionExplanation').textContent='The model compares the live view with its closest target example and closest rejection example. A high score is not the same thing as certainty.';
+      $('decisionExplanation').textContent='The AI is comparing this live view with the examples used to train the Target Rock and with rejection examples.';
       $('recordCameraResult').disabled=false;
+
+      if(currentIndex===0&&!recognitionTriggered){
+        stableTargetFrames=recognized?stableTargetFrames+1:0;
+        $('analysisStatus').textContent=recognized
+          ? 'Possible match — hold steady… '+Math.min(stableTargetFrames,3)+'/3'
+          : 'Looking for the Target Rock. Keep it centered and slowly change the angle.';
+        if(stableTargetFrames>=3){
+          recognitionTriggered=true;
+          $('recognitionFlashName').textContent=challenges[0]?.name||'Target Rock';
+          $('recognitionFlash').classList.remove('hidden');
+          document.querySelector('.stage')?.classList.add('recognized');
+          $('analysisStatus').textContent='Target Rock recognized.';
+          send('lab-recognition-moment',{challengeIndex:currentIndex,decision:'recognized',probabilities:currentScores||{}});
+          try{if(navigator.vibrate)navigator.vibrate([80,40,120])}catch{}
+          setTimeout(()=>recordResult('recognized'),1100);
+          return;
+        }
+      }
     }
   }catch(e){$('analysisStatus').textContent='Analysis error: '+e.message}
   if(stream)raf=requestAnimationFrame(loop)
 }
 function recordResult(decision=currentDecision){
-  stopCamera();currentDecision=decision||'unavailable';
+  stopCamera();$('recognitionFlash').classList.add('hidden');document.querySelector('.stage')?.classList.remove('recognized');currentDecision=decision||'unavailable';
   const expected=expectedDecision(currentIndex),correct=currentDecision===expected;
   const c=challenges[currentIndex];
   $('resultHeadline').textContent=correct?'The model behaved as expected.':'The model behaved differently than expected.';
@@ -98,7 +116,7 @@ function finish(){
   $('outcomeState').className='result-outcome hidden';
   const f=journey.finale||{};$('completionLabel').textContent=(f.title||'Experiment complete').toUpperCase();$('finaleHeadline').textContent=f.headline||'Experiment complete.';$('finaleBody').textContent=f.body||'';$('learnMore').textContent=f.learnMoreLabel||'Why this matters for CMC';$('learnMore').href=f.learnMoreUrl||'project.html';show('finale')
 }
-function reset(){stopCamera();currentIndex=0;currentDecision=null;currentScores=null;selectedFeature='';reflection={look:'',trust:'',value:''};sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();$('outcomeState').className='result-outcome hidden';renderProgress();show('intro');send('lab-restart')}
+function reset(){stopCamera();currentIndex=0;currentDecision=null;currentScores=null;selectedFeature='';stableTargetFrames=0;recognitionTriggered=false;reflection={look:'',trust:'',value:''};sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();$('recognitionFlash').classList.add('hidden');document.querySelector('.stage')?.classList.remove('recognized');$('outcomeState').className='result-outcome hidden';renderProgress();show('intro');send('lab-restart')}
 $('startLab').onclick=()=>{send('lab-start');renderChallenge()};
 $('beginCamera').onclick=()=>startCamera().catch(e=>{$('analysisStatus').textContent='Camera/model error: '+e.message;show('camera')});
 $('skipCamera').onclick=()=>recordResult('unavailable');
