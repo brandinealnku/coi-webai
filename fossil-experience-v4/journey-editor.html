@@ -25,7 +25,7 @@ label{font-size:.78rem}.editor-panel textarea{min-height:88px}
 <main id="builder" class="builder-shell">
 <header>
   <div><span class="eyebrow">EXPAND YOUR WORLD FRAMEWORK</span><h1>Journey Builder</h1>
-  <p>Add, edit, remove, and reorder artifacts. Visitor text comes from this journey data—not from the app code.</p></div>
+  <p>Add, edit, remove, and reorder artifacts. All visitor-facing text—including the Learn More page—comes from journey data. Artifact order is internal; visitors do not see sequence numbers.</p></div>
   <nav><a href="index.html?mode=test&draft=1" target="_blank">Preview draft →</a><br><a href="admin.html">Model setup →</a></nav>
 </header>
 <div class="toolbar">
@@ -52,19 +52,27 @@ label{font-size:.78rem}.editor-panel textarea{min-height:88px}
     <label>Welcome headline<input id="welcomeHeadline"></label>
     <label>Welcome body<textarea id="welcomeBody"></textarea></label>
     <h3>Finale</h3>
-    <label>Finale stop number<input id="finaleNumber"></label>
     <label>Headline<input id="finaleHeadline"></label>
     <label>Body<textarea id="finaleBody"></textarea></label>
     <label>Learn-more button<input id="learnMoreLabel"></label>
     <label>Learn-more URL<input id="learnMoreUrl"></label>
+    <h3>About / Learn More page</h3>
+    <label>Page eyebrow<input id="aboutEyebrow"></label>
+    <label>Page headline<input id="aboutHeadline"></label>
+    <label>Intro<textarea id="aboutIntro"></textarea></label>
+    <label>Section 1 heading<input id="aboutSection1Heading"></label>
+    <label>Section 1 body<textarea id="aboutSection1Body"></textarea></label>
+    <label>Section 2 heading<input id="aboutSection2Heading"></label>
+    <label>Section 2 body<textarea id="aboutSection2Body"></textarea></label>
+    <label>Section 3 heading<input id="aboutSection3Heading"></label>
+    <label>Section 3 body<textarea id="aboutSection3Body"></textarea></label>
   </aside>
   <section class="editor-panel">
     <div id="emptyEditor"><h2>Select an artifact</h2><p class="note">Choose an artifact on the left or add a new one.</p></div>
     <form id="artifactForm" class="hidden">
       <div class="form-grid">
         <label>Artifact ID<input id="artifactId" required></label>
-        <label>Stop number<input id="stopNumber" required></label>
-        <label>Short route label<input id="shortLabel"></label>
+        <label>Short route label<input id="shortLabel" placeholder="Short name shown in journey progress"></label>
         <label>Artifact / stop name<input id="artifactName"></label>
         <label class="full">Physical table label<input id="tableLabel"></label>
         <label>Recognition class<input id="recognitionClass" placeholder="optional"></label>
@@ -100,5 +108,5 @@ label{font-size:.78rem}.editor-panel textarea{min-height:88px}
   </section>
 </div>
 </main>
-<script src="journey-editor.js?v=20261029-framework3"></script>
+<script src="journey-editor.js?v=20261102-nonumber2"></script>
 </body></html>
