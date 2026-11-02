@@ -34,7 +34,7 @@ function buildTargets(){
  const root=$('trainingTargets');root.innerHTML='';
  const targets=(journey.artifacts||[]).filter(a=>a.recognitionClass);
  if(!targets.length)root.innerHTML='<p class="note">No artifacts currently have recognition classes. Add a recognition class in Journey Builder if you want AI recognition.</p>';
- targets.forEach(a=>root.appendChild(targetCard(a.recognitionClass,'Stop '+a.stopNumber+' · '+(a.name||a.id),'Photograph the actual physical object mapped to class '+a.recognitionClass+' from varied conditions.')));
+ targets.forEach(a=>root.appendChild(targetCard(a.recognitionClass,a.name||a.tableLabel||'Target object','Submit multiple photos of this exact physical object from varied angles, distances, lighting, orientations, and backgrounds. The internal model label is hidden from participants.')));
  root.appendChild(targetCard('other','Other objects','Add nearby non-target or visually similar objects that the scanner should reject.'));
  root.appendChild(targetCard('background','Background','Add empty/background views around the table or exhibit area.'));
  root.querySelectorAll('[data-submit]').forEach(btn=>btn.onclick=async()=>{
