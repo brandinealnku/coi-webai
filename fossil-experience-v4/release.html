@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI Day Focused Release · Control Center</title>
-<link rel="stylesheet" href="admin.css?v=20261029-release"></head>
+<link rel="stylesheet" href="admin.css?v=20261102-prototype-target1"></head>
 <body><a class="skip-link" href="#main">Skip to main content</a>
 <main id="main" class="admin-shell">
 <header><div><span class="eyebrow">AI DAY FOCUSED RELEASE</span><h1>Release Control Center</h1>
@@ -33,16 +33,16 @@
 <div class="release-checks">
 <label><input type="checkbox" data-gate="artifacts"> Physical artifacts confirmed; recognition classes assigned only where needed</label>
 <label><input type="checkbox" data-gate="prompts"> Each prompt audited against proxy; approved reference images added where needed</label>
-<label><input type="checkbox" data-gate="holdout"> Held-out validation completed on unseen examples</label>
+<label><input type="checkbox" data-gate="holdout"> Held-out validation completed on unseen examples before relying on recognition</label>
 <label><input type="checkbox" data-gate="iphone"> Actual iPhone recognition/fallback tested</label>
 <label><input type="checkbox" data-gate="android"> Actual Android recognition/fallback tested</label>
 <label><input type="checkbox" data-gate="negative"> Unrelated objects/background do not routinely trigger a route stop</label>
-<label><input type="checkbox" data-gate="published"> Validated training.json published; prior valid model retained for rollback</label>
+<label><input type="checkbox" data-gate="published"> Prototype model published after reaching 8–12 varied examples per recognition class plus Other/Background; prior model retained for rollback</label>
 </div>
 <hr>
 <p id="releaseDecision" class="privacy-box"><strong>LIVE BLOCKED</strong><span>Complete both workstreams before calling the model release-ready. Manual selection remains the honest demonstration fallback.</span></p>
 </article>
 </section>
 </main>
-<script src="config.js?v=20261029-framework3"></script><script src="release.js?v=20261029-framework3"></script>
+<script src="config.js?v=20261029-framework3"></script><script src="release.js?v=20261102-prototype-target1"></script>
 </body></html>
