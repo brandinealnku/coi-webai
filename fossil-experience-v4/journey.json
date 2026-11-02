@@ -19,12 +19,12 @@
     {
       "id": "target-object",
       "stopNumber": "1",
-      "shortLabel": "Target",
-      "name": "Target Object",
-      "tableLabel": "Target Object",
+      "shortLabel": "Target Rock",
+      "name": "Target Rock",
+      "tableLabel": "Target Rock",
       "recognitionClass": "fossil1",
-      "physicalObjectName": "The object used to train the model",
-      "scenarioLabel": "Expected result: recognize the target",
+      "physicalObjectName": "The rock used to train the AI",
+      "scenarioLabel": "Expected result: recognize this exact rock",
       "referenceImage": "",
       "referenceAlt": "",
       "referenceCaption": "",
@@ -59,7 +59,7 @@
         "label": "Similar Object Challenge",
         "direction": "Pick up the similar-looking object and test whether the model rejects it."
       },
-      "labInstruction": "Place the trained Target Object inside the camera box."
+      "labInstruction": "Place the Target Rock inside the camera box and slowly change the angle. Watch for the screen to react when the AI recognizes it."
     },
     {
       "id": "similar-object",
