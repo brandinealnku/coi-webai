@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="styles.css?v=20261102-qa2">
 <link rel="stylesheet" href="release.css?v=20261102-qa2">
 <link rel="stylesheet" href="theme-nku.css?v=20261102-qa2">
-<link rel="stylesheet" href="lab.css?v=20261102-qa2">
+<link rel="stylesheet" href="lab.css?v=20261102-recognition1">
 </head>
 <body>
 <main class="lab-shell">
@@ -46,6 +46,11 @@
   <div class="stage">
     <video id="video" playsinline muted aria-label="Live camera preview"></video>
     <div id="focusBox" class="focus-box"><span id="focusLabel">CENTER VIEW HERE</span></div>
+    <div id="recognitionFlash" class="recognition-flash hidden" role="status" aria-live="assertive">
+      <div class="recognition-check" aria-hidden="true">✓</div>
+      <strong>OBJECT RECOGNIZED</strong>
+      <span id="recognitionFlashName">Target Rock</span>
+    </div>
   </div>
   <p id="analysisStatus" class="micro" role="status" aria-live="polite">Starting camera…</p>
   <div id="liveResult" class="result-box">
@@ -101,6 +106,6 @@
 </section>
 </main>
 <script src="config.js?v=20261102-qa2"></script>
-<script src="lab.js?v=20261102-qa2"></script>
+<script src="lab.js?v=20261102-recognition1"></script>
 </body>
 </html>
