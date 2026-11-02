@@ -10,9 +10,9 @@ function renderCounts(){
  root.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const a=activation();if(!a)return;classifier.addExample(a,b.dataset.add);a.dispose();update()})
 }
 function update(){
- const c=counts(),strong=TARGETS.length>0&&TARGETS.every(a=>(c[a.recognitionClass]||0)>=25)&&(c.other||0)>=20&&(c.background||0)>=20,validated=$('validationConfirmed')?.checked===true;
+ const c=counts(),strong=TARGETS.length>0&&TARGETS.every(a=>(c[a.recognitionClass]||0)>=8)&&(c.other||0)>=8&&(c.background||0)>=8,validated=$('validationConfirmed')?.checked===true;
  renderCounts();$('download').disabled=!(strong&&validated);
- $('readiness').textContent=!TARGETS.length?'No artifacts currently have recognition classes. The journey can run manual-only.':strong?(validated?'Training target and validation confirmation complete. Export is enabled.':'Training-count target reached. Held-out validation confirmation is still required.'):'LIVE recognition blocked: target 25–40 varied examples per recognition-enabled artifact and 20–30 Other/Background.';
+ $('readiness').textContent=!TARGETS.length?'No artifacts currently have recognition classes. The journey can run manual-only.':strong?(validated?'Prototype training target and validation confirmation complete. Export is enabled for event testing.':'Prototype training target reached. Held-out validation confirmation is still required before relying on recognition.'):'Prototype target not yet reached: add 8–12 varied examples per recognition-enabled artifact, 8–12 Other objects, and 8–12 Background examples. More training may improve reliability. Validate before relying on recognition.';
  $('googleStatus').textContent=CFG.GOOGLE_SCRIPT_URL?'Google Sheets endpoint is configured. Verify a TEST event appears before AI Day.':'Google Sheets endpoint is not configured yet.';
  if(stream)document.querySelectorAll('[data-add]').forEach(b=>b.disabled=false);
 }
