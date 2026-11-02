@@ -26,7 +26,7 @@ function nextArtifactId(id){
   const i=ARTIFACTS.findIndex(x=>x.id===id);
   return i>=0&&i<ARTIFACTS.length-1?ARTIFACTS[i+1].id:'finale';
 }
-function routeNumber(id){if(id==='finale')return JOURNEY?.finale?.stopNumber||'✓';return artifact(id)?.stopNumber||''}
+function routeNumber(id){return ''}
 function routeName(id){if(id==='finale')return JOURNEY?.finale?.shortLabel||'Finale';return artifact(id)?.shortLabel||artifact(id)?.name||id}
 
 async function loadJourney(){
@@ -64,17 +64,17 @@ function renderRoute(){
   const root=$('routeList');root.innerHTML='';root.style.setProperty('--route-count',String(Math.max(2,ARTIFACTS.length+1)));
   for(const a of ARTIFACTS){
     const li=document.createElement('li');li.dataset.routeStop=a.id;
-    li.innerHTML='<span>'+esc(a.stopNumber||'•')+'</span><small>'+esc(a.shortLabel||a.name||a.id)+'</small>';root.appendChild(li);
+    li.innerHTML='<span aria-hidden="true">•</span><small>'+esc(a.shortLabel||a.name||a.id)+'</small>';root.appendChild(li);
   }
   const li=document.createElement('li');li.dataset.routeStop='finale';
-  li.innerHTML='<span>'+esc(JOURNEY?.finale?.stopNumber||'✓')+'</span><small>'+esc(JOURNEY?.finale?.shortLabel||'Finale')+'</small>';root.appendChild(li);
-  $('routeProgress').textContent='Route '+[...ARTIFACTS.map(a=>a.stopNumber),JOURNEY?.finale?.stopNumber||'Finale'].join(' → ');
+  li.innerHTML='<span aria-hidden="true">✓</span><small>'+esc(JOURNEY?.finale?.shortLabel||'Finale')+'</small>';root.appendChild(li);
+  $('routeProgress').textContent='Journey: '+[...ARTIFACTS.map(a=>a.shortLabel||a.name||a.id),JOURNEY?.finale?.shortLabel||'Finale'].join(' → ');
 }
 function renderObjectPicker(){
   const root=$('testObjectGrid');root.innerHTML='';
   for(const a of ARTIFACTS){
     const b=document.createElement('button');b.type='button';b.className='secondary test-object-choice';b.dataset.artifactId=a.id;
-    b.textContent=a.tableLabel||('Stop '+a.stopNumber+' · '+(a.name||a.id));b.onclick=()=>chooseArtifact(a.id);root.appendChild(b);
+    b.textContent=a.tableLabel||(a.name||a.id);b.onclick=()=>chooseArtifact(a.id);root.appendChild(b);
   }
 }
 function renderFinaleCopy(){
@@ -211,8 +211,7 @@ function beginNextSession(){stopCamera();resetControls();newSession();event('ses
 function finishSession(action){if(session.completed)return;if(session.selectedObject)visited.add(session.selectedObject);session.next=action;session.completed=true;session.totalMs=Date.now()-session.startedAt;event('session-complete',{totalMs:session.totalMs,scanTimeMs:session.scanTimeMs,observe:session.observe,noticedNew:session.noticedNew,next:session.next,manualBypass:session.manualBypass})}
 function showNextStop(){
   const a=artifact(session.selectedObject),next=nextArtifactId(session.selectedObject);
-  $('nextStopNumber').textContent=routeNumber(next||'finale');
-  if(next==='finale'){$('nextStopName').textContent=a?.next?.label||('Stop '+routeNumber('finale')+' · '+routeName('finale'));$('missionPrompt').textContent=a?.next?.direction||'Continue to the finale.'}
+  if(next==='finale'){$('nextStopName').textContent=a?.next?.label||routeName('finale');$('missionPrompt').textContent=a?.next?.direction||'Continue to the finale.'}
   else{const n=artifact(next);$('nextStopName').textContent=a?.next?.label||n?.tableLabel||n?.name||'Next stop';$('missionPrompt').textContent=a?.next?.direction||('Find '+(n?.tableLabel||'the next stop')+'.')}
   $('tryAnother').textContent=next==='finale'?'Continue to finale':'Continue';$('finishExperience').textContent='Finish';$('nextStopCard').classList.remove('hidden');$('missionComplete').classList.add('hidden');
 }
