@@ -26,11 +26,20 @@ function syncJourneySettings(){
   journey.welcome.headline=$('welcomeHeadline').value.trim();
   journey.welcome.body=$('welcomeBody').value.trim();
   journey.finale=journey.finale||{};
-  journey.finale.stopNumber=$('finaleNumber').value.trim()||'Finale';
   journey.finale.headline=$('finaleHeadline').value.trim();
   journey.finale.body=$('finaleBody').value.trim();
   journey.finale.learnMoreLabel=$('learnMoreLabel').value.trim();
   journey.finale.learnMoreUrl=$('learnMoreUrl').value.trim();
+  journey.about=journey.about||{};
+  journey.about.eyebrow=$('aboutEyebrow').value.trim();
+  journey.about.headline=$('aboutHeadline').value.trim();
+  journey.about.intro=$('aboutIntro').value.trim();
+  journey.about.section1Heading=$('aboutSection1Heading').value.trim();
+  journey.about.section1Body=$('aboutSection1Body').value.trim();
+  journey.about.section2Heading=$('aboutSection2Heading').value.trim();
+  journey.about.section2Body=$('aboutSection2Body').value.trim();
+  journey.about.section3Heading=$('aboutSection3Heading').value.trim();
+  journey.about.section3Body=$('aboutSection3Body').value.trim();
 }
 function renderSettings(){
   $('journeyTitle').value=journey.title||'';
@@ -39,11 +48,19 @@ function renderSettings(){
   $('journeyTheme').value=journey.theme||'nku';
   $('welcomeHeadline').value=journey.welcome?.headline||'';
   $('welcomeBody').value=journey.welcome?.body||'';
-  $('finaleNumber').value=journey.finale?.stopNumber||'';
   $('finaleHeadline').value=journey.finale?.headline||'';
   $('finaleBody').value=journey.finale?.body||'';
   $('learnMoreLabel').value=journey.finale?.learnMoreLabel||'';
   $('learnMoreUrl').value=journey.finale?.learnMoreUrl||'';
+  $('aboutEyebrow').value=journey.about?.eyebrow||'';
+  $('aboutHeadline').value=journey.about?.headline||'';
+  $('aboutIntro').value=journey.about?.intro||'';
+  $('aboutSection1Heading').value=journey.about?.section1Heading||'';
+  $('aboutSection1Body').value=journey.about?.section1Body||'';
+  $('aboutSection2Heading').value=journey.about?.section2Heading||'';
+  $('aboutSection2Body').value=journey.about?.section2Body||'';
+  $('aboutSection3Heading').value=journey.about?.section3Heading||'';
+  $('aboutSection3Body').value=journey.about?.section3Body||'';
 }
 function renderList(){
   const root=$('artifactList');root.innerHTML='';
@@ -54,7 +71,7 @@ function renderList(){
     const down=document.createElement('button');down.type='button';down.textContent='↓';down.title='Move down';down.disabled=i===journey.artifacts.length-1;
     up.onclick=()=>moveArtifact(i,-1);down.onclick=()=>moveArtifact(i,1);move.append(up,down);
     const main=document.createElement('button');main.type='button';main.className='secondary';main.style.textAlign='left';
-    main.innerHTML='<span class="meta"><strong>Stop '+esc(a.stopNumber)+' · '+esc(a.name||a.tableLabel||a.id)+'</strong><small>'+esc(a.physicalObjectName||'No physical object name')+' · '+esc(a.recognitionClass||'manual only')+'</small></span>';
+    main.innerHTML='<span class="meta"><strong>'+esc(a.name||a.tableLabel||a.id)+'</strong><small>'+esc(a.physicalObjectName||'No physical object name')+' · '+esc(a.recognitionClass||'manual only')+'</small></span>';
     main.onclick=()=>selectArtifact(a.id);
     const del=document.createElement('button');del.type='button';del.className='danger';del.textContent='×';del.title='Remove';del.onclick=()=>removeArtifact(a.id);
     row.append(move,main,del);root.appendChild(row);
@@ -70,9 +87,9 @@ function moveArtifact(i,delta){
 function addArtifact(){
   let base='artifact-'+(journey.artifacts.length+1),id=base,n=2;
   while(journey.artifacts.some(a=>a.id===id))id=base+'-'+n++;
-  const stop=String(journey.artifacts.length+1);
+  const internalOrder=journey.artifacts.length+1;
   journey.artifacts.push({
-    id,stopNumber:stop,shortLabel:'Object '+stop,name:'New artifact',tableLabel:'Stop '+stop+' · New artifact',
+    id,stopNumber:String(internalOrder),shortLabel:'New artifact',name:'New artifact',tableLabel:'New artifact',
     recognitionClass:'',physicalObjectName:'',scenarioLabel:'',
     referenceImage:'',referenceAlt:'',referenceCaption:'Look at the reference image.',
     notice:{question:'What do you notice?',choices:[
@@ -97,7 +114,6 @@ function selectArtifact(id){
   selectedId=id;const a=artifact();if(!a)return;
   $('emptyEditor').classList.add('hidden');$('artifactForm').classList.remove('hidden');
   $('artifactId').value=a.id||'';
-  $('stopNumber').value=a.stopNumber||'';
   $('shortLabel').value=a.shortLabel||'';
   $('artifactName').value=a.name||'';
   $('tableLabel').value=a.tableLabel||'';
@@ -138,7 +154,7 @@ function refreshNextOptions(){
   const current=select.value;select.innerHTML='';
   for(const a of journey.artifacts){
     if(a.id===selectedId)continue;
-    const o=document.createElement('option');o.value=a.id;o.textContent='Stop '+a.stopNumber+' · '+(a.name||a.id);select.appendChild(o);
+    const o=document.createElement('option');o.value=a.id;o.textContent=a.name||a.id;select.appendChild(o);
   }
   const finale=document.createElement('option');finale.value='finale';finale.textContent='Finale';select.appendChild(finale);
   if([...select.options].some(o=>o.value===current))select.value=current;
@@ -147,7 +163,7 @@ function applyArtifact(e){
   e.preventDefault();const a=artifact();if(!a)return;
   const oldId=a.id,newId=slug($('artifactId').value);
   if(newId!==oldId&&journey.artifacts.some(x=>x.id===newId))return status('Artifact ID must be unique.');
-  a.id=newId;a.stopNumber=$('stopNumber').value.trim();a.shortLabel=$('shortLabel').value.trim();a.name=$('artifactName').value.trim();
+  a.id=newId;a.shortLabel=$('shortLabel').value.trim();a.name=$('artifactName').value.trim();
   a.tableLabel=$('tableLabel').value.trim();a.recognitionClass=$('recognitionClass').value.trim();a.physicalObjectName=$('physicalObjectName').value.trim();
   a.scenarioLabel=$('scenarioLabel').value.trim();a.referenceImage=$('referenceImage').value.trim();a.referenceAlt=$('referenceAlt').value.trim();
   a.notice={question:$('noticeQuestion').value.trim(),choices:collectChoices()};
@@ -158,7 +174,7 @@ function applyArtifact(e){
 }
 function duplicateArtifact(){
   const a=artifact();if(!a)return;const copy=clone(a);let id=a.id+'-copy',n=2;while(journey.artifacts.some(x=>x.id===id))id=a.id+'-copy-'+n++;
-  copy.id=id;copy.stopNumber=String(a.stopNumber)+'B';copy.name=(a.name||'Artifact')+' copy';copy.tableLabel='Stop '+copy.stopNumber+' · '+copy.name;
+  copy.id=id;copy.name=(a.name||'Artifact')+' copy';copy.tableLabel=copy.name;
   journey.artifacts.splice(journey.artifacts.indexOf(a)+1,0,copy);saveDraft('Artifact duplicated.');renderList();selectArtifact(id);
 }
 function exportJourney(){
@@ -180,7 +196,7 @@ $('artifactForm').onsubmit=applyArtifact;
 $('duplicateArtifact').onclick=duplicateArtifact;
 $('deleteArtifact').onclick=()=>selectedId&&removeArtifact(selectedId);
 $('addChoice').onclick=()=>{const a=artifact();if(!a)return;const choices=collectChoices();choices.push({value:'choice-'+(choices.length+1),label:'New choice',detail:''});renderChoices(choices)};
-for(const id of ['journeyTitle','eventLabel','brandLine','journeyTheme','welcomeHeadline','welcomeBody','finaleNumber','finaleHeadline','finaleBody','learnMoreLabel','learnMoreUrl']){
+for(const id of ['journeyTitle','eventLabel','brandLine','journeyTheme','welcomeHeadline','welcomeBody','finaleHeadline','finaleBody','learnMoreLabel','learnMoreUrl','aboutEyebrow','aboutHeadline','aboutIntro','aboutSection1Heading','aboutSection1Body','aboutSection2Heading','aboutSection2Body','aboutSection3Heading','aboutSection3Body']){
   $(id).addEventListener('change',()=>saveDraft('Journey settings saved.'));
 }
 (async()=>{try{await loadPublished();renderSettings();renderList();status(localStorage.getItem(STORAGE_KEY)?'Local draft loaded. Preview reflects this draft when opened from the builder.':'Published journey loaded.')}catch(e){status(e.message)}})();
