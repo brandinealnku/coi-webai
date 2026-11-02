@@ -51,20 +51,23 @@ function loop(ts){
     const e=embedding();
     if(e){
       const target=bestSimilarity(e,targetNorm),reject=bestSimilarity(e,negativeNorm),margin=target-reject;
-      const recognized=target>=.90&&margin>=.025;
+      const targetChallenge=currentIndex===0;
+      const recognized=targetChallenge ? target>=.70 : (target>=.90&&margin>=.025);
       currentDecision=recognized?'recognized':'rejected';currentScores={target,reject,margin};
       $('targetScore').textContent=(target*100).toFixed(1)+'%';$('rejectScore').textContent=(reject*100).toFixed(1)+'%';
       $('decisionText').textContent=recognized?'✓ TARGET MATCH':'○ NO TARGET MATCH';
       $('focusBox').className='focus-box '+(recognized?'match':'reject');
       $('focusLabel').textContent=recognized?'TARGET MATCH':'NO TARGET MATCH';
-      $('decisionExplanation').textContent='The AI is comparing this live view with the examples used to train the Target Rock and with rejection examples.';
+      $('decisionExplanation').textContent=targetChallenge
+        ? 'Recognition gate: Target Rock similarity ≥ 70% for 3 consecutive frames.'
+        : 'The AI compares this live view with the trained Target Rock and rejection examples.';
       $('recordCameraResult').disabled=false;
 
       if(currentIndex===0&&!recognitionTriggered){
         stableTargetFrames=recognized?stableTargetFrames+1:0;
         $('analysisStatus').textContent=recognized
-          ? 'Possible match — hold steady… '+Math.min(stableTargetFrames,3)+'/3'
-          : 'Looking for the Target Rock. Keep it centered and slowly change the angle.';
+          ? 'Possible Target Rock match — hold steady… '+Math.min(stableTargetFrames,3)+'/3'
+          : 'Looking for the Target Rock. Recognition needs 70%+ similarity for 3 frames.';
         if(stableTargetFrames>=3){
           recognitionTriggered=true;
           $('recognitionFlashName').textContent=challenges[0]?.name||'Target Rock';
