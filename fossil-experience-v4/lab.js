@@ -20,11 +20,11 @@ function cropFrame(){if(!video.videoWidth)return null;const side=Math.min(video.
 function embedding(){const f=cropFrame();if(!f)return null;const t=model.infer(f,true),arr=Array.from(t.dataSync());t.dispose();return normalize(arr)}
 function show(id){for(const s of ['intro','challenge','camera','result','reflection','finale'])$(s).classList.toggle('hidden',s!==id);window.scrollTo({top:0,behavior:'smooth'})}
 function renderProgress(){
-  const labels=[...challenges.map(c=>c.shortLabel||c.name),'Reflect'];$('progress').innerHTML='';
-  labels.forEach((x,i)=>{const s=document.createElement('span');s.textContent=x;if(i<currentIndex)s.classList.add('done');if(i===currentIndex&&currentIndex<challenges.length)s.classList.add('active');if(currentIndex>=challenges.length&&i===labels.length-1)s.classList.add('active');$('progress').appendChild(s)})
+  const labels=[challenges[0]?.shortLabel||challenges[0]?.name||'Target Rock','Reflect'];$('progress').innerHTML='';
+  labels.forEach((x,i)=>{const s=document.createElement('span');s.textContent=x;if(currentIndex>0&&i===0)s.classList.add('done');if((currentIndex===0&&i===0)||(currentIndex>0&&i===1))s.classList.add('active');$('progress').appendChild(s)})
 }
-function expectedFor(i){return i===0?'recognize the target':'reject this view'}
-function expectedDecision(i){return i===0?'recognized':'rejected'}
+function expectedFor(){return 'recognize the Target Rock'}
+function expectedDecision(){return 'recognized'}
 function renderChallenge(){
   const c=challenges[currentIndex];renderProgress();$('challengeName').textContent=c.name||'Challenge';$('challengeObject').textContent=c.physicalObjectName||'';$('expectedBehavior').textContent=expectedFor(currentIndex);$('challengeDirection').textContent=c.labInstruction||'Place the requested view inside the camera box.';show('challenge');send('lab-challenge-open',{challengeIndex:currentIndex,expected:expectedDecision(currentIndex)})
 }
@@ -141,8 +141,8 @@ function renderFeatureChoices(){
 }
 function nextChallenge(){
   send('lab-feature-reflection',{outcome:selectedFeature});
-  currentIndex++;
-  if(currentIndex<challenges.length)renderChallenge();else{renderProgress();renderReflection();show('reflection')}
+  currentIndex=1;
+  renderProgress();renderReflection();show('reflection')
 }
 function choiceGroup(id,options,key){
   const root=$(id);root.innerHTML='';
@@ -169,7 +169,7 @@ $('finishReflection').onclick=finish;
 $('restartLab').onclick=reset;
 
 (async()=>{try{
-  journey=await loadJourney();challenges=(journey.artifacts||[]).slice(0,3);
+  journey=await loadJourney();challenges=(journey.artifacts||[]).slice(0,1);
   $('brandTitle').textContent=journey.title||'Computer Vision Lab';$('brandLine').textContent=journey.brandLine||'';$('eventLabel').textContent=journey.eventLabel||'';
   $('introEyebrow').textContent=journey.welcome?.eyebrow||'COMPUTER VISION LAB';$('introHeadline').textContent=journey.welcome?.headline||'Can the AI tell what it’s looking at?';$('introBody').textContent=journey.welcome?.body||'';$('privacyText').textContent=journey.privacy?.body||'';
   $('startLab').textContent=journey.welcome?.startButton||'Start the experiment';renderProgress();send('lab-page-open')
