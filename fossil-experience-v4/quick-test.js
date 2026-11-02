@@ -1,5 +1,5 @@
 const CFG=window.CMC_V4_CONFIG||{},ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim(),$=id=>document.getElementById(id);
-let journey=null,model=null,classifier=null,stream=null,raf=null,target='',classes=[],stable=0,lastTarget=false,framesAnalyzed=0,lastAnalysisAt=0;
+let journey=null,model=null,classifier=null,stream=null,raf=null,target='',classes=[],stable=0,lastTarget=false,framesAnalyzed=0,lastAnalysisAt=0,negativeCount=0,testReady=false;
 const video=$('video'),crop=document.createElement('canvas'),ctx=crop.getContext('2d',{willReadFrequently:true});
 async function loadJourney(){const r=await fetch('journey.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Could not load journey.json');return r.json()}
 function jsonp(url){return new Promise((resolve,reject)=>{const cb='quick_'+Date.now()+'_'+Math.random().toString(16).slice(2),s=document.createElement('script'),cleanup=()=>{try{delete window[cb]}catch{};s.remove()};window[cb]=d=>{cleanup();resolve(d)};s.onerror=()=>{cleanup();reject(new Error('Could not load shared training.'))};s.src=url+'&callback='+encodeURIComponent(cb)+'&_='+Date.now();document.body.appendChild(s)})}
@@ -17,11 +17,13 @@ async function loadTraining(){
   renderCounts(data);
   if(!ds[target])throw new Error('No shared training found for '+target+'.');
   classifier=knnClassifier.create();classifier.setClassifierDataset(ds);
-  const negatives=(data?.classes?.other?.length||0)+(data?.classes?.background?.length||0);
-  $('trainingStatus').textContent='Loaded '+(data.classes[target]?.length||0)+' target examples and '+negatives+' negative examples.'+(negatives<2?' Add a few Other or Background examples for a meaningful test.':'');
-  $('startCamera').disabled=false;
+  negativeCount=(data?.classes?.other?.length||0)+(data?.classes?.background?.length||0);
+  testReady=negativeCount>=4;
+  $('trainingStatus').textContent='Loaded '+(data.classes[target]?.length||0)+' target examples and '+negativeCount+' negative examples. '+(testReady?'Enough negatives for a basic smoke test.':'NOT TESTABLE YET: add at least 4 Other/Background examples. Without negatives, KNN will classify nearly everything as '+target+'.');
+  $('startCamera').disabled=!testReady;
 }
 async function startCamera(){
+  if(!testReady){$('cameraStatus').textContent='Recognition test blocked: add at least 4 negative examples first.';return}
   $('cameraStatus').textContent='Requesting camera permission…';
   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
   video.srcObject=stream;
@@ -47,16 +49,16 @@ async function loop(ts){
       const p=r.confidences||{},targetScore=p[target]||0;
       const negativeScore=Math.max(p.other||0,p.background||0);
       const margin=targetScore-negativeScore;
-      const candidate=r.label===target&&targetScore>=.72&&margin>=.18;
+      const candidate=testReady&&r.label===target&&targetScore>=.78&&margin>=.25;
       stable=(candidate&&lastTarget)?stable+1:(candidate?1:0);lastTarget=candidate;
       const recognized=stable>=4;
       framesAnalyzed++;
       $('analysisStatus').textContent='Analyzing live camera · frame '+framesAnalyzed+' · top class: '+r.label;
       $('focusBox').className='focus-box '+(recognized?'recognized':candidate?'':'rejected');
-      $('boxLabel').textContent=recognized?'RECOGNIZED':candidate?'HOLD STEADY':'CENTER TARGET OBJECT';
+      $('boxLabel').textContent=!testReady?'ADD NEGATIVE EXAMPLES':recognized?'RECOGNIZED':candidate?'HOLD STEADY':'NOT RECOGNIZED';
       $('result').textContent=recognized?'RECOGNIZED: '+target:(candidate?'POSSIBLE: '+target:'NOT RECOGNIZED');
       $('result').className='result '+(recognized?'good':candidate?'warn':'bad');
-      $('confidence').textContent='Similarity score: '+Math.round(targetScore*100)+'% · margin over negatives: '+Math.round(margin*100)+' pts · stable frames: '+stable+'/4';
+      $('confidence').textContent='Similarity score: '+Math.round(targetScore*100)+'% · margin over negatives: '+Math.round(margin*100)+' pts · stable frames: '+stable+'/4 · negative examples: '+negativeCount;
       $('probabilities').innerHTML=classes.map(c=>'<div class="stat"><strong>'+c+'</strong><span>'+Math.round((p[c]||0)*100)+'%</span></div>').join('');
     }
   }catch(e){
