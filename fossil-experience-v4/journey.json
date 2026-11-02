@@ -55,108 +55,18 @@
         "source": "AI Day prototype learning"
       },
       "next": {
-        "artifactId": "similar-object",
-        "label": "Similar Object Challenge",
-        "direction": "Pick up the similar-looking object and test whether the model rejects it."
+        "artifactId": "finale",
+        "label": "Reflect",
+        "direction": "Finish by reflecting on whether computer vision would improve this kind of museum experience."
       },
       "labInstruction": "Place the Target Rock inside the camera box and slowly change the angle. Watch for the screen to react when the AI recognizes it."
-    },
-    {
-      "id": "similar-object",
-      "stopNumber": "2",
-      "shortLabel": "Similar",
-      "name": "Similar Object Challenge",
-      "tableLabel": "Similar Object",
-      "recognitionClass": "",
-      "physicalObjectName": "A different object that looks somewhat similar",
-      "scenarioLabel": "Expected result: reject the similar object",
-      "referenceImage": "",
-      "referenceAlt": "",
-      "referenceCaption": "",
-      "notice": {
-        "question": "What did the model do with the similar-looking object?",
-        "choices": [
-          {
-            "value": "correct-reject",
-            "label": "It rejected the object",
-            "detail": ""
-          },
-          {
-            "value": "false-positive",
-            "label": "It called it the target",
-            "detail": ""
-          },
-          {
-            "value": "unclear",
-            "label": "The result was unclear",
-            "detail": ""
-          }
-        ]
-      },
-      "discover": {
-        "title": "Similar objects expose false positives.",
-        "text": "If the model mistakes this object for the target, it may be relying on broad visual features such as shape, texture, or color rather than the exact object identity.",
-        "uncertainty": "That does not make the experiment useless—it tells us where this recognition approach breaks down.",
-        "source": "AI Day prototype learning"
-      },
-      "next": {
-        "artifactId": "background-test",
-        "label": "Background Test",
-        "direction": "Remove the objects from view and point the camera at the table or surrounding background."
-      },
-      "labInstruction": "Replace it with the Similar Object and keep that object centered in the camera box."
-    },
-    {
-      "id": "background-test",
-      "stopNumber": "3",
-      "shortLabel": "Background",
-      "name": "Background Test",
-      "tableLabel": "Background / No Object",
-      "recognitionClass": "",
-      "physicalObjectName": "No target object in the camera view",
-      "scenarioLabel": "Expected result: reject the background",
-      "referenceImage": "",
-      "referenceAlt": "",
-      "referenceCaption": "",
-      "notice": {
-        "question": "What happened when no target object was in view?",
-        "choices": [
-          {
-            "value": "correct-reject",
-            "label": "It rejected the background",
-            "detail": ""
-          },
-          {
-            "value": "false-positive",
-            "label": "It still called it the target",
-            "detail": ""
-          },
-          {
-            "value": "unclear",
-            "label": "The result was unclear",
-            "detail": ""
-          }
-        ]
-      },
-      "discover": {
-        "title": "A useful model needs to know when to say “not this.”",
-        "text": "For a museum experience, false positives matter because a visitor may point the camera at the wrong object, a display case, another visitor, or the floor.",
-        "uncertainty": "Reliable rejection may require a different recognition approach, more targeted training, or a simpler interaction design.",
-        "source": "AI Day prototype learning"
-      },
-      "next": {
-        "artifactId": "finale",
-        "label": "CMC Reflection",
-        "direction": "Finish by telling us whether computer vision would improve this kind of museum experience."
-      },
-      "labInstruction": "Remove all objects from view and point the camera at the table or surrounding background."
     }
   ],
   "finale": {
     "shortLabel": "Reflect",
-    "title": "Experiment complete",
-    "headline": "You just stress-tested a computer vision prototype.",
-    "body": "Your results help us evaluate not only whether recognition works, but whether it creates enough visitor value to justify its complexity in a museum setting.",
+    "title": "Reflection",
+    "headline": "Now think like a museum visitor.",
+    "body": "You just experienced a computer vision model recognize a physical object. Your feedback helps us decide whether this kind of interaction adds enough value to belong in the Cincinnati Museum Center experience.",
     "learnMoreLabel": "Why this matters for CMC",
     "learnMoreUrl": "project.html",
     "restartLabel": "Run the experiment again",
