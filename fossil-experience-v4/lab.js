@@ -26,7 +26,7 @@ function renderProgress(){
 function expectedFor(i){return i===0?'recognize the target':'reject this view'}
 function expectedDecision(i){return i===0?'recognized':'rejected'}
 function renderChallenge(){
-  const c=challenges[currentIndex];renderProgress();$('challengeName').textContent=c.name||'Challenge';$('challengeObject').textContent=c.physicalObjectName||'';$('expectedBehavior').textContent=expectedFor(currentIndex);$('challengeDirection').textContent=c.next?.direction||'Place the requested view inside the camera box.';show('challenge');send('lab-challenge-open',{challengeIndex:currentIndex,expected:expectedDecision(currentIndex)})
+  const c=challenges[currentIndex];renderProgress();$('challengeName').textContent=c.name||'Challenge';$('challengeObject').textContent=c.physicalObjectName||'';$('expectedBehavior').textContent=expectedFor(currentIndex);$('challengeDirection').textContent=c.labInstruction||'Place the requested view inside the camera box.';show('challenge');send('lab-challenge-open',{challengeIndex:currentIndex,expected:expectedDecision(currentIndex)})
 }
 async function loadTraining(){
   const targetClass=challenges[0]?.recognitionClass||'fossil1';
@@ -54,9 +54,9 @@ function loop(ts){
       const recognized=target>=.90&&margin>=.025;
       currentDecision=recognized?'recognized':'rejected';currentScores={target,reject,margin};
       $('targetScore').textContent=(target*100).toFixed(1)+'%';$('rejectScore').textContent=(reject*100).toFixed(1)+'%';
-      $('decisionText').textContent=recognized?'MODEL: TARGET MATCH':'MODEL: REJECTED';
+      $('decisionText').textContent=recognized?'✓ TARGET MATCH':'○ NO TARGET MATCH';
       $('focusBox').className='focus-box '+(recognized?'match':'reject');
-      $('focusLabel').textContent=recognized?'TARGET MATCH':'REJECTED';
+      $('focusLabel').textContent=recognized?'TARGET MATCH':'NO TARGET MATCH';
       $('decisionExplanation').textContent='The model compares the live view with its closest target example and closest rejection example. A high score is not the same thing as certainty.';
       $('recordCameraResult').disabled=false;
     }
@@ -69,6 +69,7 @@ function recordResult(decision=currentDecision){
   const c=challenges[currentIndex];
   $('resultHeadline').textContent=correct?'The model behaved as expected.':'The model behaved differently than expected.';
   $('resultSummary').textContent='Expected: '+expected+'. Model result: '+currentDecision+'.';
+  const outcome=$('outcomeState');outcome.className='result-outcome '+(correct?'expected':'unexpected');outcome.textContent=correct?'✓ Expected outcome':'! Different from expected';
   $('resultLesson').innerHTML='<strong>'+((c.discover?.title)||'What this tells us')+'</strong><br>'+((c.discover?.text)||'This result is evidence about the recognition approach.');
   selectedFeature='';$('continueChallenge').disabled=true;renderFeatureChoices();
   send('lab-model-result',{challengeIndex:currentIndex,expected,decision:currentDecision,outcome:correct?'correct':'incorrect',probabilities:currentScores||{}});
@@ -94,9 +95,10 @@ function renderReflection(){
 }
 function finish(){
   send('lab-cmc-reflection',{outcome:'look='+reflection.look+'; trust='+reflection.trust+'; value='+reflection.value,probabilities:{look:reflection.look,trust:reflection.trust,value:reflection.value}});
+  $('outcomeState').className='result-outcome hidden';
   const f=journey.finale||{};$('completionLabel').textContent=(f.title||'Experiment complete').toUpperCase();$('finaleHeadline').textContent=f.headline||'Experiment complete.';$('finaleBody').textContent=f.body||'';$('learnMore').textContent=f.learnMoreLabel||'Why this matters for CMC';$('learnMore').href=f.learnMoreUrl||'project.html';show('finale')
 }
-function reset(){stopCamera();currentIndex=0;currentDecision=null;currentScores=null;selectedFeature='';reflection={look:'',trust:'',value:''};sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();renderProgress();show('intro');send('lab-restart')}
+function reset(){stopCamera();currentIndex=0;currentDecision=null;currentScores=null;selectedFeature='';reflection={look:'',trust:'',value:''};sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();$('outcomeState').className='result-outcome hidden';renderProgress();show('intro');send('lab-restart')}
 $('startLab').onclick=()=>{send('lab-start');renderChallenge()};
 $('beginCamera').onclick=()=>startCamera().catch(e=>{$('analysisStatus').textContent='Camera/model error: '+e.message;show('camera')});
 $('skipCamera').onclick=()=>recordResult('unavailable');
