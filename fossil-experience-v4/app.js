@@ -4,9 +4,10 @@ const SCREENS=['loading','welcome','camera','observe','discover','connection','n
 const params=new URLSearchParams(location.search);
 const MODE=params.get('mode')==='test'?'test':'live';
 const USE_DRAFT=params.get('draft')==='1';
+const QR_ARTIFACT=params.get('artifact')||'';
 const requestedDesign=params.get('design');
 let DESIGN=(requestedDesign==='blue'||requestedDesign==='gold')?requestedDesign:'nku';
-const RELEASE='journey-framework-2026-10-29';
+const RELEASE='journey-framework-qr-2026-11-02';
 const DRAFT_KEY='expand-your-world-journey-draft-v1';
 
 let JOURNEY=null,ARTIFACTS=[],ARTIFACT_BY_ID=new Map(),CLASS_TO_ARTIFACT=new Map(),RECOGNITION_CLASSES=[];
@@ -160,9 +161,11 @@ function completeRecognition(artifactId,cls='',confidence=1,probabilities={},sim
   event('scan-success',{recognizedSpecimen:session.recognizedSpecimen,artifactId,confidence,probabilities,scanTimeMs:session.scanTimeMs,simulated});
   stopCamera();applyArtifactContent(artifactId);setTimeout(()=>show('observe'),180);
 }
-function completeManual(artifactId,reason='camera'){
-  if(!isArtifact(artifactId))return;session.selectedObject=artifactId;session.recognizedSpecimen='';session.recognitionMethod='manual';session.manualBypass=true;
-  event('manual-selection',{selectedObject:artifactId,reason});stopCamera();applyArtifactContent(artifactId);show('observe');
+function completeManual(artifactId,reason='camera',method='manual'){
+  if(!isArtifact(artifactId))return;
+  session.selectedObject=artifactId;session.recognizedSpecimen='';session.recognitionMethod=method;session.manualBypass=method==='manual';
+  event(method==='qr'?'qr-selection':'manual-selection',{selectedObject:artifactId,reason});
+  stopCamera();applyArtifactContent(artifactId);show('observe');
 }
 function chooseArtifact(artifactId){
   const a=artifact(artifactId);if(!a)return;
@@ -230,6 +233,11 @@ $('startAgainFinale').onclick=()=>{event('finale-start-again');beginNewJourney()
 (async()=>{
   try{
     JOURNEY=await loadJourney();initializeJourney(JOURNEY);newSession();updateRoute();
+    if(QR_ARTIFACT&&isArtifact(QR_ARTIFACT)){
+      event('session-start',{entry:'qr'});
+      completeManual(QR_ARTIFACT,'artifact-qr','qr');
+      return;
+    }
     if(MODE==='test'){$('testModeNotice').classList.remove('hidden');event('test-mode-ready',{draft:USE_DRAFT});beginExperience();return}
     event('model-load-start');
     try{await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1});classifier=knnClassifier.create();event('model-library-ready');ready=await loadTraining();if(ready){event('training-ready');beginExperience()}else{event('training-missing');beginExperience()}}
