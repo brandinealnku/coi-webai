@@ -83,7 +83,9 @@ function renderFinaleCopy(){
   $('missionCompleteText').textContent=f.headline||'Thanks for exploring.';
   $('missionCompleteSubtext').textContent=f.body||'You made it to the end.';
   $('learnMoreProject').textContent=f.learnMoreLabel||'Learn more';
-  $('learnMoreProject').href=f.learnMoreUrl||'project.html';
+  let learnUrl=f.learnMoreUrl||'project.html';
+  if(USE_DRAFT&&/^project\.html(?:$|\?)/.test(learnUrl)) learnUrl='project.html?draft=1';
+  $('learnMoreProject').href=learnUrl;
   $('startAgainFinale').textContent=f.restartLabel||'Start again';
   const note=document.querySelector('.finale-close-note');if(note)note.textContent=f.closeNote||'Done for now? You can close this tab.';
 }
