@@ -20,16 +20,14 @@ html[data-design="nku"] body{
   padding:14px 0;
 }
 .lab-progress{
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:8px;
   margin:14px 0 18px;
   padding:0 0 4px;
-  overflow-x:auto;
-  overscroll-behavior-inline:contain;
-  scrollbar-width:thin;
+  overflow:visible;
 }
 .lab-progress span{
-  flex:0 0 auto;
   min-height:38px;
   display:inline-flex;
   align-items:center;
