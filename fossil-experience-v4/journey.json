@@ -50,8 +50,8 @@
       },
       "discover": {
         "title": "Recognition is a testable claim.",
-        "text": "A model can appear confident and still be wrong. What matters is whether it behaves correctly across target objects, similar objects, and backgrounds—not just whether it recognizes one training example.",
-        "uncertainty": "Today’s model is a prototype. False positives and misses are useful evidence about what would need to improve before museum use.",
+        "text": "You trained the AI with multiple photos of this exact rock. The live camera test checks whether those examples are enough for the model to recognize the physical object from a new view.",
+        "uncertainty": "Today’s model is a prototype. A successful recognition is useful evidence about the interaction, but it does not mean the model is production-ready for museum use.",
         "source": "AI Day prototype learning"
       },
       "next": {
