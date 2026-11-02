@@ -21,3 +21,8 @@ fieldset{border:0;padding:0;margin:0 0 24px}legend{font-size:1.5rem;font-weight:
 
 .active-object-group{margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:14px}.active-object-group h3{margin:0 0 10px}.session-choice{min-height:48px;text-align:left}.session-choice.selected{background:var(--gold);color:#111}
 details{margin:18px 0}summary{cursor:pointer;font-weight:850;color:#fff}
+
+.training-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.training-source-grid .privacy-box{margin-bottom:0}
+.training-source-grid input[type=file]{background:#0d1014}
+@media(max-width:700px){.training-source-grid{grid-template-columns:1fr}}
