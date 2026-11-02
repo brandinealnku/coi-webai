@@ -8,7 +8,26 @@ function embeddingFor(img){const side=Math.min(img.naturalWidth,img.naturalHeigh
 async function sendExample(label,embedding){await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({kind:'training-example',eventName:journey?.eventLabel||CFG.EVENT_NAME||'Guided Object Journey',batchId,label,embedding,userAgent:navigator.userAgent}),keepalive:true})}
 function targetCard(label,name,help){
  const safe=label.replace(/[^a-z0-9_-]/gi,'-'),section=document.createElement('section');
- section.innerHTML='<h2>'+esc(name)+'</h2><p class="note">'+esc(help)+'</p><label for="'+safe+'Files">Choose training photos</label><input id="'+safe+'Files" type="file" accept="image/*" capture="environment" multiple><button data-submit="'+esc(label)+'" data-input="'+safe+'Files" data-status="'+safe+'Status">Submit photos</button><span id="'+safe+'Status" class="upload-status" role="status" aria-live="polite"></span><hr>';
+ section.innerHTML=
+   '<h2>'+esc(name)+'</h2>'+
+   '<p class="note">'+esc(help)+'</p>'+
+   '<div class="training-source-grid">'+
+     '<div class="privacy-box">'+
+       '<strong>Choose from Photos</strong>'+
+       '<span>Select multiple existing images at once.</span>'+
+       '<label for="'+safe+'Library">Photo library</label>'+
+       '<input id="'+safe+'Library" type="file" accept="image/*" multiple>'+
+       '<button data-submit="'+esc(label)+'" data-input="'+safe+'Library" data-status="'+safe+'Status">Submit selected photos</button>'+
+     '</div>'+
+     '<div class="privacy-box">'+
+       '<strong>Take a new photo</strong>'+
+       '<span>Use the rear camera for one additional training view.</span>'+
+       '<label for="'+safe+'Camera">Camera</label>'+
+       '<input id="'+safe+'Camera" type="file" accept="image/*" capture="environment">'+
+       '<button data-submit="'+esc(label)+'" data-input="'+safe+'Camera" data-status="'+safe+'Status">Submit camera photo</button>'+
+     '</div>'+
+   '</div>'+
+   '<span id="'+safe+'Status" class="upload-status" role="status" aria-live="polite"></span><hr>';
  return section;
 }
 function buildTargets(){
@@ -23,7 +42,7 @@ function buildTargets(){
    if(!files.length){status.textContent='Choose at least one photo first.';return}
    btn.disabled=true;status.textContent='Processing 0 of '+files.length+'…';let done=0;
    for(const file of files){try{const img=await readImage(file),embedding=embeddingFor(img);await sendExample(label,embedding);done++;status.textContent='Submitted '+done+' of '+files.length+'…'}catch(e){console.error(e)}}
-   status.textContent='Submitted '+done+' training example'+(done===1?'':'s')+'.';input.value='';btn.disabled=false;
+   status.textContent='Submitted '+done+' training example'+(done===1?'':'s')+'. You can add more photos anytime.';input.value='';btn.disabled=false;
  });
 }
 (async()=>{try{journey=await loadJourney();await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1});buildTargets();$('loading').classList.add('hidden');$('trainer').classList.remove('hidden')}catch(e){console.error(e);$('loading').textContent=e.message||'Training setup could not load.'}})();
