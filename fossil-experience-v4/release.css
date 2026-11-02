@@ -278,3 +278,20 @@ html[data-screen="connection"] .brand div span:last-child{
 .visitor-shell,.screen,.card,.camera-wrap,.stage,.next-stop-card,.choice-grid{min-width:0}
 img,video,canvas{max-width:100%}
 body{overflow-x:hidden}
+
+.next-marker{
+  width:72px;
+  height:72px;
+  display:grid;
+  place-items:center;
+  border-radius:22px;
+  font-size:2rem;
+  font-weight:950;
+}
+html[data-design="nku"] .next-marker{
+  background:#FFC72C;
+  color:#000;
+}
+@media(max-width:700px){
+  .next-marker{width:64px;height:64px;font-size:1.8rem}
+}
