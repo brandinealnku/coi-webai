@@ -21,7 +21,7 @@
       "stopNumber": "1",
       "shortLabel": "City Fossil",
       "name": "City Fossil Story",
-      "tableLabel": "Stop 1 · City Fossil Story",
+      "tableLabel": "City Fossil Story",
       "recognitionClass": "fossil1",
       "physicalObjectName": "AI Day object 1",
       "scenarioLabel": "Cincinnati city fossil",
@@ -31,9 +31,21 @@
       "notice": {
         "question": "Which feature would you look for to spot a starfish relative?",
         "choices": [
-          {"value":"five-part","label":"A five-part pattern","detail":""},
-          {"value":"round","label":"A round body","detail":""},
-          {"value":"unsure","label":"Not sure","detail":""}
+          {
+            "value": "five-part",
+            "label": "A five-part pattern",
+            "detail": ""
+          },
+          {
+            "value": "round",
+            "label": "A round body",
+            "detail": ""
+          },
+          {
+            "value": "unsure",
+            "label": "Not sure",
+            "detail": ""
+          }
         ]
       },
       "discover": {
@@ -44,8 +56,8 @@
       },
       "next": {
         "artifactId": "stop-4",
-        "label": "Stop 4 · Molting Mystery",
-        "direction": "Find the table label: STOP 4 · MOLTING MYSTERY."
+        "label": "Molting Mystery",
+        "direction": "Find MOLTING MYSTERY."
       }
     },
     {
@@ -53,7 +65,7 @@
       "stopNumber": "4",
       "shortLabel": "Molting",
       "name": "Molting Mystery",
-      "tableLabel": "Stop 4 · Molting Mystery",
+      "tableLabel": "Molting Mystery",
       "recognitionClass": "fossil2",
       "physicalObjectName": "AI Day object 2",
       "scenarioLabel": "Outgrowing a Skeleton",
@@ -63,9 +75,21 @@
       "notice": {
         "question": "Why might a slab contain so many “headless” trilobite bodies?",
         "choices": [
-          {"value":"predator","label":"A predator","detail":""},
-          {"value":"molts","label":"Shedding their shells","detail":""},
-          {"value":"unsure","label":"Not sure","detail":""}
+          {
+            "value": "predator",
+            "label": "A predator",
+            "detail": ""
+          },
+          {
+            "value": "molts",
+            "label": "Shedding their shells",
+            "detail": ""
+          },
+          {
+            "value": "unsure",
+            "label": "Not sure",
+            "detail": ""
+          }
         ]
       },
       "discover": {
@@ -76,8 +100,8 @@
       },
       "next": {
         "artifactId": "stop-5",
-        "label": "Stop 5 · Mystery Donut",
-        "direction": "Find the table label: STOP 5 · MYSTERY DONUT."
+        "label": "Mystery Donut",
+        "direction": "Find MYSTERY DONUT."
       }
     },
     {
@@ -85,7 +109,7 @@
       "stopNumber": "5",
       "shortLabel": "Donut",
       "name": "Mystery Donut",
-      "tableLabel": "Stop 5 · Mystery Donut",
+      "tableLabel": "Mystery Donut",
       "recognitionClass": "fossil3",
       "physicalObjectName": "AI Day object 3",
       "scenarioLabel": "Ordovician donut",
@@ -95,9 +119,21 @@
       "notice": {
         "question": "How do you think this hole formed?",
         "choices": [
-          {"value":"shell","label":"Around another shell","detail":""},
-          {"value":"growth","label":"It grew that way","detail":""},
-          {"value":"unsure","label":"Not sure","detail":""}
+          {
+            "value": "shell",
+            "label": "Around another shell",
+            "detail": ""
+          },
+          {
+            "value": "growth",
+            "label": "It grew that way",
+            "detail": ""
+          },
+          {
+            "value": "unsure",
+            "label": "Not sure",
+            "detail": ""
+          }
         ]
       },
       "discover": {
@@ -108,13 +144,12 @@
       },
       "next": {
         "artifactId": "finale",
-        "label": "Stop 6 · Finale",
-        "direction": "Continue to the STOP 6 · FINALE card."
+        "label": "Finale",
+        "direction": "Continue to the FINALE card."
       }
     }
   ],
   "finale": {
-    "stopNumber": "6",
     "shortLabel": "Finale",
     "title": "Journey complete",
     "headline": "Thanks for exploring.",
@@ -123,5 +158,16 @@
     "learnMoreUrl": "project.html",
     "restartLabel": "Start again",
     "closeNote": "Done for now? You can close this tab."
+  },
+  "about": {
+    "eyebrow": "ABOUT THE PROJECT",
+    "headline": "What are we testing?",
+    "intro": "Expand Your World is an NKU AI Native Studio prototype exploring whether a small digital interaction can help people notice more about physical objects and motivate them to keep exploring.",
+    "section1Heading": "How it works",
+    "section1Body": "Scan or select an object, notice one clue, discover one short interpretation, then choose what to explore next.",
+    "section2Heading": "Why AI Day?",
+    "section2Body": "This AI Day version is a rehearsal. We are testing the visitor flow, interface, physical wayfinding, configurable content, and recognition approach before the final experience is complete.",
+    "section3Heading": "Who built it?",
+    "section3Body": "Students in Northern Kentucky University’s AI Native Studio, working with faculty and project partners."
   }
 }
