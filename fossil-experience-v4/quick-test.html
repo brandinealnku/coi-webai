@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quick Recognition Test · Expand Your World</title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
+<link rel="stylesheet" href="admin.css?v=20261102-quicktest1">
+<style>
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.preview{width:100%;aspect-ratio:3/4;background:#030405;border-radius:18px;object-fit:cover}
+.result{font-size:2rem;font-weight:900;margin:12px 0}.good{color:#78d99a}.warn{color:#FFC72C}.bad{color:#ff8d8d}
+.stat{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+@media(max-width:800px){.quick-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="admin-shell">
+<header><div><span class="eyebrow">EXPAND YOUR WORLD · SMOKE TEST</span><h1>Quick Recognition Test</h1>
+<p>Test one recognition class directly from the shared training data before exporting a full model.</p></div>
+<nav><a href="../train/">Add training photos →</a><br><a href="admin.html">Model setup →</a></nav></header>
+
+<section class="quick-grid">
+<article class="panel">
+<h2>1. Load shared training</h2>
+<label>Recognition class<select id="targetClass"></select></label>
+<button id="loadTraining">Load shared training</button>
+<p id="trainingStatus" class="note" role="status" aria-live="polite">Choose a class and load training.</p>
+<div id="counts"></div>
+<hr>
+<h2>2. Start camera</h2>
+<button id="startCamera" disabled>Start camera</button>
+<button id="stopCamera" class="secondary" disabled>Stop camera</button>
+<p class="note">For a meaningful smoke test, add at least a few Background or Other examples. A one-class model will always choose the target.</p>
+</article>
+
+<article class="panel">
+<video id="video" class="preview" playsinline muted></video>
+<p id="result" class="result">Not running</p>
+<p id="confidence" class="note"></p>
+<div id="probabilities"></div>
+</article>
+</section>
+</main>
+<script src="config.js?v=20261102-quicktest1"></script>
+<script src="quick-test.js?v=20261102-quicktest1"></script>
+</body></html>
