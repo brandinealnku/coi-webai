@@ -8,7 +8,7 @@
   "welcome": {
     "eyebrow": "NKU AI DAY · COMPUTER VISION LAB",
     "headline": "Can the AI tell what it’s looking at?",
-    "body": "Test a trained object, challenge it with something similar, then remove the object completely. Your results will help us think about how computer vision should—or should not—be used in a museum experience.",
+    "body": "Choose any available trained rock, point your phone at it, and see whether the AI recognizes which object you are holding. Then reflect on whether that kind of computer vision interaction would improve a museum experience.",
     "startButton": "Start the experiment"
   },
   "privacy": {
@@ -17,14 +17,14 @@
   },
   "artifacts": [
     {
-      "id": "target-object",
+      "id": "target-rock-a",
       "stopNumber": "1",
-      "shortLabel": "Target Rock",
-      "name": "Target Rock",
-      "tableLabel": "Target Rock",
+      "shortLabel": "Target Rock A",
+      "name": "Target Rock A",
+      "tableLabel": "Target Rock A",
       "recognitionClass": "fossil1",
-      "physicalObjectName": "The rock used to train the AI",
-      "scenarioLabel": "Expected result: recognize this exact rock",
+      "physicalObjectName": "One of the physical rocks trained for the AI Day lab",
+      "scenarioLabel": "Expected result: recognize Target Rock A",
       "referenceImage": "",
       "referenceAlt": "",
       "referenceCaption": "",
@@ -57,9 +57,99 @@
       "next": {
         "artifactId": "finale",
         "label": "Reflect",
-        "direction": "Finish by reflecting on whether computer vision would improve this kind of museum experience."
+        "direction": "Reflect on whether computer vision improved the experience."
       },
-      "labInstruction": "Place the Target Rock inside the camera box and slowly change the angle. Watch for the screen to react when the AI recognizes it."
+      "labInstruction": "Choose any available trained rock, place it inside the camera box, and slowly change the angle. The AI will identify which trained rock it recognizes."
+    },
+    {
+      "id": "target-rock-b",
+      "stopNumber": "2",
+      "shortLabel": "Target Rock B",
+      "name": "Target Rock B",
+      "tableLabel": "Target Rock B",
+      "recognitionClass": "fossil2",
+      "physicalObjectName": "One of the physical rocks trained for the AI Day lab",
+      "scenarioLabel": "Expected result: recognize Target Rock B",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "",
+      "notice": {
+        "question": "What happened when the model looked at the trained target object?",
+        "choices": [
+          {
+            "value": "correct-recognition",
+            "label": "It recognized the target",
+            "detail": ""
+          },
+          {
+            "value": "wrong-result",
+            "label": "It gave the wrong result",
+            "detail": ""
+          },
+          {
+            "value": "no-result",
+            "label": "It did not recognize it",
+            "detail": ""
+          }
+        ]
+      },
+      "discover": {
+        "title": "Recognition is a testable claim.",
+        "text": "You trained the AI with multiple photos of this exact rock. The live camera test checks whether those examples are enough for the model to recognize the physical object from a new view.",
+        "uncertainty": "Today’s model is a prototype. A successful recognition is useful evidence about the interaction, but it does not mean the model is production-ready for museum use.",
+        "source": "AI Day prototype learning"
+      },
+      "next": {
+        "artifactId": "finale",
+        "label": "Reflect",
+        "direction": "Reflect on whether computer vision improved the experience."
+      },
+      "labInstruction": "Choose any available trained rock, place it inside the camera box, and slowly change the angle. The AI will identify which trained rock it recognizes."
+    },
+    {
+      "id": "target-rock-c",
+      "stopNumber": "3",
+      "shortLabel": "Target Rock C",
+      "name": "Target Rock C",
+      "tableLabel": "Target Rock C",
+      "recognitionClass": "fossil3",
+      "physicalObjectName": "One of the physical rocks trained for the AI Day lab",
+      "scenarioLabel": "Expected result: recognize Target Rock C",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "",
+      "notice": {
+        "question": "What happened when the model looked at the trained target object?",
+        "choices": [
+          {
+            "value": "correct-recognition",
+            "label": "It recognized the target",
+            "detail": ""
+          },
+          {
+            "value": "wrong-result",
+            "label": "It gave the wrong result",
+            "detail": ""
+          },
+          {
+            "value": "no-result",
+            "label": "It did not recognize it",
+            "detail": ""
+          }
+        ]
+      },
+      "discover": {
+        "title": "Recognition is a testable claim.",
+        "text": "You trained the AI with multiple photos of this exact rock. The live camera test checks whether those examples are enough for the model to recognize the physical object from a new view.",
+        "uncertainty": "Today’s model is a prototype. A successful recognition is useful evidence about the interaction, but it does not mean the model is production-ready for museum use.",
+        "source": "AI Day prototype learning"
+      },
+      "next": {
+        "artifactId": "finale",
+        "label": "Reflect",
+        "direction": "Reflect on whether computer vision improved the experience."
+      },
+      "labInstruction": "Choose any available trained rock, place it inside the camera box, and slowly change the angle. The AI will identify which trained rock it recognizes."
     }
   ],
   "finale": {
@@ -77,7 +167,7 @@
     "headline": "What are we learning for Cincinnati Museum Center?",
     "intro": "This Computer Vision Lab uses test objects from a personal collection—not Cincinnati Museum Center artifacts. The goal is to let students experience object recognition firsthand while generating evidence for the CMC project.",
     "section1Heading": "The AI question",
-    "section1Body": "Can a model reliably recognize the intended physical object while rejecting similar objects and backgrounds? Today’s test intentionally includes both easy and difficult cases.",
+    "section1Body": "Can a model recognize which of several trained physical objects a visitor is holding from a live phone camera view? Tomorrow’s lab uses multiple proxy objects so more students can participate without waiting for a single specimen.",
     "section2Heading": "The visitor-experience question",
     "section2Body": "If recognition works, does it actually improve the experience? Does it help people engage with the physical object, or does the technology create confusion and friction?",
     "section3Heading": "The design decision",
