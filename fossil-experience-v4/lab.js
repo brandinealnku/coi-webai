@@ -1,5 +1,5 @@
 const CFG=window.CMC_V4_CONFIG||{},ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim(),$=id=>document.getElementById(id);
-let journey=null,challenges=[],model=null,stream=null,raf=null,lastInfer=0,targetRows=[],negativeRows=[],targetNorm=[],negativeNorm=[];
+let journey=null,challenges=[],model=null,stream=null,raf=null,lastInfer=0,targetRows=[],negativeRows=[],targetNorm=[],negativeNorm=[],assetsPromise=null;
 let currentIndex=0,currentDecision=null,currentScores=null,selectedFeature='',stableTargetFrames=0,recognitionTriggered=false,reflection={look:'',trust:'',value:''},sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();
 const video=$('video'),crop=document.createElement('canvas'),ctx=crop.getContext('2d',{willReadFrequently:true});
 
@@ -37,11 +37,50 @@ async function loadTraining(){
   if(negativeRows.length<2)throw new Error('Add at least 2 Other/Background examples before running the lab.');
   targetNorm=targetRows.map(normalize);negativeNorm=negativeRows.map(normalize)
 }
+async function warmRecognitionAssets(){
+  if(model&&targetNorm.length)return;
+  if(assetsPromise)return assetsPromise;
+  assetsPromise=(async()=>{
+    if(!model){
+      await tf.setBackend('webgl');
+      await tf.ready();
+      model=await mobilenet.load({version:2,alpha:1});
+    }
+    if(!targetNorm.length)await loadTraining();
+  })();
+  try{await assetsPromise}catch(e){assetsPromise=null;throw e}
+}
 async function startCamera(){
-  if(!model){$('analysisStatus').textContent='Loading AI model…';await tf.setBackend('webgl');await tf.ready();model=await mobilenet.load({version:2,alpha:1})}
-  if(!targetNorm.length){$('analysisStatus').textContent='Loading shared training…';await loadTraining()}
-  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
-  video.srcObject=stream;await video.play();currentDecision=null;currentScores=null;stableTargetFrames=0;recognitionTriggered=false;$('recognitionFlash').classList.add('hidden');document.querySelector('.stage')?.classList.remove('recognized');$('recordCameraResult').disabled=true;$('decisionText').textContent='Looking for the Target Rock…';$('analysisStatus').textContent='Camera running. Hold the requested view inside the box and slowly change the angle.';$('cameraChallenge').textContent=challenges[currentIndex]?.name||'Live model';show('camera');raf=requestAnimationFrame(loop)
+  const btn=$('beginCamera');
+  btn.disabled=true;btn.textContent='Opening camera…';
+  currentDecision=null;currentScores=null;stableTargetFrames=0;recognitionTriggered=false;
+  $('recognitionFlash').classList.add('hidden');
+  document.querySelector('.stage')?.classList.remove('recognized');
+  $('recordCameraResult').disabled=true;
+  $('decisionText').textContent='Starting camera…';
+  $('targetScore').textContent='—';$('rejectScore').textContent='—';
+  $('decisionExplanation').textContent='Camera is opening while the AI finishes getting ready.';
+  $('analysisStatus').textContent='Opening camera…';
+  $('cameraChallenge').textContent=challenges[currentIndex]?.name||'Live model';
+  show('camera');
+
+  const cameraPromise=navigator.mediaDevices.getUserMedia({
+    video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},
+    audio:false
+  });
+  const assets=warmRecognitionAssets();
+
+  stream=await cameraPromise;
+  video.srcObject=stream;
+  await video.play();
+  $('analysisStatus').textContent='Camera ready. Finishing AI setup…';
+
+  await assets;
+  $('decisionText').textContent='Looking for the Target Rock…';
+  $('decisionExplanation').textContent='The AI is ready and analyzing the live camera view.';
+  $('analysisStatus').textContent='Camera running. Hold the requested view inside the box and slowly change the angle.';
+  btn.disabled=false;btn.textContent='Test with camera';
+  raf=requestAnimationFrame(loop)
 }
 function stopCamera(){if(raf)cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null}
 function loop(ts){
@@ -120,8 +159,8 @@ function finish(){
   const f=journey.finale||{};$('completionLabel').textContent=(f.title||'Experiment complete').toUpperCase();$('finaleHeadline').textContent=f.headline||'Experiment complete.';$('finaleBody').textContent=f.body||'';$('learnMore').textContent=f.learnMoreLabel||'Why this matters for CMC';$('learnMore').href=f.learnMoreUrl||'project.html';show('finale')
 }
 function reset(){stopCamera();currentIndex=0;currentDecision=null;currentScores=null;selectedFeature='';stableTargetFrames=0;recognitionTriggered=false;reflection={look:'',trust:'',value:''};sessionId=crypto.randomUUID?crypto.randomUUID():'lab-'+Date.now();$('recognitionFlash').classList.add('hidden');document.querySelector('.stage')?.classList.remove('recognized');$('outcomeState').className='result-outcome hidden';renderProgress();show('intro');send('lab-restart')}
-$('startLab').onclick=()=>{send('lab-start');renderChallenge()};
-$('beginCamera').onclick=()=>startCamera().catch(e=>{$('analysisStatus').textContent='Camera/model error: '+e.message;show('camera')});
+$('startLab').onclick=()=>{send('lab-start');renderChallenge();warmRecognitionAssets().catch(e=>{console.error(e);send('lab-preload-error',{outcome:e.message||'asset preload failed'})})};
+$('beginCamera').onclick=()=>startCamera().catch(e=>{const btn=$('beginCamera');btn.disabled=false;btn.textContent='Try camera again';$('decisionText').textContent='Camera could not start';$('analysisStatus').textContent='Camera/model error: '+e.message;show('camera')});
 $('skipCamera').onclick=()=>recordResult('unavailable');
 $('recordCameraResult').onclick=()=>recordResult();
 $('stopCamera').onclick=()=>{stopCamera();$('analysisStatus').textContent='Camera stopped.'};
