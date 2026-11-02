@@ -6,10 +6,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
-<link rel="stylesheet" href="admin.css?v=20261102-quicktest1">
+<link rel="stylesheet" href="admin.css?v=20261102-quicktest2">
 <style>
 .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
-.preview{width:100%;aspect-ratio:3/4;background:#030405;border-radius:18px;object-fit:cover}
+.video-wrap{position:relative;width:100%}.preview{width:100%;aspect-ratio:3/4;background:#030405;border-radius:18px;object-fit:cover;display:block}.focus-box{position:absolute;left:17%;right:17%;top:22%;bottom:22%;border:4px solid #FFC72C;border-radius:22px;box-shadow:0 0 0 9999px rgba(0,0,0,.18);display:flex;align-items:flex-start;justify-content:center;pointer-events:none;transition:border-color .15s ease,box-shadow .15s ease}.focus-box span{margin-top:10px;background:#000;color:#FFC72C;padding:6px 9px;border-radius:999px;font-size:.72rem;font-weight:900;letter-spacing:.05em}.focus-box.recognized{border-color:#78d99a;box-shadow:0 0 0 9999px rgba(0,0,0,.12)}.focus-box.recognized span{background:#78d99a;color:#07140f}.focus-box.rejected{border-color:#ff8d8d}.focus-box.rejected span{background:#ff8d8d;color:#250000}
 .result{font-size:2rem;font-weight:900;margin:12px 0}.good{color:#78d99a}.warn{color:#FFC72C}.bad{color:#ff8d8d}
 .stat{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
 @media(max-width:800px){.quick-grid{grid-template-columns:1fr}}
@@ -36,7 +36,12 @@
 </article>
 
 <article class="panel">
-<video id="video" class="preview" playsinline muted></video>
+<div class="video-wrap">
+  <video id="video" class="preview" playsinline muted></video>
+  <div id="focusBox" class="focus-box" aria-hidden="true">
+    <span id="boxLabel">CENTER OBJECT HERE</span>
+  </div>
+</div>
 <p id="result" class="result">Not running</p>
 <p id="confidence" class="note"></p>
 <div id="probabilities"></div>
