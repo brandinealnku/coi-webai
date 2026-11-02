@@ -1,6 +1,6 @@
 const CFG=window.CMC_V4_CONFIG||{},ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim(),$=id=>document.getElementById(id);
 let journey=null,model=null,stream=null,raf=null,target='',targetRows=[],negativeRows=[];
-let centroid=null,threshold=.85,framesAnalyzed=0,lastAnalysisAt=0,stable=0,lastPositive=false;
+let targetNorm=[],negativeNorm=[],framesAnalyzed=0,lastAnalysisAt=0,stable=0,lastPositive=false;
 const video=$('video'),crop=document.createElement('canvas'),ctx=crop.getContext('2d',{willReadFrequently:true});
 
 async function loadJourney(){const r=await fetch('journey.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Could not load journey.json');return r.json()}
@@ -10,14 +10,11 @@ function embedding(){const f=cropFrame();if(!f)return null;const t=model.infer(f
 function norm(v){let s=0;for(const x of v)s+=x*x;return Math.sqrt(s)||1}
 function normalize(v){const n=norm(v);return v.map(x=>x/n)}
 function cosine(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s}
-function meanVector(rows){
- const out=new Array(rows[0].length).fill(0);
- for(const r of rows)for(let i=0;i<r.length;i++)out[i]+=r[i];
- for(let i=0;i<out.length;i++)out[i]/=rows.length;
- return normalize(out);
+function bestSimilarity(vec,rows){
+ let best=-1;
+ for(const r of rows){const s=cosine(vec,r);if(s>best)best=s}
+ return best;
 }
-function percentile(sorted,p){if(!sorted.length)return 0;const i=Math.min(sorted.length-1,Math.max(0,Math.floor((sorted.length-1)*p)));return sorted[i]}
-function scoreRows(rows){return rows.map(r=>cosine(normalize(r),centroid)).sort((a,b)=>a-b)}
 function renderCounts(data){
  const t=data?.classes?.[target]?.length||0,o=data?.classes?.other?.length||0,b=data?.classes?.background?.length||0;
  $('counts').innerHTML=
@@ -33,21 +30,14 @@ async function loadTraining(){
  negativeRows=[...(data?.classes?.other||[]),...(data?.classes?.background||[])];
  renderCounts(data);
  if(targetRows.length<2)throw new Error('Need at least 2 '+target+' examples.');
- centroid=meanVector(targetRows);
- const pos=scoreRows(targetRows),neg=scoreRows(negativeRows);
- const posFloor=percentile(pos,.10);
- const maxNeg=neg.length?Math.max(...neg):0;
- if(neg.length&&posFloor>maxNeg){
-   threshold=(posFloor+maxNeg)/2;
-   $('trainingStatus').textContent='One-class verifier ready. '+targetRows.length+' fossil examples define the target; '+negativeRows.length+' rejection examples help set the cutoff.';
- }else if(neg.length){
-   threshold=Math.max(.82,posFloor);
-   $('trainingStatus').textContent='One-class verifier loaded, but target and rejection examples overlap. Current cutoff is conservative; add more varied fossil1 and rejection photos if false positives continue.';
- }else{
-   threshold=Math.max(.85,posFloor-.03);
-   $('trainingStatus').textContent='One-class verifier loaded with no rejection examples. It can test fossil similarity, but add Other/Background examples to improve the cutoff.';
+ targetNorm=targetRows.map(normalize);
+ negativeNorm=negativeRows.map(normalize);
+ if(negativeNorm.length<2){
+   $('trainingStatus').textContent='Verifier loaded, but you need at least 2 rejection examples for a meaningful test.';
+   $('startCamera').disabled=true;
+   return;
  }
- $('trainingStatus').textContent+=' Match cutoff: '+Math.round(threshold*100)+'%.';
+ $('trainingStatus').textContent='Nearest-neighbor verifier ready. '+targetRows.length+' fossil examples vs '+negativeRows.length+' rejection examples. A frame is accepted only when it is clearly closer to fossil1 than to any rejection example.';
  $('startCamera').disabled=false;
 }
 async function startCamera(){
@@ -66,7 +56,11 @@ async function loop(ts){
    const e=embedding();
    if(!e){$('analysisStatus').textContent='Camera is on, but no usable frame is available yet.'}
    else{
-     const score=cosine(normalize(e),centroid),positive=score>=threshold;
+     const v=normalize(e);
+     const fossilScore=bestSimilarity(v,targetNorm);
+     const rejectScore=bestSimilarity(v,negativeNorm);
+     const margin=fossilScore-rejectScore;
+     const positive=fossilScore>=.90&&margin>=.025;
      stable=(positive&&lastPositive)?stable+1:(positive?1:0);lastPositive=positive;
      const recognized=stable>=4;framesAnalyzed++;
      $('analysisStatus').textContent='Analyzing live camera · frame '+framesAnalyzed;
@@ -74,10 +68,11 @@ async function loop(ts){
      $('boxLabel').textContent=recognized?'FOSSIL1 RECOGNIZED':positive?'HOLD STEADY':'NOT FOSSIL1';
      $('result').textContent=recognized?'RECOGNIZED: '+target:(positive?'POSSIBLE MATCH':'REJECTED');
      $('result').className='result '+(recognized?'good':positive?'warn':'bad');
-     $('confidence').textContent='Fossil match score: '+Math.round(score*100)+'% · cutoff: '+Math.round(threshold*100)+'% · stable frames: '+stable+'/4';
+     $('confidence').textContent='Nearest fossil similarity: '+Math.round(fossilScore*1000)/10+'% · nearest rejection similarity: '+Math.round(rejectScore*1000)/10+'% · margin: '+Math.round(margin*1000)/10+' pts · stable frames: '+stable+'/4';
      $('probabilities').innerHTML=
-       '<div class="stat"><strong>fossil1 match</strong><span>'+Math.round(score*100)+'%</span></div>'+
-       '<div class="stat"><strong>decision</strong><span>'+(score>=threshold?'candidate':'reject')+'</span></div>';
+       '<div class="stat"><strong>nearest fossil1</strong><span>'+Math.round(fossilScore*1000)/10+'%</span></div>'+
+       '<div class="stat"><strong>nearest rejection</strong><span>'+Math.round(rejectScore*1000)/10+'%</span></div>'+
+       '<div class="stat"><strong>decision</strong><span>'+(positive?'candidate':'reject')+'</span></div>';
    }
  }catch(e){console.error(e);$('analysisStatus').textContent='Analysis error: '+(e?.message||String(e));$('result').textContent='ANALYSIS ERROR';$('result').className='result bad'}
  if(stream)raf=requestAnimationFrame(loop);
