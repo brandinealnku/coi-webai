@@ -1,173 +1,173 @@
 {
   "schemaVersion": 1,
-  "id": "nku-ai-day-2026",
-  "title": "Expand Your World",
+  "id": "nku-ai-day-computer-vision-lab-2026",
+  "title": "Computer Vision Lab",
   "eventLabel": "NKU AI DAY",
   "theme": "nku",
-  "brandLine": "CMC × NKU AI Native Studio",
+  "brandLine": "NKU AI Native Studio × Cincinnati Museum Center",
   "welcome": {
-    "eyebrow": "NKU AI DAY · EXPAND YOUR WORLD",
-    "headline": "Look closer.",
-    "body": "Scan an object. Notice one clue. Follow where it leads.",
-    "startButton": "Start exploring"
+    "eyebrow": "NKU AI DAY · COMPUTER VISION LAB",
+    "headline": "Can the AI tell what it’s looking at?",
+    "body": "Test a trained object, challenge it with something similar, then remove the object completely. Your results will help us think about how computer vision should—or should not—be used in a museum experience.",
+    "startButton": "Start the experiment"
   },
   "privacy": {
-    "summary": "Camera & privacy",
-    "body": "Images stay on your device. Anonymous interaction data and optional feedback are recorded."
+    "summary": "Camera & study data",
+    "body": "Camera images stay on your device. Anonymous interaction results and feedback are recorded for this prototype study."
   },
   "artifacts": [
     {
-      "id": "stop-1",
+      "id": "target-object",
       "stopNumber": "1",
-      "shortLabel": "City Fossil",
-      "name": "City Fossil Story",
-      "tableLabel": "City Fossil Story",
+      "shortLabel": "Target",
+      "name": "Target Object",
+      "tableLabel": "Target Object",
       "recognitionClass": "fossil1",
-      "physicalObjectName": "AI Day object 1",
-      "scenarioLabel": "Cincinnati city fossil",
+      "physicalObjectName": "The object used to train the model",
+      "scenarioLabel": "Expected result: recognize the target",
       "referenceImage": "",
       "referenceAlt": "",
-      "referenceCaption": "Look at the museum image.",
+      "referenceCaption": "",
       "notice": {
-        "question": "Which feature would you look for to spot a starfish relative?",
+        "question": "What happened when the model looked at the trained target object?",
         "choices": [
           {
-            "value": "five-part",
-            "label": "A five-part pattern",
+            "value": "correct-recognition",
+            "label": "It recognized the target",
             "detail": ""
           },
           {
-            "value": "round",
-            "label": "A round body",
+            "value": "wrong-result",
+            "label": "It gave the wrong result",
             "detail": ""
           },
           {
-            "value": "unsure",
-            "label": "Not sure",
+            "value": "no-result",
+            "label": "It did not recognize it",
             "detail": ""
           }
         ]
       },
       "discover": {
-        "title": "An ancient relative of starfish.",
-        "text": "This animal was related to starfish and lived in Cincinnati’s ancient sea.",
-        "uncertainty": "",
-        "source": "CMC Stop 1 · Cincinnati City Fossil · Catalog IP87827"
+        "title": "Recognition is a testable claim.",
+        "text": "A model can appear confident and still be wrong. What matters is whether it behaves correctly across target objects, similar objects, and backgrounds—not just whether it recognizes one training example.",
+        "uncertainty": "Today’s model is a prototype. False positives and misses are useful evidence about what would need to improve before museum use.",
+        "source": "AI Day prototype learning"
       },
       "next": {
-        "artifactId": "stop-4",
-        "label": "Molting Mystery",
-        "direction": "Find MOLTING MYSTERY."
+        "artifactId": "similar-object",
+        "label": "Similar Object Challenge",
+        "direction": "Pick up the similar-looking object and test whether the model rejects it."
       }
     },
     {
-      "id": "stop-4",
-      "stopNumber": "4",
-      "shortLabel": "Molting",
-      "name": "Molting Mystery",
-      "tableLabel": "Molting Mystery",
-      "recognitionClass": "fossil2",
-      "physicalObjectName": "AI Day object 2",
-      "scenarioLabel": "Outgrowing a Skeleton",
+      "id": "similar-object",
+      "stopNumber": "2",
+      "shortLabel": "Similar",
+      "name": "Similar Object Challenge",
+      "tableLabel": "Similar Object",
+      "recognitionClass": "",
+      "physicalObjectName": "A different object that looks somewhat similar",
+      "scenarioLabel": "Expected result: reject the similar object",
       "referenceImage": "",
       "referenceAlt": "",
-      "referenceCaption": "Look at the museum image.",
+      "referenceCaption": "",
       "notice": {
-        "question": "Why might a slab contain so many “headless” trilobite bodies?",
+        "question": "What did the model do with the similar-looking object?",
         "choices": [
           {
-            "value": "predator",
-            "label": "A predator",
+            "value": "correct-reject",
+            "label": "It rejected the object",
             "detail": ""
           },
           {
-            "value": "molts",
-            "label": "Shedding their shells",
+            "value": "false-positive",
+            "label": "It called it the target",
             "detail": ""
           },
           {
-            "value": "unsure",
-            "label": "Not sure",
+            "value": "unclear",
+            "label": "The result was unclear",
             "detail": ""
           }
         ]
       },
       "discover": {
-        "title": "They weren’t headless bodies after all.",
-        "text": "Trilobites grew by molting—crawling out of an old outer skeleton.",
-        "uncertainty": "While soft, they were vulnerable.",
-        "source": "CMC Stop 4 · Catalogs IP52930 and IP87975"
+        "title": "Similar objects expose false positives.",
+        "text": "If the model mistakes this object for the target, it may be relying on broad visual features such as shape, texture, or color rather than the exact object identity.",
+        "uncertainty": "That does not make the experiment useless—it tells us where this recognition approach breaks down.",
+        "source": "AI Day prototype learning"
       },
       "next": {
-        "artifactId": "stop-5",
-        "label": "Mystery Donut",
-        "direction": "Find MYSTERY DONUT."
+        "artifactId": "background-test",
+        "label": "Background Test",
+        "direction": "Remove the objects from view and point the camera at the table or surrounding background."
       }
     },
     {
-      "id": "stop-5",
-      "stopNumber": "5",
-      "shortLabel": "Donut",
-      "name": "Mystery Donut",
-      "tableLabel": "Mystery Donut",
-      "recognitionClass": "fossil3",
-      "physicalObjectName": "AI Day object 3",
-      "scenarioLabel": "Ordovician donut",
+      "id": "background-test",
+      "stopNumber": "3",
+      "shortLabel": "Background",
+      "name": "Background Test",
+      "tableLabel": "Background / No Object",
+      "recognitionClass": "",
+      "physicalObjectName": "No target object in the camera view",
+      "scenarioLabel": "Expected result: reject the background",
       "referenceImage": "",
       "referenceAlt": "",
-      "referenceCaption": "Look at the museum image.",
+      "referenceCaption": "",
       "notice": {
-        "question": "How do you think this hole formed?",
+        "question": "What happened when no target object was in view?",
         "choices": [
           {
-            "value": "shell",
-            "label": "Around another shell",
+            "value": "correct-reject",
+            "label": "It rejected the background",
             "detail": ""
           },
           {
-            "value": "growth",
-            "label": "It grew that way",
+            "value": "false-positive",
+            "label": "It still called it the target",
             "detail": ""
           },
           {
-            "value": "unsure",
-            "label": "Not sure",
+            "value": "unclear",
+            "label": "The result was unclear",
             "detail": ""
           }
         ]
       },
       "discover": {
-        "title": "The mystery is real.",
-        "text": "This colony probably grew around a shell—but the shell left no trace.",
-        "uncertainty": "Scientists still don’t know exactly what happened.",
-        "source": "CMC Stop 5 · Ordovician Donut · Catalog IP56360"
+        "title": "A useful model needs to know when to say “not this.”",
+        "text": "For a museum experience, false positives matter because a visitor may point the camera at the wrong object, a display case, another visitor, or the floor.",
+        "uncertainty": "Reliable rejection may require a different recognition approach, more targeted training, or a simpler interaction design.",
+        "source": "AI Day prototype learning"
       },
       "next": {
         "artifactId": "finale",
-        "label": "Finale",
-        "direction": "Continue to the FINALE card."
+        "label": "CMC Reflection",
+        "direction": "Finish by telling us whether computer vision would improve this kind of museum experience."
       }
     }
   ],
   "finale": {
-    "shortLabel": "Finale",
-    "title": "Journey complete",
-    "headline": "Thanks for exploring.",
-    "body": "You made it to the end of the AI Day experience.",
-    "learnMoreLabel": "Learn about the project",
+    "shortLabel": "Reflect",
+    "title": "Experiment complete",
+    "headline": "You just stress-tested a computer vision prototype.",
+    "body": "Your results help us evaluate not only whether recognition works, but whether it creates enough visitor value to justify its complexity in a museum setting.",
+    "learnMoreLabel": "Why this matters for CMC",
     "learnMoreUrl": "project.html",
-    "restartLabel": "Start again",
-    "closeNote": "Done for now? You can close this tab."
+    "restartLabel": "Run the experiment again",
+    "closeNote": "Thanks for helping us test the idea."
   },
   "about": {
-    "eyebrow": "ABOUT THE PROJECT",
-    "headline": "What are we testing?",
-    "intro": "Expand Your World is an NKU AI Native Studio prototype exploring whether a small digital interaction can help people notice more about physical objects and motivate them to keep exploring.",
-    "section1Heading": "How it works",
-    "section1Body": "Scan or select an object, notice one clue, discover one short interpretation, then choose what to explore next.",
-    "section2Heading": "Why AI Day?",
-    "section2Body": "This AI Day version is a rehearsal. We are testing the visitor flow, interface, physical wayfinding, configurable content, and recognition approach before the final experience is complete.",
-    "section3Heading": "Who built it?",
-    "section3Body": "Students in Northern Kentucky University’s AI Native Studio, working with faculty and project partners."
+    "eyebrow": "WHY THIS MATTERS",
+    "headline": "What are we learning for Cincinnati Museum Center?",
+    "intro": "This Computer Vision Lab uses test objects from a personal collection—not Cincinnati Museum Center artifacts. The goal is to let students experience object recognition firsthand while generating evidence for the CMC project.",
+    "section1Heading": "The AI question",
+    "section1Body": "Can a model reliably recognize the intended physical object while rejecting similar objects and backgrounds? Today’s test intentionally includes both easy and difficult cases.",
+    "section2Heading": "The visitor-experience question",
+    "section2Body": "If recognition works, does it actually improve the experience? Does it help people engage with the physical object, or does the technology create confusion and friction?",
+    "section3Heading": "The design decision",
+    "section3Body": "The field study helps the AI Native Studio compare computer vision with simpler alternatives such as QR codes or manual object selection before recommending what belongs in the final museum experience."
   }
 }
