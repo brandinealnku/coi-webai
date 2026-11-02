@@ -58,7 +58,8 @@
         "artifactId": "similar-object",
         "label": "Similar Object Challenge",
         "direction": "Pick up the similar-looking object and test whether the model rejects it."
-      }
+      },
+      "labInstruction": "Place the trained Target Object inside the camera box."
     },
     {
       "id": "similar-object",
@@ -102,7 +103,8 @@
         "artifactId": "background-test",
         "label": "Background Test",
         "direction": "Remove the objects from view and point the camera at the table or surrounding background."
-      }
+      },
+      "labInstruction": "Replace it with the Similar Object and keep that object centered in the camera box."
     },
     {
       "id": "background-test",
@@ -146,7 +148,8 @@
         "artifactId": "finale",
         "label": "CMC Reflection",
         "direction": "Finish by telling us whether computer vision would improve this kind of museum experience."
-      }
+      },
+      "labInstruction": "Remove all objects from view and point the camera at the table or surrounding background."
     }
   ],
   "finale": {
