@@ -1,5 +1,5 @@
 const CFG=window.CMC_V4_CONFIG||{},ENDPOINT=(CFG.GOOGLE_SCRIPT_URL||'').trim(),$=id=>document.getElementById(id);
-let journey=null,model=null,classifier=null,stream=null,raf=null,target='',classes=[];
+let journey=null,model=null,classifier=null,stream=null,raf=null,target='',classes=[],stable=0,lastTarget=false;
 const video=$('video'),crop=document.createElement('canvas'),ctx=crop.getContext('2d',{willReadFrequently:true});
 async function loadJourney(){const r=await fetch('journey.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Could not load journey.json');return r.json()}
 function jsonp(url){return new Promise((resolve,reject)=>{const cb='quick_'+Date.now()+'_'+Math.random().toString(16).slice(2),s=document.createElement('script'),cleanup=()=>{try{delete window[cb]}catch{};s.remove()};window[cb]=d=>{cleanup();resolve(d)};s.onerror=()=>{cleanup();reject(new Error('Could not load shared training.'))};s.src=url+'&callback='+encodeURIComponent(cb)+'&_='+Date.now();document.body.appendChild(s)})}
@@ -25,17 +25,25 @@ async function startCamera(){
   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
   video.srcObject=stream;await video.play();$('startCamera').disabled=true;$('stopCamera').disabled=false;loop();
 }
-function stopCamera(){if(raf)cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$('startCamera').disabled=false;$('stopCamera').disabled=true;$('result').textContent='Stopped';$('result').className='result'}
+function stopCamera(){if(raf)cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;stable=0;lastTarget=false;$('focusBox').className='focus-box';$('boxLabel').textContent='CENTER OBJECT HERE';$('startCamera').disabled=false;$('stopCamera').disabled=true;$('result').textContent='Stopped';$('result').className='result'}
 async function loop(){
   if(!stream)return;
   try{
     const a=activation();
-    if(a){const r=await classifier.predictClass(a,5);a.dispose();const conf=(r.confidences||{})[r.label]||0;
-      const isTarget=r.label===target;
-      $('result').textContent=isTarget?'TARGET: '+target:'NOT TARGET: '+r.label;
-      $('result').className='result '+(isTarget?(conf>=.78?'good':'warn'):'bad');
-      $('confidence').textContent='Top confidence: '+Math.round(conf*100)+'%';
-      $('probabilities').innerHTML=classes.map(c=>'<div class="stat"><strong>'+c+'</strong><span>'+Math.round(((r.confidences||{})[c]||0)*100)+'%</span></div>').join('');
+    if(a){
+      const r=await classifier.predictClass(a,5);a.dispose();
+      const p=r.confidences||{},targetScore=p[target]||0;
+      const negativeScore=Math.max(p.other||0,p.background||0);
+      const margin=targetScore-negativeScore;
+      const candidate=r.label===target&&targetScore>=.72&&margin>=.18;
+      stable=(candidate&&lastTarget)?stable+1:(candidate?1:0);lastTarget=candidate;
+      const recognized=stable>=4;
+      $('focusBox').className='focus-box '+(recognized?'recognized':candidate?'':'rejected');
+      $('boxLabel').textContent=recognized?'RECOGNIZED':candidate?'HOLD STEADY':'CENTER TARGET OBJECT';
+      $('result').textContent=recognized?'RECOGNIZED: '+target:(candidate?'POSSIBLE: '+target:'NOT RECOGNIZED');
+      $('result').className='result '+(recognized?'good':candidate?'warn':'bad');
+      $('confidence').textContent='Similarity score: '+Math.round(targetScore*100)+'% · margin over negatives: '+Math.round(margin*100)+' pts · stable frames: '+stable+'/4';
+      $('probabilities').innerHTML=classes.map(c=>'<div class="stat"><strong>'+c+'</strong><span>'+Math.round((p[c]||0)*100)+'%</span></div>').join('');
     }
   }catch(e){console.error(e)}
   if(stream)raf=requestAnimationFrame(loop);
