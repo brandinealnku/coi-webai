@@ -8,7 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<link rel="stylesheet" href="admin.css?v=20261028-a11y">
+<link rel="stylesheet" href="admin.css?v=20261102-prototype-target1">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
@@ -40,7 +40,7 @@
 
   <hr>
   <h2>2. Review class counts</h2>
-  <p class="note">Target 25–40 varied examples for each recognition-enabled artifact and 20–30 examples for Other object and Background. Artifacts without recognition classes will not appear here.</p>
+  <p class="note">Prototype target for event testing: 8–12 varied examples per recognition-enabled artifact, plus 8–12 Other objects and 8–12 Background examples. More training may improve reliability. Validate before relying on recognition.</p>
   <div id="trainingCounts" class="train" aria-label="Training example counts"></div>
   <p id="readiness" class="note" role="status" aria-live="polite">Load the shared submissions to review the current dataset.</p>
 
@@ -54,13 +54,13 @@
 
 <article class="panel">
   <h2>3. Run held-out validation</h2>
-  <p class="note">Before export, test photos that were never used for training. Use the Held-out Validation page and check performance across the three selected objects, Other object, Background, and—if possible—more than one phone.</p>
+  <p class="note">Before export, test photos that were never used for training. Validate each recognition-enabled artifact plus Other and Background; if possible, include more than one phone or lighting condition.</p>
   <p><a href="../validate/">Open held-out validation →</a></p>
 
   <hr>
   <h2>4. Export the frozen model</h2>
-  <p class="note">Export is intentionally gated. Reach the full training-count target, complete held-out validation, and confirm the validation below.</p>
-  <label class="privacy-box"><input id="validationConfirmed" type="checkbox"> <span><strong>Held-out validation passed</strong><br>I tested unseen examples across all five classes and the results are acceptable for AI Day.</span></label>
+  <p class="note">Export is intentionally gated for tomorrow’s prototype. Reach the prototype training target, complete held-out validation, and confirm the validation below.</p>
+  <label class="privacy-box"><input id="validationConfirmed" type="checkbox"> <span><strong>Held-out validation passed</strong><br>I tested unseen examples across every configured recognition class plus Other and Background, and the results are acceptable for prototype event use.</span></label>
   <button id="download" type="button" disabled>Download validated training.json</button>
   <p class="note">Before replacing <code>training.json</code>, preserve any previously validated model as <code>training.rollback.json</code>. Then publish the new file and test LIVE on iPhone and Android.</p>
 
@@ -78,6 +78,6 @@
 </section>
 </main>
 <script src="config.js?v=20261029-framework3"></script>
-<script src="admin.js?v=20261029-framework3"></script>
+<script src="admin.js?v=20261102-prototype-target1"></script>
 </body>
 </html>
