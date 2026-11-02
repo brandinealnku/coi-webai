@@ -17,12 +17,12 @@ body{font-family:"Avenir","Avenir Next",Arial,sans-serif;margin:0;padding:24px;b
     for(const a of j.artifacts||[]){
       const s=document.createElement('section');s.className='label';
       const qrId='qr-'+String(a.id).replace(/[^a-z0-9_-]/gi,'-');
-      s.innerHTML='<div class="stop">STOP '+escapeHtml(a.stopNumber||'')+'</div><h1>'+escapeHtml(a.name||a.tableLabel||a.id)+'</h1><p class="proxy">'+escapeHtml(a.physicalObjectName?('Physical object: '+a.physicalObjectName):'Use this label for the configured object.')+'</p><div class="qr-wrap"><div id="'+qrId+'" class="qr" aria-label="QR code for '+escapeHtml(a.name||a.id)+'"></div><div class="qr-caption">Scan to open this stop</div></div>';
+      s.innerHTML='<h1>'+escapeHtml(a.tableLabel||a.name||a.id)+'</h1><p class="proxy">'+escapeHtml(a.physicalObjectName?('Physical object: '+a.physicalObjectName):'Use this label for the configured object.')+'</p><div class="qr-wrap"><div id="'+qrId+'" class="qr" aria-label="QR code for '+escapeHtml(a.name||a.id)+'"></div><div class="qr-caption">Scan to explore this object</div></div>';
       root.appendChild(s);
       const base='https://brandinealnku.github.io/coi-webai/fossil-experience-v4/index.html?artifact='+encodeURIComponent(a.id);
       new QRCode(document.getElementById(qrId),{text:base,width:180,height:180,correctLevel:QRCode.CorrectLevel.M})
     }
-    const f=j.finale||{},s=document.createElement('section');s.className='label';s.innerHTML='<div class="stop">STOP '+escapeHtml(f.stopNumber||'✓')+'</div><h1>'+escapeHtml(f.shortLabel||'FINALE')+'</h1><p>'+escapeHtml(f.body||'Journey complete.')+'</p>';root.appendChild(s);
+    const f=j.finale||{},s=document.createElement('section');s.className='label';s.innerHTML='<h1>'+escapeHtml(f.shortLabel||'FINALE')+'</h1><p>'+escapeHtml(f.body||'Journey complete.')+'</p>';root.appendChild(s);
   }catch(e){root.innerHTML='<p style="color:white">'+escapeHtml(e.message)+'</p>'}
 })();
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
