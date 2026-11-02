@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Computer Vision Lab · NKU AI Day</title>
+<meta name="theme-color" content="#000000">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+<link rel="stylesheet" href="styles.css?v=20261102-lab1">
+<link rel="stylesheet" href="release.css?v=20261102-lab1">
+<link rel="stylesheet" href="theme-nku.css?v=20261102-lab1">
+<style>
+.lab-shell{width:min(780px,calc(100% - 24px));margin:auto;padding:18px 0 48px}.lab-progress{display:flex;gap:8px;margin:14px 0 18px;overflow:auto}.lab-progress span{white-space:nowrap;border:1px solid #555;border-radius:999px;padding:7px 10px;font-size:.78rem}.lab-progress .active{background:#FFC72C;color:#000;border-color:#FFC72C;font-weight:900}.lab-progress .done{border-color:#78d99a}.lab-card{background:#fff;color:#000;border-radius:24px;padding:clamp(20px,5vw,34px);border-top:8px solid #FFC72C}.lab-card h1,.lab-card h2{color:#000}.challenge-note{background:#fff4c7;border-left:5px solid #FFC72C;padding:12px 14px;border-radius:12px;margin:14px 0}.stage{position:relative;overflow:hidden;border-radius:22px;background:#050607}.stage video{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}.focus-box{position:absolute;left:17%;right:17%;top:22%;bottom:22%;border:4px solid #FFC72C;border-radius:22px;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;box-shadow:0 0 0 9999px rgba(0,0,0,.18)}.focus-box span{margin-top:10px;background:#000;color:#FFC72C;padding:6px 10px;border-radius:999px;font-size:.72rem;font-weight:900}.focus-box.match{border-color:#78d99a}.focus-box.match span{background:#78d99a;color:#07140f}.focus-box.reject{border-color:#ff8d8d}.focus-box.reject span{background:#ff8d8d;color:#250000}.decision{font-size:clamp(1.8rem,7vw,3rem);font-weight:950;margin:14px 0 4px}.decision.correct{color:#137333}.decision.incorrect{color:#b3261e}.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.score-box{background:#f4f4f4;border-radius:14px;padding:12px}.choice-list{display:grid;gap:10px}.choice-list button{min-height:54px}.hidden{display:none!important}.lab-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.lab-actions>*{flex:1 1 180px}.micro{font-size:.82rem;color:#555}.result-box{border:2px solid #ddd;border-radius:16px;padding:14px;margin-top:14px}
+</style>
+</head>
+<body>
+<main class="lab-shell">
+<header class="topbar">
+  <div class="brand"><span class="brand-dot" aria-hidden="true"></span><div><strong id="brandTitle">Computer Vision Lab</strong><span id="brandLine">NKU AI Native Studio × Cincinnati Museum Center</span></div></div>
+  <span id="eventLabel" class="event-pill">NKU AI DAY</span>
+</header>
+<div id="progress" class="lab-progress" aria-label="Experiment progress"></div>
+
+<section id="intro" class="lab-card">
+  <span id="introEyebrow" class="eyebrow">NKU AI DAY · COMPUTER VISION LAB</span>
+  <h1 id="introHeadline">Can the AI tell what it’s looking at?</h1>
+  <p id="introBody" class="lede"></p>
+  <div class="challenge-note"><strong>This is an experiment.</strong> A wrong AI answer is useful data. You are testing what the model can and cannot reliably distinguish.</div>
+  <details><summary>Camera & study data</summary><p id="privacyText"></p></details>
+  <div class="lab-actions"><button id="startLab" class="primary xl">Start the experiment</button></div>
+</section>
+
+<section id="challenge" class="lab-card hidden">
+  <span class="eyebrow">COMPUTER VISION TEST</span>
+  <h2 id="challengeName"></h2>
+  <p id="challengeObject" class="lede"></p>
+  <div class="challenge-note"><strong>Expected AI behavior:</strong> <span id="expectedBehavior"></span></div>
+  <p id="challengeDirection"></p>
+  <div class="lab-actions">
+    <button id="beginCamera" class="primary">Test with camera</button>
+    <button id="skipCamera" class="secondary">Record without camera</button>
+  </div>
+</section>
+
+<section id="camera" class="lab-card hidden">
+  <span class="eyebrow">LIVE MODEL</span>
+  <h2 id="cameraChallenge"></h2>
+  <div class="stage">
+    <video id="video" playsinline muted aria-label="Live camera preview"></video>
+    <div id="focusBox" class="focus-box"><span id="focusLabel">CENTER VIEW HERE</span></div>
+  </div>
+  <p id="analysisStatus" class="micro" role="status" aria-live="polite">Starting camera…</p>
+  <div id="liveResult" class="result-box">
+    <div id="decisionText" class="decision">Analyzing…</div>
+    <div class="score-grid">
+      <div class="score-box"><small>Nearest target</small><strong id="targetScore">—</strong></div>
+      <div class="score-box"><small>Nearest rejection</small><strong id="rejectScore">—</strong></div>
+    </div>
+    <p id="decisionExplanation" class="micro"></p>
+  </div>
+  <div class="lab-actions">
+    <button id="recordCameraResult" class="primary" disabled>Record this result</button>
+    <button id="stopCamera" class="secondary">Stop camera</button>
+  </div>
+</section>
+
+<section id="result" class="lab-card hidden">
+  <span class="eyebrow">WHAT HAPPENED?</span>
+  <h2 id="resultHeadline"></h2>
+  <p id="resultSummary" class="lede"></p>
+  <div id="resultLesson" class="challenge-note"></div>
+  <h3>What do you think influenced the model most?</h3>
+  <div id="featureChoices" class="choice-list"></div>
+  <div class="lab-actions"><button id="continueChallenge" class="primary" disabled>Continue</button></div>
+</section>
+
+<section id="reflection" class="lab-card hidden">
+  <span class="eyebrow">CMC REFLECTION</span>
+  <h2>Now think like a museum visitor.</h2>
+  <p class="lede">The technology is only worth using if it improves the physical-object experience.</p>
+
+  <h3>Did this interaction make you look more closely at the physical object?</h3>
+  <div id="lookChoices" class="choice-list"></div>
+
+  <h3>For a museum experience, what would you trust most?</h3>
+  <div id="trustChoices" class="choice-list"></div>
+
+  <h3>Would automatic object recognition improve a museum visit?</h3>
+  <div id="valueChoices" class="choice-list"></div>
+
+  <div class="lab-actions"><button id="finishReflection" class="primary" disabled>Finish</button></div>
+</section>
+
+<section id="finale" class="lab-card hidden">
+  <span id="completionLabel" class="eyebrow">EXPERIMENT COMPLETE</span>
+  <h2 id="finaleHeadline"></h2>
+  <p id="finaleBody" class="lede"></p>
+  <div class="challenge-note"><strong>What your test contributes:</strong> recognition accuracy, false-positive behavior, rejection behavior, and visitor feedback about whether computer vision is worth using for CMC.</div>
+  <div class="lab-actions">
+    <a id="learnMore" class="primary" href="project.html">Why this matters for CMC</a>
+    <button id="restartLab" class="secondary">Run again</button>
+  </div>
+</section>
+</main>
+<script src="config.js?v=20261102-lab1"></script>
+<script src="lab.js?v=20261102-lab1"></script>
+</body>
+</html>
