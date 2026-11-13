@@ -70,3 +70,237 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   .next-actions,.finale-actions{display:grid;grid-template-columns:1fr}.next-actions>*,.finale-actions>*{width:100%}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.loader,.scan-line{animation:none!important}}
+
+
+/* === CMC website composition pass === */
+:root{
+  --cmc-blue:#004765;
+  --cmc-hero-image:url("https://tickets.cincymuseum.org/api/assets/cincymuseum/9c57fc34-7920-27f6-00a8-96019152afea?shrinkonly=&sizex=1500");
+  --cmc-font:graphein_pro,Arial,Helvetica,sans-serif;
+}
+
+.cmc-utility{
+  background:var(--cmc-black);
+  color:#fff;
+}
+.cmc-utility-inner{
+  width:min(var(--cmc-max),calc(100% - (var(--cmc-gutter) * 2)));
+  min-height:42px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  font-size:.64rem;
+  font-weight:900;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+.cmc-menu-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.cmc-menu-label::before{
+  content:"";
+  width:18px;
+  height:2px;
+  background:currentColor;
+  box-shadow:0 6px 0 currentColor,0 -6px 0 currentColor;
+}
+.cmc-utility-links{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.cmc-utility-links span:first-child{color:#f28c28}
+
+.topbar{
+  min-height:94px;
+  display:grid;
+  grid-template-columns:1.35fr 1fr auto;
+  align-items:center;
+  gap:30px;
+}
+.cmc-wordmark{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-width:0;
+}
+.cmc-wordmark div{display:grid;gap:1px}
+.cmc-wordmark strong{
+  color:var(--cmc-black);
+  font-size:1.02rem;
+  line-height:1;
+  font-weight:900;
+}
+.cmc-wordmark span:not(.cmc-arch){
+  color:var(--cmc-muted);
+  font-size:.57rem;
+  font-weight:900;
+  letter-spacing:.14em;
+}
+.cmc-arch{
+  position:relative;
+  width:48px;
+  height:34px;
+  display:block;
+  flex:0 0 auto;
+  background:var(--cmc-accent);
+  overflow:hidden;
+}
+.cmc-arch::after{
+  content:"";
+  position:absolute;
+  width:34px;
+  height:22px;
+  left:7px;
+  bottom:-11px;
+  border-radius:50% 50% 0 0;
+  background:#fff;
+}
+.brand{
+  padding-left:24px;
+  border-left:1px solid var(--cmc-line);
+}
+.brand strong{
+  font-size:.72rem;
+  letter-spacing:.11em;
+}
+.brand span{
+  font-size:.62rem;
+}
+
+.route-strip{
+  background:var(--cmc-paper);
+  width:100%;
+  padding:13px max(var(--cmc-gutter),calc((100% - var(--cmc-max))/2));
+  border-top:1px solid var(--cmc-line);
+  border-bottom:1px solid var(--cmc-line);
+}
+
+#welcome.screen{
+  width:100%;
+  padding:0;
+  min-height:calc(100vh - 150px);
+  align-items:stretch;
+}
+.welcome-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr);
+  min-height:calc(100vh - 150px);
+}
+.cmc-hero-photo{
+  min-height:580px;
+  background-image:
+    linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.18)),
+    var(--cmc-hero-image);
+  background-size:cover;
+  background-position:center;
+}
+#welcome .welcome-panel{
+  max-width:none;
+  border:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:clamp(48px,7vw,100px);
+  background:var(--cmc-white);
+}
+#welcome .eyebrow{
+  color:var(--cmc-accent);
+  margin-bottom:6px;
+}
+#welcome h1{
+  max-width:7ch;
+  font-size:clamp(4rem,7vw,7.4rem);
+  line-height:.84;
+  letter-spacing:-.055em;
+}
+#welcome .lede{
+  max-width:32rem;
+  font-size:clamp(1.08rem,1.7vw,1.35rem);
+}
+#welcome .privacy-details{
+  max-width:34rem;
+}
+#welcome .xl{
+  align-self:flex-start;
+  min-width:220px;
+  background:var(--cmc-black);
+  border-color:var(--cmc-black);
+}
+#welcome .xl:hover,
+#welcome .xl:focus-visible{
+  background:var(--cmc-accent);
+  border-color:var(--cmc-accent);
+  color:#fff;
+}
+
+.screen:not(#welcome){
+  padding-top:64px;
+}
+.screen:not(#welcome) .card,
+.camera-wrap{
+  max-width:960px;
+}
+.screen:not(#welcome) .card{
+  position:relative;
+}
+.screen:not(#welcome) .card::before,
+.camera-wrap::before{
+  content:"MUSEUM OF NATURAL HISTORY & SCIENCE";
+  display:block;
+  margin-bottom:16px;
+  color:var(--cmc-accent);
+  font-size:.65rem;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.primary{
+  background:var(--cmc-blue);
+  border-color:var(--cmc-blue);
+}
+.primary:hover,
+.primary:focus-visible{
+  background:#fff;
+  color:var(--cmc-blue);
+}
+.event-pill{
+  background:var(--cmc-accent);
+}
+
+@media(max-width:850px){
+  .topbar{
+    grid-template-columns:1fr auto;
+    gap:14px;
+    padding:14px 0;
+  }
+  .brand{display:none}
+  .welcome-grid{grid-template-columns:1fr}
+  .cmc-hero-photo{
+    min-height:38vh;
+    order:0;
+  }
+  #welcome .welcome-panel{
+    order:1;
+    padding:34px 20px 44px;
+  }
+  #welcome h1{
+    font-size:clamp(3.2rem,16vw,5.4rem);
+  }
+}
+@media(max-width:620px){
+  .cmc-utility-links span:not(:first-child){display:none}
+  .cmc-wordmark strong{font-size:.84rem}
+  .cmc-wordmark span:not(.cmc-arch){display:none}
+  .cmc-arch{width:40px;height:28px}
+  .study-meta{display:none}
+  .topbar{grid-template-columns:1fr}
+  .cmc-utility-inner{padding:0 16px;width:100%}
+  .route-strip{padding-inline:16px}
+}
