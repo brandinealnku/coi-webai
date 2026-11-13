@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "id": "exyowo-cmc-prototype-2026",
+  "title": "Expand Your World",
+  "eventLabel": "CMC PROTOTYPE",
+  "theme": "cmc",
+  "brandLine": "Cincinnati Museum Center × NKU AI Native Studio",
+  "welcome": {
+    "eyebrow": "MUSEUM OF NATURAL HISTORY & SCIENCE",
+    "headline": "Expand Your World.",
+    "body": "Look closer at a physical object, follow your curiosity, and discover where it can take you next.",
+    "startButton": "BEGIN EXPLORING"
+  },
+  "privacy": {
+    "summary": "Camera & privacy",
+    "body": "Camera images stay on your device. Anonymous interaction data and optional feedback may be recorded for prototype testing."
+  },
+  "artifacts": [
+    {
+      "id": "stop-1",
+      "stopNumber": "1",
+      "shortLabel": "City Fossil",
+      "name": "Cincinnati City Fossil",
+      "tableLabel": "Cincinnati City Fossil",
+      "recognitionClass": "fossil1",
+      "physicalObjectName": "Cincinnati City Fossil target",
+      "scenarioLabel": "Ancient Cincinnati",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "",
+      "notice": {
+        "question": "What would you look for to spot an ancient relative of a starfish?",
+        "choices": [
+          {
+            "value": "five-part",
+            "label": "A five-part pattern",
+            "detail": ""
+          },
+          {
+            "value": "round",
+            "label": "A round body",
+            "detail": ""
+          },
+          {
+            "value": "unsure",
+            "label": "Not sure",
+            "detail": ""
+          }
+        ]
+      },
+      "discover": {
+        "title": "Cincinnati was once under a tropical sea.",
+        "text": "This animal was related to starfish and lived in Cincinnati’s ancient sea roughly 450 million years ago.",
+        "uncertainty": "",
+        "source": "CMC · Cincinnati City Fossil"
+      },
+      "next": {
+        "artifactId": "stop-4",
+        "label": "Outgrowing a Skeleton",
+        "direction": "Continue to the trilobite story."
+      }
+    },
+    {
+      "id": "stop-4",
+      "stopNumber": "4",
+      "shortLabel": "Molting",
+      "name": "Outgrowing a Skeleton",
+      "tableLabel": "Outgrowing a Skeleton",
+      "recognitionClass": "fossil2",
+      "physicalObjectName": "Trilobite target",
+      "scenarioLabel": "Growth and change",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "",
+      "notice": {
+        "question": "Why might a slab contain so many apparently “headless” trilobite bodies?",
+        "choices": [
+          {
+            "value": "predator",
+            "label": "A predator",
+            "detail": ""
+          },
+          {
+            "value": "molts",
+            "label": "They shed their shells",
+            "detail": ""
+          },
+          {
+            "value": "unsure",
+            "label": "Not sure",
+            "detail": ""
+          }
+        ]
+      },
+      "discover": {
+        "title": "They weren’t headless bodies after all.",
+        "text": "Trilobites grew by molting—crawling out of an old outer skeleton.",
+        "uncertainty": "While soft, they were especially vulnerable.",
+        "source": "CMC · Outgrowing a Skeleton"
+      },
+      "next": {
+        "artifactId": "stop-5",
+        "label": "Ordovician Donut",
+        "direction": "Continue to a mystery scientists are still exploring."
+      }
+    },
+    {
+      "id": "stop-5",
+      "stopNumber": "5",
+      "shortLabel": "Mystery",
+      "name": "Ordovician Donut",
+      "tableLabel": "Ordovician Donut",
+      "recognitionClass": "fossil3",
+      "physicalObjectName": "Ordovician donut target",
+      "scenarioLabel": "Scientific mystery",
+      "referenceImage": "",
+      "referenceAlt": "",
+      "referenceCaption": "",
+      "notice": {
+        "question": "What do you think caused the hole in this fossil?",
+        "choices": [
+          {
+            "value": "shell",
+            "label": "It grew around another shell",
+            "detail": ""
+          },
+          {
+            "value": "growth",
+            "label": "It naturally grew that way",
+            "detail": ""
+          },
+          {
+            "value": "unsure",
+            "label": "Not sure",
+            "detail": ""
+          }
+        ]
+      },
+      "discover": {
+        "title": "The mystery is real.",
+        "text": "This colony may have grown around another object—but the object left no trace.",
+        "uncertainty": "Scientists still do not know exactly what happened.",
+        "source": "CMC · Ordovician Donut"
+      },
+      "next": {
+        "artifactId": "finale",
+        "label": "Keep Exploring",
+        "direction": "See where your curiosity could take you next."
+      }
+    }
+  ],
+  "finale": {
+    "shortLabel": "Explore More",
+    "title": "Expand Your World",
+    "headline": "Curiosity is only the beginning.",
+    "body": "Your interactions can become a starting point for discovering more exhibits, artifacts and stories across Cincinnati Museum Center.",
+    "learnMoreLabel": "Explore the project",
+    "learnMoreUrl": "project.html",
+    "restartLabel": "Explore again",
+    "closeNote": "Prototype for Cincinnati Museum Center · AI Native Studio"
+  },
+  "about": {
+    "eyebrow": "ABOUT THE PROJECT",
+    "headline": "A digital layer that keeps the physical museum at the center.",
+    "intro": "ExYoWo explores whether a lightweight digital interaction can encourage visitors to slow down, look more closely and continue exploring CMC.",
+    "section1Heading": "Physical first",
+    "section1Body": "The object remains the focus. Technology should help visitors notice more, not pull their attention away.",
+    "section2Heading": "Personalized exploration",
+    "section2Body": "Visitor choices and engagement can help guide recommendations for what to explore next.",
+    "section3Heading": "Built through evidence",
+    "section3Body": "The prototype is being shaped through observation, testing, visitor feedback and collaboration with Cincinnati Museum Center."
+  }
+}
